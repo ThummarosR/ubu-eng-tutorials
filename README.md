@@ -33,25 +33,18 @@ If you spot a typo or want to add a small improvement, opening a PR here is
 welcome — we'll fold it into the website on the next refresh. For the
 authoritative reading experience, use the website link.
 
-## Releases
-
-Each track is versioned independently. Tags use the format
-`<track>-<version>`, e.g. `electrical-basic-v0.3.4`.
-Pre-built binaries (where applicable) are attached as assets on the
-[GitHub Releases](../../releases) page.
-
 ## Contributing
 
 Issues and pull requests welcome. Please tag the issue with the track name
-(`[electrical-basic] ...`) so it's easy to triage.
+(`[ripes] ...`, `[plc] ...`, etc.) so it's easy to triage.
 
 ## License
 
 [Apache License 2.0](./LICENSE) — Copyright © 2026 Faculty of Engineering,
 Ubon Ratchathani University.
 
-Third-party works that inspired this repo (such as Erik Cheever's
-[RLocusGui](https://lpsa.swarthmore.edu/Root_Locus/RLAnalysisGUI.html),
-which the root-locus rule walkthrough in `ubu-electrical-basic` is modelled
-after) remain under their original licenses and are referenced, not
-redistributed.
+Each tutorial references external tools, vendor manuals, or standards
+(Ripes, Mitsubishi / Omron / Delta documentation, the OPC UA / IEC 62541
+specification, etc.) that remain under their respective licenses and are
+referenced — not redistributed — here. See each track's README for the
+specifics.
