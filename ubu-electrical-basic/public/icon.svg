@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e3a8a;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#0a1745;stop-opacity:1"/>
+    </linearGradient>
+    <radialGradient id="centerDisc" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" style="stop-color:#1e40af;stop-opacity:1"/>
+      <stop offset="100%" style="stop-color:#0c1e5c;stop-opacity:1"/>
+    </radialGradient>
+    <filter id="g2" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <filter id="sg2" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="8" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect x="0" y="0" width="512" height="512" rx="100" ry="100" fill="url(#bg2)"/>
+
+  <!-- LOTUS background silhouette (outline only, ethereal) -->
+  <g transform="translate(256, 295)" stroke="#fde047" stroke-width="3" fill="none" opacity="0.4" stroke-linejoin="round">
+    <!-- Outer petals -->
+    <path d="M 0 55 Q -185 5 -165 -160 Q -92 -95 -16 55 Z"/>
+    <path d="M 0 55 Q 185 5 165 -160 Q 92 -95 16 55 Z"/>
+    <!-- Middle petals -->
+    <path d="M 0 55 Q -115 -55 -95 -215 Q -32 -125 -11 55 Z"/>
+    <path d="M 0 55 Q 115 -55 95 -215 Q 32 -125 11 55 Z"/>
+    <!-- Center petal -->
+    <path d="M 0 55 Q -42 -55 -30 -245 Q 0 -260 30 -245 Q 42 -55 0 55 Z"/>
+    <!-- Water/base -->
+    <ellipse cx="0" cy="60" rx="135" ry="14"/>
+  </g>
+
+  <!-- Floating PCB traces in corners (suggesting board context) -->
+  <g stroke="#fde047" stroke-width="2.5" fill="none" stroke-linecap="round" opacity="0.5">
+    <path d="M 40 80 L 90 80 L 105 95 L 145 95"/>
+    <circle cx="40" cy="80" r="4" fill="#fde047"/>
+    <circle cx="145" cy="95" r="4" fill="#fde047"/>
+    <path d="M 472 80 L 422 80 L 407 95 L 367 95"/>
+    <circle cx="472" cy="80" r="4" fill="#fde047"/>
+    <circle cx="367" cy="95" r="4" fill="#fde047"/>
+    <path d="M 40 432 L 90 432 L 105 417 L 145 417"/>
+    <circle cx="40" cy="432" r="4" fill="#fde047"/>
+    <circle cx="145" cy="417" r="4" fill="#fde047"/>
+    <path d="M 472 432 L 422 432 L 407 417 L 367 417"/>
+    <circle cx="472" cy="432" r="4" fill="#fde047"/>
+    <circle cx="367" cy="417" r="4" fill="#fde047"/>
+  </g>
+
+  <!-- CIRCUIT GEAR: octagonal PCB trace with chip-style teeth -->
+  <g transform="translate(256, 256)">
+    
+    <!-- 16 "chip pins" as gear teeth around the perimeter -->
+    <g fill="#fde047" filter="url(#g2)">
+      <g><rect x="-8" y="-170" width="16" height="22" rx="2"/></g>
+      <g transform="rotate(22.5)"><rect x="-8" y="-170" width="16" height="22" rx="2"/></g>
+      <g transform="rotate(45)"><rect x="-8" y="-170" width="16" height="22" rx="2"/></g>
+      <g transform="rotate(67.5)"><rect x="-8" y="-170" width="16" height="22" rx="2"/></g>
+      <g transform="rotate(90)"><rect x="-8" y="-170" width="16" height="22" rx="2"/></g>
+      <g transform="rotate(112.5)"><rect x="-8" y="-170" width="16" height="22" rx="2"/></g>
+      <g transform="rotate(135)"><rect x="-8" y="-170" width="16" height="22" rx="2"/></g>
+      <g transform="rotate(157.5)"><rect x="-8" y="-170" width="16" height="22" rx="2"/></g>
+      <g transform="rotate(180)"><rect x="-8" y="-170" width="16" height="22" rx="2"/></g>
+      <g transform="rotate(202.5)"><rect x="-8" y="-170" width="16" height="22" rx="2"/></g>
+      <g transform="rotate(225)"><rect x="-8" y="-170" width="16" height="22" rx="2"/></g>
+      <g transform="rotate(247.5)"><rect x="-8" y="-170" width="16" height="22" rx="2"/></g>
+      <g transform="rotate(270)"><rect x="-8" y="-170" width="16" height="22" rx="2"/></g>
+      <g transform="rotate(292.5)"><rect x="-8" y="-170" width="16" height="22" rx="2"/></g>
+      <g transform="rotate(315)"><rect x="-8" y="-170" width="16" height="22" rx="2"/></g>
+      <g transform="rotate(337.5)"><rect x="-8" y="-170" width="16" height="22" rx="2"/></g>
+    </g>
+    
+    <!-- Outer ring -->
+    <circle cx="0" cy="0" r="148" fill="none" stroke="#fde047" stroke-width="6" filter="url(#g2)"/>
+    
+    <!-- PCB-style inner ring with trace pattern -->
+    <circle cx="0" cy="0" r="135" fill="url(#centerDisc)" stroke="#fde047" stroke-width="3"/>
+    
+    <!-- Circuit traces emanating inward (PCB pattern) -->
+    <g stroke="#fde047" stroke-width="2" fill="none" opacity="0.5" stroke-linecap="round">
+      <path d="M 0 -135 L 0 -120 L 15 -105"/>
+      <path d="M 95 -95 L 85 -85 L 75 -85"/>
+      <path d="M 135 0 L 120 0 L 105 -15"/>
+      <path d="M 95 95 L 85 85 L 85 75"/>
+      <path d="M 0 135 L 0 120 L -15 105"/>
+      <path d="M -95 95 L -85 85 L -75 85"/>
+      <path d="M -135 0 L -120 0 L -105 15"/>
+      <path d="M -95 -95 L -85 -85 L -85 -75"/>
+    </g>
+    
+    <!-- Small solder pads on inner ring -->
+    <g fill="#fde047" opacity="0.7">
+      <circle cx="0" cy="-120" r="3"/>
+      <circle cx="85" cy="-85" r="3"/>
+      <circle cx="120" cy="0" r="3"/>
+      <circle cx="85" cy="85" r="3"/>
+      <circle cx="0" cy="120" r="3"/>
+      <circle cx="-85" cy="85" r="3"/>
+      <circle cx="-120" cy="0" r="3"/>
+      <circle cx="-85" cy="-85" r="3"/>
+    </g>
+    
+    <!-- Inner accent ring -->
+    <circle cx="0" cy="0" r="100" fill="none" stroke="#fde047" stroke-width="1" opacity="0.35"/>
+  </g>
+
+  <!-- EE UBU centered inside -->
+  <g filter="url(#sg2)">
+    <text x="256" y="246" font-family="Arial Black, Arial, sans-serif" font-size="64" font-weight="900" 
+          fill="#fde047" text-anchor="middle" letter-spacing="4">EE</text>
+    <text x="256" y="306" font-family="Arial Black, Arial, sans-serif" font-size="52" font-weight="900" 
+          fill="#fde047" text-anchor="middle" letter-spacing="6">UBU</text>
+  </g>
+  
+  <!-- Divider between EE and UBU -->
+  <g opacity="0.7">
+    <line x1="195" y1="263" x2="240" y2="263" stroke="#fde047" stroke-width="2"/>
+    <line x1="272" y1="263" x2="317" y2="263" stroke="#fde047" stroke-width="2"/>
+    <circle cx="256" cy="263" r="3" fill="#fde047"/>
+  </g>
+</svg>

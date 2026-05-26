@@ -1,0 +1,26 @@
+# Build output
+node_modules
+dist
+release
+
+# IDE
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS
+.DS_Store
+Thumbs.db
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Claude Code workspace settings
+.claude
+
+# Temporary PDF page renders used during development
+_pdf_pages/

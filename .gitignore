@@ -1,0 +1,21 @@
+# Per-track build artefacts
+node_modules/
+dist/
+release/
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# TypeScript build info
+*.tsbuildinfo
+
+# Claude Code workspace settings
+.claude/

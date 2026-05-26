@@ -1,0 +1,2165 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "id": "t48",
+      "type": "text",
+      "position": {
+        "x": 300,
+        "y": 1040
+      },
+      "data": {
+        "text": "POWER CIRCUIT",
+        "fontSize": 14
+      },
+      "measured": {
+        "width": 110,
+        "height": 31
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "t87",
+      "type": "text",
+      "position": {
+        "x": 960,
+        "y": 560
+      },
+      "data": {
+        "text": "CONTROL CIRCUIT",
+        "fontSize": 14
+      },
+      "measured": {
+        "width": 125,
+        "height": 31
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n1",
+      "type": "iec",
+      "position": {
+        "x": 180,
+        "y": 60
+      },
+      "data": {
+        "kind": "xterm5",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 160,
+        "height": 24
+      }
+    },
+    {
+      "id": "n2",
+      "type": "iec",
+      "position": {
+        "x": 180,
+        "y": 140
+      },
+      "data": {
+        "kind": "fuse3p",
+        "rotation": 0,
+        "label": "F1"
+      },
+      "measured": {
+        "width": 100,
+        "height": 80
+      }
+    },
+    {
+      "id": "n3",
+      "type": "iec",
+      "position": {
+        "x": 180,
+        "y": 260
+      },
+      "data": {
+        "kind": "mcb3p",
+        "rotation": 0,
+        "label": "MCB",
+        "closed": true
+      },
+      "measured": {
+        "width": 100,
+        "height": 120
+      },
+      "selected": false
+    },
+    {
+      "id": "n4",
+      "type": "iec",
+      "position": {
+        "x": 180,
+        "y": 400
+      },
+      "data": {
+        "kind": "contactor3p",
+        "rotation": 0,
+        "label": "K1",
+        "closed": false
+      },
+      "measured": {
+        "width": 100,
+        "height": 120
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n5",
+      "type": "iec",
+      "position": {
+        "x": 180,
+        "y": 620
+      },
+      "data": {
+        "kind": "overload3p",
+        "rotation": 0,
+        "label": "OL",
+        "closed": false
+      },
+      "measured": {
+        "width": 100,
+        "height": 120
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n6",
+      "type": "iec",
+      "position": {
+        "x": 180,
+        "y": 790
+      },
+      "data": {
+        "kind": "motor3p_yd",
+        "rotation": 0,
+        "label": "-M"
+      },
+      "measured": {
+        "width": 100,
+        "height": 140
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n7",
+      "type": "iec",
+      "position": {
+        "x": 320,
+        "y": 660
+      },
+      "data": {
+        "kind": "contactor3p",
+        "rotation": 0,
+        "label": "K2",
+        "closed": false
+      },
+      "measured": {
+        "width": 100,
+        "height": 120
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n8",
+      "type": "iec",
+      "position": {
+        "x": 470,
+        "y": 630
+      },
+      "data": {
+        "kind": "contactor3p",
+        "rotation": 0,
+        "label": "K3",
+        "closed": false
+      },
+      "measured": {
+        "width": 100,
+        "height": 120
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n50",
+      "type": "iec",
+      "position": {
+        "x": 1460,
+        "y": 370
+      },
+      "data": {
+        "kind": "junction",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n85",
+      "type": "iec",
+      "position": {
+        "x": 480,
+        "y": 800
+      },
+      "data": {
+        "kind": "junction",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n51",
+      "type": "iec",
+      "position": {
+        "x": 680,
+        "y": 260
+      },
+      "data": {
+        "kind": "cb",
+        "rotation": 0,
+        "label": "CB",
+        "closed": true
+      },
+      "measured": {
+        "width": 40,
+        "height": 100
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n52",
+      "type": "iec",
+      "position": {
+        "x": 680,
+        "y": 140
+      },
+      "data": {
+        "kind": "fuse",
+        "rotation": 0,
+        "label": "F2",
+        "value": "2 A"
+      },
+      "measured": {
+        "width": 40,
+        "height": 100
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n53",
+      "type": "iec",
+      "position": {
+        "x": 680,
+        "y": 410
+      },
+      "data": {
+        "kind": "pbnc",
+        "rotation": 0,
+        "label": "STOP",
+        "closed": false
+      },
+      "measured": {
+        "width": 40,
+        "height": 120
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n55",
+      "type": "iec",
+      "position": {
+        "x": 680,
+        "y": 570
+      },
+      "data": {
+        "kind": "pbno",
+        "rotation": 0,
+        "label": "START",
+        "closed": false
+      },
+      "measured": {
+        "width": 40,
+        "height": 120
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n56",
+      "type": "iec",
+      "position": {
+        "x": 770,
+        "y": 580
+      },
+      "data": {
+        "kind": "auxno",
+        "rotation": 0,
+        "label": "K1",
+        "closed": false
+      },
+      "measured": {
+        "width": 40,
+        "height": 100
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n58",
+      "type": "iec",
+      "position": {
+        "x": 680,
+        "y": 700
+      },
+      "data": {
+        "kind": "olcontact",
+        "rotation": 0,
+        "label": "OL",
+        "closed": false
+      },
+      "measured": {
+        "width": 40,
+        "height": 100
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n60",
+      "type": "iec",
+      "position": {
+        "x": 670,
+        "y": 910
+      },
+      "data": {
+        "kind": "contactor",
+        "rotation": 0,
+        "label": "K1",
+        "closed": false
+      },
+      "measured": {
+        "width": 60,
+        "height": 80
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n61",
+      "type": "iec",
+      "position": {
+        "x": 1130,
+        "y": 890
+      },
+      "data": {
+        "kind": "timercoil",
+        "rotation": 0,
+        "label": "T0",
+        "value": "5 s",
+        "closed": false
+      },
+      "measured": {
+        "width": 60,
+        "height": 80
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n63",
+      "type": "iec",
+      "position": {
+        "x": 910,
+        "y": 750
+      },
+      "data": {
+        "kind": "auxnc",
+        "rotation": 0,
+        "label": "K3",
+        "closed": false
+      },
+      "measured": {
+        "width": 40,
+        "height": 100
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n64",
+      "type": "iec",
+      "position": {
+        "x": 910,
+        "y": 860
+      },
+      "data": {
+        "kind": "timernc",
+        "rotation": 0,
+        "label": "T0",
+        "closed": true
+      },
+      "measured": {
+        "width": 40,
+        "height": 100
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n65",
+      "type": "iec",
+      "position": {
+        "x": 900,
+        "y": 960
+      },
+      "data": {
+        "kind": "contactor",
+        "rotation": 0,
+        "label": "K2",
+        "closed": false
+      },
+      "measured": {
+        "width": 60,
+        "height": 80
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n66",
+      "type": "iec",
+      "position": {
+        "x": 1040,
+        "y": 750
+      },
+      "data": {
+        "kind": "auxnc",
+        "rotation": 0,
+        "label": "K2",
+        "closed": false
+      },
+      "measured": {
+        "width": 40,
+        "height": 100
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n67",
+      "type": "iec",
+      "position": {
+        "x": 1040,
+        "y": 860
+      },
+      "data": {
+        "kind": "timerno",
+        "rotation": 0,
+        "label": "T0",
+        "closed": true
+      },
+      "measured": {
+        "width": 40,
+        "height": 100
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n68",
+      "type": "iec",
+      "position": {
+        "x": 1030,
+        "y": 960
+      },
+      "data": {
+        "kind": "contactor",
+        "rotation": 0,
+        "label": "K3",
+        "closed": false
+      },
+      "measured": {
+        "width": 60,
+        "height": 80
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n69",
+      "type": "iec",
+      "position": {
+        "x": 1250,
+        "y": 370
+      },
+      "data": {
+        "kind": "junction",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n70",
+      "type": "iec",
+      "position": {
+        "x": 1240,
+        "y": 600
+      },
+      "data": {
+        "kind": "auxno",
+        "rotation": 0,
+        "label": "K1",
+        "closed": true
+      },
+      "measured": {
+        "width": 40,
+        "height": 100
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n71",
+      "type": "iec",
+      "position": {
+        "x": 760,
+        "y": 910
+      },
+      "data": {
+        "kind": "pilotlamp",
+        "rotation": 0,
+        "label": "FW",
+        "color": "green"
+      },
+      "measured": {
+        "width": 60,
+        "height": 80
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n72",
+      "type": "iec",
+      "position": {
+        "x": 1050,
+        "y": 1060
+      },
+      "data": {
+        "kind": "junction",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n74",
+      "type": "iec",
+      "position": {
+        "x": 1340,
+        "y": 600
+      },
+      "data": {
+        "kind": "auxnc",
+        "rotation": 0,
+        "label": "K1",
+        "closed": false
+      },
+      "measured": {
+        "width": 40,
+        "height": 100
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n75",
+      "type": "iec",
+      "position": {
+        "x": 1230,
+        "y": 850
+      },
+      "data": {
+        "kind": "pilotlamp",
+        "rotation": 0,
+        "label": "STOP",
+        "color": "red"
+      },
+      "measured": {
+        "width": 60,
+        "height": 80
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n76",
+      "type": "iec",
+      "position": {
+        "x": 1250,
+        "y": 1060
+      },
+      "data": {
+        "kind": "junction",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n77",
+      "type": "iec",
+      "position": {
+        "x": 1350,
+        "y": 370
+      },
+      "data": {
+        "kind": "junction",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n79",
+      "type": "iec",
+      "position": {
+        "x": 1330,
+        "y": 850
+      },
+      "data": {
+        "kind": "pilotlamp",
+        "rotation": 0,
+        "label": "OL",
+        "color": "amber"
+      },
+      "measured": {
+        "width": 60,
+        "height": 80
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n80",
+      "type": "iec",
+      "position": {
+        "x": 1350,
+        "y": 1060
+      },
+      "data": {
+        "kind": "junction",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n81",
+      "type": "iec",
+      "position": {
+        "x": 1440,
+        "y": 850
+      },
+      "data": {
+        "kind": "pilotlamp",
+        "rotation": 0,
+        "label": "PW",
+        "color": "white"
+      },
+      "measured": {
+        "width": 60,
+        "height": 80
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n82",
+      "type": "iec",
+      "position": {
+        "x": 1460,
+        "y": 1060
+      },
+      "data": {
+        "kind": "junction",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n84",
+      "type": "iec",
+      "position": {
+        "x": 780,
+        "y": 1060
+      },
+      "data": {
+        "kind": "junction",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n88",
+      "type": "iec",
+      "position": {
+        "x": 190,
+        "y": 530
+      },
+      "data": {
+        "kind": "junction",
+        "label": "",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n89",
+      "type": "iec",
+      "position": {
+        "x": 220,
+        "y": 560
+      },
+      "data": {
+        "kind": "junction",
+        "label": "",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n90",
+      "type": "iec",
+      "position": {
+        "x": 250,
+        "y": 590
+      },
+      "data": {
+        "kind": "junction",
+        "label": "",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n91",
+      "type": "iec",
+      "position": {
+        "x": 360,
+        "y": 620
+      },
+      "data": {
+        "kind": "junction",
+        "label": "",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n92",
+      "type": "iec",
+      "position": {
+        "x": 540,
+        "y": 860
+      },
+      "data": {
+        "kind": "junction",
+        "label": "",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n93",
+      "type": "iec",
+      "position": {
+        "x": 510,
+        "y": 830
+      },
+      "data": {
+        "kind": "junction",
+        "label": "",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n94",
+      "type": "iec",
+      "position": {
+        "x": 540,
+        "y": 1000
+      },
+      "data": {
+        "kind": "junction",
+        "label": "",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n95",
+      "type": "iec",
+      "position": {
+        "x": 510,
+        "y": 970
+      },
+      "data": {
+        "kind": "junction",
+        "label": "",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n96",
+      "type": "iec",
+      "position": {
+        "x": 480,
+        "y": 60
+      },
+      "data": {
+        "kind": "xterm5",
+        "label": "-X1",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 160,
+        "height": 24
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n97",
+      "type": "iec",
+      "position": {
+        "x": 690,
+        "y": 100
+      },
+      "data": {
+        "kind": "junction",
+        "label": "",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n98",
+      "type": "iec",
+      "position": {
+        "x": 690,
+        "y": 370
+      },
+      "data": {
+        "kind": "junction",
+        "label": "",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n99",
+      "type": "iec",
+      "position": {
+        "x": 690,
+        "y": 540
+      },
+      "data": {
+        "kind": "junction",
+        "label": "",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n100",
+      "type": "iec",
+      "position": {
+        "x": 690,
+        "y": 1060
+      },
+      "data": {
+        "kind": "junction",
+        "label": "",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n101",
+      "type": "iec",
+      "position": {
+        "x": 1470,
+        "y": 100
+      },
+      "data": {
+        "kind": "junction",
+        "label": "",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n102",
+      "type": "iec",
+      "position": {
+        "x": 920,
+        "y": 1060
+      },
+      "data": {
+        "kind": "junction",
+        "label": "",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n103",
+      "type": "iec",
+      "position": {
+        "x": 690,
+        "y": 820
+      },
+      "data": {
+        "kind": "junction",
+        "label": "",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n104",
+      "type": "iec",
+      "position": {
+        "x": 1050,
+        "y": 710
+      },
+      "data": {
+        "kind": "junction",
+        "label": "",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n105",
+      "type": "iec",
+      "position": {
+        "x": 1150,
+        "y": 1060
+      },
+      "data": {
+        "kind": "junction",
+        "label": "",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n106",
+      "type": "iec",
+      "position": {
+        "x": 920,
+        "y": 710
+      },
+      "data": {
+        "kind": "junction",
+        "label": "",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n107",
+      "type": "iec",
+      "position": {
+        "x": 690,
+        "y": 870
+      },
+      "data": {
+        "kind": "junction",
+        "label": "",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 20,
+        "height": 20
+      },
+      "selected": false,
+      "dragging": false
+    }
+  ],
+  "edges": [
+    {
+      "id": "e15",
+      "source": "n1",
+      "target": "n2",
+      "sourceHandle": "l1",
+      "targetHandle": "1",
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "id": "e16",
+      "source": "n1",
+      "target": "n2",
+      "sourceHandle": "l2",
+      "targetHandle": "3",
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "id": "e17",
+      "source": "n1",
+      "target": "n2",
+      "sourceHandle": "l3",
+      "targetHandle": "5",
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "id": "e18",
+      "source": "n2",
+      "target": "n3",
+      "sourceHandle": "2",
+      "targetHandle": "1",
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "id": "e19",
+      "source": "n2",
+      "target": "n3",
+      "sourceHandle": "4",
+      "targetHandle": "3",
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "id": "e20",
+      "source": "n2",
+      "target": "n3",
+      "sourceHandle": "6",
+      "targetHandle": "5",
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "id": "e21",
+      "source": "n3",
+      "target": "n4",
+      "sourceHandle": "2",
+      "targetHandle": "1",
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "id": "e22",
+      "source": "n3",
+      "target": "n4",
+      "sourceHandle": "4",
+      "targetHandle": "3",
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "id": "e23",
+      "source": "n3",
+      "target": "n4",
+      "sourceHandle": "6",
+      "targetHandle": "5",
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "id": "e92",
+      "source": "n77",
+      "target": "n50",
+      "sourceHandle": "r",
+      "targetHandle": "l",
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "id": "e109",
+      "source": "n63",
+      "target": "n64",
+      "sourceHandle": "b",
+      "targetHandle": "a",
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "id": "e110",
+      "source": "n64",
+      "target": "n65",
+      "sourceHandle": "b",
+      "targetHandle": "a",
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "id": "e113",
+      "source": "n66",
+      "target": "n67",
+      "sourceHandle": "b",
+      "targetHandle": "a",
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "id": "e114",
+      "source": "n67",
+      "target": "n68",
+      "sourceHandle": "b",
+      "targetHandle": "a",
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "id": "e116",
+      "source": "n69",
+      "target": "n70",
+      "sourceHandle": "b",
+      "targetHandle": "a",
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "id": "e121",
+      "source": "n75",
+      "target": "n76",
+      "sourceHandle": "b",
+      "targetHandle": "t",
+      "type": "step",
+      "style": {
+        "stroke": "#1e40af",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "id": "e124",
+      "source": "n79",
+      "target": "n80",
+      "sourceHandle": "b",
+      "targetHandle": "t",
+      "type": "step",
+      "style": {
+        "stroke": "#1e40af",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "id": "e125",
+      "source": "n50",
+      "target": "n81",
+      "sourceHandle": "b",
+      "targetHandle": "a",
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "id": "e126",
+      "source": "n81",
+      "target": "n82",
+      "sourceHandle": "b",
+      "targetHandle": "t",
+      "type": "step",
+      "style": {
+        "stroke": "#1e40af",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "id": "e130",
+      "source": "n76",
+      "target": "n80",
+      "sourceHandle": "r",
+      "targetHandle": "l",
+      "type": "step",
+      "style": {
+        "stroke": "#1e40af",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "id": "e131",
+      "source": "n80",
+      "target": "n82",
+      "sourceHandle": "r",
+      "targetHandle": "l",
+      "type": "step",
+      "style": {
+        "stroke": "#1e40af",
+        "strokeWidth": 1.6
+      }
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#16a34a",
+        "strokeWidth": 1.6
+      },
+      "source": "n6",
+      "sourceHandle": "pe",
+      "target": "n1",
+      "targetHandle": "pe",
+      "id": "xy-edge__n6pe-n1pe",
+      "selected": false
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n5",
+      "sourceHandle": "2",
+      "target": "n6",
+      "targetHandle": "u1",
+      "id": "xy-edge__n52-n6u1"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n5",
+      "sourceHandle": "4",
+      "target": "n6",
+      "targetHandle": "v1",
+      "id": "xy-edge__n54-n6v1"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n5",
+      "sourceHandle": "6",
+      "target": "n6",
+      "targetHandle": "w1",
+      "id": "xy-edge__n56-n6w1"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n90",
+      "sourceHandle": "b",
+      "target": "n5",
+      "targetHandle": "5",
+      "id": "xy-edge__n90b-n55"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n89",
+      "sourceHandle": "b",
+      "target": "n5",
+      "targetHandle": "3",
+      "id": "xy-edge__n89b-n53"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n88",
+      "sourceHandle": "b",
+      "target": "n5",
+      "targetHandle": "1",
+      "id": "xy-edge__n88b-n51"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n4",
+      "sourceHandle": "2",
+      "target": "n88",
+      "targetHandle": "t",
+      "id": "xy-edge__n42-n88t"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n4",
+      "sourceHandle": "4",
+      "target": "n89",
+      "targetHandle": "t",
+      "id": "xy-edge__n44-n89t"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n4",
+      "sourceHandle": "6",
+      "target": "n90",
+      "targetHandle": "t",
+      "id": "xy-edge__n46-n90t"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n91",
+      "sourceHandle": "b",
+      "target": "n7",
+      "targetHandle": "3",
+      "id": "xy-edge__n91b-n73"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n91",
+      "sourceHandle": "l",
+      "target": "n7",
+      "targetHandle": "1",
+      "id": "xy-edge__n91l-n71"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n91",
+      "sourceHandle": "r",
+      "target": "n7",
+      "targetHandle": "5",
+      "id": "xy-edge__n91r-n75"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n90",
+      "sourceHandle": "r",
+      "target": "n8",
+      "targetHandle": "1",
+      "id": "xy-edge__n90r-n81"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n89",
+      "sourceHandle": "r",
+      "target": "n8",
+      "targetHandle": "3",
+      "id": "xy-edge__n89r-n83"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n88",
+      "sourceHandle": "r",
+      "target": "n8",
+      "targetHandle": "5",
+      "id": "xy-edge__n88r-n85"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n8",
+      "sourceHandle": "2",
+      "target": "n85",
+      "targetHandle": "t",
+      "id": "xy-edge__n82-n85t"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n7",
+      "sourceHandle": "6",
+      "target": "n85",
+      "targetHandle": "l",
+      "id": "xy-edge__n76-n85l"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n7",
+      "sourceHandle": "4",
+      "target": "n93",
+      "targetHandle": "l",
+      "id": "xy-edge__n74-n93l"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n8",
+      "sourceHandle": "4",
+      "target": "n93",
+      "targetHandle": "t",
+      "id": "xy-edge__n84-n93t"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n8",
+      "sourceHandle": "6",
+      "target": "n92",
+      "targetHandle": "t",
+      "id": "xy-edge__n86-n92t"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n7",
+      "sourceHandle": "2",
+      "target": "n92",
+      "targetHandle": "l",
+      "id": "xy-edge__n72-n92l"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n92",
+      "sourceHandle": "b",
+      "target": "n94",
+      "targetHandle": "t",
+      "id": "xy-edge__n92b-n94t"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n94",
+      "sourceHandle": "l",
+      "target": "n6",
+      "targetHandle": "w2",
+      "id": "xy-edge__n94l-n6w2"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n85",
+      "sourceHandle": "b",
+      "target": "n6",
+      "targetHandle": "v2",
+      "id": "xy-edge__n85b-n6v2"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n93",
+      "sourceHandle": "b",
+      "target": "n95",
+      "targetHandle": "t",
+      "id": "xy-edge__n93b-n95t"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n95",
+      "sourceHandle": "l",
+      "target": "n6",
+      "targetHandle": "u2",
+      "id": "xy-edge__n95l-n6u2"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      },
+      "source": "n96",
+      "sourceHandle": "l1",
+      "target": "n97",
+      "targetHandle": "l",
+      "id": "xy-edge__n96l1-n97l",
+      "selected": false
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      },
+      "source": "n97",
+      "sourceHandle": "b",
+      "target": "n52",
+      "targetHandle": "a",
+      "id": "xy-edge__n97b-n52a",
+      "selected": false
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      },
+      "source": "n52",
+      "sourceHandle": "b",
+      "target": "n51",
+      "targetHandle": "a",
+      "id": "xy-edge__n52b-n51a",
+      "selected": false
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n51",
+      "sourceHandle": "b",
+      "target": "n98",
+      "targetHandle": "t",
+      "id": "xy-edge__n51b-n98t"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n98",
+      "sourceHandle": "b",
+      "target": "n53",
+      "targetHandle": "a",
+      "id": "xy-edge__n98b-n53a"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      },
+      "source": "n98",
+      "sourceHandle": "r",
+      "target": "n69",
+      "targetHandle": "l",
+      "id": "xy-edge__n98r-n69l",
+      "selected": false
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n53",
+      "sourceHandle": "b",
+      "target": "n99",
+      "targetHandle": "t",
+      "id": "xy-edge__n53b-n99t"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n99",
+      "sourceHandle": "r",
+      "target": "n56",
+      "targetHandle": "a",
+      "id": "xy-edge__n99r-n56a"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n99",
+      "sourceHandle": "b",
+      "target": "n55",
+      "targetHandle": "a",
+      "id": "xy-edge__n99b-n55a"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n56",
+      "sourceHandle": "b",
+      "target": "n55",
+      "targetHandle": "b",
+      "id": "xy-edge__n56b-n55b"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n55",
+      "sourceHandle": "b",
+      "target": "n58",
+      "targetHandle": "a",
+      "id": "xy-edge__n55b-n58a"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n60",
+      "sourceHandle": "b",
+      "target": "n100",
+      "targetHandle": "t",
+      "id": "xy-edge__n60b-n100t"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#1e40af",
+        "strokeWidth": 1.6
+      },
+      "source": "n100",
+      "sourceHandle": "l",
+      "target": "n96",
+      "targetHandle": "n",
+      "id": "xy-edge__n100l-n96n",
+      "selected": false
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#dc2626",
+        "strokeWidth": 1.6
+      },
+      "source": "n97",
+      "sourceHandle": "r",
+      "target": "n101",
+      "targetHandle": "l",
+      "id": "xy-edge__n97r-n101l",
+      "selected": false
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n71",
+      "sourceHandle": "b",
+      "target": "n84",
+      "targetHandle": "t",
+      "id": "xy-edge__n71b-n84t"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n84",
+      "sourceHandle": "l",
+      "target": "n100",
+      "targetHandle": "r",
+      "id": "xy-edge__n84l-n100r"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n65",
+      "sourceHandle": "b",
+      "target": "n102",
+      "targetHandle": "t",
+      "id": "xy-edge__n65b-n102t"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n102",
+      "sourceHandle": "l",
+      "target": "n84",
+      "targetHandle": "r",
+      "id": "xy-edge__n102l-n84r"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n72",
+      "sourceHandle": "l",
+      "target": "n102",
+      "targetHandle": "r",
+      "id": "xy-edge__n72l-n102r"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n58",
+      "sourceHandle": "b",
+      "target": "n103",
+      "targetHandle": "t",
+      "id": "xy-edge__n58b-n103t"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n68",
+      "sourceHandle": "b",
+      "target": "n72",
+      "targetHandle": "t",
+      "id": "xy-edge__n68b-n72t"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n104",
+      "sourceHandle": "r",
+      "target": "n61",
+      "targetHandle": "a",
+      "id": "xy-edge__n104r-n61a"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n105",
+      "sourceHandle": "l",
+      "target": "n72",
+      "targetHandle": "r",
+      "id": "xy-edge__n105l-n72r"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n61",
+      "sourceHandle": "b",
+      "target": "n105",
+      "targetHandle": "t",
+      "id": "xy-edge__n61b-n105t"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n106",
+      "sourceHandle": "r",
+      "target": "n104",
+      "targetHandle": "l",
+      "id": "xy-edge__n106r-n104l"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n104",
+      "sourceHandle": "b",
+      "target": "n66",
+      "targetHandle": "a",
+      "id": "xy-edge__n104b-n66a"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n106",
+      "sourceHandle": "b",
+      "target": "n63",
+      "targetHandle": "a",
+      "id": "xy-edge__n106b-n63a"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n103",
+      "sourceHandle": "r",
+      "target": "n106",
+      "targetHandle": "l",
+      "id": "xy-edge__n103r-n106l"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n76",
+      "sourceHandle": "l",
+      "target": "n105",
+      "targetHandle": "r",
+      "id": "xy-edge__n76l-n105r"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n70",
+      "sourceHandle": "b",
+      "target": "n75",
+      "targetHandle": "a",
+      "id": "xy-edge__n70b-n75a"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n69",
+      "sourceHandle": "r",
+      "target": "n77",
+      "targetHandle": "l",
+      "id": "xy-edge__n69r-n77l"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n77",
+      "sourceHandle": "b",
+      "target": "n74",
+      "targetHandle": "a",
+      "id": "xy-edge__n77b-n74a"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n74",
+      "sourceHandle": "b",
+      "target": "n79",
+      "targetHandle": "a",
+      "id": "xy-edge__n74b-n79a"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n103",
+      "sourceHandle": "b",
+      "target": "n107",
+      "targetHandle": "t",
+      "id": "xy-edge__n103b-n107t"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n107",
+      "sourceHandle": "b",
+      "target": "n60",
+      "targetHandle": "a",
+      "id": "xy-edge__n107b-n60a"
+    },
+    {
+      "type": "step",
+      "style": {
+        "stroke": "#0f172a",
+        "strokeWidth": 1.6
+      },
+      "source": "n107",
+      "sourceHandle": "r",
+      "target": "n71",
+      "targetHandle": "a",
+      "id": "xy-edge__n107r-n71a"
+    }
+  ],
+  "titleBlock": {
+    "institution": "คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี / Faculty of Engineering, Ubon Ratchathani University",
+    "project": "1306 211 Electrical Engineering Workshop",
+    "title": "Star Delta Starter",
+    "drawnBy": "",
+    "drawnDate": "2026-05-24",
+    "designedBy": "",
+    "signature": "",
+    "date": "2026-05-24",
+    "page": "1/1",
+    "fileName": "star_delta"
+  },
+  "paperSize": "A2"
+}

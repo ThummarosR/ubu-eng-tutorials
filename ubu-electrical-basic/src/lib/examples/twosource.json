@@ -1,0 +1,216 @@
+{
+  "version": 1,
+  "nodes": [
+    {
+      "id": "t1",
+      "type": "text",
+      "position": {
+        "x": 200,
+        "y": 40
+      },
+      "data": {
+        "text": "Two-source mixed network",
+        "fontSize": 16
+      },
+      "measured": {
+        "width": 200,
+        "height": 34
+      }
+    },
+    {
+      "id": "t2",
+      "type": "text",
+      "position": {
+        "x": 200,
+        "y": 64
+      },
+      "data": {
+        "text": "Try Superposition, Mesh, Nodal, or Thévenin (R3 = load)",
+        "fontSize": 11
+      },
+      "measured": {
+        "width": 280,
+        "height": 26
+      }
+    },
+    {
+      "id": "n3",
+      "type": "iec",
+      "position": {
+        "x": 220,
+        "y": 120
+      },
+      "data": {
+        "kind": "resistor",
+        "rotation": 90,
+        "label": "R1",
+        "value": "2 kΩ"
+      },
+      "measured": {
+        "width": 80,
+        "height": 80
+      }
+    },
+    {
+      "id": "n4",
+      "type": "iec",
+      "position": {
+        "x": 620,
+        "y": 120
+      },
+      "data": {
+        "kind": "resistor",
+        "rotation": 90,
+        "label": "R2",
+        "value": "5 kΩ"
+      },
+      "measured": {
+        "width": 80,
+        "height": 80
+      }
+    },
+    {
+      "id": "n7",
+      "type": "iec",
+      "position": {
+        "x": 380,
+        "y": 160
+      },
+      "data": {
+        "kind": "resistor",
+        "rotation": 90,
+        "label": "R3",
+        "value": "3 kΩ"
+      },
+      "measured": {
+        "width": 80,
+        "height": 80
+      },
+      "selected": false,
+      "dragging": false
+    },
+    {
+      "id": "n5",
+      "type": "iec",
+      "position": {
+        "x": 220,
+        "y": 240
+      },
+      "data": {
+        "kind": "dcsource",
+        "rotation": 90,
+        "label": "V1",
+        "value": "10 V"
+      },
+      "measured": {
+        "width": 80,
+        "height": 80
+      }
+    },
+    {
+      "id": "n6",
+      "type": "iec",
+      "position": {
+        "x": 620,
+        "y": 240
+      },
+      "data": {
+        "kind": "dcsource",
+        "rotation": 90,
+        "label": "V2",
+        "value": "5 V"
+      },
+      "measured": {
+        "width": 80,
+        "height": 80
+      }
+    },
+    {
+      "id": "n8",
+      "type": "iec",
+      "position": {
+        "x": 400,
+        "y": 380
+      },
+      "data": {
+        "kind": "ground",
+        "rotation": 0
+      },
+      "measured": {
+        "width": 40,
+        "height": 40
+      }
+    }
+  ],
+  "edges": [
+    {
+      "id": "e9",
+      "source": "n3",
+      "target": "n4",
+      "sourceHandle": "a",
+      "targetHandle": "a",
+      "type": "step"
+    },
+    {
+      "id": "e10",
+      "source": "n3",
+      "target": "n7",
+      "sourceHandle": "a",
+      "targetHandle": "a",
+      "type": "step"
+    },
+    {
+      "id": "e11",
+      "source": "n3",
+      "target": "n5",
+      "sourceHandle": "b",
+      "targetHandle": "a",
+      "type": "step"
+    },
+    {
+      "id": "e12",
+      "source": "n4",
+      "target": "n6",
+      "sourceHandle": "b",
+      "targetHandle": "a",
+      "type": "step"
+    },
+    {
+      "id": "e13",
+      "source": "n7",
+      "target": "n8",
+      "sourceHandle": "b",
+      "targetHandle": "a",
+      "type": "step"
+    },
+    {
+      "id": "e14",
+      "source": "n5",
+      "target": "n8",
+      "sourceHandle": "b",
+      "targetHandle": "a",
+      "type": "step"
+    },
+    {
+      "id": "e15",
+      "source": "n6",
+      "target": "n8",
+      "sourceHandle": "b",
+      "targetHandle": "a",
+      "type": "step"
+    }
+  ],
+  "titleBlock": {
+    "institution": "คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี / Faculty of Engineering, Ubon Ratchathani University",
+    "project": "1306 210 Electrical Engineering Laboratory I",
+    "title": "Two-Source Mixed",
+    "drawnBy": "",
+    "drawnDate": "2026-05-26",
+    "designedBy": "",
+    "signature": "",
+    "date": "2026-05-26",
+    "page": "1/1",
+    "fileName": "two_source_mixed"
+  },
+  "paperSize": "A2"
+}
