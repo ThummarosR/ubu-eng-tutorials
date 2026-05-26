@@ -32,7 +32,8 @@ Issues and pull requests welcome. Please tag the issue with the track name
 [Apache License 2.0](./LICENSE) — Copyright © 2026 Faculty of Engineering,
 Ubon Ratchathani University.
 
-Some tracks bundle third-party reference material (e.g. Erik Cheever's
-`RLocusGui.m` inside `ubu-electrical-basic/` is included as a historical
-reference for the root-locus rule walkthrough). Those bundles retain their
-original licenses; see each track's README + LICENSE for details.
+Third-party works that inspired this repo (such as Erik Cheever's
+[RLocusGui](https://lpsa.swarthmore.edu/Root_Locus/RLAnalysisGUI.html),
+which the root-locus rule walkthrough in `ubu-electrical-basic` is modelled
+after) remain under their original licenses and are referenced, not
+redistributed.
