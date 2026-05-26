@@ -4,13 +4,22 @@ Open-source teaching tools and lab tutorials from the **Faculty of Engineering,
 Ubon Ratchathani University**. Each subdirectory is its own track with its own
 README, dependencies, and release cycle. Everything here is licensed Apache 2.0.
 
-| Track | What it is | Status |
-|---|---|---|
-| [**ubu-electrical-basic**](./ubu-electrical-basic/) | Electron + web app: IEC 60617 schematic editor, circuit analysis (DC / AC / 3φ), and linear SISO control-system block diagrams (Mason's rule + root-locus rule walkthrough). | Released v0.3.4 |
-| [**computer-programming**](./computer-programming/) | 15-week introduction-to-programming curriculum (Python, AI-era pedagogy). Used in the *1306 100 Computer Programming* course. | Published |
-| [**ripes-tutorial**](./ripes-tutorial/) | RISC-V assembly + computer-architecture tutorial built around the [Ripes](https://github.com/mortbopet/Ripes) simulator. Used in *1306 220 Computer System and Architecture*. | Published |
-| [**plc-automation-tutorial**](./plc-automation-tutorial/) | Step-by-step PLC ladder-logic tutorial for Mitsubishi FX5U and Omron CP1L: HMI, PID, Modbus. | Published |
-| [**opcua-tutorial**](./opcua-tutorial/) | 10-chapter tutorial on IEC 62541 / Industrie 4.0 OPC UA, designed for Year 3–4 students after PLC + Modbus. | Published |
+| Track | What it is |
+|---|---|
+| [**computer-programming**](./computer-programming/) | 15-week introduction-to-programming curriculum (Python, AI-era pedagogy). Used in the *1306 100 Computer Programming* course. |
+| [**ripes-tutorial**](./ripes-tutorial/) | RISC-V assembly + computer-architecture tutorial built around the [Ripes](https://github.com/mortbopet/Ripes) simulator. Used in *1306 220 Computer System and Architecture*. |
+| [**plc-automation-tutorial**](./plc-automation-tutorial/) | Step-by-step PLC ladder-logic tutorial for Mitsubishi FX5U and Omron CP1L: HMI, PID, Modbus. |
+| [**opcua-tutorial**](./opcua-tutorial/) | 10-chapter tutorial on IEC 62541 / Industrie 4.0 OPC UA, designed for Year 3–4 students after PLC + Modbus. |
+
+## Related tools (separate repos)
+
+Standalone applications that support these courses live in their own
+repositories so they can have independent release cycles and issue
+trackers:
+
+| Tool | Repo |
+|---|---|
+| **UBUElectricalBasic** — Electron + web app: IEC 60617 schematic editor, circuit analysis (DC / AC / 3φ), and linear SISO control-system block diagrams (Mason's rule + root-locus rule walkthrough). Windows installer + open-source code. | [ThummarosR/ubu-electrical-basic](https://github.com/ThummarosR/ubu-electrical-basic) |
 
 ## Relationship to the program website
 
