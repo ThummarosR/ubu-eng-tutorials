@@ -1,0 +1,365 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O04 — Modbus + Inverter (Omron) | PLC Automation Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="PLC Automation"></div>
+      <div><div class="title">PLC Automation</div><div class="subtitle">คู่มือฉบับภาษาไทย — 2 Tracks</div></div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; เลือก Track</a>
+      <h4>🟥 Mitsubishi Track</h4>
+      <a href="mit-01-intro.html"><span class="num">M01</span> รู้จัก FX5U</a>
+      <a href="mit-02-ladder.html"><span class="num">M02</span> Ladder Logic</a>
+      <a href="mit-03-sensors.html"><span class="num">M03</span> เซ็นเซอร์ &amp; I/O</a>
+      <a href="mit-04-simulation.html"><span class="num">M04</span> GX Simulator</a>
+      <a href="mit-05-hmi.html"><span class="num">M05</span> HMI Samkoon</a>
+      <a href="mit-06-pid.html"><span class="num">M06</span> PID &amp; Auto-Tuning</a>
+      <a href="mit-07-modbus.html"><span class="num">M07</span> Modbus + PM2230</a>
+      <h4>🟦 Omron Track</h4>
+      <a href="omron-01-intro.html"><span class="num">O01</span> รู้จัก CP1L/CPM2A</a>
+      <a href="omron-02-ladder.html"><span class="num">O02</span> CX-Programmer Ladder</a>
+      <a href="omron-03-fbd.html"><span class="num">O03</span> Function Block (FBD)</a>
+      <a href="omron-04-modbus.html" class="active"><span class="num">O04</span> Modbus + Inverter</a>
+      <a href="omron-05-e5cc.html"><span class="num">O05</span> E5CC Temp Control</a>
+      <a href="omron-06-scada.html"><span class="num">O06</span> SCADA (CX-Supervisor)</a>
+      <a href="omron-07-scada-workshop.html"><span class="num">O07</span> 🏭 SCADA Workshop</a>
+      <h4>แหล่งข้อมูล</h4>
+      <a href="videos.html"><span class="num">▶</span> วิดีโอเลคเชอร์</a>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ O04 · Modbus RTU · Inverter</span>
+    <h1>Omron CP1L → Modbus → Inverter</h1>
+    <p class="lede">
+      บทนี้พา CP1L ทำหน้าที่เป็น <strong>Modbus RTU Master</strong> สั่งงาน Omron Inverter รุ่น <strong>3G3JX</strong> หรือ
+      <strong>3G3MX</strong> (และ MX2 รุ่นใหม่กว่า) — Set ความเร็วมอเตอร์, สั่ง Start/Stop, อ่านกระแสที่กิน, กลับทิศ ฯลฯ
+    </p>
+
+    <div class="callout info">
+      <strong>Modbus คืออะไร — ทบทวนจาก M07</strong>
+      ถ้ายังไม่คุ้น Protocol นี้ → ดูที่ <a href="mit-07-modbus.html">M07 — Modbus + PM2230</a> ก่อน (Concept Modbus
+      เป็นมาตรฐานเดียวกัน เปลี่ยนแค่ Brand ของ PLC ที่เป็น Master)
+    </div>
+
+    <figure>
+      <img src="images/cp1l-cif11-e5cc-rs485-system.jpg" alt="CP1L + CP1W-CIF11 + E5CC RS-485 system">
+      <figcaption>ระบบครบ — PC (CX-Programmer) + CP1L + <strong>CP1W-CIF11</strong> RS-422A/485 Option Board (พร้อม DIP switch 6 ตัว) + E5CC controllers หลายตัวต่อแบบ daisy-chain ผ่าน RS-485</figcaption>
+    </figure>
+
+    <h2>อุปกรณ์ที่ใช้</h2>
+
+    <table>
+      <thead><tr><th>อุปกรณ์</th><th>หน้าที่</th><th>สถานะ 2026</th></tr></thead>
+      <tbody>
+        <tr><td><code>Omron CP1L-EM30DT-D</code></td><td>Master</td><td><span class="pill ok">ปัจจุบัน</span></td></tr>
+        <tr><td><code>Omron 3G3JX-A4007</code></td><td>Inverter 0.75kW 380V</td><td><span class="pill warn">Legacy — มี MX2 มาแทน</span></td></tr>
+        <tr><td><code>Omron 3G3MX2-A2007</code></td><td>Inverter 0.75kW 220V</td><td><span class="pill ok">ปัจจุบัน</span></td></tr>
+        <tr><td><code>CP1W-CIF11</code></td><td>RS-485 Option Board สำหรับ CP1L</td><td><span class="pill ok">ปัจจุบัน</span></td></tr>
+        <tr><td>3-phase motor</td><td>โหลด</td><td>—</td></tr>
+      </tbody>
+    </table>
+
+    <h2>หน้าตา Inverter Omron</h2>
+
+    <figure>
+      <img src="images/omron-3g3mx-inverter-panel.png" alt="Omron 3G3MX Inverter front panel">
+      <figcaption>Omron <strong>SYSDRIVE 3G3MX Inverter</strong> — หน้าจอแสดง <code>d001</code> (Output frequency monitor), LED Power/Alarm, Run/Stop-Reset/PRG mode, Run/Stop indicators, ปุ่ม Up/Down/Enter + Volume knob (MIN-MAX) สำหรับตั้งค่าด้วยมือ</figcaption>
+    </figure>
+
+    <h2>ฮาร์ดแวร์: RS-485 Wiring</h2>
+
+    <p>CP1L ไม่มี RS-485 ในตัว ต้องใส่ Option Board <code>CP1W-CIF11</code> ก่อน:</p>
+
+    <ol class="steps">
+      <li>
+        <strong>ติดตั้ง CIF11</strong>
+        ปิดไฟ → ถอดฝาด้านซ้ายของ CP1L ออก → เสียบ CIF11 ลง slot → ปิดฝา → CIF11 จะมีขั้ว A+/B-/SG ออกมาให้
+      </li>
+      <li>
+        <strong>Wire RS-485</strong>
+        ต่อสาย 3 เส้นระหว่าง CP1L (CIF11) → 3G3MX2:
+        <ul>
+          <li><code>A+</code> (CIF11) ↔ <code>SP+</code> หรือ <code>485+</code> (Inverter)</li>
+          <li><code>B-</code> (CIF11) ↔ <code>SN-</code> หรือ <code>485-</code> (Inverter)</li>
+          <li><code>SG</code> (CIF11) ↔ <code>L</code> หรือ <code>SG</code> (Inverter common)</li>
+        </ul>
+      </li>
+      <li>
+        <strong>Terminating Resistor</strong>
+        ปลายสาย daisy-chain ใส่ตัวต้านทาน <strong>120 Ω</strong> คร่อม A กับ B
+        (Omron CIF11 มี jumper เลือก On/Off ในตัว)
+      </li>
+    </ol>
+
+    <figure>
+      <img src="images/modbus-3g3jx-daisy-chain.png" alt="Modbus 3G3JX daisy-chain wiring diagram">
+      <figcaption>การต่อ Inverter หลายตัวแบบ daisy-chain — Master (PLC) มี SP+ / SN− → ต่อขนานเข้า Inverter ทุกตัว → ปลายสายทั้ง 2 ฝั่งใส่ <strong>Termination resistor</strong> (3G3JX ไม่มีในตัว ต้องใส่ภายนอก)</figcaption>
+    </figure>
+
+    <h2>ตั้งค่า Inverter เป็น Modbus Slave</h2>
+
+    <p>ที่หน้าจอ Inverter (เช่น 3G3MX2):</p>
+
+    <table>
+      <thead><tr><th>Function</th><th>ตั้งเป็น</th><th>ความหมาย</th></tr></thead>
+      <tbody>
+        <tr><td><code>A001</code></td><td><strong>03</strong></td><td>Frequency source = Modbus</td></tr>
+        <tr><td><code>A002</code></td><td><strong>03</strong></td><td>Run command source = Modbus</td></tr>
+        <tr><td><code>C071</code></td><td><strong>05</strong></td><td>Baud rate = 9600 bps</td></tr>
+        <tr><td><code>C072</code></td><td><strong>1</strong></td><td>Slave Station = 1</td></tr>
+        <tr><td><code>C074</code></td><td><strong>0</strong></td><td>Parity = None</td></tr>
+        <tr><td><code>C075</code></td><td><strong>1</strong></td><td>Stop bit = 1</td></tr>
+        <tr><td><code>C076</code></td><td><strong>2</strong></td><td>Communication error mode = Trip</td></tr>
+        <tr><td><code>C078</code></td><td><strong>1</strong></td><td>Comm wait time = 10 ms</td></tr>
+      </tbody>
+    </table>
+
+    <p>กดปุ่ม <code>FUNC</code> → เลื่อนหา function → กด <code>SET</code> → ใส่ค่า → <code>STR</code> เพื่อ Save</p>
+
+    <div class="callout warn">
+      <strong>อย่าลืม Reset Inverter</strong>
+      หลังเปลี่ยน C071–C078 ต้องดับไฟ Inverter (รอ 30 วินาที) → เปิดใหม่ — ค่า Communication ใหม่ถึงจะมีผล
+    </div>
+
+    <h2>Register Map ของ Inverter Omron MX2</h2>
+
+    <p>Register ที่ใช้บ่อย (Hex address):</p>
+
+    <table>
+      <thead><tr><th>Register</th><th>หน้าที่</th><th>Function Code</th><th>หมายเหตุ</th></tr></thead>
+      <tbody>
+        <tr><td><code>0001H</code></td><td>Run / Stop Command</td><td><strong>06 Write</strong></td><td>1 = Run, 0 = Stop</td></tr>
+        <tr><td><code>0002H</code></td><td>Direction</td><td><strong>06 Write</strong></td><td>0 = Forward, 1 = Reverse</td></tr>
+        <tr><td><code>0004H</code></td><td>Frequency Setting</td><td><strong>06 Write</strong></td><td>หน่วย × 100 (เช่น 5000 = 50.00 Hz)</td></tr>
+        <tr><td><code>1001H</code></td><td>Output Frequency Monitor</td><td><strong>03 Read</strong></td><td>หน่วย × 100</td></tr>
+        <tr><td><code>1002H</code></td><td>Output Current Monitor</td><td><strong>03 Read</strong></td><td>หน่วย × 10 (เช่น 25 = 2.5 A)</td></tr>
+        <tr><td><code>1003H</code></td><td>Output Direction</td><td><strong>03 Read</strong></td><td>0=Stop, 1=FWD, 2=REV</td></tr>
+        <tr><td><code>1004H</code></td><td>Output Voltage Monitor</td><td><strong>03 Read</strong></td><td>หน่วย × 10 (V)</td></tr>
+        <tr><td><code>1005H</code></td><td>Output Power Monitor</td><td><strong>03 Read</strong></td><td>หน่วย × 100 (kW)</td></tr>
+      </tbody>
+    </table>
+
+    <h2>📡 ลองสร้าง Modbus Frame เอง</h2>
+    <p>ลองสร้าง frame ที่ CP1L จะส่งออกสาย RS-485 ดู — เลือก Slave, FC, Address, ค่า → ดู byte-by-byte พร้อม CRC-16:</p>
+    <div class="modbus-builder"></div>
+
+    <h2>Modbus Function Codes — Quick Reference</h2>
+
+    <figure>
+      <img src="images/cxprogrammer-modbus-fc-reference.jpg" alt="CX-Programmer with Modbus Function Code reference">
+      <figcaption>ตำราอ้างอิงจาก CX-Programmer comment — <strong>D32300</strong> = Slave (00–F7h), <strong>D32301</strong> = FC: 01h=Read Coil, 03h=Read Holding, 05h=Write Coil, 06h=Write Holding, 08h=Loopback test, 0Fh=Write multi coils, 10h=Write multi registers · <strong>D32302</strong> = data byte count · <strong>D32303–D32349</strong> = communication data area (max 94 bytes)</figcaption>
+    </figure>
+
+    <h2>CX-Programmer Code — Modbus Master บน CP1L</h2>
+
+    <p>CP1L รองรับ Modbus RTU Master ผ่าน <strong>Easy Modbus-RTU Master</strong> — ไม่ต้องเขียน frame เอง
+       เพียงตั้งค่าใน <strong>D-register</strong> แล้ว Set <strong>A640.00</strong> (Port 2) เพื่อ trigger:</p>
+
+    <figure>
+      <img src="images/omron-modbus-d-register-map.png" alt="Omron Modbus D register memory map">
+      <figcaption>ที่อยู่ <code>D32300–D32306</code> เก็บ command frame — Slave Address, Function Code, Number of Comm Data Bytes, Modbus Register, Number of Registers</figcaption>
+    </figure>
+
+    <h3>Read Frequency — อ่าน register 1001H</h3>
+
+    <figure>
+      <img src="images/lab10-readtemp-ladder.png" alt="READ_TEMP ladder section">
+      <figcaption>ตัวอย่าง section ที่เซ็ตค่าใน D32300–D32304 ก่อน trigger Modbus (ภาพจากใบงาน FBD + Temperature, syntax เดียวกัน)</figcaption>
+    </figure>
+
+    <pre><code>; เซ็ต command frame ตอน Power-up
+LD    P_On            ; Always ON flag
+MOV   #0001  D32300   ; Slave 1
+MOV   #0003  D32301   ; Function Code 03 (Read)
+MOV   #0004  D32302   ; Number of bytes = 4
+MOV   #1001  D32303   ; Modbus Register = 1001H (Output Freq)
+MOV   #0001  D32304   ; Number of regs = 1
+
+; Trigger ทุก 1 วินาที
+LD    P_1s            ; 1.0s clock
+OUT   W10.00          ; RUN_command bit
+
+LD    W10.00
+OUT   A640.00         ; Modbus-RTU Master Execution Bit (Port 2)
+
+; เช็ค error
+LD    A640.01
+OUT   W1.00           ; Normal operation
+LD    A640.02
+OUT   W1.01           ; Error</code></pre>
+
+    <figure>
+      <img src="images/omron-modbus-execution-bit.jpg" alt="Omron Modbus Master execution bits">
+      <figcaption>Auxiliary bits ที่ใช้ — <code>A640.00</code> = Execution (Port 2), <code>A641.00</code> = Execution (Port 1) — turn ON เพื่อสั่งส่ง command, OFF เมื่อเสร็จ/error</figcaption>
+    </figure>
+
+    <h3>Write Frequency — เขียน 30.00 Hz</h3>
+
+    <pre><code>; เปลี่ยน command เป็น Write Single Register
+LD    W2.00           ; Trigger จาก HMI/Button
+MOV   #0001  D32300   ; Slave 1
+MOV   #0006  D32301   ; Function Code 06 (Write Single)
+MOV   #0004  D32302   ; Number of bytes = 4
+MOV   #0004  D32303   ; Register = 0004H (Frequency Set)
+MOV   #3000  D32304   ; Value = 30.00 (× 100)
+
+LD    W2.00
+OUT   A640.00         ; Trigger Master</code></pre>
+
+    <h3>Run / Stop</h3>
+
+    <pre><code>; Run Forward — เขียน 1 ที่ register 0001H
+LD    0.00            ; ปุ่ม Start
+MOV   #0001  D32300
+MOV   #0006  D32301
+MOV   #0004  D32302
+MOV   #0001  D32303   ; Reg 0001H
+MOV   #0001  D32304   ; 1 = Run
+OUT   A640.00
+
+; Stop — เขียน 0 ที่ 0001H
+LD    0.01            ; ปุ่ม Stop
+MOV   #0000  D32304
+OUT   A640.00</code></pre>
+
+    <h2>Sequence การทำงานจริง</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>Power Up</strong>
+        ทั้ง CP1L และ Inverter — รอ Inverter Boot ~5 วินาที (จอแสดง "0.00" หรือคำเตือน)
+      </li>
+      <li>
+        <strong>เซ็ต Frequency เริ่มต้น</strong>
+        ใช้ HMI/CX-Programmer Set <code>D32303 = 0004H, D32304 = 2500</code> → 25 Hz
+      </li>
+      <li>
+        <strong>กด Start</strong>
+        CP1L ส่ง <code>FC 06</code> เขียน 1 ที่ <code>0001H</code> → Inverter เริ่มขับมอเตอร์ความถี่เพิ่มขึ้นช้า ๆ (Acceleration ramp)
+      </li>
+      <li>
+        <strong>อ่านค่าจริง</strong>
+        ทุก 1 วินาที PLC poll <code>1001H, 1002H, 1004H, 1005H</code> → เก็บใน D-register
+        → แสดงบน HMI หรือ SCADA
+      </li>
+      <li>
+        <strong>เปลี่ยนความเร็ว</strong>
+        เขียน register <code>0004H</code> ค่าใหม่ → Inverter จะ ramp ความถี่ตาม
+      </li>
+      <li>
+        <strong>หยุด</strong>
+        เขียน 0 ที่ <code>0001H</code> → Inverter ทำ Deceleration ramp → หยุดที่ 0 Hz
+      </li>
+    </ol>
+
+    <h2>Trouble-Shooting</h2>
+
+    <table>
+      <thead><tr><th>อาการ</th><th>สาเหตุที่พบบ่อย</th></tr></thead>
+      <tbody>
+        <tr><td>A640.02 ON ตลอด (Error)</td><td>Baud rate / Parity / Stop bit ไม่ตรง · สลับ A กับ B</td></tr>
+        <tr><td>กด Start แต่ Inverter ไม่ทำงาน</td><td><code>A002 ≠ 03</code> (Run command ยังเป็น Terminal/Keypad)</td></tr>
+        <tr><td>ตั้ง Freq แล้วไม่เปลี่ยน</td><td><code>A001 ≠ 03</code> (Freq source ยังเป็น Keypad/Analog)</td></tr>
+        <tr><td>Comm สำเร็จแต่ค่าผิด</td><td>ลืมว่า value × 100 (ตั้ง 50.00 Hz = ค่า 5000)</td></tr>
+        <tr><td>กลับมาทำงานแล้ว Comm หาย</td><td>ลืมใส่ Terminating Resistor 120Ω ที่ปลายสาย</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Modbus TCP — ใช้ Ethernet แทน RS-485</h2>
+
+    <p>CP1L-E (รุ่น <strong>มี E</strong>) มี Ethernet ในตัว — สื่อสาร Modbus TCP กับ Slave ที่รองรับได้ด้วย
+       Function block <strong>SocSend / SocRcv</strong> หรือใช้ตัวช่วย <code>FINS over UDP</code>:</p>
+
+    <figure>
+      <img src="images/cp1l-modbus-tcp-network.jpg" alt="CP1L Modbus TCP network">
+      <figcaption>สถาปัตยกรรม Modbus TCP กับ CP1L-E + HMI + PC + SMC Valve ผ่าน Switch Ethernet</figcaption>
+    </figure>
+
+    <div class="callout info">
+      <strong>เลือก RTU หรือ TCP ดี?</strong>
+      RTU = ต่อสายง่าย / ยาวได้ 1 กม. / แต่ช้า (9600bps) / มีพอร์ตเดียว → เหมาะกับ Inverter, Temp Controller
+      <br>TCP = เร็ว (100Mbps) / ใช้ Switch ขยายเป็น Star topology / แต่ต้องใช้ Cat-5e/6 → เหมาะกับ HMI, SCADA, ระบบใหญ่
+    </div>
+
+    <h2>ภาพรวม Sequence ทั้งระบบ</h2>
+
+    <div class="flowdiagram">
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node master" style="flex:2 1 300px">
+          <h4>CP1L-EM30DT-D — Master</h4>
+          <p class="fd-sub">Modbus RTU (Port 2 / RS-485) · FC 03 / 06 · Daisy-chain</p>
+        </div>
+        <div class="flowdiagram-arrow">↔</div>
+        <div class="flowdiagram-node" style="flex:1 1 180px;border-color:rgba(139,92,246,0.5)">
+          <h4 style="color:var(--violet)">HMI / SCADA</h4>
+          <p class="fd-sub">Operator (Ethernet)</p>
+        </div>
+      </div>
+      <div style="text-align:center;margin:10px 0;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--accent-2)">↓ ↓ ↓ &nbsp; 3 Slaves &nbsp; ↓ ↓ ↓</div>
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node slave">
+          <h4>Slave 1 — MX2 Inverter #1</h4>
+          <p class="fd-sub">→ 3-phase Motor #1</p>
+        </div>
+        <div class="flowdiagram-node slave">
+          <h4>Slave 2 — MX2 Inverter #2</h4>
+          <p class="fd-sub">→ 3-phase Motor #2</p>
+        </div>
+        <div class="flowdiagram-node slave">
+          <h4>Slave 3 — E5CC</h4>
+          <p class="fd-sub">→ Heater + TC sensor</p>
+        </div>
+      </div>
+    </div>
+
+    <h2>เอกสารอ้างอิงสำหรับบทนี้</h2>
+    <ul class="doc-list">
+      <li><a href="PLC%20project/11_Omron_Inverter_Modbus_E5CC/docs/Control_Inverter_and_Temperature_controller.pdf">Control Inverter + Temperature Controller</a> <span class="meta">PDF · ภาษาไทย</span></li>
+      <li><a href="PLC%20project/11_Omron_Inverter_Modbus_E5CC/docs/Setup%20modbus%20rtu%20inverter.pdf">Setup Modbus RTU Inverter</a> <span class="meta">PDF · ภาษาไทย</span></li>
+      <li><a href="PLC%20project/11_Omron_Inverter_Modbus_E5CC/docs/omron_modbus_PLC1_INVERTER1.pdf">Omron Modbus PLC1 + Inverter1</a> <span class="meta">PDF · ภาษาไทย</span></li>
+      <li><a href="PLC%20project/11_Omron_Inverter_Modbus_E5CC/docs/omron_modbus_PLC1_INVERTER3.pdf">Omron Modbus PLC1 + Inverter3</a> <span class="meta">PDF · ภาษาไทย</span></li>
+      <li><a href="PLC%20project/11_Omron_Inverter_Modbus_E5CC/docs/ตัวอย่าง_modbus_PLC_INVERTER1.pdf">ตัวอย่าง Modbus PLC + Inverter</a> <span class="meta">PDF · ภาษาไทย</span></li>
+      <li><a href="PLC%20project/11_Omron_Inverter_Modbus_E5CC/docs/คู่มือการใช้งานเบื้องต้นอินเวอร์เตอร์รุ่น%20JX%20และ%20MX.pdf">คู่มือใช้งาน Inverter JX / MX (ภาษาไทย)</a> <span class="meta">PDF · เก่า</span></li>
+    </ul>
+
+    <div class="pager">
+      <a href="omron-03-fbd.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">O03 — Function Block</div>
+      </a>
+      <a href="omron-05-e5cc.html" class="next">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">O05 — E5CC Temp Control</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  PLC Automation Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){var lb=document.getElementById('lightbox');if(!lb)return;var img=lb.querySelector('img');
+document.querySelectorAll('.content img').forEach(function(im){im.style.cursor='zoom-in';im.addEventListener('click',function(){img.src=im.src;lb.classList.add('open');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.classList.remove('open');});})();
+</script>
+<script src="js/progress.js" defer></script>
+<script src="js/activities/modbus-builder.js" defer></script>
+</body>
+</html>

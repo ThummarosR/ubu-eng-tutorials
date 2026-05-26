@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W04 — อ่านโค้ดที่ AI เขียน | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+      <h4>🚀 เริ่มต้น (Setup)</h4>
+      <a href="setup-python.html"><span class="num">🐍</span> ติดตั้ง Python</a>
+      <a href="setup-vscode.html"><span class="num">💻</span> VS Code / Cursor</a>
+      <a href="setup-terminal.html"><span class="num">🖥️</span> Terminal พื้นฐาน</a>
+      <a href="setup-pip.html"><span class="num">📦</span> pip + Packages</a>
+      <a href="setup-git.html"><span class="num">🌿</span> Git + GitHub</a>
+      <a href="setup-colab.html"><span class="num">☁️</span> Google Colab</a>
+      <a href="setup-ai.html"><span class="num">🤖</span> AI Accounts</a>
+      <a href="python-basics.html"><span class="num">📖</span> Python Cheat-sheet</a>
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html" class="active"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">สัปดาห์ที่ 04 · Code Literacy with AI</span>
+    <h1>อ่านโค้ดที่ AI เขียน</h1>
+    <p class="lede">
+      ในคอร์สเดิม สัปดาห์นี้คือ "เริ่ม print + ตัวแปร" · ในคู่มือนี้เรา <em>ข้าม</em> ไปเลย —
+      ให้ AI เขียนโปรแกรมจริงให้ดู แล้วเรียน <strong>"อ่านโค้ดให้เข้าใจ"</strong> ก่อน
+      ครอบคลุม <code>print</code>, <code>input</code>, <code>if</code>, <code>for</code>, <code>def</code> ในงานเดียว
+    </p>
+
+    <h2>เป้าหมายสัปดาห์นี้</h2>
+    <ul>
+      <li>ติดตั้ง <strong>Python + Cursor</strong> และรันโปรแกรมแรกได้</li>
+      <li>เข้าใจ <strong>file structure</strong> ของ Python project</li>
+      <li>อ่านโค้ด Python ที่ AI เขียน <em>ทีละบรรทัด</em> และอธิบายได้ว่าทำอะไร</li>
+      <li>ใช้ AI <em>เป็นติวเตอร์</em> — ถาม "บรรทัดนี้ทำอะไร" ได้คล่อง</li>
+    </ul>
+
+    <h2>ทำไมเริ่มจาก "อ่าน" แทน "เขียน"</h2>
+    <p>
+      ในยุคก่อน — คนจะอ่านได้ต้องเขียนได้ก่อน · ในยุคนี้ — <strong>คนอ่านได้เร็วกว่าเขียนได้</strong>
+      เพราะ AI เขียนให้ได้แล้ว · งานสำคัญของนักศึกษาคือ <em>"ตรวจว่า AI เขียนถูก"</em>
+    </p>
+    <p>
+      อ่านได้ก่อน → แก้ได้ → ต่อยอดได้ → ในที่สุดจะเขียนเองได้โดยไม่รู้ตัว
+    </p>
+
+    <div class="callout warn" style="border-left-width:5px">
+      <strong>🔒 ทำไม "อ่านโค้ดเป็น" คือทักษะที่ AI ทำให้คุณไม่ได้</strong>
+      AI <em>เขียนโค้ด</em> ให้ได้ใน 10 วินาที · แต่ <strong>"ตรวจว่าโค้ดทำตรงกับ spec มั้ย"</strong>
+      ต้องเป็นคุณ · เพราะ AI ก็ไม่รู้ว่า spec จริง ๆ ของคุณคืออะไร — มันแค่เดา ·
+      ถ้าคุณอ่านไม่ออก → ก็ได้แค่ <em>"copy-paste แล้วหวังว่าจะไม่พัง"</em> ·
+      คนที่อ่านได้ + จับ bug ได้ คือคนที่ <strong>"ทำงานได้จริงในที่ทำงาน"</strong>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🎯 Running Case — Grading App ของพี่นัท (ต่อจาก W02)</h2>
+    <p>
+      ใน W01 เราระบุปัญหาของพี่นัท · ใน W02 เราออกแบบ Mental Map · สัปดาห์นี้ — <strong>เริ่ม build จริง</strong>
+      โดยให้ AI เขียน <em>"ส่วนเล็กที่สุด"</em> ของ Grading App แล้วเราอ่านให้เข้าใจทุกบรรทัด
+    </p>
+
+    <div class="mermaid">flowchart LR
+    W01[W01<br/>หาปัญหา] --> W02[W02<br/>วาด Mental Map]
+    W02 --> W04["<b>W04 (ตอนนี้)</b><br/>อ่านโค้ดส่วนที่ AI เขียน"]
+    W04 --> W05[W05<br/>แก้ + ต่อยอด]
+    W05 --> W06[W06<br/>สั่ง AI จาก spec]
+    W06 --> W07[W07<br/>Build CLI tools]
+
+    classDef current fill:#1e3a5f,stroke:#3776ab,stroke-width:3px,color:#fff
+    classDef past fill:#0b1020,stroke:#6b748c,color:#9aa3b8
+    classDef future fill:#0b1020,stroke:#6b748c,color:#9aa3b8
+    class W04 current
+    class W01,W02 past
+    class W05,W06,W07 future</div>
+
+    <p>
+      Grading App ทั้งระบบยังใหญ่เกินสำหรับสัปดาห์นี้ · เราจะ <em>"แยกชิ้นเล็ก"</em>:
+    </p>
+
+    <table>
+      <thead><tr><th>ส่วน</th><th>หน้าที่</th><th>เรียนได้จากตัวอย่าง</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Example 1</strong></td><td>คำนวณเกรดจาก 1 drawing</td><td>function, if/elif, return</td></tr>
+        <tr><td><strong>Example 2</strong></td><td>สรุปคะแนนห้องเรียนรวม</td><td>list, for loop, counter</td></tr>
+        <tr><td><strong>Example 3</strong></td><td>เก็บข้อมูลนักศึกษา 1 คน</td><td>dict, key access</td></tr>
+        <tr><td><strong>Example 4</strong></td><td>หน้า login ของ TA (โปรเจกต์อื่น)</td><td>while loop, break</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      📍 <strong>3 ตัวอย่างแรกคือชิ้นส่วนของ Grading App จริง</strong> · ตัวที่ 4 ตั้งใจเอาจาก project ต่าง
+      เพราะ <em>"นักวิศวกรอ่านโค้ดจากหลายที่"</em> — ไม่ใช่แค่ของตัวเอง
+    </p>
+
+    <h2>🛠️ ติดตั้งเครื่องมือ — ก่อนเริ่มสัปดาห์นี้</h2>
+
+    <div class="callout info">
+      <strong>📦 ยังไม่ได้ติดตั้ง?</strong> — มี 3 หน้า step-by-step แยกไว้แล้ว · ทำครั้งเดียวใช้ทั้งคอร์ส:
+      <ul style="margin-top:6px">
+        <li>🐍 <a href="setup-python.html">ติดตั้ง Python</a> — ดาวน์โหลด + Add to PATH + verify (~10 นาที)</li>
+        <li>💻 <a href="setup-vscode.html">ติดตั้ง VS Code / Cursor</a> + Python extension (~10 นาที)</li>
+        <li>☁️ <a href="setup-colab.html">Google Colab</a> — ทางเลือก ถ้าลง Python ไม่ได้</li>
+      </ul>
+    </div>
+
+    <h3>✅ ตรวจว่าพร้อม — Hello World</h3>
+    <ol class="steps">
+      <li>
+        <strong>สร้าง folder โปรเจกต์</strong>
+        — เช่น <code>Documents/cp-w04</code> (<em>ห้ามมีภาษาไทย / เว้นวรรค</em> ในชื่อ path) ·
+        เปิดใน VS Code/Cursor: <em>File → Open Folder</em>
+      </li>
+      <li>
+        <strong>สร้างไฟล์ <code>hello.py</code></strong>
+        — ใส่ <code>print("สวัสดี โลก")</code> · save (<kbd>Ctrl/Cmd + S</kbd>)
+      </li>
+      <li>
+        <strong>กด Run ▷</strong>
+        มุมขวาบน · ต้องเห็น <em>"สวัสดี โลก"</em> ใน terminal · ถ้าได้ → พร้อมแล้ว
+      </li>
+    </ol>
+
+    <div class="callout warn">
+      <strong>Hello World ไม่ผ่าน?</strong>
+      อย่าไปต่อ · กลับไป <a href="setup-python.html#troubleshoot">setup-python troubleshoot</a> หรือ
+      <a href="setup-vscode.html#troubleshoot">setup-vscode troubleshoot</a> ก่อน · แก้ที่นี่จะลำบาก
+    </div>
+
+    <p style="color:var(--text-muted);font-size:13.5px">
+      💡 <strong>ลืม syntax?</strong> เปิด <a href="python-basics.html">Python Cheat-sheet</a> ค้างไว้แท็บข้าง ๆ ·
+      ของ <code>print/input/if/for/def</code> ทั้งหมดอยู่ในหน้านั้น พร้อมตัวอย่างรันได้
+    </p>
+
+    <h2>📁 File structure ของ Python project</h2>
+    <pre><code>cp-w04/                      ← folder โปรเจกต์
+├── hello.py                 ← ไฟล์ Python (ลงท้าย .py)
+├── grade_calc.py            ← อีกไฟล์
+├── data.txt                 ← ไฟล์ข้อมูล (ถ้ามี)
+├── README.md                ← อธิบายโปรเจกต์
+└── .gitignore               ← บอก git ว่าไฟล์ไหนไม่ต้องเก็บ</code></pre>
+
+    <div class="callout info">
+      <strong>เคล็ดลับ Cursor</strong>
+      กด <kbd>Ctrl/Cmd + L</kbd> เปิด chat panel · กด <kbd>Ctrl/Cmd + K</kbd> ให้ AI แก้ code ตรงที่ cursor อยู่
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>📝 Pseudocode — สะพานระหว่าง Flowchart กับ Python</h2>
+    <p>
+      W01 เราวาด <strong>flowchart</strong> · ทันที we want to jump → Python · แต่ <em>มี step ระหว่างนั้น</em>
+      ที่ช่วยมาก: <strong>pseudocode</strong> — "code ภาษาคน" · ไม่ต้อง syntax ถูก · ใช้ "วางแผน" ก่อนเขียนของจริง
+    </p>
+
+    <h3>🎯 ทำไม pseudocode ช่วย</h3>
+    <ul>
+      <li>คิดเรื่อง <em>logic</em> ก่อน · ไม่ติดที่ syntax</li>
+      <li>AI อ่าน pseudocode ได้ดี · prompt ที่ดีกว่า "ช่วยเขียน code"</li>
+      <li>เห็น "ขั้นที่ลืม" ก่อนเสียเวลาเขียนจริง</li>
+      <li>เพื่อนอ่าน pseudocode ได้ · review ได้ก่อนเขียน</li>
+    </ul>
+
+    <h3>📐 Flowchart → Pseudocode → Python — ตัวอย่าง</h3>
+
+    <div class="diff-viewer" data-title="3 ระดับของ "การวางแผน code"">
+      <div class="diff-before"># 📊 LEVEL 1: FLOWCHART (W01)
+# วาดด้วยมือ / Mermaid
+
+[Start]
+   ↓
+[รับคะแนน score]
+   ↓
+{score &gt;= 80?}
+   ├─ Yes → grade = A
+   └─ No → {score &gt;= 70?}
+             ├─ Yes → grade = B
+             └─ No → grade = F
+   ↓
+[print grade]
+   ↓
+[End]
+
+# 📝 LEVEL 2: PSEUDOCODE
+# "code ภาษาคน" · ไม่ต้องรู้ Python
+
+ขอ score จาก user
+ถ้า score &gt;= 80:
+    grade เป็น A
+ไม่งั้นถ้า score &gt;= 70:
+    grade เป็น B
+ไม่งั้น:
+    grade เป็น F
+แสดง grade</div>
+      <div class="diff-after"># 🐍 LEVEL 3: PYTHON CODE
+# syntax จริง · รันได้
+
+score = int(input("คะแนน: "))
+
+if score &gt;= 80:
+    grade = "A"
+elif score &gt;= 70:
+    grade = "B"
+else:
+    grade = "F"
+
+print(f"เกรดของคุณคือ {grade}")
+
+
+# 💡 สังเกต: pseudocode → Python
+# แทบ "1-1 mapping"
+# - "ถ้า"  → if
+# - "ไม่งั้นถ้า" → elif
+# - "ไม่งั้น" → else
+# - "แสดง" → print
+# - "เป็น" → =</div>
+    </div>
+
+    <h3>🧪 Workflow แนะนำ (ใช้ตลอด 15 สัปดาห์)</h3>
+    <ol class="steps">
+      <li>📊 <strong>วาด flowchart</strong> สั้น ๆ (5-10 กล่อง) — W01</li>
+      <li>📝 <strong>เขียน pseudocode</strong> — ภาษาผสมไทย/อังกฤษ · บรรทัดต่อบรรทัด</li>
+      <li>👀 <strong>review pseudocode</strong> — ดูว่าครอบ edge case มั้ย · ลบ step ที่ลืม</li>
+      <li>🤖 <strong>ส่ง pseudocode ให้ AI</strong> — "แปลง pseudocode นี้เป็น Python 3.11"</li>
+      <li>🐍 <strong>รัน + ทดสอบ</strong> — code ที่ได้แทบจะตรงกับ pseudocode</li>
+    </ol>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับ — ใช้ pseudocode คุยกับ AI</strong>
+      Prompt ที่ดี: <em>"นี่ pseudocode ของผม: [paste] · ช่วยแปลงเป็น Python 3.11 · ใส่ type hints · มี
+      input validation"</em> — AI จะให้ code ที่ <em>ตรงตามที่คิด</em> มากกว่า "ขอ Python ที่ทำ X" ลอย ๆ
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>📖 ตัวอย่างที่ 1 — อ่านโปรแกรมคำนวณเกรด (ของพี่นัท)</h2>
+    <p>โจทย์ที่ขอ AI: <em>"เขียน Python ที่รับคะแนน 0-100 แล้วบอกเกรด A/B/C/D/F"</em></p>
+
+    <h3>🐍 ลองรันเลย — เปลี่ยน input แล้วกด Run</h3>
+
+    <div class="python-runner" data-inputs="78">def calc_grade(score):
+    if score &gt;= 80:
+        return "A"
+    elif score &gt;= 70:
+        return "B"
+    elif score &gt;= 60:
+        return "C"
+    elif score &gt;= 50:
+        return "D"
+    else:
+        return "F"
+
+
+score = int(input("กรอกคะแนน (0-100): "))
+grade = calc_grade(score)
+print(f"เกรดของคุณคือ {grade}")</div>
+
+    <p style="color:var(--text-muted);font-size:13.5px">
+      💡 ลองเปลี่ยน Input เป็น <code>95</code>, <code>72</code>, <code>45</code> · ดู grade ต่างกันยังไง
+    </p>
+
+    <h3>🗺 ดู Flowchart ของโค้ดเดียวกัน</h3>
+    <p>นี่คือ flowchart ที่เทียบเท่ากับโค้ดด้านบน — ฝึก <em>"อ่านโค้ด"</em> ควบคู่กับ <em>"อ่าน flowchart"</em></p>
+
+    <div class="mermaid">flowchart TD
+    A([Start]) --> B[/รับคะแนน score/]
+    B --> C{score &gt;= 80?}
+    C -->|Yes| C1[grade = A]
+    C -->|No| D{score &gt;= 70?}
+    D -->|Yes| D1[grade = B]
+    D -->|No| E{score &gt;= 60?}
+    E -->|Yes| E1[grade = C]
+    E -->|No| F{score &gt;= 50?}
+    F -->|Yes| F1[grade = D]
+    F -->|No| F2[grade = F]
+    C1 --> Z[/print grade/]
+    D1 --> Z
+    E1 --> Z
+    F1 --> Z
+    F2 --> Z
+    Z --> END([End])</div>
+
+    <p style="text-align:center;color:var(--text-muted);font-size:13.5px">
+      🔍 สังเกต: <code>elif</code> ใน code = <em>"ลูกศร No"</em> ใน flowchart · <code>return</code> = <em>"End ของ function"</em>
+    </p>
+
+    <h3>อ่านทีละบรรทัด</h3>
+    <table>
+      <thead><tr><th>บรรทัด</th><th>ทำอะไร</th><th>คำศัพท์</th></tr></thead>
+      <tbody>
+        <tr><td><code>def calc_grade(score):</code></td><td>นิยาม <em>function</em> ชื่อ calc_grade รับค่า 1 ตัวเรียก score</td><td>def, function, parameter</td></tr>
+        <tr><td><code>if score &gt;= 80:</code></td><td>ถ้า score ≥ 80 ให้ทำบรรทัดถัดไป</td><td>if, condition</td></tr>
+        <tr><td><code>return "A"</code></td><td>ส่งคำว่า "A" กลับให้คนเรียก function</td><td>return, string</td></tr>
+        <tr><td><code>elif score &gt;= 70:</code></td><td>"else if" — ถ้าอันบนไม่ใช่ ลองอันนี้</td><td>elif</td></tr>
+        <tr><td><code>else:</code></td><td>ถ้าไม่ตรงเงื่อนไขไหนเลย</td><td>else</td></tr>
+        <tr><td><code>score = int(input(...))</code></td><td>ถามผู้ใช้, แปลงเป็นเลข, เก็บใน score</td><td>input, type cast</td></tr>
+        <tr><td><code>grade = calc_grade(score)</code></td><td>เรียก function ส่ง score เข้าไป รับคืนเก็บใน grade</td><td>function call</td></tr>
+        <tr><td><code>print(f"...{grade}")</code></td><td>พิมพ์ออกหน้าจอ, <code>f"..."</code> = f-string แทรกตัวแปร</td><td>print, f-string</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับยุค AI</strong>
+      ถ้ามีบรรทัดที่ไม่เข้าใจ → ไฮไลต์ → กด <kbd>Ctrl+L</kbd> → ถามว่า <em>"บรรทัดนี้ทำอะไร?"</em>
+      AI จะอธิบายในแบบที่นักศึกษาเข้าใจ — เร็วกว่าค้น Google
+    </div>
+
+    <h2>📖 ตัวอย่างที่ 2 — อ่านโปรแกรมนับคะแนน (ห้องเรียนพี่นัท)</h2>
+
+    <div class="python-runner">scores = [85, 72, 45, 91, 60, 33, 78]
+
+passed = 0
+failed = 0
+
+for s in scores:
+    if s &gt;= 50:
+        passed += 1
+    else:
+        failed += 1
+
+print(f"ผ่าน: {passed} คน")
+print(f"ตก: {failed} คน")
+print(f"คะแนนเฉลี่ย: {sum(scores) / len(scores):.2f}")</div>
+
+    <h3>🔎 เดินทีละขั้น — Code Trace</h3>
+    <p>ยังไม่เข้าใจว่า <code>passed</code> และ <code>failed</code> เปลี่ยนยังไง? — กด <em>ถัดไป</em> ทีละขั้น</p>
+
+    <script>
+      window.TRACES = window.TRACES || {};
+      window.TRACES['pass-count'] = {
+        title: 'นับ pass / fail จากคะแนน 7 คน',
+        desc: 'ดูว่าตัวแปร s, passed, failed เปลี่ยนค่ายังไงในแต่ละรอบ',
+        code: [
+          'scores = [85, 72, 45, 91, 60, 33, 78]',
+          'passed = 0',
+          'failed = 0',
+          'for s in scores:',
+          '    if s >= 50:',
+          '        passed += 1',
+          '    else:',
+          '        failed += 1',
+          'print(f"ผ่าน: {passed} คน")',
+          'print(f"ตก: {failed} คน")'
+        ],
+        steps: [
+          { line: 0, vars: { scores: [85, 72, 45, 91, 60, 33, 78] } },
+          { line: 1, vars: { passed: 0 } },
+          { line: 2, vars: { failed: 0 } },
+          { line: 3, vars: { s: 85 } },
+          { line: 4 },
+          { line: 5, vars: { passed: 1 } },
+          { line: 3, vars: { s: 72 } },
+          { line: 4 },
+          { line: 5, vars: { passed: 2 } },
+          { line: 3, vars: { s: 45 } },
+          { line: 4 },
+          { line: 6 },
+          { line: 7, vars: { failed: 1 } },
+          { line: 3, vars: { s: 91 } },
+          { line: 5, vars: { passed: 3 } },
+          { line: 3, vars: { s: 60 } },
+          { line: 5, vars: { passed: 4 } },
+          { line: 3, vars: { s: 33 } },
+          { line: 7, vars: { failed: 2 } },
+          { line: 3, vars: { s: 78 } },
+          { line: 5, vars: { passed: 5 } },
+          { line: 8, output: "ผ่าน: 5 คน\n" },
+          { line: 9, output: "ตก: 2 คน\n" }
+        ]
+      };
+    </script>
+
+    <div class="code-trace" data-trace-id="pass-count"></div>
+
+    <h3>🎲 ทดสอบความเข้าใจ — ทำได้ไหม?</h3>
+
+    <div class="predict-quiz" data-question="ถ้าเปลี่ยน threshold เป็น 70 แทน 50 — ค่า passed จะเป็นเท่าไหร่?">
+      <pre class="pq-code">scores = [85, 72, 45, 91, 60, 33, 78]
+passed = 0
+for s in scores:
+    if s &gt;= 70:
+        passed += 1
+print(passed)</pre>
+      <pre class="pq-answer">4</pre>
+      <div class="pq-explain">
+        ผ่าน ≥ 70: 85, 72, 91, 78 = 4 คน · 45, 60, 33 ตก
+      </div>
+    </div>
+
+    <h3>คำถามเพื่อตรวจสอบความเข้าใจ</h3>
+    <ul>
+      <li>บรรทัดแรก <code>[...]</code> คืออะไร? (คำตอบ: <em>list</em> — ลำดับของค่า)</li>
+      <li><code>for s in scores:</code> หมายความว่ายังไง? (คำตอบ: วนทีละค่าใน scores, แต่ละรอบเรียกค่าเป็น s)</li>
+      <li><code>passed += 1</code> เทียบเท่ากับอะไร? (คำตอบ: <code>passed = passed + 1</code>)</li>
+      <li><code>:.2f</code> ใน f-string ทำอะไร? (คำตอบ: format ทศนิยม 2 ตำแหน่ง)</li>
+    </ul>
+
+    <h2>📖 ตัวอย่างที่ 3 — อ่านโปรแกรมที่ใช้ dict (ข้อมูลนักศึกษา)</h2>
+
+    <div class="python-runner">student = {
+    "name": "Ploy",
+    "id": "640001",
+    "scores": [85, 72, 91],
+}
+
+print(f"นักศึกษา: {student['name']}")
+print(f"รหัส:  {student['id']}")
+
+total = sum(student["scores"])
+avg = total / len(student["scores"])
+print(f"คะแนนรวม: {total}")
+print(f"คะแนนเฉลี่ย: {avg:.2f}")</div>
+
+    <h3>เรียนรู้พร้อมกัน</h3>
+    <ul>
+      <li><code>dict</code> = ตารางคีย์→ค่า · ใช้ <code>student["name"]</code> เพื่อดึงค่า</li>
+      <li>ค่า ใน dict เป็น <em>อะไรก็ได้</em> — string, list, ตัวเลข, หรือ dict ซ้อน</li>
+      <li><code>sum()</code> และ <code>len()</code> เป็น built-in function ที่มากับ Python</li>
+    </ul>
+
+    <div class="predict-quiz" data-question="ถ้าเพิ่ม print(student['scores'][1]) — จะพิมพ์อะไร?">
+      <pre class="pq-code">student = {
+    "name": "Ploy",
+    "scores": [85, 72, 91],
+}
+print(student["scores"][1])</pre>
+      <pre class="pq-answer">72</pre>
+      <div class="pq-explain">
+        <code>student["scores"]</code> = list <code>[85, 72, 91]</code> ·
+        <code>[1]</code> = index ที่ 1 (เริ่มนับ 0) → <code>72</code>
+      </div>
+    </div>
+
+    <h2>📖 ตัวอย่างที่ 4 — อ่านโปรแกรม while + break (TA Login — อีก project)</h2>
+    <p>
+      <em>"นักศึกษาวิศวกรอ่านโค้ดจากหลายที่"</em> · ตัวอย่างนี้ไม่ใช่ของ Grading App
+      แต่เป็น login screen ของ project อื่น · ฝึกอ่าน code ที่ไม่คุ้น
+    </p>
+
+    <div class="python-runner" data-inputs="wrong&#10;wrong&#10;open-sesame">attempts = 0
+max_attempts = 3
+
+while attempts &lt; max_attempts:
+    password = input("รหัสผ่าน: ")
+    if password == "open-sesame":
+        print("✅ เข้าได้!")
+        break
+    else:
+        attempts += 1
+        print(f"❌ ผิด ({attempts}/{max_attempts})")
+else:
+    print("🔒 บัญชีถูกล็อค")</div>
+
+    <p style="color:var(--text-muted);font-size:13.5px">
+      💡 ลองเปลี่ยน input เป็น <code>wrong / wrong / wrong</code> (พิมพ์ wrong 3 ครั้ง) — จะเห็น "บัญชีถูกล็อค"
+    </p>
+
+    <h3>ส่วนที่ทำให้สับสน</h3>
+    <ul>
+      <li><strong><code>while...else</code></strong> — else จะทำเมื่อ loop จบ <em>โดยไม่ break</em>
+        · ตัวอย่างนี้: ถ้าผิดครบ 3 ครั้ง = while จบโดยไม่ break = else ทำงาน</li>
+      <li><code>break</code> ออกจาก loop ทันที (= else ไม่ทำ)</li>
+      <li><code>attempts += 1</code> นับครั้งที่ผิด</li>
+    </ul>
+
+    <div class="callout info">
+      <strong>ขอ AI ทำ Trace Table</strong>
+      ใช้ Cursor chat: <em>"ช่วยทำตารางว่าตัวแปรเปลี่ยนยังไงในแต่ละรอบ ถ้าผู้ใช้พิมพ์: wrong, wrong, open-sesame"</em>
+      — AI จะตอบเป็นตาราง · นี่คือ <em>"learning with AI"</em> ที่จริงจัง
+    </div>
+
+    <h2>🎓 AI เป็น Tutor — 5 Prompts ที่ใช้ได้ตลอดชีวิต</h2>
+    <p>
+      เปลี่ยน AI จาก <em>"คนเขียน code ให้"</em> เป็น <em>"คนสอน"</em> — ด้วย 5 prompts ต่อไปนี้
+      · ใช้ใน Cursor chat (กด <kbd>Ctrl+L</kbd>) หรือ claude.ai · ไฮไลต์ code ก่อนถาม
+    </p>
+
+    <table>
+      <thead><tr><th>เมื่อไหร่</th><th>Prompt</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>อ่านบรรทัดที่ไม่เข้าใจ</td>
+          <td><em>"อธิบายบรรทัดนี้ในแบบนักศึกษาปี 1 ที่ไม่เคยเขียน Python · ใช้ตัวอย่างจากชีวิตจริง"</em></td>
+        </tr>
+        <tr>
+          <td>ทำ Trace Table</td>
+          <td><em>"ทำตารางว่าตัวแปรแต่ละตัวเปลี่ยนค่ายังไงในแต่ละรอบของ loop · 1 แถว = 1 step"</em></td>
+        </tr>
+        <tr>
+          <td>แปลงเป็น Flowchart</td>
+          <td><em>"แปลง code นี้เป็น Mermaid flowchart · ใส่ลูกศร Yes/No ทุกที่"</em></td>
+        </tr>
+        <tr>
+          <td>ทดสอบความเข้าใจ</td>
+          <td><em>"ถาม 5 คำถามเช็คว่าฉันเข้าใจ code นี้จริง ๆ มั้ย · เริ่มจากง่ายไปยาก · อย่าเฉลย"</em></td>
+        </tr>
+        <tr>
+          <td>หา edge case</td>
+          <td><em>"ลอง input อะไรที่จะทำให้ code นี้พัง · หา 3 case ที่ developer ลืมคิด"</em></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>⌨️ Cursor Cheat-sheet — Shortcuts ที่ใช้ทุกวัน</h2>
+
+    <table>
+      <thead><tr><th>Shortcut</th><th>ทำอะไร</th><th>ใช้เมื่อ</th></tr></thead>
+      <tbody>
+        <tr><td><kbd>Ctrl/Cmd + L</kbd></td><td>เปิด AI chat panel</td><td>ถาม AI เรื่อง code</td></tr>
+        <tr><td><kbd>Ctrl/Cmd + K</kbd></td><td>AI แก้ code ตรงที่ cursor อยู่</td><td>แก้บรรทัดเดียว / inline (จะใช้ใน W05)</td></tr>
+        <tr><td><kbd>Ctrl/Cmd + I</kbd></td><td>AI Composer mode (แก้หลายไฟล์)</td><td>refactor ใหญ่ (W11)</td></tr>
+        <tr><td><kbd>F5</kbd></td><td>Run ไฟล์ปัจจุบัน + debugger</td><td>รัน Python</td></tr>
+        <tr><td><kbd>Ctrl + `</kbd></td><td>เปิด/ปิด terminal</td><td>รันคำสั่ง <code>python file.py</code></td></tr>
+        <tr><td><kbd>Ctrl + B</kbd></td><td>เปิด/ปิด sidebar</td><td>ดูไฟล์ในโฟลเดอร์</td></tr>
+        <tr><td><kbd>Ctrl + /</kbd></td><td>comment / uncomment บรรทัด</td><td>ทดสอบเปิด-ปิด code</td></tr>
+        <tr><td><kbd>Alt + ↑/↓</kbd></td><td>เลื่อนบรรทัดขึ้น-ลง</td><td>จัดลำดับ code</td></tr>
+        <tr><td><kbd>Ctrl + D</kbd></td><td>เลือกชื่อตัวแปรทุกที่</td><td>rename ตัวแปรหลายที่</td></tr>
+        <tr><td><kbd>Ctrl + Shift + P</kbd></td><td>Command Palette</td><td>หา command ใดก็ได้</td></tr>
+      </tbody>
+    </table>
+
+    <h2>✅ Self-Check — รู้ได้ไงว่า "อ่านเข้าใจจริง"?</h2>
+
+    <p>หลังอ่าน code ตัวอย่าง — เช็คตัวเองด้วย 4 วิธีนี้ <em>"ตามลำดับ"</em></p>
+
+    <ol class="steps">
+      <li>
+        <strong>✋ ปิด output ทาย</strong> — ก่อนกด Run ลองทาย output ในใจก่อน · ถ้าทายถูก = สมองคุณ run Python ได้
+      </li>
+      <li>
+        <strong>👥 อธิบายให้เพื่อนฟัง (Rubber Duck)</strong> — เล่าให้เพื่อน (หรือตุ๊กตาเป็ด) ฟังว่า code ทำอะไร ·
+        ถ้าติด = ส่วนนั้นยังไม่เข้าใจ
+      </li>
+      <li>
+        <strong>✏️ แก้ค่าเล็ก ๆ + ทาย output ใหม่</strong> — เปลี่ยนเลข, เปลี่ยน string · ทายว่าจะออกอะไร · กด Run เช็ค
+      </li>
+      <li>
+        <strong>🔨 เขียนใหม่จากความจำ</strong> — ปิด code · เขียนใหม่จาก memory · เทียบกับ original · ผิดตรงไหน = จุดอ่อน
+      </li>
+    </ol>
+
+    <div class="callout tip">
+      <strong>กฎ — "ขั้น 3-4 สำคัญกว่าขั้น 1-2"</strong>
+      อ่านแล้วเข้าใจ ≠ ใช้ได้ · ต้อง <em>"แก้แล้วยังเข้าใจ"</em> และ <em>"เขียนใหม่ได้"</em> · ที่ W05 จะลงลึก
+    </div>
+
+    <h2>Workshop — Read &amp; Trace 4 Programs</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>copy ทั้ง 4 ตัวอย่าง</strong>
+        ใส่เป็น 4 ไฟล์: <code>grade_calc.py</code>, <code>pass_count.py</code>, <code>student_dict.py</code>, <code>login.py</code>
+      </li>
+      <li>
+        <strong>รันทุกไฟล์</strong> และดู output · ถ้าโปรแกรมถามคำถาม → ลองตอบหลาย ๆ แบบ
+      </li>
+      <li>
+        <strong>วาด Flowchart</strong> ของ <code>grade_calc.py</code> และ <code>login.py</code> ด้วยมือ
+        — แล้วเทียบกับ Mermaid ที่ AI สร้างให้
+      </li>
+      <li>
+        <strong>เขียน "Code Reading Note"</strong>
+        — ไฟล์ <code>notes.md</code> สำหรับแต่ละโปรแกรม: 5-7 ประโยคอธิบายว่าทำอะไร
+      </li>
+      <li>
+        <strong>หา 3 บรรทัด</strong> ในแต่ละโปรแกรมที่ <em>ไม่เข้าใจ</em> → ถาม AI ในแชท
+      </li>
+      <li>
+        <strong>ทำ "Trace Table"</strong> ของ <code>pass_count.py</code> ทีละรอบ —
+        ดูค่า <code>s</code>, <code>passed</code>, <code>failed</code> เปลี่ยนยังไง
+      </li>
+      <li>
+        <strong>ขอ AI สร้างโปรแกรมที่ 5</strong>
+        — เช่น "เครื่องคิดเลข BMI" — แล้วทำขั้นตอน 1-6 ซ้ำกับโปรแกรมใหม่
+      </li>
+    </ol>
+
+    <h2>คำศัพท์ Python ที่เจอสัปดาห์นี้</h2>
+    <table>
+      <tbody>
+        <tr><td><code>def</code></td><td>นิยาม function</td></tr>
+        <tr><td><code>return</code></td><td>ส่งค่ากลับจาก function</td></tr>
+        <tr><td><code>if / elif / else</code></td><td>การตัดสินใจ</td></tr>
+        <tr><td><code>for / while</code></td><td>การวนซ้ำ</td></tr>
+        <tr><td><code>break / continue</code></td><td>ออก / ข้าม รอบของ loop</td></tr>
+        <tr><td><code>print()</code></td><td>พิมพ์ออกหน้าจอ</td></tr>
+        <tr><td><code>input()</code></td><td>รับจาก user (คืน string เสมอ)</td></tr>
+        <tr><td><code>int() / float() / str()</code></td><td>แปลง type</td></tr>
+        <tr><td><code>list = [...]</code></td><td>ลำดับ</td></tr>
+        <tr><td><code>dict = {...}</code></td><td>map คีย์→ค่า</td></tr>
+        <tr><td><code>len() / sum()</code></td><td>built-in functions</td></tr>
+        <tr><td><code>f"...{x}"</code></td><td>f-string แทรกตัวแปร</td></tr>
+        <tr><td><code>+= / -= / *=</code></td><td>operator แบบยุบ (<code>x += 1</code> = <code>x = x + 1</code>)</td></tr>
+      </tbody>
+    </table>
+
+    <h2>ข้อผิดที่พบบ่อย</h2>
+
+    <div class="callout warn">
+      <strong>รัน code ไม่ได้ — IndentationError</strong>
+      Python ใช้ <em>การย่อหน้า</em> แทนวงเล็บ · ภายใน <code>if</code>/<code>for</code>/<code>def</code> ต้องเยื้องเข้าไป 4 ช่อง
+      เสมอ · กด Tab ใน Cursor → แปลงให้อัตโนมัติ
+    </div>
+
+    <div class="callout warn">
+      <strong>copy code มาแต่ภาษาไทยกลายเป็น ???</strong>
+      เซฟไฟล์เป็น <em>UTF-8</em> (Cursor ทำให้อัตโนมัติ) · ถ้าใช้ Notepad ระวัง encoding
+    </div>
+
+    <div class="callout warn">
+      <strong>"ผ่านแล้วเข้าใจ"</strong>
+      — code รันได้ ≠ คุณเข้าใจ · ต้องอ่านอธิบายทีละบรรทัดได้
+      ก่อนเปลี่ยนหน้า · ถ้าไม่ทำตอนนี้ จะลำบากใน W05
+    </div>
+
+    <h2>ส่งงานสัปดาห์นี้</h2>
+    <ul>
+      <li>📷 screenshot Cursor ที่รัน <code>grade_calc.py</code> ได้</li>
+      <li>📄 <code>notes.md</code> — code reading note ของ 4 โปรแกรม</li>
+      <li>📊 trace table ของ <code>pass_count.py</code> (ทำใน Sheet หรือกระดาษถ่ายรูป)</li>
+      <li>📁 push ทั้งหมดขึ้น <em>GitHub repo</em> ของตัวเอง (ฝึก git ตั้งแต่ตอนนี้)</li>
+    </ul>
+
+    <h3>Reference จาก slide เดิม</h3>
+    <p>เนื้อหานี้รวบ <a href="references.html#topic-2">Topic 2 (Python)</a>, <a href="references.html#topic-3">Topic 3 (Output)</a>, <a href="references.html#topic-4">Topic 4 (Input)</a>, และส่วนหนึ่งของ Topic 5-7 ไว้ในสัปดาห์เดียว — เพราะ AI สอนได้พร้อมกันผ่านตัวอย่าง</p>
+
+    <div class="pager">
+      <a href="w03-diagrams.html"><div class="label">← สัปดาห์ที่แล้ว</div><div class="title">W03 — Diagram 6 แบบ</div></a>
+      <a href="w05-modify-ai-code.html" class="next"><div class="label">สัปดาห์ถัดไป →</div><div class="title">W05 — แก้ไข + ต่อยอด</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+<script src="js/diagram-tools/mermaid-editor.js" defer></script>
+<script src="js/code-tools/python-runner.js" defer></script>
+<script src="js/code-tools/code-trace.js" defer></script>
+<script src="js/code-tools/predict-quiz.js" defer></script>
+<script src="js/code-tools/diff-viewer.js" defer></script>
+</body>
+</html>

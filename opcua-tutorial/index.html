@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OPC UA &amp; Industrie 4.0 — Industrial Interoperability Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="OPC UA Tutorial"></div>
+      <div>
+        <div class="title">OPC UA</div>
+        <div class="subtitle">สะพานสู่ Industrie 4.0</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html" class="active"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>แนวคิดหลัก</h4>
+      <a href="ch01-why-opcua.html"><span class="num">01</span> ทำไมต้อง OPC UA?</a>
+      <a href="ch02-architecture.html"><span class="num">02</span> สถาปัตยกรรมพื้นฐาน</a>
+      <a href="ch03-information-model.html"><span class="num">03</span> Information Model</a>
+      <a href="ch04-services.html"><span class="num">04</span> Services</a>
+      <a href="ch05-pubsub.html"><span class="num">05</span> PubSub &amp; MQTT</a>
+      <a href="ch06-security.html"><span class="num">06</span> Security</a>
+
+      <h4>ระบบนิเวศ</h4>
+      <a href="ch07-companion-specs.html"><span class="num">07</span> Companion Specifications</a>
+      <a href="ch08-field-level.html"><span class="num">08</span> OPC UA FX (Field Level)</a>
+      <a href="ch09-cloud.html"><span class="num">09</span> Cloud Integration</a>
+
+      <h4>ลงมือทำ</h4>
+      <a href="ch10-handson.html"><span class="num">10</span> 🧪 Hands-on (UaExpert)</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <section class="hero">
+      <span class="eyebrow">Industrial Interoperability · IEC 62541 · Year 3–4 Mechatronics</span>
+      <h1>OPC UA &amp; Industrie 4.0<br>ภาษาอุตสาหกรรมยุคใหม่</h1>
+      <p class="lede">
+        คู่มือฉบับภาษาไทย ต่อยอดจากบทเรียน <strong>PLC + Modbus</strong> สู่มาตรฐานสื่อสารระดับโลก
+        <strong>OPC UA</strong> — Industrie 4.0, IIoT, Machine-to-Machine, ระบบ Cloud, และอนาคตของ Fieldbus
+        — สำหรับนักศึกษาวิศวกรรมเมคคาทรอนิกส์ฯ และวิศวกรรมศาสตร์โดยรวม มหาวิทยาลัยอุบลราชธานี
+      </p>
+      <div class="hero-meta">
+        <span>📦 <b>10</b> บทเรียน</span>
+        <span>🕐 <b>~2</b> ชั่วโมง</span>
+        <span>🌐 <b>IEC 62541</b> · มาตรฐานสากล</span>
+        <span>🔧 <b>1</b> Lab ปฏิบัติ (UaExpert)</span>
+      </div>
+    </section>
+
+    <figure class="hero-poster zoomable" data-src="images/poster.jpg" style="cursor:zoom-in">
+      <img src="images/poster.jpg" alt="OPC UA &amp; Industrie 4.0 — สรุปภาพรวมทั้ง 10 บทเรียน">
+    </figure>
+    <p class="muted" style="text-align:center;margin-top:-12px;margin-bottom:32px;font-size:13px">
+      📋 ภาพสรุปทั้ง 10 บทเรียนในรูปเดียว — คลิกเพื่อดูขนาดใหญ่
+    </p>
+
+    <h2>ทำไมต้องเรียน OPC UA?</h2>
+    <p>
+      ในบทเรียน PLC คุณได้เรียน <a href="../plc/mit-07-modbus.html"><strong>Modbus</strong></a>
+      ซึ่งเป็นภาษาที่ <em>เรียบง่ายและเปิด</em> — เกิดมาตั้งแต่ปี 1979 และยังใช้กันถึงทุกวันนี้ แต่ Modbus มีข้อจำกัดที่สำคัญ:
+    </p>
+
+    <div class="card-grid">
+      <div class="card" style="border-left:4px solid #ef4444">
+        <div class="num">❌ Modbus</div>
+        <div class="name">ไม่มี Security</div>
+        <div class="desc">ใครก็อ่าน/เขียน Register ได้ ถ้าเข้าถึง Network ได้ — ไม่มีการ Authentication, ไม่มี Encryption</div>
+      </div>
+      <div class="card" style="border-left:4px solid #ef4444">
+        <div class="num">❌ Modbus</div>
+        <div class="name">เป็นแค่ตัวเลขดิบ</div>
+        <div class="desc">Register 40001 มันคืออะไร? ต้องเปิด Manual อ่านเอง — ไม่มี Semantic, ไม่มี Type, ไม่มีหน่วย</div>
+      </div>
+      <div class="card" style="border-left:4px solid #ef4444">
+        <div class="num">❌ Modbus</div>
+        <div class="name">Point-to-Point</div>
+        <div class="desc">Master ต้อง Poll ทุก Slave ตลอดเวลา — ไม่ scale สำหรับโรงงานที่มีอุปกรณ์เป็นพันชิ้น</div>
+      </div>
+      <div class="card" style="border-left:4px solid #16a34a">
+        <div class="num">✅ OPC UA</div>
+        <div class="name">แก้ทุกข้อข้างต้น</div>
+        <div class="desc">มี Security ในตัว · Information Model พร้อม Semantic · รองรับทั้ง Client-Server และ Publish-Subscribe — จากเซ็นเซอร์ถึง Cloud</div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>OPC UA คือ "ภาษากลาง" ของ Industrie 4.0</strong> —
+      ผู้ผลิตเครื่องจักรทั่วโลก (Siemens, ABB, Mitsubishi, Beckhoff, Rockwell, Schneider, …) จะส่งข้อมูลออกมาในรูปแบบ OPC UA ได้เหมือนกันหมด
+      ทำให้โรงงานนำอุปกรณ์ต่างยี่ห้อมาทำงานร่วมกันได้โดยไม่ต้องเขียน Driver แยกแบบเดิม
+    </div>
+
+    <h2>บทเรียนทั้ง 10 บท</h2>
+    <p>คู่มือนี้เริ่มจากเหตุผลที่ต้องใช้ OPC UA → สถาปัตยกรรม → ลงรายละเอียดเทคนิค → ระบบนิเวศ → จบที่การลองใช้จริง</p>
+
+    <h3>🔵 แนวคิดหลัก (Concepts)</h3>
+    <div class="lesson-grid">
+      <a class="lesson" href="ch01-why-opcua.html">
+        <span class="badge">บทที่ 01</span>
+        <div class="title">ทำไมต้อง OPC UA?</div>
+        <div class="desc">Modbus ขาดอะไร · IoT / Industrie 4.0 / M2M / IIoT · OPC UA แก้ปัญหายังไง · IEC 62541</div>
+        <div class="tags">
+          <span class="tag">Industrie 4.0</span>
+          <span class="tag">IIoT</span>
+          <span class="tag">บทนำ</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="ch02-architecture.html">
+        <span class="badge">บทที่ 02</span>
+        <div class="title">สถาปัตยกรรมพื้นฐาน</div>
+        <div class="desc">Layered Model · Client-Server vs PubSub · Protocol Mappings (TCP, HTTPS, MQTT) · Platform/Vendor independence</div>
+        <div class="tags">
+          <span class="tag">Layer Model</span>
+          <span class="tag">SOA</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="ch03-information-model.html">
+        <span class="badge">บทที่ 03</span>
+        <div class="title">Information Model</div>
+        <div class="desc">Address Space · Nodes, Types, Instances · Browsing · ต่างจาก Modbus Register Map ยังไง</div>
+        <div class="tags">
+          <span class="tag">Address Space</span>
+          <span class="tag">Semantics</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="ch04-services.html">
+        <span class="badge">บทที่ 04</span>
+        <div class="title">Services</div>
+        <div class="desc">9 Service Sets · Read/Write/Subscribe/Method/HistoricalAccess/Alarms · เทียบกับ Modbus Function Codes</div>
+        <div class="tags">
+          <span class="tag">Services</span>
+          <span class="tag">Read/Write</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="ch05-pubsub.html">
+        <span class="badge">บทที่ 05</span>
+        <div class="title">PubSub &amp; MQTT</div>
+        <div class="desc">Publisher → Broker → Subscriber · UDP สำหรับ Field, MQTT สำหรับ Cloud · เมื่อไหร่ใช้แทน Client-Server</div>
+        <div class="tags">
+          <span class="tag violet">PubSub</span>
+          <span class="tag">MQTT</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="ch06-security.html">
+        <span class="badge">บทที่ 06</span>
+        <div class="title">Security</div>
+        <div class="desc">3 Layers (User/App/Transport) · X.509 Certificates · Secure Channel · เทียบกับ Modbus ที่ไม่มี Security</div>
+        <div class="tags">
+          <span class="tag orange">Security</span>
+          <span class="tag">PKI</span>
+        </div>
+      </a>
+    </div>
+
+    <h3>🟢 ระบบนิเวศ (Ecosystem)</h3>
+    <div class="lesson-grid">
+      <a class="lesson" href="ch07-companion-specs.html">
+        <span class="badge">บทที่ 07</span>
+        <div class="title">Companion Specifications</div>
+        <div class="desc">ทำไม Robot, Machine Tools, IO-Link, PROFINET พูดภาษาเดียวกันได้ · 60+ มาตรฐานเฉพาะอุตสาหกรรม</div>
+        <div class="tags">
+          <span class="tag">Companion Specs</span>
+          <span class="tag">VDMA</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="ch08-field-level.html">
+        <span class="badge">บทที่ 08</span>
+        <div class="title">OPC UA FX (Field Level)</div>
+        <div class="desc">Push down ถึง Sensor · TSN (Time-Sensitive Networking) · 5G · อนาคตของ Fieldbus · FX5U + OPC UA Server</div>
+        <div class="tags">
+          <span class="tag cyan">FX (Field eXchange)</span>
+          <span class="tag">TSN</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="ch09-cloud.html">
+        <span class="badge">บทที่ 09</span>
+        <div class="title">Cloud Integration</div>
+        <div class="desc">UA Cloud Library · OPC UA over MQTT to Azure/AWS/Google · Digital Twin · Reference Architecture · SAP &amp; ERP</div>
+        <div class="tags">
+          <span class="tag">Cloud</span>
+          <span class="tag">Digital Twin</span>
+        </div>
+      </a>
+    </div>
+
+    <h3>🟡 ลงมือทำ (Hands-on)</h3>
+    <div class="lesson-grid">
+      <a class="lesson" href="ch10-handson.html" style="border-left:5px solid #f59e0b">
+        <span class="badge" style="background:linear-gradient(135deg,#f59e0b,#fbbf24);color:#fff">🧪 Lab</span>
+        <div class="title">Hands-on กับ UaExpert</div>
+        <div class="desc">
+          ติดตั้ง <strong>UaExpert</strong> (Client ฟรี) · เชื่อมต่อ <strong>Prosys OPC UA Simulation Server</strong>
+          · Browse Address Space · Read/Write/Subscribe ค่า · ทดลอง Method Call
+        </div>
+        <div class="tags">
+          <span class="tag">UaExpert</span>
+          <span class="tag">Prosys Sim</span>
+          <span class="tag orange">ปฏิบัติ</span>
+        </div>
+      </a>
+    </div>
+
+    <h2>ภาพรวม — OPC UA อยู่ตรงไหนของ Industrie 4.0?</h2>
+
+    <figure>
+      <img src="images/01-iot-venn.png" alt="IoT + Industrie 4.0 + M2M Venn diagram with OPC UA at center" style="max-width:520px">
+      <figcaption>
+        OPC UA คือจุดร่วมของ 3 โลก — <strong>IoT</strong> (Internet of Things), <strong>Industrie 4.0</strong>
+        (โรงงานอัจฉริยะ), และ <strong>M2M</strong> (Machine-to-Machine) — ทำหน้าที่เป็นมาตรฐาน Data
+        Connectivity ที่ใช้ได้ทุกระดับตั้งแต่เซ็นเซอร์ถึง Cloud
+      </figcaption>
+    </figure>
+
+    <h2>ใครใช้ OPC UA?</h2>
+    <p>มาตรฐานนี้ไม่ใช่ทฤษฎี — โรงงานชั้นนำของโลกใช้งานจริง:</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="num">EQUINOR</div>
+        <div class="name">โรงกลั่นน้ำมัน · นอร์เวย์</div>
+        <div class="desc">19 OPC UA Servers รวมเข้าเป็น Gateway เดียว · เกือบ 1 ล้าน tags เชื่อมต่อ Azure · 50 Object Templates, 920 Attributes</div>
+      </div>
+      <div class="card">
+        <div class="num">RENAULT</div>
+        <div class="name">โรงงานรถยนต์ · 38 แห่งทั่วโลก</div>
+        <div class="desc">7,000+ OPC UA Devices · 30,000 messages/second ส่งไป Google Cloud · ลด Driver แยกของแต่ละผู้ผลิต</div>
+      </div>
+      <div class="card">
+        <div class="num">MIELE</div>
+        <div class="name">เครื่องซักผ้า · เยอรมัน</div>
+        <div class="desc">ผู้ผลิตเครื่องใช้ในบ้าน Premium · เปลี่ยนทั้งสายการผลิตเป็น OPC UA ในช่วงพักโรงงาน 3 สัปดาห์</div>
+      </div>
+      <div class="card">
+        <div class="num">AIRBUS</div>
+        <div class="name">จรวด TEXUS · งานวิจัย</div>
+        <div class="desc">OPC UA ในระบบบินของจรวดวิจัย · 32 Kbit/s per experiment · จาก 5 data points → หลายพัน data points</div>
+      </div>
+    </div>
+
+    <h2>ก่อนเริ่ม — ควรรู้อะไรมาก่อน?</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>เคยใช้ PLC + Modbus มาก่อน</strong> <span class="pill">แนะนำ</span>
+        ถ้าเคยเรียน <a href="../plc/index.html">บทเรียน PLC Automation</a>
+        โดยเฉพาะบท <a href="../plc/mit-07-modbus.html">M07 (Modbus)</a> หรือ
+        <a href="../plc/omron-04-modbus.html">O04 (Omron Modbus)</a> มาก่อน
+        จะเข้าใจ "อะไรที่ OPC UA แก้ไข" ได้ง่ายมาก — แต่ถ้ายังไม่เคย ก็ยังเรียนได้ บทที่ 01 จะอธิบายเปรียบเทียบให้
+      </li>
+      <li>
+        <strong>เข้าใจ Network พื้นฐาน</strong> <span class="pill">ไม่บังคับ</span>
+        TCP/IP, Port, Client-Server — ระดับที่รู้ว่า HTTP ทำงานยังไงพอ
+      </li>
+      <li>
+        <strong>คอมพิวเตอร์สำหรับ Lab</strong> <span class="pill">บทที่ 10</span>
+        Windows / Mac / Linux ก็ได้ — บท Hands-on ใช้ <strong>UaExpert</strong> (ฟรี, ข้ามแพลตฟอร์ม)
+        + <strong>Prosys OPC UA Simulation Server</strong> (ฟรี, Java)
+      </li>
+    </ol>
+
+    <div class="callout note">
+      <strong>คู่มือนี้สรุปมาจาก</strong>
+      <a href="https://opcfoundation.org">OPC Foundation</a> Brochure V20/2026 "OPC Unified Architecture —
+      Interoperability for Industrie 4.0 and the Internet of Things" · เอกสาร IEC 62541 · และ Success
+      Stories ของผู้ใช้งานจริง
+      <br>เป้าหมาย: นักศึกษาเข้าใจ <em>แนวคิด</em> + <em>คำศัพท์</em> + <em>ที่ใช้งานจริง</em> ของ OPC UA
+      ในเวลาประมาณ 2 ชั่วโมง — ไม่ใช่ตำราเทคนิคเต็มเล่ม
+    </div>
+
+    <h2>การใช้คู่มือนี้</h2>
+    <p>คู่มือเป็นเว็บไซต์ static — ไม่ต้องติดตั้งอะไร แค่เปิด <code>index.html</code> ด้วยเบราว์เซอร์
+       แล้วเดินไปทีละบท ปุ่ม <strong>← ก่อนหน้า / ถัดไป →</strong> อยู่ท้ายทุกหน้า</p>
+
+    <div class="pager">
+      <span></span>
+      <a href="ch01-why-opcua.html" class="next">
+        <div class="label">เริ่มเรียน →</div>
+        <div class="title">01 — ทำไมต้อง OPC UA?</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  OPC UA &amp; Industrie 4.0 Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+  <br>เรียบเรียงจาก OPC Foundation Brochure V20/2026 และเอกสารมาตรฐาน IEC 62541
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){
+  var lb = document.getElementById('lightbox');
+  if(!lb) return;
+  var img = lb.querySelector('img');
+  document.querySelectorAll('.gallery a, .zoomable').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      img.src = a.getAttribute('href') || a.getAttribute('data-src');
+      lb.classList.add('open');
+    });
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') lb.classList.remove('open');
+  });
+})();
+</script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

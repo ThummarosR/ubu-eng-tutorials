@@ -1,0 +1,31 @@
+---
+title: When to Use a Class (Two-of-Five Rule)
+---
+flowchart TD
+    Q([Should I create a class?])
+    Q --> C1{State + behaviour<br/>always travel together?}
+    Q --> C2{Multiple independent<br/>instances expected?}
+    Q --> C3{State must persist<br/>across many operations?}
+    Q --> C4{Clear creation/<br/>mutation/disposal lifecycle?}
+    Q --> C5{Polymorphism / multiple<br/>types share interface?}
+
+    C1 --> COUNT[Count 'Yes' answers]
+    C2 --> COUNT
+    C3 --> COUNT
+    C4 --> COUNT
+    C5 --> COUNT
+
+    COUNT --> D{Two or more 'Yes'?}
+    D -->|Yes| USE["✅ Use a class<br/>(or @dataclass)"]
+    D -->|No| FN["⚠️ Use a function<br/>or a dataclass without methods"]
+
+    classDef question fill:#3776ab,stroke:#1e4870,color:#ffffff,stroke-width:2px
+    classDef criterion fill:#fff3cd,stroke:#f59e0b,color:#1a1410
+    classDef decision fill:#e8f0f8,stroke:#3776ab,color:#0b1020
+    classDef good fill:#d1fae5,stroke:#10b981,color:#064e3b
+    classDef warn fill:#fee2e2,stroke:#ef4444,color:#7f1d1d
+    class Q question
+    class C1,C2,C3,C4,C5 criterion
+    class COUNT,D decision
+    class USE good
+    class FN warn

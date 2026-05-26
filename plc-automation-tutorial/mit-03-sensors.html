@@ -1,0 +1,382 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M03 — เซ็นเซอร์ &amp; การต่อ I/O | PLC Automation Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="PLC Automation"></div>
+      <div>
+        <div class="title">PLC Automation</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย — 2 Tracks</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; เลือก Track</a>
+
+      <h4>🟥 Mitsubishi Track</h4>
+      <a href="mit-01-intro.html"><span class="num">M01</span> รู้จัก FX5U</a>
+      <a href="mit-02-ladder.html"><span class="num">M02</span> Ladder Logic</a>
+      <a href="mit-03-sensors.html" class="active"><span class="num">M03</span> เซ็นเซอร์ &amp; I/O</a>
+      <a href="mit-04-simulation.html"><span class="num">M04</span> GX Simulator</a>
+      <a href="mit-05-hmi.html"><span class="num">M05</span> HMI Samkoon</a>
+      <a href="mit-06-pid.html"><span class="num">M06</span> PID &amp; Auto-Tuning</a>
+      <a href="mit-07-modbus.html"><span class="num">M07</span> Modbus + PM2230</a>
+
+      <h4>🟦 Omron Track</h4>
+      <a href="omron-01-intro.html"><span class="num">O01</span> รู้จัก CP1L/CPM2A</a>
+      <a href="omron-02-ladder.html"><span class="num">O02</span> CX-Programmer Ladder</a>
+      <a href="omron-03-fbd.html"><span class="num">O03</span> Function Block (FBD)</a>
+      <a href="omron-04-modbus.html"><span class="num">O04</span> Modbus + Inverter</a>
+      <a href="omron-05-e5cc.html"><span class="num">O05</span> E5CC Temp Control</a>
+      <a href="omron-06-scada.html"><span class="num">O06</span> SCADA (CX-Supervisor)</a>
+      <a href="omron-07-scada-workshop.html"><span class="num">O07</span> 🏭 SCADA Workshop</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="videos.html"><span class="num">▶</span> วิดีโอเลคเชอร์</a>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ M03 · Wiring</span>
+    <h1>เซ็นเซอร์ &amp; การต่อ I/O</h1>
+    <p class="lede">
+      โปรแกรมที่เขียนเก่งแค่ไหน ถ้าต่อ Hardware ผิดก็ใช้ไม่ได้ — บทนี้พาเข้าใจ <strong>Sink vs Source</strong>,
+      วิธีอ่านสเปคเซ็นเซอร์อุตสาหกรรม, และต่อ Inductive Proximity (NPN) + Photoelectric Switch
+      เข้ากับ FX5U ให้ทำงานครั้งแรกผ่านเลย
+    </p>
+
+    <h2>Sink vs Source — เรื่องที่ทำคนเริ่มต้นงงทุกราย</h2>
+
+    <p>ความสับสนเกิดเพราะเรามองมุมไหน — ฝั่ง <em>Sensor</em> หรือฝั่ง <em>PLC</em> Mitsubishi และผู้ผลิตญี่ปุ่นนิยมมองจากฝั่ง PLC
+       ดังนั้นเวลาเขาบอกว่า "Sink Input" หมายถึง <strong>PLC ดูดกระแสเข้า</strong> (กระแสไหลจาก Sensor → PLC)</p>
+
+    <figure class="wirediagram">
+      <svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <style>
+            .wd-box       { fill: var(--bg-soft); stroke: var(--border-strong); stroke-width: 2; }
+            .wd-box-input { fill: rgba(52,211,153,0.10); stroke: var(--ok); stroke-width: 2.5; }
+            .wd-box-plc   { fill: rgba(255,122,24,0.08); stroke: var(--accent); stroke-width: 2.5; }
+            .wd-title     { fill: var(--text); font-family: 'Space Grotesk', sans-serif; font-size: 18px; font-weight: 700; }
+            .wd-sub       { fill: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+            .wd-term      { fill: var(--accent-2); font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; }
+            .wd-wire      { stroke: var(--ok); stroke-width: 3; fill: none; stroke-linecap: round; }
+            .wd-wire-pos  { stroke: #ef4444; stroke-width: 3; fill: none; stroke-linecap: round; }
+            .wd-wire-neg  { stroke: #60a5fa; stroke-width: 3; fill: none; stroke-linecap: round; }
+            .wd-arrow     { fill: var(--ok); }
+            .wd-wlabel    { fill: var(--text); font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; }
+            .wd-dot       { fill: var(--text); }
+          </style>
+          <marker id="arr-green" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M 0 0 L 10 5 L 0 10 z" class="wd-arrow"/>
+          </marker>
+        </defs>
+
+        <!-- Sensor box -->
+        <rect class="wd-box-input" x="40" y="60" width="180" height="160" rx="12"/>
+        <text x="130" y="90" class="wd-title" text-anchor="middle">Sensor</text>
+        <text x="130" y="110" class="wd-sub"   text-anchor="middle">NPN · NO</text>
+        <circle cx="220" cy="100" r="5" class="wd-dot"/>
+        <text x="200" y="105" class="wd-term"  text-anchor="end">+24V</text>
+        <circle cx="220" cy="155" r="5" class="wd-dot"/>
+        <text x="200" y="160" class="wd-term"  text-anchor="end">BK Signal</text>
+        <circle cx="220" cy="200" r="5" class="wd-dot"/>
+        <text x="200" y="205" class="wd-term"  text-anchor="end">BU 0V</text>
+
+        <!-- PLC box -->
+        <rect class="wd-box-plc" x="500" y="60" width="180" height="160" rx="12"/>
+        <text x="590" y="90" class="wd-title" text-anchor="middle">PLC FX5U</text>
+        <text x="590" y="110" class="wd-sub"  text-anchor="middle">Sink Input</text>
+        <circle cx="500" cy="100" r="5" class="wd-dot"/>
+        <text x="520" y="105" class="wd-term">+24V</text>
+        <circle cx="500" cy="135" r="5" class="wd-dot"/>
+        <text x="520" y="140" class="wd-term">S/S (COM)</text>
+        <circle cx="500" cy="170" r="5" class="wd-dot"/>
+        <text x="520" y="175" class="wd-term">X0</text>
+        <circle cx="500" cy="205" r="5" class="wd-dot"/>
+        <text x="520" y="210" class="wd-term">0V</text>
+
+        <!-- Wires connecting them -->
+        <!-- +24V (brown) — Sensor BN → PLC +24V -->
+        <path class="wd-wire-pos" d="M 220,100 L 360,100 L 360,100 L 500,100"/>
+        <text x="360" y="92" class="wd-wlabel" text-anchor="middle">+24V (brown)</text>
+
+        <!-- Signal (black) — Sensor BK → PLC X0 (with arrow) -->
+        <path class="wd-wire" marker-end="url(#arr-green)" d="M 220,155 L 360,155 L 360,170 L 495,170"/>
+        <text x="360" y="148" class="wd-wlabel" text-anchor="middle">Signal (black) ⇒ X0</text>
+
+        <!-- 0V (blue) — Sensor BU → PLC 0V -->
+        <path class="wd-wire-neg" d="M 220,200 L 360,200 L 360,205 L 500,205"/>
+        <text x="360" y="222" class="wd-wlabel" text-anchor="middle">0V (blue)</text>
+
+        <!-- Internal jumper: S/S to +24V -->
+        <path class="wd-wire-pos" d="M 500,135 C 480,135 480,100 500,100" stroke-dasharray="4 3"/>
+        <text x="473" y="120" class="wd-wlabel" text-anchor="end" fill="#ef4444">jumper</text>
+
+        <!-- Bottom note -->
+        <text x="360" y="260" class="wd-sub" text-anchor="middle">⇒ เมื่อ Sensor ทำงาน, กระแสไหลจาก +24V (PLC) → S/S → X0 → Signal → Sensor → 0V — "PLC ดูด (Sink) กระแสเข้า"</text>
+      </svg>
+      <figcaption><strong>Sink Input ของ FX5U-32MT/ES</strong> — ต้อง jumper S/S เข้ากับ +24V (เส้นประแดง) เพื่อให้กระแสไหลครบวงจร · ใช้ <strong>Sensor NPN</strong></figcaption>
+    </figure>
+
+    <div class="callout info">
+      <strong>วิธีจำง่าย ๆ</strong>
+      Sensor <strong>NPN</strong> = ต่อเข้า PLC แบบ <strong>Sink Input</strong> →
+      Sensor <strong>PNP</strong> = ต่อเข้า PLC แบบ <strong>Source Input</strong> →
+      FX5U-32MT<strong>/ES</strong> ใช้ตัวที่ลงท้ายด้วย "S" หมายความว่า <strong>Sink Input</strong> เพราะฉะนั้นต้องซื้อ
+      Sensor <strong>NPN</strong>
+    </div>
+
+    <h2>Inductive Proximity Sensor — LJ18A3-8-Z/BX</h2>
+
+    <figure>
+      <img src="images/inductive-proximity-lj18a3.jpg" alt="LJ18A3-8-Z/BX Inductive Proximity Sensor with cable colors">
+      <figcaption>LJ18A3-8-Z/BX — เซ็นเซอร์เหนี่ยวนำ NPN, NO, ระยะ 8 mm พร้อมสายไฟ 3 เส้น (BN/BK/BU)</figcaption>
+    </figure>
+
+    <table>
+      <thead><tr><th>คุณสมบัติ</th><th>ค่า</th></tr></thead>
+      <tbody>
+        <tr><td>ชนิด</td><td>Inductive (ตรวจจับโลหะ)</td></tr>
+        <tr><td>แรงดันใช้งาน</td><td>DC 6–36V (ที่นี่ใช้ 24V)</td></tr>
+        <tr><td>Output</td><td>NPN, Normally Open (NO)</td></tr>
+        <tr><td>ระยะตรวจจับ</td><td>8 mm</td></tr>
+        <tr><td>สี/หน้าที่สายไฟ</td><td><span class="pill">🟤 BN = +24V</span> <span class="pill">⚫ BK = Signal</span> <span class="pill">🔵 BU = 0V</span></td></tr>
+      </tbody>
+    </table>
+
+    <h3>การต่อกับ FX5U</h3>
+    <ol class="steps">
+      <li>
+        <strong>เตรียมไฟ DC 24V</strong>
+        ใช้ขั้ว <code>24V</code> และ <code>0V</code> ที่อยู่บนตัว PLC (FX5U มี Power supply ในตัว) —
+        หรือใช้ Power Supply ภายนอกก็ได้ แต่ต้องต่อ <strong>0V ร่วมกัน</strong> (Common GND)
+      </li>
+      <li>
+        <strong>ต่อสายไฟ Sensor</strong>
+        <ul>
+          <li>สาย <strong>🟤 น้ำตาล (BN)</strong> → ขั้ว <code>+24V</code> ของ PLC</li>
+          <li>สาย <strong>🔵 น้ำเงิน (BU)</strong> → ขั้ว <code>0V</code> ของ PLC</li>
+          <li>สาย <strong>⚫ ดำ (BK = Signal)</strong> → ขั้ว Input ที่ต้องการ เช่น <code>X0</code></li>
+        </ul>
+      </li>
+      <li>
+        <strong>เชื่อม S/S เข้า +24V</strong>
+        ที่ FX5U ขั้ว Input จะมี <code>S/S</code> (Source/Sink common) — สำหรับ Sink Input ต้องต่อ <code>S/S → +24V</code>
+      </li>
+      <li>
+        <strong>ทดสอบ</strong>
+        เอาวัตถุโลหะ (เช่น ไขควง) เข้าใกล้หัวเซ็นเซอร์ — LED แดงจะติด และ X0 ใน PLC ควรเปลี่ยนเป็น ON
+      </li>
+    </ol>
+
+    <div class="callout warn">
+      <strong>ลืม S/S → Input ไม่ทำงาน!</strong>
+      อาการคลาสสิกคือ "เซ็นเซอร์ติดไฟแดงตอนทำงาน แต่ PLC ไม่อ่านค่า" — เกิดจากไม่ได้ jumper S/S เข้า +24V
+      เป็นจุดที่นิสิตพลาดบ่อยมาก
+    </div>
+
+    <h2>Photoelectric Sensor — OMRON E3JK-R4M1</h2>
+
+    <figure>
+      <img src="images/e3jk-photoelectric.jpg" alt="OMRON E3JK-R4M1 Photoelectric Sensor">
+      <figcaption>OMRON E3JK-R4M1 — Retroreflective Photoelectric Sensor ระยะ 4 m</figcaption>
+    </figure>
+
+    <figure>
+      <img src="images/retroreflective-beam.jpg" alt="Retroreflective sensor + reflector with red beam">
+      <figcaption>หลักการทำงาน — Sensor ยิงลำแสง (สีแดง) ไปที่แผ่นสะท้อน → ถ้าวัตถุมาบังลำแสง Output เปลี่ยนสถานะ</figcaption>
+    </figure>
+
+    <table>
+      <thead><tr><th>คุณสมบัติ</th><th>ค่า</th></tr></thead>
+      <tbody>
+        <tr><td>ชนิด</td><td>Retroreflective (ใช้แผ่นสะท้อน)</td></tr>
+        <tr><td>ระยะตรวจจับ</td><td>4 เมตร</td></tr>
+        <tr><td>แรงดันใช้งาน</td><td>DC 12–24V <em>หรือ</em> AC 90–250V (ขึ้นกับรุ่นย่อย)</td></tr>
+        <tr><td>Output Current</td><td>3 A</td></tr>
+        <tr><td>อุณหภูมิใช้งาน</td><td>−30 °C ถึง +65 °C</td></tr>
+      </tbody>
+    </table>
+
+    <p>หลักการคือ Sensor ยิงแสงไปแผ่นสะท้อน — ถ้ามีวัตถุมาบัง <strong>แสงสะท้อนกลับไม่ได้</strong> → Output เปลี่ยนสถานะ</p>
+
+    <figure>
+      <img src="images/e3jk-wiring.png" alt="E3JK wiring diagram">
+      <figcaption>วงจรของ E3JK series — BN/BU = ไฟเลี้ยง, WH (Tc) / BK (Ta) / GY (Tb) = Contact output (Relay G6C)</figcaption>
+    </figure>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับการติดตั้ง Retroreflective</strong>
+      ติด Sensor และแผ่นสะท้อนให้ตรงกันให้ดี — ระยะ 4 ม. ถ้าเอียงเพียง 2° แสงจะสะท้อนไม่กลับ
+      ใช้ LED indicator บนตัว Sensor ปรับมุมจนติดสว่างคงที่ก่อนขันน็อต
+    </div>
+
+    <h2>อุปกรณ์ที่นิยมต่อกับ Output</h2>
+
+    <p>ปลายทางของ Y output ของ PLC ไม่ได้มีแค่ Magnetic Contactor — มี Indicator, Actuator ฯลฯ อีกหลายแบบ:</p>
+
+    <div class="fig-side">
+      <figure>
+        <img src="images/red-push-button.jpg" alt="Red push button">
+        <figcaption>Push Button — อันนี้ใช้เป็น <em>Input</em> (X) ของ PLC — มาตรฐานสีคือ แดง = Stop, เขียว = Start</figcaption>
+      </figure>
+      <figure>
+        <img src="images/red-beacon.jpg" alt="Red beacon indicator">
+        <figcaption>Indicator Beacon — ต่อกับ Y output ผ่าน Relay (เพราะส่วนใหญ่กินไฟ AC) เพื่อเตือนสถานะ</figcaption>
+      </figure>
+    </div>
+
+    <figure>
+      <img src="images/traffic-light.jpg" alt="Traffic light">
+      <figcaption>ตัวอย่างประยุกต์ — Traffic Light Controller ใช้ Y0 (แดง), Y1 (เหลือง), Y2 (เขียว) คุมไฟแต่ละหลอด</figcaption>
+    </figure>
+
+    <h2>การต่อ Output Y</h2>
+
+    <figure>
+      <img src="images/sink-output-wiring.png" alt="Sink Output Wiring diagram">
+      <figcaption>การต่อ Output ของ FX5U-32M<strong>T</strong> — Sink Output Wiring (จากคู่มือ Mitsubishi)</figcaption>
+    </figure>
+
+    <figure>
+      <img src="images/output-unit-types-th.jpg" alt="PLC Output Unit types">
+      <figcaption>โครงสร้าง PLC Output Unit — Relay Type · Transistor (Sink/Source) · Triac/SSR Type</figcaption>
+    </figure>
+
+    <figure>
+      <img src="images/relay-plugin.jpg" alt="Plug-in interposing relay">
+      <figcaption>Plug-in Relay — ใช้แปลง 24V DC จาก Y output เป็น 220V AC ไปต่อกับ Magnetic Contactor</figcaption>
+    </figure>
+
+    <p>FX5U-32MT (T = Transistor Output) เป็น <strong>Sink Output</strong> หมายความว่า Y0 จะ "ดูดกระแสลง 0V" เมื่อ ON
+       — สิ่งที่ต่อเข้า Y0 ต้อง <strong>ต่อปลายอีกข้างเข้า +24V</strong></p>
+
+    <ol class="steps">
+      <li>
+        <strong>เลือก Load ที่จะควบคุม</strong>
+        ถ้าเป็น Relay 24V DC ต่อ Coil ตรงเข้า Y0 ได้เลย — แต่ถ้าเป็น AC Load (เช่น Magnetic Contactor 220V)
+        ต้องผ่าน Relay ก่อน เพราะ Transistor Output ของ FX5U รับได้แค่ DC
+      </li>
+      <li>
+        <strong>ต่อ Output</strong>
+        <pre><code>Y0  ─────► [Relay coil] ─────► +24V
+COM (0V) ─────────────────────────┘ (PSU)</code></pre>
+        ขั้ว COM ของ Y รวม 4 ตัวเข้าด้วยกัน (เช่น Y0–Y3 ใช้ COM1)
+      </li>
+      <li>
+        <strong>ใส่ Diode Flywheel กับ DC Coil!</strong>
+        ทุก Relay coil ต้องมีไดโอด (เช่น 1N4007) คร่อมหัว–ท้าย ขนานกัน <em>ขั้ว Cathode (ขีดขาว) ชี้ไปที่ +24V</em>
+        — กัน Back EMF ทำให้ Transistor ของ PLC พัง
+      </li>
+    </ol>
+
+    <div class="callout warn">
+      <strong>ขั้นตอนที่ 3 สำคัญมาก!</strong>
+      Relay coil = inductor — ตอนตัดไฟ จะเกิด spike voltage สูงถึง 200–400V ย้อนเข้า PLC
+      Transistor ของ Y output ทนได้แค่ ~50V → พังภายในไม่กี่ครั้ง ใส่ Flywheel diode เสมอ
+    </div>
+
+    <h2>หน้าตา Lab Panel จริง</h2>
+
+    <p>ตัวอย่างหน้าตาตู้ Lab ที่ภาควิชา EE — เห็น Push Button สีต่าง ๆ + Selector Switch + Mushroom Emergency Stop:</p>
+
+    <figure>
+      <img src="images/lab09-panel-photo.jpg" alt="Workshop PLC Lab control panel photo">
+      <figcaption>หน้าตู้ใบงาน Workshop PLC — SW2 (Selector ส้ม) + SW1 (Selector ดำ) + SW0 (Mushroom Emergency Stop แดง) — ติดตั้งบนหน้าจอลึก พร้อมป้าย</figcaption>
+    </figure>
+
+    <h2>ตัวอย่างวงจรครบ — Light Curtain แบบง่าย</h2>
+
+    <p>รวมความรู้ในบทนี้: สร้างระบบที่ <strong>หยุดมอเตอร์ทันที</strong> เมื่อมีคนเดินผ่านลำแสง</p>
+
+    <div class="flowdiagram">
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node input">
+          <h4>E3JK-R4M1</h4>
+          <p class="fd-sub">Photoelectric · NPN · NO</p>
+          <ul>
+            <li>BK Signal → <code>X4</code></li>
+            <li>BN +24V</li>
+            <li>BU 0V</li>
+          </ul>
+        </div>
+        <div class="flowdiagram-arrow">→</div>
+        <div class="flowdiagram-node cpu">
+          <h4>FX5U-32MT/ES</h4>
+          <p class="fd-sub">Logic</p>
+          <ul>
+            <li><code>X4</code> = Photo OK</li>
+            <li><code>Y0</code> = K1 driver</li>
+            <li>Self-hold ผ่าน X0/X1</li>
+          </ul>
+        </div>
+        <div class="flowdiagram-arrow">→</div>
+        <div class="flowdiagram-node output">
+          <h4>K1 Contactor</h4>
+          <p class="fd-sub">Relay + Flywheel Diode</p>
+          <ul>
+            <li>3-phase 220V</li>
+            <li>Motor Output</li>
+          </ul>
+        </div>
+      </div>
+      <div class="flowdiagram-loop" style="background:rgba(239,68,68,0.10);border-color:rgba(239,68,68,0.5);color:var(--danger)">
+        ⚠️ Light blocked → X4 OFF → ตัด Y0 → K1 ดับ → มอเตอร์หยุดทันที
+      </div>
+    </div>
+
+    <pre><code>; Ladder: มอเตอร์ติดเมื่อกด Start และ Sensor เห็นแสง
+LD    X0       ; Start
+OR    Y0       ; Self-hold
+ANI   X1       ; Stop
+AND   X4       ; Photo OK (NO contact ของ E3JK — เห็นแสง = ON)
+OUT   Y0       ; Motor Contactor</code></pre>
+
+    <h2>ก่อนไปบทถัดไป</h2>
+    <ul>
+      <li>เข้าใจว่า FX5U-32MT/ES ต้องคู่กับ <strong>Sensor NPN</strong> และต่อ <code>S/S → +24V</code></li>
+      <li>สายเซ็นเซอร์: <strong>BN</strong> = +V, <strong>BU</strong> = 0V, <strong>BK</strong> = Signal</li>
+      <li>Transistor Output ต่อกับ DC load ตรง — กับ AC load ต้องผ่าน Relay พร้อม Flywheel Diode</li>
+      <li>ก่อนเปิดไฟ <strong>เช็คขั้วทุกตัว</strong> — ผิดพลาดทาง Wiring ทำให้ PLC พังง่ายกว่าโปรแกรมผิด</li>
+    </ul>
+
+    <div class="pager">
+      <a href="mit-02-ladder.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">M02 — Ladder Logic</div>
+      </a>
+      <a href="mit-04-simulation.html" class="next">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">M04 — GX Simulator</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  PLC Automation Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){
+  var lb = document.getElementById('lightbox'); if(!lb) return; var img = lb.querySelector('img');
+  document.querySelectorAll('.content img').forEach(function(im){ im.style.cursor='zoom-in'; im.addEventListener('click', function(){ img.src = im.src; lb.classList.add('open'); }); });
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') lb.classList.remove('open'); });
+})();
+</script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

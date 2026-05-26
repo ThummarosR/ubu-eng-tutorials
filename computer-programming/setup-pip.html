@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>pip + Packages | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>🚀 เริ่มต้น (Setup)</h4>
+      <a href="setup-python.html"><span class="num">🐍</span> ติดตั้ง Python</a>
+      <a href="setup-vscode.html"><span class="num">💻</span> VS Code / Cursor</a>
+      <a href="setup-terminal.html"><span class="num">🖥️</span> Terminal พื้นฐาน</a>
+      <a href="setup-pip.html" class="active"><span class="num">📦</span> pip + Packages</a>
+      <a href="setup-git.html"><span class="num">🌿</span> Git + GitHub</a>
+      <a href="setup-colab.html"><span class="num">☁️</span> Google Colab</a>
+      <a href="setup-ai.html"><span class="num">🤖</span> AI Accounts</a>
+      <a href="python-basics.html"><span class="num">📖</span> Python Cheat-sheet</a>
+
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">Setup · package = "ตัวต่อ" ที่ Python ของเรายังไม่มี</span>
+    <h1>📦 pip + Packages — ลงของเสริม</h1>
+    <p class="lede">
+      Python ของเราเริ่มต้น มี <em>built-in functions</em> ~100 ตัว · ของจริงต้องใช้ <strong>เพิ่ม</strong>
+      เช่น <code>pandas</code> (ตาราง), <code>requests</code> (เรียก API), <code>flask</code> (web app) ·
+      <strong>pip</strong> คือเครื่องมือลง package เหล่านี้
+    </p>
+
+    <h2>🎯 pip คืออะไร · จำเป็นตอนไหน</h2>
+
+    <p><strong>pip</strong> = "Python Install Package" · มาคู่กับ Python อยู่แล้ว · ไม่ต้องลงแยก</p>
+
+    <table>
+      <thead><tr><th>สัปดาห์</th><th>Package ที่ต้องลง</th><th>คำสั่ง</th></tr></thead>
+      <tbody>
+        <tr><td>W04–W07</td><td>ไม่ต้องลงอะไรเพิ่ม</td><td>—</td></tr>
+        <tr><td>W08</td><td>pandas</td><td><code>pip install pandas</code></td></tr>
+        <tr><td>W09</td><td>numpy, matplotlib</td><td><code>pip install numpy matplotlib</code></td></tr>
+        <tr><td>W10</td><td>seaborn (optional)</td><td><code>pip install seaborn</code></td></tr>
+        <tr><td>W12</td><td>requests, flask</td><td><code>pip install requests flask</code></td></tr>
+        <tr><td>W13</td><td>pytest</td><td><code>pip install pytest</code></td></tr>
+        <tr><td>W14</td><td>streamlit, gunicorn</td><td><code>pip install streamlit</code></td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <strong>ใช้ Colab? ส่วนใหญ่ลงมาให้แล้ว</strong>
+      Colab ของ Google มี pandas, numpy, matplotlib, seaborn, sklearn พร้อมใช้ · เฉพาะ flask / streamlit / line-bot-sdk ที่ต้อง <code>!pip install ...</code> · ดู <a href="setup-colab.html">setup-colab</a>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>📥 ลง package — 5 คำสั่งที่ใช้บ่อย</h2>
+
+    <h3>1. ลง 1 package</h3>
+    <pre><code>pip install pandas
+
+# Mac (Mac มี pip2 ใน /usr/bin · ของจริงคือ pip3)
+pip3 install pandas</code></pre>
+
+    <h3>2. ลงหลายตัวพร้อมกัน</h3>
+    <pre><code>pip install numpy pandas matplotlib seaborn</code></pre>
+
+    <h3>3. ลงเวอร์ชันเฉพาะ</h3>
+    <pre><code>pip install pandas==2.1.0          # ระบุเวอร์ชัน
+pip install "pandas&gt;=2.0,&lt;3.0"     # ช่วง
+pip install pandas --upgrade        # อัปเป็นล่าสุด</code></pre>
+
+    <h3>4. ลบ package</h3>
+    <pre><code>pip uninstall pandas
+# จะถามยืนยัน · พิมพ์ y</code></pre>
+
+    <h3>5. ดูที่ลงไว้</h3>
+    <pre><code>pip list                          # ดูที่ลงทั้งหมด
+pip show pandas                   # ดูรายละเอียดของ pandas (เวอร์ชัน, location)
+pip list --outdated               # ดูตัวที่มีเวอร์ชันใหม่กว่า</code></pre>
+
+    <h2>✅ ทดสอบหลังลง</h2>
+
+    <p>ลง pandas แล้ว · เปิด Python REPL · ลอง import:</p>
+    <pre><code>python    # หรือ python3
+&gt;&gt;&gt; import pandas
+&gt;&gt;&gt; pandas.__version__
+'2.1.0'
+&gt;&gt;&gt; exit()</code></pre>
+
+    <p>ถ้า import ได้ ไม่มี error → สำเร็จ ✅</p>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>📋 requirements.txt — บอก Python ว่า project นี้ต้องการอะไร</h2>
+
+    <p>
+      W08+ ทุก project จะมีไฟล์ <code>requirements.txt</code> · ระบุ <em>"ของที่ต้องลง"</em> · ทำให้คนอื่นที่เปิด project เดิมลง package ตามได้ในคำสั่งเดียว
+    </p>
+
+    <h3>ตัวอย่าง requirements.txt</h3>
+    <pre><code>pandas==2.1.0
+numpy&gt;=1.24
+matplotlib
+requests&gt;=2.30,&lt;3.0
+flask</code></pre>
+
+    <h3>ลงตามไฟล์</h3>
+    <pre><code>pip install -r requirements.txt</code></pre>
+
+    <h3>สร้างไฟล์จากที่ลงไว้</h3>
+    <pre><code>pip freeze &gt; requirements.txt</code></pre>
+    <p style="color:var(--text-muted);font-size:13.5px">
+      ⚠️ <code>pip freeze</code> เก็บ <em>"ทุก package + ทุก sub-dependency"</em> · ของจริง <em>"เขียน requirements.txt มือ"</em> เก็บแค่ของที่ใช้ตรง ๆ · sub-dependency ปล่อย pip จัดการ
+    </p>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🏠 Virtual Environment — แยก package ต่อ project</h2>
+
+    <p>
+      <strong>ปัญหา:</strong> ถ้าลง <code>pandas==2.1</code> ใน project A และ <code>pandas==1.5</code> ใน project B
+      — โดย default pip ลงรวมที่เดียว → ของใหม่ทับของเก่า · project A พัง
+    </p>
+
+    <p><strong>แก้:</strong> <em>"แต่ละ project มี Python แยกตัว"</em> เรียก <strong>virtual environment (venv)</strong></p>
+
+    <div class="callout tip">
+      <strong>คอร์สนี้จำเป็นมั้ย?</strong>
+      <em>W04–W10 ไม่จำเป็น</em> — ลง global ก็ได้ · <em>W11+ แนะนำ</em> เพราะเริ่มมีหลาย project พร้อมกัน ·
+      Final Project (W15) <em>"ต้องใช้"</em>
+    </div>
+
+    <h3>สร้าง + เปิด venv</h3>
+    <pre><code># 1. cd เข้า folder project
+cd cp-w11-oop
+
+# 2. สร้าง venv (1 ครั้งต่อ project)
+python -m venv .venv          # Windows
+python3 -m venv .venv         # Mac
+
+# 3. เปิดใช้ (activate) — ทำทุกครั้งที่เปิด terminal ใหม่
+# Windows PowerShell:
+.venv\Scripts\Activate.ps1
+
+# Windows CMD:
+.venv\Scripts\activate.bat
+
+# Mac/Linux:
+source .venv/bin/activate
+
+# 4. terminal จะเห็น (.venv) ขึ้นต้น = เปิดอยู่
+# (.venv) PS C:\dev\cp-w11-oop&gt;
+
+# 5. ลง package — ตอนนี้ลงใน .venv ไม่ใช่ global
+pip install pandas requests
+
+# 6. ปิด venv
+deactivate</code></pre>
+
+    <div class="callout warn">
+      <strong>Windows PowerShell ติดที่ Activate.ps1 — "running scripts is disabled"</strong>
+      เปิด PowerShell <em>"as Administrator"</em> → รัน:
+      <code>Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser</code> → Y → Enter ·
+      ทำครั้งเดียว · กลับมาเปิด venv ได้ปกติ
+    </div>
+
+    <h3>เพิ่ม <code>.venv/</code> ใน .gitignore</h3>
+    <p>folder <code>.venv/</code> มีขนาดใหญ่ (~100MB+) · <em>ห้าม commit เข้า git</em> · ใส่ใน <code>.gitignore</code></p>
+    <pre><code># .gitignore
+.venv/
+__pycache__/
+*.pyc
+.env</code></pre>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🔧 ปัญหาที่พบบ่อย</h2>
+
+    <h3>1. <code>pip: command not found</code></h3>
+    <ul>
+      <li>Python ลงแล้ว · pip ปกติมาด้วย · ลอง <code>python -m pip install pandas</code> แทน</li>
+      <li>Mac: ลอง <code>pip3</code></li>
+    </ul>
+
+    <h3>2. <code>SSL: CERTIFICATE_VERIFY_FAILED</code> (Mac)</h3>
+    <ul>
+      <li>เปิด Finder → Applications → Python 3.x → double-click <code>Install Certificates.command</code></li>
+      <li>หลังจากนั้น pip ใช้ได้</li>
+    </ul>
+
+    <h3>3. <code>Could not find a version that satisfies the requirement</code></h3>
+    <ul>
+      <li>ชื่อ package พิมพ์ผิด → ตรวจที่ <a href="https://pypi.org" target="_blank">pypi.org</a></li>
+      <li>Python เวอร์ชันเก่าเกินสำหรับ package ใหม่ → อัป Python หรือลงเวอร์ชันเก่าของ package</li>
+    </ul>
+
+    <h3>4. <code>WARNING: Defaulting to user installation</code></h3>
+    <ul>
+      <li>ไม่ใช่ error · แค่เตือนว่าลงใน user folder (เพราะไม่มีสิทธิ์ admin)</li>
+      <li>ไม่ต้องแก้ — ใช้ได้ปกติ · หรือใช้ venv (แนะนำกว่า)</li>
+    </ul>
+
+    <h3>5. <code>ImportError: No module named pandas</code> หลังลงแล้ว</h3>
+    <ul>
+      <li>ลงผิดเวอร์ชัน Python · เครื่องมีหลายเวอร์ชัน</li>
+      <li>VS Code: <kbd>Ctrl+Shift+P</kbd> → "Python: Select Interpreter" → เลือกตัวที่ pip ลงไว้</li>
+      <li>ตรวจ: <code>pip show pandas</code> → ดูบรรทัด <em>"Location"</em> · เปรียบเทียบกับ <code>python -c "import sys; print(sys.executable)"</code></li>
+    </ul>
+
+    <h3>6. ลงช้า / ค้าง / timeout</h3>
+    <ul>
+      <li>เน็ตช้า / มหาลัย firewall block · ลอง mirror:
+        <pre><code>pip install pandas -i https://pypi.tuna.tsinghua.edu.cn/simple</code></pre>
+      </li>
+      <li>หรือเพิ่ม timeout: <code>pip install pandas --default-timeout=300</code></li>
+    </ul>
+
+    <h3>7. ลง package ใหญ่ ๆ (pytorch, tensorflow) แล้วเครื่องช้า</h3>
+    <ul>
+      <li>คอร์สนี้ไม่ต้องลง pytorch / tensorflow ลง local · ใช้ Colab ดีกว่า</li>
+      <li>ถ้าลงผิด → <code>pip uninstall torch torchvision torchaudio</code></li>
+    </ul>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🎯 Workshop — 5 นาที</h2>
+    <ol class="steps">
+      <li>เปิด terminal · <code>pip --version</code> · จดเวอร์ชัน</li>
+      <li><code>pip install requests</code> · รอให้เสร็จ</li>
+      <li><code>python</code> → <code>import requests</code> → <code>requests.__version__</code> · ออกด้วย <code>exit()</code></li>
+      <li>สร้าง <code>requirements.txt</code> ใน folder ใด ๆ ใส่บรรทัด: <code>requests</code></li>
+      <li><code>pip install -r requirements.txt</code> · เห็น "Requirement already satisfied" = ของลงไว้แล้ว ✅</li>
+      <li>(optional) สร้าง venv: <code>python -m venv .venv</code> · activate · <code>pip install requests</code> · ทดสอบ → deactivate</li>
+    </ol>
+
+    <h2>🎯 Checklist ก่อนไปต่อ</h2>
+    <ul>
+      <li>☐ <code>pip install pandas</code> ลงได้</li>
+      <li>☐ <code>import pandas</code> ใน Python REPL ไม่ error</li>
+      <li>☐ เข้าใจ <code>requirements.txt</code> — เปิดอ่านได้ + ลงตามได้</li>
+      <li>☐ (advanced) สร้าง venv ได้ + activate + deactivate</li>
+    </ul>
+
+    <div class="pager">
+      <a href="setup-terminal.html"><div class="label">← ก่อนหน้า</div><div class="title">Terminal พื้นฐาน</div></a>
+      <a href="setup-git.html" class="next"><div class="label">ขั้นถัดไป →</div><div class="title">Git + GitHub</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+</body>
+</html>

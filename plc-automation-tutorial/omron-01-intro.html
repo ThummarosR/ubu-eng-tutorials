@@ -1,0 +1,272 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O01 — รู้จัก Omron PLC (CP1L/CPM2A) | PLC Automation Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="PLC Automation"></div>
+      <div>
+        <div class="title">PLC Automation</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย — 2 Tracks</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; เลือก Track</a>
+
+      <h4>🟥 Mitsubishi Track</h4>
+      <a href="mit-01-intro.html"><span class="num">M01</span> รู้จัก FX5U</a>
+      <a href="mit-02-ladder.html"><span class="num">M02</span> Ladder Logic</a>
+      <a href="mit-03-sensors.html"><span class="num">M03</span> เซ็นเซอร์ &amp; I/O</a>
+      <a href="mit-04-simulation.html"><span class="num">M04</span> GX Simulator</a>
+      <a href="mit-05-hmi.html"><span class="num">M05</span> HMI Samkoon</a>
+      <a href="mit-06-pid.html"><span class="num">M06</span> PID &amp; Auto-Tuning</a>
+      <a href="mit-07-modbus.html"><span class="num">M07</span> Modbus + PM2230</a>
+
+      <h4>🟦 Omron Track</h4>
+      <a href="omron-01-intro.html" class="active"><span class="num">O01</span> รู้จัก CP1L/CPM2A</a>
+      <a href="omron-02-ladder.html"><span class="num">O02</span> CX-Programmer Ladder</a>
+      <a href="omron-03-fbd.html"><span class="num">O03</span> Function Block (FBD)</a>
+      <a href="omron-04-modbus.html"><span class="num">O04</span> Modbus + Inverter</a>
+      <a href="omron-05-e5cc.html"><span class="num">O05</span> E5CC Temp Control</a>
+      <a href="omron-06-scada.html"><span class="num">O06</span> SCADA (CX-Supervisor)</a>
+      <a href="omron-07-scada-workshop.html"><span class="num">O07</span> 🏭 SCADA Workshop</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="videos.html"><span class="num">▶</span> วิดีโอเลคเชอร์</a>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ O01 · Omron Hardware</span>
+    <h1>รู้จัก Omron PLC — CP1L &amp; CPM2A</h1>
+    <p class="lede">
+      Omron เป็นผู้ผลิต PLC จากญี่ปุ่นที่ใช้กันแพร่หลายในโรงงานไทย — บทนี้พาเข้าใจตระกูล PLC ของ Omron
+      ตั้งแต่รุ่นเก่า (CPM2A) จนถึงรุ่นปัจจุบัน (<strong>CP1L</strong>, <strong>CP2E</strong>)
+      และรู้ว่าตำราเรียนเล่มไหนยังใช้ได้, รุ่นไหนต้องอัปเกรด
+    </p>
+
+    <h2>PLC คืออะไร — ทบทวนสั้น ๆ</h2>
+    <p>ถ้ายังไม่คุ้นกับ Concept พื้นฐาน → ดูที่ <a href="mit-01-intro.html">บท M01</a> ก่อน (เป็น Concept เดียวกัน
+       แค่เปลี่ยน Brand) — ตรงนี้จะข้ามไป Hardware เลย</p>
+
+    <h2>ตระกูล Omron PLC</h2>
+
+    <p>Omron มี PLC หลายระดับตามขนาดงาน:</p>
+
+    <table>
+      <thead>
+        <tr><th>ซีรีส์</th><th>ขนาด</th><th>สถานะ (May 2026)</th><th>หมายเหตุ</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>CPM1A / CPM2A</code></td><td>Micro</td><td><span class="pill danger">เลิกผลิตแล้ว มี.ค. 2015</span></td><td>ตำราของอ. อุทัยใช้รุ่นนี้ — เรียน Concept ได้, อย่าซื้อใหม่</td></tr>
+        <tr><td><code>CP1E</code></td><td>Micro</td><td><span class="pill danger">เลิกผลิต ก.พ. 2022</span></td><td>เคยเป็น successor ของ CPM2A — ตอนนี้ใช้ CP2E แทน</td></tr>
+        <tr><td><strong><code>CP1L / CP1L-E</code></strong></td><td>Micro</td><td><span class="pill ok">ยังขายอยู่</span></td><td><strong>รุ่นที่ห้อง Lab เราใช้</strong> — มี Ethernet ในตัว</td></tr>
+        <tr><td><code>CP1H</code></td><td>Micro+</td><td><span class="pill ok">ยังขายอยู่</span></td><td>เร็วกว่า + High-speed counter 4 ช่อง · งาน Positioning</td></tr>
+        <tr><td><strong><code>CP2E</code></strong></td><td>Micro</td><td><span class="pill ok">รุ่นล่าสุด · เปิดตัว 2019</span></td><td><strong>แนะนำสำหรับงานใหม่</strong> — มี Function Block ในตัว, 2 Ethernet, OPC UA</td></tr>
+        <tr><td><code>CJ2</code></td><td>Modular</td><td><span class="pill warn">Legacy</span></td><td>Mid-range modular — ยังขายแต่ Omron แนะนำให้ใช้ NX1P/NX102 แทน</td></tr>
+        <tr><td><code>NJ / NX series</code></td><td>Machine Auto</td><td><span class="pill ok">รุ่น Top</span></td><td>Modern · IEC 61131-3 · Sysmac Studio (ไม่ใช่ CX-Programmer แล้ว)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <strong>กฎเด็ดสำหรับเลือกซื้อปี 2026</strong>
+      งาน Micro PLC ใหม่ → ใช้ <strong>CP2E</strong> · ถ้าต้องการ Ethernet หลายพอร์ตเก่าหน่อย → <strong>CP1L-E</strong> ·
+      งานที่ต้องการ Motion/Vision → <strong>NX1P หรือ NJ501</strong> · งานเก่าที่ต้อง maintain → CP1H/CJ2 ยังหาได้
+    </div>
+
+    <h2>CP1L — รุ่นที่ Lab เราใช้</h2>
+
+    <figure>
+      <img src="images/cp1l-em30dtd.jpg" alt="Omron CP1L-EM30DT-D">
+      <figcaption>Omron <strong>CP1L-EM30DT-D</strong> — มี <strong>Ethernet</strong>, <strong>Modbus RTU</strong>, Serial, Digital I/O ครบในตัวเดียว</figcaption>
+    </figure>
+
+    <div class="fig-side">
+      <figure>
+        <img src="images/omron-cp1l-product.jpg" alt="Omron CP1L official product photo">
+        <figcaption>Omron CP1L พร้อม Battery + Serial port — ภาพจากคู่มือ Omron W461 ของจริง</figcaption>
+      </figure>
+      <figure>
+        <img src="images/omron-expansion-rack.png" alt="Omron expansion rack diagram">
+        <figcaption>การขยายเป็น <strong>Expansion Rack</strong> — Power Supply + I/O Interface + Configuration Units (max 10) + End Cover</figcaption>
+      </figure>
+    </div>
+
+    <figure>
+      <img src="images/omron-20edr-block-diagram.png" alt="Omron 20EDR I/O block diagram">
+      <figcaption>Block diagram ของ I/O — Input bank 00–11 + Output bank 00–07, COM terminals แชร์, EXP port สำหรับขยาย</figcaption>
+    </figure>
+
+    <h3>การถอดรหัสรุ่น</h3>
+    <p>เช่น <code>CP1L-EM30DT-D</code> หมายความว่า:</p>
+
+    <div class="model-decoder" data-series="cp1l"></div>
+
+    <p style="margin-top:12px;color:var(--text-muted);font-size:13px">💡 ลองคลิกที่แต่ละส่วน (เช่น <code>R</code>, <code>M</code>, <code>-A</code>) เพื่อดูตัวเลือกอื่น ๆ ของซีรีส์ CP1L</p>
+
+    <h3>คุณสมบัติของ CP1L-EM30DT-D</h3>
+    <div class="lesson-grid">
+      <div class="lesson">
+        <span class="badge">SPEC 01</span>
+        <div class="title">Digital I/O 30 จุด</div>
+        <div class="desc">Input 18 + Output 12 (รวม) — ขยายได้ผ่าน Expansion module ถึง 6 ตัว</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">SPEC 02</span>
+        <div class="title">Ethernet Port ในตัว</div>
+        <div class="desc">รองรับ FINS, Socket service, Modbus TCP — ใช้ Programming + HMI + SCADA ได้พร้อมกัน</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">SPEC 03</span>
+        <div class="title">Serial Port (Modbus RTU)</div>
+        <div class="desc">RS-232/485 ผ่าน Option Board (CP1W-CIF11/12) — สำหรับ Inverter, Temp Controller</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">SPEC 04</span>
+        <div class="title">Program 10K Steps</div>
+        <div class="desc">เพียงพอสำหรับงาน Lab + งานเครื่องจักรขนาดกลาง</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">SPEC 05</span>
+        <div class="title">High-Speed Counter</div>
+        <div class="desc">4 ช่อง สูงสุด 100kHz — รองรับ Encoder ของ Servo</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">SPEC 06</span>
+        <div class="title">PWM / Pulse Output</div>
+        <div class="desc">Y output แบบ Transistor ทำ PWM ได้ — ใช้คุม Solenoid valve, Stepper</div>
+      </div>
+    </div>
+
+    <h2>ความแตกต่างจาก Mitsubishi FX5U</h2>
+
+    <table>
+      <thead>
+        <tr><th></th><th>Omron CP1L</th><th>Mitsubishi FX5U</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>IDE</td><td><code>CX-Programmer</code> (ในชุด CX-One)</td><td><code>GX Works3</code></td></tr>
+        <tr><td>เลข I/O</td><td>Decimal (10 จุดต่อ block)</td><td>Octal (X0–X17 = 16 จุด)</td></tr>
+        <tr><td>Input bit ตัวอย่าง</td><td><code>0.00</code> ถึง <code>0.05</code></td><td><code>X0</code> ถึง <code>X17</code></td></tr>
+        <tr><td>Output bit ตัวอย่าง</td><td><code>100.00</code> ถึง <code>100.05</code></td><td><code>Y0</code> ถึง <code>Y17</code></td></tr>
+        <tr><td>Internal bit</td><td><code>W0.00</code> (Word area)</td><td><code>M0</code> (Internal relay)</td></tr>
+        <tr><td>Data register</td><td><code>D0</code> (เหมือนกัน!)</td><td><code>D0</code> (เหมือนกัน!)</td></tr>
+        <tr><td>Timer</td><td><code>T0..T4095</code> + TIM/TIMH</td><td><code>T0..T511</code> + OUT/OUTH/OUTHS</td></tr>
+        <tr><td>Counter</td><td><code>C0..C4095</code> + CNT/CNTR</td><td><code>C0..C255</code> + OUT C# K#</td></tr>
+        <tr><td>SET/RST</td><td>SET / RSET (R เพิ่ม E)</td><td>SET / RST</td></tr>
+        <tr><td>KEEP</td><td><strong>KEEP(11)</strong> — Omron มี FF เฉพาะ</td><td>ใช้ SET/RST แทน</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <strong>เทคนิคจำง่าย</strong>
+      ใน CX-Programmer ทุก device <strong>มี "." ระหว่าง word.bit</strong> — <code>0.00</code> = word 0, bit 0.
+      ส่วน Mitsubishi ไม่มี "." (ทำเพราะใช้ Octal ในตำแหน่ง bit) — ทำให้ Omron Address ดูยาวกว่า
+    </div>
+
+    <h2>การจ่ายไฟและ Sink/Source</h2>
+
+    <p>CP1L-EM30DT-<strong>D</strong> รับไฟ <strong>DC 24V</strong> ที่ขั้ว <code>L1+ / L2-</code> (ต่างจาก CP1L-EM30DT-<strong>A</strong>
+       ซึ่งรับ AC 100-240V) — และ <strong>Output แบบ Transistor Sink</strong>:</p>
+
+    <figure>
+      <img src="images/output-unit-types-th.jpg" alt="PLC Output Unit types">
+      <figcaption>ประเภท Output Unit ของ PLC — CP1L-EM30D<strong>T</strong>-D ใช้ <strong>Transistor Sink</strong> (กลาง) — ปลายอีกข้างของ Load ต่อ +24V</figcaption>
+    </figure>
+
+    <p>เซ็นเซอร์และ Sink/Source ของ Omron ทำงานเหมือนกันกับ Mitsubishi — ดูบท <a href="mit-03-sensors.html">M03 — เซ็นเซอร์ &amp; I/O</a>
+       สำหรับรายละเอียดทั่วไป (NPN vs PNP, BN/BK/BU, แค่เปลี่ยน address ของ PLC)</p>
+
+    <h2>CX-Programmer + CX-One Suite</h2>
+
+    <p>CX-Programmer ไม่ได้มาคนเดียว — มาเป็นชุด <strong>CX-One</strong> ที่รวมหลายเครื่องมือสำหรับงาน Automation:</p>
+
+    <figure>
+      <img src="images/cxone-startmenu-suite.jpg" alt="CX-One Start Menu showing all included tools">
+      <figcaption>โครงสร้างเมนู CX-One — รวม CX-Designer, CX-Drive, CX-FLnet, CX-Integrator, CX-Motion, CX-Position, CX-Process Tool, <strong>CX-Programmer</strong>, CX-Protocol, CX-Simulator, CX-Thermo และ Face Plate Auto-Builder</figcaption>
+    </figure>
+
+    <figure>
+      <img src="images/cxprogrammer-change-plc-device.png" alt="CX-Programmer Change PLC device type dialog">
+      <figcaption>หน้าต่าง <strong>Change PLC Device Type</strong> ของ CX-Programmer — รองรับทั้งรุ่นใหม่ (CP1L-E) และรุ่นเก่า (CPM1, CPM2*, CPM2*-S*, CQM1) ในตัวเดียว — โปรเจคเก่ายังเปิด/แก้ได้</figcaption>
+    </figure>
+
+    <h2>เริ่มเรียนต่อ</h2>
+
+    <p>เมื่อเข้าใจ Hardware แล้ว ขั้นถัดไป:</p>
+    <ol class="steps">
+      <li>
+        <strong>ติดตั้ง CX-Programmer</strong>
+        ดาวน์โหลด CX-One Trial จากเว็บไซต์ Omron — CX-Programmer เป็นซอฟต์แวร์หลักที่ใช้กับ CP1/CP2 ทั้งตระกูล
+        <br><span class="pill warn">CX-Programmer ปัจจุบัน (v9.x) ใช้กับ CP1L, CP1E, CP1H, CP2E ได้ทั้งหมด</span>
+      </li>
+      <li>
+        <strong>เรียน Ladder ใน CX-Programmer</strong>
+        ไปบท <a href="omron-02-ladder.html">O02 — CX-Programmer Ladder</a>
+      </li>
+      <li>
+        <strong>ลอง FBD</strong>
+        ไปบท <a href="omron-03-fbd.html">O03 — Function Block Diagram</a> (ใบงาน FBD + Temperature ของภาควิชา)
+      </li>
+      <li>
+        <strong>สื่อสารกับอุปกรณ์ภาคสนาม</strong>
+        บท <a href="omron-04-modbus.html">O04</a> (Inverter), <a href="omron-05-e5cc.html">O05</a> (E5CC)
+      </li>
+      <li>
+        <strong>ทำ SCADA</strong>
+        บท <a href="omron-06-scada.html">O06 — CX-Supervisor</a> สำหรับ Visualization ระดับเหนือกว่า HMI
+      </li>
+    </ol>
+
+    <div class="callout note">
+      <strong>มี CPM2A ใน Lab เรา?</strong>
+      ตำราอ. อุทัย และตำราภาษาไทย Omron ส่วนใหญ่ใช้ CPM2A เป็นตัวอ้างอิง — เรียน Ladder/Timer/Counter ของ CPM2A ก็เข้าใจ CP1L ได้
+      เพราะ Concept และ Syntax CX-Programmer เหมือนกัน — แค่ <strong>Device address ของ CP1L ใช้ Word.Bit แทน I/O ตรง ๆ</strong>
+    </div>
+
+    <h2>เอกสารอ้างอิงสำหรับบทนี้</h2>
+    <ul class="doc-list">
+      <li><a href="PLC%20project/08_Omron_CP1L_Manuals/docs/CP1L-EL_EM%20CPU%20Unit%20Operation%20Manual(W516-E1-01).pdf">CP1L-EL/EM CPU Unit Operation Manual</a> <span class="meta">PDF · EN · Omron (W516)</span></li>
+      <li><a href="PLC%20project/08_Omron_CP1L_Manuals/docs/SYSMAC%20CP1L_CP1E%20Introduction(W461-E1-05).pdf">SYSMAC CP1L/CP1E Introduction Manual</a> <span class="meta">PDF · EN · Omron (W461)</span></li>
+      <li><a href="PLC%20project/10_Omron_CPM2A_Book/docs/chapter1.pdf">หนังสือ PLC Omron CPM2A — บทที่ 1</a> <span class="meta">PDF · ภาษาไทย</span></li>
+      <li><a href="PLC%20project/09_PLC_Book_Uthai/docs/บทที่%201.pdf">ตำรา PLC อ. อุทัย — บทที่ 1</a> <span class="meta">PDF · ภาษาไทย</span></li>
+    </ul>
+
+    <div class="pager">
+      <a href="index.html">
+        <div class="label">← กลับ</div>
+        <div class="title">หน้าแรก</div>
+      </a>
+      <a href="omron-02-ladder.html" class="next">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">O02 — CX-Programmer Ladder</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  PLC Automation Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){var lb=document.getElementById('lightbox');if(!lb)return;var img=lb.querySelector('img');
+document.querySelectorAll('.content img').forEach(function(im){im.style.cursor='zoom-in';im.addEventListener('click',function(){img.src=im.src;lb.classList.add('open');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.classList.remove('open');});})();
+</script>
+<script src="js/progress.js" defer></script>
+<script src="js/activities/model-decoder.js" defer></script>
+</body>
+</html>

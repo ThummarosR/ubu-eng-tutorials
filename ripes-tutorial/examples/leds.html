@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ตัวอย่าง LEDs — คู่มือ Ripes</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../images/logo.png" alt="Ripes logo">
+      <div>
+        <div class="title">Ripes Tutorial</div>
+        <div class="subtitle">คู่มือการใช้งานฉบับภาษาไทย</div>
+      </div>
+    </div>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="../index.html">หน้าแรก &amp; ติดตั้ง</a>
+      <h4>แท็บการใช้งาน</h4>
+      <a href="../editor.html">1. แท็บ Editor</a>
+      <a href="../processor.html">2. แท็บ Processor</a>
+      <a href="../memory.html">3. แท็บ Memory</a>
+      <a href="../cache.html">4. แท็บ Cache</a>
+      <a href="../io.html">5. แท็บ I/O</a>
+      <h4>อ้างอิง</h4>
+      <a href="../ecalls.html">System Calls (ecall)</a>
+      <h4>ตัวอย่างประกอบ</h4>
+      <a href="factorial.html">Factorial (Assembly)</a>
+      <a href="leds.html" class="active">LEDs (I/O)</a>
+      <a href="matrixmul.html">Matrix Multiply (C)</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <h1>ตัวอย่าง: LEDs — Animation บน LED Matrix</h1>
+    <p class="lede">โปรแกรม assembly วาด animation สีรุ้งบน LED matrix ผ่าน memory-mapped I/O — ตัวอย่างคลาสสิกของการเขียน firmware ระดับ assembly</p>
+
+    <h2>เป้าหมายของบทเรียน</h2>
+    <ul>
+      <li>เข้าใจ <strong>memory-mapped I/O</strong> ในการเขียนโปรแกรม</li>
+      <li>ใช้ <strong>symbol ที่ Ripes export มา</strong> (เช่น <code>LED_MATRIX_0_BASE</code>)</li>
+      <li>เห็น <strong>nested loops</strong> สำหรับการ scan ทุก pixel ของ matrix</li>
+      <li>ฝึกใช้คำสั่งจัดการ bit (<code>slli</code>, <code>and</code>, <code>or</code>) สำหรับ pack สี RGB</li>
+    </ul>
+
+    <h2>การเตรียมอุปกรณ์</h2>
+    <ol class="steps">
+      <li>เปิด Ripes</li>
+      <li>ไปที่แท็บ <strong>I/O</strong></li>
+      <li>Double-click <strong>LED Matrix</strong> เพื่อสร้าง instance</li>
+      <li>ปรับ Width และ Height ตามต้องการ (เช่น 8x8 หรือ 16x16)</li>
+      <li>เพิ่ม LED size ให้ดูง่าย</li>
+    </ol>
+
+    <div class="callout warn">
+      <strong>สำคัญ</strong>
+      ต้องสร้าง LED Matrix device <em>ก่อน</em> โหลดโปรแกรม เพราะโปรแกรมจะอ้างอิง symbol <code>LED_MATRIX_0_BASE</code>, <code>LED_MATRIX_0_WIDTH</code>, <code>LED_MATRIX_0_HEIGHT</code> ที่ออกมาจาก device
+    </div>
+
+    <h2>การโหลดโปรแกรม</h2>
+    <p>เลือกเมนู <code>File → Load Example → Assembly → LEDs</code></p>
+
+    <h2>โค้ดทั้งหมด</h2>
+<pre><code># LEDs animation
+# ต้องสร้าง LED Matrix ในแท็บ I/O ก่อน
+
+li a0 LED_MATRIX_0_BASE      # a0 = base address ของ LED matrix
+li a1 LED_MATRIX_0_WIDTH     # a1 = ความกว้าง
+li a2 LED_MATRIX_0_HEIGHT    # a2 = ความสูง
+
+loop:
+        addi    sp, sp, -16
+        sw      s0, 12(sp)
+        sw      s1, 8(sp)
+        mv      t6, zero          # t6 = ตัวนับ frame
+        add     t3, a2, a1
+        slli    a6, a1, 2         # a6 = width * 4 (byte offset per row)
+        lui     a3, 16
+        addi    a7, a3, -256
+        lui     t0, 4080
+init:
+        mv      t4, zero
+        mv      t1, zero          # t1 = row counter
+        mv      t2, a0            # t2 = pointer ไปยัง LED ปัจจุบัน
+nextRow:
+        mv      a4, zero
+        slli    a3, t1, 8
+        sub     a3, a3, t1
+        divu    a3, a3, a2
+        add     a3, a3, t6
+        slli    a3, a3, 8
+        and     t5, a3, a7        # t5 = green channel
+        mv      a5, t2
+        mv      a3, a1
+nextPixel:
+        divu    s0, a4, a1        # คำนวณ red channel
+        add     s0, s0, t6
+        add     s1, t4, a4        # คำนวณ blue channel
+        divu    s1, s1, t3
+        add     s1, s1, t6
+        slli    s0, s0, 16
+        and     s0, s0, t0
+        or      s0, t5, s0        # รวม green + red
+        andi    s1, s1, 255
+        or      s0, s0, s1        # รวมเข้ากับ blue
+        sw      s0, 0(a5)         # เขียนสีลง LED ที่ตำแหน่งนี้
+        addi    a3, a3, -1
+        addi    a5, a5, 4         # ขยับ pointer ไป pixel ถัดไป
+        addi    a4, a4, 255
+        bnez    a3, nextPixel
+        addi    t6, t6, 1         # frame counter++
+        addi    t1, t1, 1
+        add     t2, t2, a6        # ขยับ pointer ไปแถวถัดไป
+        addi    t4, t4, 255
+        bne     t1, a2, nextRow
+        j       init              # วนใหม่</code></pre>
+
+    <h2>วิเคราะห์โครงสร้าง</h2>
+
+    <h3>การ Pack สี RGB ลงใน 32-bit word</h3>
+    <p>LED Matrix แต่ละ pixel ใช้ 32 bits ในการเก็บสี:</p>
+<pre><code>┌──────────┬──────────┬──────────┬──────────┐
+│  unused  │   RED    │  GREEN   │   BLUE   │
+│  31..24  │  23..16  │  15..8   │   7..0   │
+└──────────┴──────────┴──────────┴──────────┘</code></pre>
+
+    <p>โปรแกรมจึงใช้ <code>slli</code> shift bits และ <code>or</code> รวมกัน:</p>
+    <ul>
+      <li><code>slli s0, s0, 16</code> — เอา red ไป bit 16-23</li>
+      <li><code>slli a3, a3, 8</code> — เอา green ไป bit 8-15</li>
+      <li><code>andi s1, s1, 255</code> — เก็บ blue ไว้ bit 0-7</li>
+    </ul>
+
+    <h3>การ Scan Matrix</h3>
+    <p>โปรแกรมใช้ <strong>nested loop</strong>:</p>
+    <ul>
+      <li>Outer loop (<code>init → nextRow</code>): วน <code>t1</code> ผ่านทุก row</li>
+      <li>Inner loop (<code>nextPixel</code>): วน <code>a3</code> ผ่านทุก pixel ใน row</li>
+      <li>Outermost loop (<code>loop → init</code>): วน <code>t6</code> เป็น frame counter สำหรับ animation</li>
+    </ul>
+
+    <h3>การคำนวณ Address ของแต่ละ Pixel</h3>
+    <p><code>t2</code> คือ pointer ไปยัง pixel ปัจจุบัน:</p>
+    <ul>
+      <li>เริ่มต้นที่ <code>LED_MATRIX_0_BASE</code></li>
+      <li>หลังจบ row หนึ่ง: <code>t2 = t2 + a6</code> (โดย <code>a6 = width × 4</code>)</li>
+      <li>หลังจบ pixel หนึ่ง: <code>a5 = a5 + 4</code> (ขยับไปอีก 4 byte)</li>
+    </ul>
+
+    <h2>วิธีรันและสังเกต</h2>
+
+    <ol class="steps">
+      <li>เลือก <strong>Single Cycle processor</strong> (จาก toolbar → Select Processor) — เพราะ I/O ต้องการ throughput สูง</li>
+      <li>กด <strong>Reset</strong></li>
+      <li>เปิดแท็บ I/O ค้างไว้เพื่อเห็น LED matrix</li>
+      <li>กด <strong>Auto-clock</strong> หรือ <strong>Run</strong></li>
+      <li>สังเกต LED matrix จะแสดงสีไล่ตามตำแหน่ง row/column และเปลี่ยนสีตามเวลา (frame counter <code>t6</code>)</li>
+    </ol>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับการ Debug</strong>
+      ถ้าหน้าจอ LED ไม่เปลี่ยน ลอง:
+      <ul style="margin: 6px 0 0;">
+        <li>ตรวจสอบว่ามี LED Matrix device ในแท็บ I/O หรือไม่</li>
+        <li>ใช้ <strong>Pop-out</strong> ดึง LED Matrix ออกมาเป็นหน้าต่างลอย เพื่อดูพร้อมกับแท็บ Processor</li>
+        <li>กด <strong>Step</strong> ทีละครั้ง สังเกตค่าใน <code>a5</code> (pointer) และ <code>s0</code> (สีที่กำลังเขียน)</li>
+      </ul>
+    </div>
+
+    <h2>แบบฝึกหัด</h2>
+    <ol>
+      <li>เปลี่ยนสีของ LED ทั้งหมดให้เป็นสีแดงล้วน (แก้ที่ตรงไหน?)</li>
+      <li>สร้าง animation ให้ทุก LED กระพริบขาว/ดำสลับกัน</li>
+      <li>เขียน loop ที่ทำให้ LED แต่ละแถวมีสีต่างกัน (rainbow แนวตั้ง)</li>
+      <li>ลองสร้าง <strong>Switches device</strong> เพิ่มและทำให้สวิตช์ตัวที่ N ควบคุม LED ตัวที่ N (อ้างอิงตัวอย่าง <code>switchesAndLeds.c</code>)</li>
+    </ol>
+
+    <div class="pager">
+      <a href="factorial.html">
+        <div class="label">← บทก่อนหน้า</div>
+        <div class="title">ตัวอย่าง: Factorial</div>
+      </a>
+      <a class="next" href="matrixmul.html">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">ตัวอย่าง: Matrix Multiply</div>
+      </a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

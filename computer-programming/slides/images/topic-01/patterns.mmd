@@ -1,0 +1,44 @@
+---
+title: Five Common Flowchart Patterns
+---
+flowchart TB
+    subgraph p1["1. Sequential — step by step"]
+        direction LR
+        a1[Step 1] --> a2[Step 2] --> a3[Step 3]
+    end
+
+    subgraph p2["2. Branching — if/else"]
+        direction TB
+        b1{score &gt;= 50?} -->|Yes| b2[Pass]
+        b1 -->|No| b3[Fail]
+    end
+
+    subgraph p3["3. Loop — for/while"]
+        direction TB
+        c1[i = 0] --> c2{i &lt; n?}
+        c2 -->|Yes| c3[Do work]
+        c3 --> c4[i = i+1]
+        c4 --> c2
+        c2 -->|No| c5[Done]
+    end
+
+    subgraph p4["4. Error handling — try/except"]
+        direction TB
+        d1[Try operation] --> d2{Error?}
+        d2 -->|No| d3[Continue]
+        d2 -->|Yes| d4[Handle / Recover]
+    end
+
+    subgraph p5["5. Parallel — concurrent tasks"]
+        direction TB
+        e1[Start] --> e2a[Task A]
+        e1 --> e2b[Task B]
+        e2a --> e3[Wait for all]
+        e2b --> e3
+    end
+
+    classDef seq fill:#3776ab,stroke:#1e4870,color:#fff
+    classDef br fill:#2dd4bf,stroke:#0b8a7a,color:#0b1020
+    classDef loop fill:#8b5cf6,stroke:#5b3a9e,color:#fff
+    classDef err fill:#ef4444,stroke:#9e2929,color:#fff
+    classDef par fill:#ffd43b,stroke:#cc9c00,color:#1a1410

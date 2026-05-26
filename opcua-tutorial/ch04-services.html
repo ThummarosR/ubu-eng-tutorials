@@ -1,0 +1,416 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>04 — Services | OPC UA Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="OPC UA Tutorial"></div>
+      <div>
+        <div class="title">OPC UA</div>
+        <div class="subtitle">สะพานสู่ Industrie 4.0</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>แนวคิดหลัก</h4>
+      <a href="ch01-why-opcua.html"><span class="num">01</span> ทำไมต้อง OPC UA?</a>
+      <a href="ch02-architecture.html"><span class="num">02</span> สถาปัตยกรรมพื้นฐาน</a>
+      <a href="ch03-information-model.html"><span class="num">03</span> Information Model</a>
+      <a href="ch04-services.html" class="active"><span class="num">04</span> Services</a>
+      <a href="ch05-pubsub.html"><span class="num">05</span> PubSub &amp; MQTT</a>
+      <a href="ch06-security.html"><span class="num">06</span> Security</a>
+
+      <h4>ระบบนิเวศ</h4>
+      <a href="ch07-companion-specs.html"><span class="num">07</span> Companion Specifications</a>
+      <a href="ch08-field-level.html"><span class="num">08</span> OPC UA FX (Field Level)</a>
+      <a href="ch09-cloud.html"><span class="num">09</span> Cloud Integration</a>
+
+      <h4>ลงมือทำ</h4>
+      <a href="ch10-handson.html"><span class="num">10</span> 🧪 Hands-on (UaExpert)</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ 04 · Service Sets · Client-Server Operations</span>
+    <h1>Services</h1>
+    <p class="lede">
+      "Services" คือชุดของ <em>คำสั่ง</em> ที่ Client ใช้คุยกับ Server — Read, Write, Subscribe, Browse, Call —
+      บทนี้พาดู 9 Service Sets หลัก พร้อมเทียบกับ Modbus Function Codes ที่คุณรู้จักอยู่แล้ว
+    </p>
+
+    <h2>OPC UA เป็นมาตรฐานขนาดใหญ่</h2>
+
+    <p>
+      ก่อนเริ่ม — ขอเปิดภาพให้เห็นว่า OPC UA <strong>ไม่ใช่แค่เรื่อง Read/Write</strong>
+      มาตรฐาน IEC 62541 มี 24 ส่วน (Parts) ครอบคลุมเรื่องต่างๆ ตั้งแต่ความปลอดภัย, การค้นหา, ไปจนถึงการรับส่งไฟล์:
+    </p>
+
+    <figure>
+      <img src="images/04-spec-parts.png" alt="IEC 62541 spec parts: Core 1-7, Access Type 8-11, PubSub 14, Utility parts 12-26" style="max-width:780px">
+      <figcaption>
+        24 ส่วนของมาตรฐาน IEC 62541 — บางส่วนเป็น Core (จำเป็นเสมอ), บางส่วนเป็น Access Type (อ่านข้อมูลแบบต่างๆ),
+        บางส่วนเป็น Utility (ค้นหา, รับส่งไฟล์, ...) — แต่ละ Part ฟรี โหลดอ่านได้จาก opcfoundation.org
+      </figcaption>
+    </figure>
+
+    <p>
+      บทนี้พุ่งเน้นที่ <strong>Part 4 — Services</strong> ซึ่งเป็นชั้นบริการที่ Client เรียกใช้ผ่าน Client-Server Pattern
+    </p>
+
+    <h2>9 Service Sets — บริการหลัก</h2>
+
+    <p>OPC UA จัดบริการเป็น 9 กลุ่ม — แต่ละกลุ่มมีหลายบริการย่อย:</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="num">01</div>
+        <div class="name">SecureChannel</div>
+        <div class="desc">เปิดช่องสื่อสารที่เข้ารหัส · แลกใบรับรอง (Certificates) · จัดการกุญแจ — ทำโดยอัตโนมัติก่อนเริ่ม Session</div>
+      </div>
+      <div class="card">
+        <div class="num">02</div>
+        <div class="name">Session</div>
+        <div class="desc">เปิด/ปิด Session ของ User · Authenticate User (Username/Password, X.509, Token)</div>
+      </div>
+      <div class="card">
+        <div class="num">03</div>
+        <div class="name">NodeManagement</div>
+        <div class="desc">Add/Modify/Delete Node ใน Address Space — สำหรับ Configuration Tool</div>
+      </div>
+      <div class="card">
+        <div class="num">04</div>
+        <div class="name">View</div>
+        <div class="desc"><strong>Browse</strong> · Translate BrowsePath · เดินไป-มาในต้นไม้ของ Node — ใช้บ่อยที่สุด</div>
+      </div>
+      <div class="card">
+        <div class="num">05</div>
+        <div class="name">Attribute</div>
+        <div class="desc"><strong>Read</strong> · <strong>Write</strong> · HistoryRead · HistoryWrite — อ่าน/เขียน Attributes ของ Node</div>
+      </div>
+      <div class="card">
+        <div class="num">06</div>
+        <div class="name">Method</div>
+        <div class="desc"><strong>Call</strong> — เรียกฟังก์ชันใน Server (เช่น Start, Stop, Calibrate) พร้อม Argument</div>
+      </div>
+      <div class="card">
+        <div class="num">07</div>
+        <div class="name">MonitoredItem</div>
+        <div class="desc">บอก Server ว่า "อยากให้แจ้งเมื่อค่าของ Node นี้เปลี่ยน" · ตั้ง Deadband, Sampling Interval</div>
+      </div>
+      <div class="card">
+        <div class="num">08</div>
+        <div class="name">Subscription</div>
+        <div class="desc">กลุ่มของ MonitoredItem — Server ส่ง Publish notification กลับมาเป็นชุด</div>
+      </div>
+      <div class="card">
+        <div class="num">09</div>
+        <div class="name">Query</div>
+        <div class="desc">ค้นหา Node ตามเงื่อนไข (Filter) — ใช้กับ Address Space ขนาดใหญ่</div>
+      </div>
+    </div>
+
+    <h2>เทียบกับ Modbus Function Codes</h2>
+
+    <p>
+      ถ้าคุณคุ้นกับ Modbus จากบทเรียน PLC แล้ว — ลองดูเทียบกัน:
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ทำอะไร</th>
+          <th>Modbus Function Code</th>
+          <th>OPC UA Service</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>อ่านค่าเดียว</td>
+          <td>FC03 (Read Holding Registers)</td>
+          <td>Read</td>
+        </tr>
+        <tr>
+          <td>เขียนค่าเดียว</td>
+          <td>FC06 (Write Single Register)</td>
+          <td>Write</td>
+        </tr>
+        <tr>
+          <td>อ่าน/เขียนหลายค่าพร้อมกัน</td>
+          <td>FC23 (Read/Write Multiple)</td>
+          <td>Read/Write รับ Array ในครั้งเดียว</td>
+        </tr>
+        <tr>
+          <td>รับแจ้งค่าเปลี่ยน</td>
+          <td>❌ ไม่มี — ต้อง Poll เอง</td>
+          <td>Subscribe → Server push ให้เอง</td>
+        </tr>
+        <tr>
+          <td>เรียกฟังก์ชัน</td>
+          <td>FC16 (Write Multiple) + ตีความเอง</td>
+          <td>Call — มี Argument + Return จริง</td>
+        </tr>
+        <tr>
+          <td>อ่านข้อมูลเก่า</td>
+          <td>❌ ต้องเก็บแยก</td>
+          <td>HistoryRead</td>
+        </tr>
+        <tr>
+          <td>รับ Alarm</td>
+          <td>❌ ต้องตรวจ Status Bit เอง</td>
+          <td>Events &amp; Conditions</td>
+        </tr>
+        <tr>
+          <td>ค้นหาว่ามีอะไร</td>
+          <td>❌ เปิด Manual</td>
+          <td>Browse</td>
+        </tr>
+        <tr>
+          <td>Authenticate</td>
+          <td>❌ ไม่มี</td>
+          <td>Session + SecureChannel</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Read &amp; Write — บริการที่ใช้บ่อยที่สุด</h2>
+
+    <p>เทียบสมการให้ดู:</p>
+
+    <pre><code># Modbus (Python pseudocode)
+from pymodbus.client import ModbusTcpClient
+client = ModbusTcpClient('192.168.1.10')
+result = client.read_holding_registers(address=0, count=1, unit=5)
+raw = result.registers[0]            # 235 (ตัวเลขดิบ)
+temperature = raw / 10.0             # ต้อง scale เอง
+# หน่วยคืออะไร? เปิด manual...
+
+# OPC UA (Python with asyncua)
+from asyncua import Client
+async with Client(url='opc.tcp://plant-floor:4840') as client:
+    node = client.get_node('ns=2;s=TempXmitter1.CurrentValue')
+    temperature = await node.read_value()   # 23.5 (already in °C)
+    unit = await node.read_attribute('EngineeringUnits')  # "°C"</code></pre>
+
+    <p>
+      สังเกตว่า Code ของ OPC UA <strong>สื่อความหมายตัวเอง</strong> — อ่านแล้วเข้าใจทันทีว่ากำลังอ่านอะไร
+      ส่วน Modbus อ่านยังไงก็เห็นแค่ "register 0"
+    </p>
+
+    <h3>Read หลายค่าพร้อมกัน</h3>
+
+    <p>
+      OPC UA <code>Read</code> รับ <em>Array</em> ของ NodeId ในครั้งเดียว — ลด overhead ของ Network:
+    </p>
+
+    <pre><code># Batch read — 1 round-trip แทนที่จะ N round-trip
+node_ids = ['ns=2;s=Temp1', 'ns=2;s=Temp2', 'ns=2;s=Pressure1']
+values = await client.read_values([client.get_node(n) for n in node_ids])
+# values = [23.5, 76.2, 102.4]</code></pre>
+
+    <h2>Subscribe — Server แจ้งเอง ไม่ต้อง Poll</h2>
+
+    <p>นี่คือ <strong>Game Changer</strong> เทียบกับ Modbus:</p>
+
+    <pre><code># สร้าง Subscription
+async with Client('opc.tcp://...') as client:
+    sub = await client.create_subscription(period=500, handler=on_change)
+    # ขอให้แจ้งเมื่อ Temp1 เปลี่ยน (mais ไม่เกิน 500ms ก็ Sample 1 ครั้ง)
+    await sub.subscribe_data_change(
+        client.get_node('ns=2;s=Temp1'),
+        sampling_interval=500,   # ms
+        queue_size=10
+    )
+
+# Handler ทำงานเมื่อค่าเปลี่ยน — Server push เอง
+async def on_change(node, value, data):
+    print(f"{node} เปลี่ยนเป็น {value}")</code></pre>
+
+    <p>ใน Modbus คุณต้องเขียน Loop:</p>
+
+    <pre><code># Modbus — ต้อง Poll เอง
+last = 0
+while True:
+    val = read_modbus()
+    if val != last:
+        print(f"เปลี่ยนเป็น {val}")
+        last = val
+    sleep(0.5)  # Poll every 500ms ของ slave หลายตัว = network ล่ม</code></pre>
+
+    <h3>Deadband — กรอง Noise</h3>
+
+    <p>
+      Subscribe สามารถใส่ Deadband ได้ — เช่น "แจ้งเฉพาะเมื่อค่าเปลี่ยนเกิน 0.5°C" — ลด traffic
+      อย่างมีนัยสำคัญสำหรับ Analog Signal ที่มี Noise:
+    </p>
+
+    <pre><code>await sub.subscribe_data_change(
+    node,
+    deadband_type='Absolute',
+    deadband_value=0.5
+)</code></pre>
+
+    <h2>Method Call — ฟังก์ชันจริง พร้อม Argument</h2>
+
+    <p>
+      ใน Modbus ถ้าอยากสั่ง <em>Calibrate(targetTemp=100.0, duration=30s)</em> คุณต้อง:
+      เขียน Magic Value ลง Register 1000, รอ Bit Status, ตีความค่าผลใน Register 1001, …
+    </p>
+
+    <p>OPC UA ทำได้ตรงๆ:</p>
+
+    <pre><code>method_node = client.get_node('ns=2;s=TempXmitter1.Calibrate')
+parent_node = client.get_node('ns=2;s=TempXmitter1')
+
+# Call method — รับ argument พร้อม return value
+result = await parent_node.call_method(
+    method_node,
+    100.0,    # targetTemp (Double)
+    30        # duration in seconds (UInt32)
+)
+# result = สถานะ + ค่าใหม่ที่ Calibrate แล้ว</code></pre>
+
+    <p>
+      Method มี <strong>Input Arguments</strong> และ <strong>Output Arguments</strong> ที่นิยามใน Information Model
+      Client ที่ Browse เจอจะรู้ทันทีว่าต้องส่ง argument อะไรไปบ้าง
+    </p>
+
+    <h2>Historical Access — ข้อมูลย้อนหลังในตัว</h2>
+
+    <p>
+      Server สามารถ buffer ค่าย้อนหลังของแต่ละ Variable — Client เรียก HistoryRead ดึงข้อมูลตามช่วงเวลาได้:
+    </p>
+
+    <pre><code># อ่าน Temperature ของ Sensor นี้ย้อนหลัง 1 ชั่วโมง
+node = client.get_node('ns=2;s=Temp1')
+history = await node.read_raw_history(
+    start_time=datetime.now() - timedelta(hours=1),
+    end_time=datetime.now(),
+    num_values=0  # all
+)
+for dv in history:
+    print(f"{dv.SourceTimestamp}  {dv.Value.Value}")</code></pre>
+
+    <p>
+      ยังมี <strong>Aggregate Functions</strong> ในตัว — Average, Min, Max, StandardDeviation —
+      ที่ Server คำนวณให้ Client ไม่ต้องดึงข้อมูลดิบทั้งหมดมา process เอง
+    </p>
+
+    <h2>Events &amp; Conditions — Alarms ที่ฉลาด</h2>
+
+    <p>
+      Modbus ส่ง Alarm โดย toggle Status Bit แล้วให้ Master Poll — ไม่มีรายละเอียดว่าทำไม Alarm
+      ใครเป็นผู้รับ Alarm ใครต้อง Ack
+    </p>
+
+    <p>OPC UA มี Model ของ Alarm ในตัว:</p>
+
+    <ul>
+      <li><strong>Event</strong> — เหตุการณ์ครั้งเดียว (เช่น "Production Lot Completed")</li>
+      <li><strong>Condition</strong> — สถานะที่คงอยู่ (เช่น "Temperature High")</li>
+      <li><strong>Alarm</strong> = Condition ที่ต้อง Acknowledge หรือ Confirm</li>
+    </ul>
+
+    <p>แต่ละ Alarm มีข้อมูลครบ:</p>
+
+    <pre><code>Event ที่ Client ได้รับ:
+  EventId          : Unique ID
+  Time             : 2026-05-19 14:32:17.123
+  Source           : TempXmitter1
+  Message          : "Temperature exceeded HighHigh limit"
+  Severity         : 900 (range 1-1000)
+  Active           : true
+  Acknowledged     : false
+  Comment          : (User comment ที่ใส่ตอน Ack)</code></pre>
+
+    <p>
+      หลายภาษาในตัว — Message field รองรับ <code>LocalizedText</code> — Client เลือกภาษาที่ต้องการ
+      Server ก็ส่ง Message ให้ในภาษานั้น (เช่น ไทย/อังกฤษ)
+    </p>
+
+    <h2>Browse + TranslateBrowsePath</h2>
+
+    <p>
+      Browse ไม่ได้แค่เดินไปตามต้นไม้ — รองรับการเขียน path แบบ Filesystem ได้ด้วย:
+    </p>
+
+    <pre><code># แทนที่จะใช้ NodeId (ที่จำยาก):
+node = client.get_node('ns=2;s=TempXmitter1.CurrentValue')
+
+# ใช้ BrowsePath (เหมือน path ของไฟล์):
+node = await client.nodes.objects.get_child([
+    "2:FieldBus",
+    "2:TempXmitter1",
+    "2:CurrentValue"
+])</code></pre>
+
+    <p>
+      Server แปล Path เป็น NodeId ให้ — Code อ่านง่ายขึ้นมาก
+    </p>
+
+    <h2>สรุปบทที่ 04</h2>
+
+    <ul>
+      <li>OPC UA มี 9 Service Sets — ที่ใช้บ่อยที่สุดคือ <strong>View (Browse), Attribute (Read/Write), MonitoredItem/Subscription, Method (Call)</strong></li>
+      <li>Read/Write รับ Array หลายค่าในครั้งเดียว — ลด Network round-trip</li>
+      <li><strong>Subscribe</strong> เปลี่ยนพฤติกรรมจาก Poll → Push — Server แจ้งเมื่อค่าเปลี่ยน + Deadband กรอง Noise ได้</li>
+      <li><strong>Method Call</strong> เป็นฟังก์ชันจริง รับ Argument ส่งคืน Return value — ไม่ใช่ trick กับ Register</li>
+      <li><strong>Historical Access</strong> + Aggregates ในตัว — ไม่ต้องเขียน Historian แยก</li>
+      <li><strong>Events &amp; Conditions</strong> มี Model ครบ — Severity, Acknowledgment, Multi-language messages</li>
+      <li>ทุก Service ผ่าน <strong>SecureChannel</strong> เข้ารหัสในตัว (ดูบทที่ 06)</li>
+    </ul>
+
+    <p>บทต่อไปจะดู <strong>PubSub</strong> — รูปแบบการสื่อสารอีกแบบที่เหมาะกับ Many-to-Many และ Cloud</p>
+
+    <div class="pager">
+      <a href="ch03-information-model.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">03 — Information Model</div>
+      </a>
+      <a href="ch05-pubsub.html" class="next">
+        <div class="label">ถัดไป →</div>
+        <div class="title">05 — PubSub &amp; MQTT</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  OPC UA &amp; Industrie 4.0 Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){
+  var lb = document.getElementById('lightbox');
+  if(!lb) return;
+  var img = lb.querySelector('img');
+  document.querySelectorAll('.gallery a, .zoomable').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      img.src = a.getAttribute('href') || a.getAttribute('data-src');
+      lb.classList.add('open');
+    });
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') lb.classList.remove('open');
+  });
+})();
+</script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

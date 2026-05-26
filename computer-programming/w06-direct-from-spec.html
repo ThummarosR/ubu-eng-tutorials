@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W06 — สั่ง AI จาก Spec | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html" class="active"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">สัปดาห์ที่ 06 · Code Literacy with AI</span>
+    <h1>สั่ง AI จาก Spec</h1>
+    <p class="lede">
+      อ่านได้แล้ว · แก้ได้แล้ว · สัปดาห์นี้เป็นขั้นสุดของ Code Literacy —
+      <strong>"เริ่มจากศูนย์"</strong> · เขียน spec → ให้ AI สร้าง → ทดสอบ → ปรับ
+      จนได้โปรแกรมที่ทำงานได้จริง
+    </p>
+
+    <h2>เป้าหมายสัปดาห์นี้</h2>
+    <ul>
+      <li>เขียน <strong>spec ที่ชัดเจน</strong> ก่อนสั่ง AI · <em>ตรวจกับ Scorecard</em> ก่อนใช้</li>
+      <li>ขอให้ AI <strong>"วางแผนก่อน"</strong> ไม่ใช่เขียน code ทันที</li>
+      <li>ทดสอบโปรแกรมที่ AI สร้าง <em>ก่อนเชื่อ</em></li>
+      <li>จับ <strong>AI hallucination</strong> ระดับเบาได้</li>
+    </ul>
+
+    <div class="callout warn" style="border-left-width:5px">
+      <strong>🔒 ทำไม "เขียน spec" คือทักษะที่ AI ทำให้คุณไม่ได้</strong>
+      AI <em>"เขียน code"</em> ได้ดีมาก · แต่ AI <strong>ไม่รู้ว่าคุณต้องการอะไร</strong> ·
+      ถ้า spec เขียนไม่ชัด — AI จะเดามั่ว · ถ้า spec ดี — AI จะสร้าง code ที่ใกล้ <em>"พร้อมใช้"</em>
+      ทันที · <strong>ค่าของคุณ = ความชัดของ spec</strong> · ทักษะนี้สำคัญที่สุดในยุค AI
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🎯 Running Case — ขั้นสุดของ Grading App (W04→W05→<strong>W06</strong>→W07)</h2>
+    <p>
+      W04: อ่าน code · W05: แก้ code · <strong>W06: เขียน spec ใหม่จากศูนย์</strong>
+      → ให้ AI สร้าง · W07: ใช้ workflow นี้สร้าง CLI 3 ตัว
+    </p>
+
+    <div class="mermaid">flowchart LR
+    W04[W04<br/>อ่านโค้ด<br/><i>passive</i>] --> W05[W05<br/>แก้โค้ดเล็ก ๆ<br/><i>reactive</i>]
+    W05 --> W06["<b>W06 (ตอนนี้)</b><br/>เริ่มจาก spec<br/><i>proactive</i>"]
+    W06 --> W07[W07<br/>build 3 tools<br/><i>repeatable</i>]
+
+    classDef past fill:#0b1020,stroke:#6b748c,color:#9aa3b8
+    classDef current fill:#3b2962,stroke:#ec4899,stroke-width:3px,color:#fff
+    classDef future fill:#0b1020,stroke:#6b748c,color:#9aa3b8
+    class W04,W05 past
+    class W06 current
+    class W07 future</div>
+
+    <h2>วงจร "Spec → Plan → Code → Test"</h2>
+
+    <div class="mermaid">flowchart LR
+    spec["1. Spec<br/><i>คุณเขียน · ชัด + มีขอบเขต</i>"]
+    plan["2. Plan<br/><i>AI วาง · คุณตรวจ</i>"]
+    code["3. Code<br/><i>AI เขียน · คุณอ่าน</i>"]
+    test{"4. Test<br/>ผ่านมั้ย?"}
+    done([✅ Done])
+
+    spec --> plan --> code --> test
+    test -->|Yes| done
+    test -->|"No · code bug"| code
+    test -->|"No · ใช้ wrong assumption"| plan
+    test -->|"No · spec ไม่ชัด"| spec
+
+    classDef human fill:#0d3f3a,stroke:#34d399,color:#fff
+    classDef ai fill:#3b2962,stroke:#8b5cf6,color:#fff
+    classDef decision fill:#5c2618,stroke:#ff7a18,color:#fff
+    classDef ok fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#fff
+    class spec human
+    class plan,code ai
+    class test decision
+    class done ok</div>
+
+    <p style="text-align:center;color:var(--text-muted);font-size:13px">
+      🟢 งานของ <strong>คน</strong> · 🟣 งานของ <strong>AI</strong> · 🟠 จุดตัดสินใจ —
+      สังเกตว่า "ไม่ผ่าน" วนกลับขั้นที่ <em>เหมาะสม</em> ไม่ใช่ขั้น Code เสมอ
+    </p>
+
+    <h2>📝 Spec Template — ใช้ได้ทุกโจทย์</h2>
+
+    <pre><code>## Spec: [ชื่อโปรแกรม]
+
+**ปัญหา / เป้าหมาย:**
+[1-2 ประโยค ว่าใครเดือดร้อนกับอะไร ใช้แล้วจะแก้ได้ยังไง]
+
+**Input:**
+- [field 1: ชื่อ, ชนิด, ตัวอย่าง]
+- [field 2: ...]
+
+**Output:**
+- [แสดงอะไร, format ไหน]
+
+**Rules / Logic:**
+- ถ้า X → ทำ Y
+- ถ้า A และ B → ทำ C
+- ห้าม [edge case]
+
+**Constraints:**
+- ทำงานบน Python 3.11+
+- ไม่ใช้ library นอก (เว้นแต่ระบุ)
+- ทำงานบน command line (ยังไม่ทำ UI)
+
+**Success Criteria:**
+- รันแล้วไม่ error เมื่อ input ถูกต้อง
+- แสดง error message ที่ดีเมื่อ input ผิด
+- [acceptance test ที่เฉพาะกับโจทย์]
+
+**Non-goals:**
+- ยังไม่บันทึกลงไฟล์ (เก็บใน memory พอ)
+- ยังไม่ทำ GUI
+
+**Example session:**
+&gt; กรอกคะแนน: 78
+&gt; เกรด: B</code></pre>
+
+    <h2>ตัวอย่างเต็ม — "Tip Calculator"</h2>
+
+    <pre><code>## Spec: Tip Calculator
+
+**ปัญหา:**
+กลุ่มเพื่อนกินข้าวกัน 4 คน อยากแบ่งบิลรวมทิป — ต้องการเครื่องมือคำนวณเร็ว ๆ ในมือถือ
+แต่ตอนนี้ยังทำเป็น CLI พอ
+
+**Input:**
+- bill_total: float, เช่น 1450.00
+- tip_percent: int, เช่น 10
+- num_people: int, เช่น 4
+
+**Output:**
+- ทิปรวม (THB)
+- รวมที่ต้องจ่าย
+- คนละเท่าไหร่
+
+**Rules:**
+- tip_percent อยู่ระหว่าง 0-30 เท่านั้น
+- num_people ต้อง &gt;= 1
+- ถ้า input ผิด → print "❌ ค่าไม่ถูกต้อง" แล้วจบโปรแกรม
+
+**Success:**
+- เคสปกติ: bill=1450, tip=10%, n=4 → ทิป 145, รวม 1595, คนละ 398.75
+- เคสไม่ผ่าน: tip=50 → แจ้ง error
+
+**Non-goals:**
+- ยังไม่เก็บ history
+- ยังไม่ split unevenly</code></pre>
+
+    <h2>🎯 ขั้นที่ 2 — ขอ AI "วางแผน" ก่อนเขียน code</h2>
+    <p>
+      นักศึกษาปี 1 มักทำผิด: copy spec ไป paste ใน AI แล้วถาม <em>"เขียน code ให้หน่อย"</em> · AI จะเดาทันที
+      ผลคือ <em>"ใกล้แต่ไม่ตรง"</em> · ทำให้ตรงด้วยการขอ <strong>plan</strong> ก่อน
+    </p>
+
+    <h3>ตัวอย่าง prompt ที่ดี</h3>
+    <pre><code>นี่คือ spec ของ Tip Calculator: [paste spec]
+
+ก่อนเขียน code ขอ:
+1. List โครงสร้าง function ที่จะมี (ชื่อ + parameter + return)
+2. แผน validate input
+3. test cases ที่จะรันตรวจ (อย่างน้อย 5 เคส รวม edge case)
+4. คำถามที่ฉันยังตอบไม่ครบใน spec
+
+อย่าเขียน code ในรอบนี้</code></pre>
+
+    <h3>AI อาจตอบ</h3>
+    <pre><code>**โครงสร้าง functions:**
+- get_input() → returns (bill, tip_percent, num_people)
+- validate(bill, tip, n) → returns (ok: bool, error: str)
+- calculate(bill, tip, n) → returns dict {tip_total, grand_total, per_person}
+- print_result(result) → no return
+
+**Validate plan:**
+- bill &gt; 0
+- 0 &lt;= tip &lt;= 30
+- n &gt;= 1
+
+**Test cases:**
+1. ปกติ: 1450, 10, 4 → ทิป 145, รวม 1595, คนละ 398.75
+2. ทิป 0%: 100, 0, 2 → ทิป 0, รวม 100, คนละ 50
+3. 1 คน: 200, 15, 1 → คนละ 230
+4. tip มากกว่า 30 → error
+5. คน 0 → error
+6. bill ติดลบ → error
+
+**คำถามที่ยังไม่ชัด:**
+- ปัดเศษคนละเท่าไหร่ทศนิยม 2 หรือ 0?
+- ใช้สกุลเงิน THB เท่านั้น หรือ flexible?</code></pre>
+
+    <p>เห็นมั้ย — AI ถามคำถามดี ๆ ที่ <em>คุณยังไม่ได้คิด</em> · ตอบเสร็จแล้วค่อยให้ <strong>เขียน code</strong></p>
+
+    <h2>🎯 ขั้นที่ 3 — สั่งให้เขียน code</h2>
+    <pre><code>ใช้แผนข้างบน + คำตอบของคำถาม:
+- ปัดเศษทศนิยม 2
+- THB only
+
+เขียน Python 3.11 ครบทุก function · มี if __name__ == "__main__"
+· อย่าใช้ library นอก · code &lt; 60 บรรทัด</code></pre>
+
+    <p>AI จะเขียน · คุณอ่านดูว่า <em>"ตรงกับ plan ที่ตกลงกันมั้ย"</em></p>
+
+    <h2>🐍 รัน Tip Calculator (ที่ AI สร้าง)</h2>
+    <p>
+      ลองรัน reference implementation ที่ AI สร้างจาก spec นี้ · ใส่ <code>bill</code>, <code>tip%</code>,
+      <code>num_people</code> ใน Input — ดูว่า output ตรงกับ Success criteria มั้ย
+    </p>
+
+    <div class="python-runner" data-inputs="1450&#10;10&#10;4">def get_input():
+    bill = float(input("bill total (THB): "))
+    tip = int(input("tip percent (0-30): "))
+    n = int(input("num people: "))
+    return bill, tip, n
+
+
+def validate(bill, tip, n):
+    if bill &lt;= 0:
+        return False, "bill ต้องเป็นบวก"
+    if tip &lt; 0 or tip &gt; 30:
+        return False, "tip ต้อง 0-30%"
+    if n &lt; 1:
+        return False, "ต้องมีคนอย่างน้อย 1"
+    return True, ""
+
+
+def calculate(bill, tip, n):
+    tip_total = bill * tip / 100
+    grand = bill + tip_total
+    per_person = grand / n
+    return {
+        "tip_total": round(tip_total, 2),
+        "grand_total": round(grand, 2),
+        "per_person": round(per_person, 2),
+    }
+
+
+bill, tip, n = get_input()
+ok, err = validate(bill, tip, n)
+if not ok:
+    print(f"❌ {err}")
+else:
+    r = calculate(bill, tip, n)
+    print(f"💰 ทิปรวม:   {r['tip_total']:.2f} THB")
+    print(f"💵 รวมจ่าย:  {r['grand_total']:.2f} THB")
+    print(f"👥 คนละ:    {r['per_person']:.2f} THB ({n} คน)")</div>
+
+    <p style="color:var(--text-muted);font-size:13.5px">
+      🧪 ลอง edge case: เปลี่ยน tip เป็น <code>50</code> · ต้องเห็น <em>❌ tip ต้อง 0-30%</em> ตาม spec
+    </p>
+
+    <h2>🎯 ขั้นที่ 4 — Test จริง</h2>
+    <p>อย่าเชื่อ AI ว่าโปรแกรมทำงานได้ — รันทุก test case จากแผน · ถ้าไม่ผ่าน:</p>
+
+    <ol class="steps">
+      <li>
+        <strong>บอก AI ว่าเคสไหนไม่ผ่าน</strong>
+        — "Test 4 ไม่ผ่าน · เมื่อ tip=50 โปรแกรมยังคำนวณต่อ ไม่ขึ้น error"
+      </li>
+      <li>
+        <strong>ขอให้แก้เฉพาะเคสนั้น</strong>
+        — "แก้ validation ให้ตรง · อย่าเปลี่ยน code ส่วนอื่น"
+      </li>
+      <li>
+        <strong>รันใหม่ทุกเคส</strong>
+        — เพื่อเช็คว่าแก้แล้วไม่พังเคสอื่น
+      </li>
+      <li>
+        <strong>Commit ทันที</strong>
+        — เพราะนี่คือเวอร์ชันที่ <em>ทำงานได้</em>
+      </li>
+    </ol>
+
+    <h2>🚨 AI Hallucination — รูปแบบที่พบบ่อย</h2>
+
+    <table>
+      <thead><tr><th>ลักษณะ</th><th>สัญญาณ</th><th>วิธีจับ</th></tr></thead>
+      <tbody>
+        <tr><td><strong>เพิ่ม feature ที่ไม่ขอ</strong></td><td>code มี "advanced" stuff ที่ไม่อยู่ใน spec</td><td>เทียบกับ spec บรรทัดต่อบรรทัด</td></tr>
+        <tr><td><strong>import library ที่ไม่จำเป็น</strong></td><td>เห็น <code>import pandas</code> ใน Tip Calc</td><td>ใช่เปล่า ลบทิ้ง</td></tr>
+        <tr><td><strong>ใช้ function ที่ไม่มีจริง</strong></td><td><code>math.calculate_tip()</code></td><td>รัน — error</td></tr>
+        <tr><td><strong>โค้ดที่ดู ok แต่ logic ผิด</strong></td><td>ปัดเศษผิด, off-by-one</td><td>รัน test case</td></tr>
+        <tr><td><strong>"ทำเสร็จแล้ว!" ทั้งที่ไม่ครบ</strong></td><td>AI พูด confident แต่ขาด case</td><td>ตรวจ spec ทุกข้อ</td></tr>
+        <tr><td><strong>หลงทาง — ตอบคนละโจทย์</strong></td><td>เปลี่ยนเรื่องไปทำอย่างอื่น</td><td>ขอ restart พร้อม spec ใหม่</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout warn">
+      <strong>กฎทอง — Distrust + Verify</strong>
+      AI เก่งกว่านักศึกษาปี 1 ในการเขียน Python · แต่ AI <em>เก่งกว่า</em> ในการ <strong>"พูด confident เมื่อผิด"</strong>
+      ด้วย · กฎคือ <em>"ไม่เชื่อจนกว่าจะรัน + เห็นผลด้วยตา"</em>
+    </div>
+
+    <h2>📝 ตรวจ Spec ของคุณ — Spec Quality Scorecard</h2>
+    <p>
+      ก่อนสั่ง AI ให้สร้าง — ตรวจ spec ก่อนเสมอ · Scorecard เช็ค <strong>8 criteria</strong> +
+      ภาษากำกวม · ลอง <em>"spec ตัวอย่าง"</em> ก่อน แล้วลองวาง spec ของคุณ
+    </p>
+
+    <div class="spec-scorecard"></div>
+
+    <div class="callout info">
+      <strong>เป้า — ก่อนคุยกับ AI ต้องได้คะแนน ≥ 75%</strong>
+      ถ้ายัง &lt; 75% — แก้ spec ก่อน · AI จะให้ output ดีกว่ามาก
+      · ทางลัด: กด "ลอง spec ตัวอย่าง" เพื่อดูว่า spec ที่ดีต้องมีอะไรบ้าง
+    </div>
+
+    <h2>🧪 Workshop — Build 2 Programs from Scratch</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>เลือก 1 ปัญหาเล็ก ๆ จาก W01</strong>
+        — แค่ที่ทำได้ใน 1 ไฟล์ Python · เช่น "เครื่องคิดเลข BMI", "ตัวสุ่มจับคู่ทีม", "บันทึกค่าใช้จ่ายรายวัน"
+      </li>
+      <li>
+        <strong>เขียน spec ตาม template</strong>
+        — ให้ครบทุก section · อย่าข้าม Non-goals
+      </li>
+      <li>
+        <strong>ส่ง spec ขอ AI "วางแผน"</strong>
+        — รับ plan + คำถาม → ตอบคำถามให้ครบ
+      </li>
+      <li>
+        <strong>สั่งให้ AI เขียน code</strong>
+        — อ่าน code ให้เข้าใจ
+      </li>
+      <li>
+        <strong>รัน test cases ทุกเคส</strong>
+        — บันทึกผลใน <code>test-results.md</code>
+      </li>
+      <li>
+        <strong>ถ้ามี case ไม่ผ่าน → ขอ AI แก้</strong>
+        — แล้วรันใหม่
+      </li>
+      <li>
+        <strong>commit + push GitHub</strong>
+        — เพิ่ม README.md อธิบายว่าโปรแกรมทำอะไร
+      </li>
+      <li>
+        <strong>ทำซ้ำกับโปรแกรมที่ 2</strong>
+        — โจทย์อื่น
+      </li>
+    </ol>
+
+    <h2>💬 ตัวอย่าง Prompt ดี vs ไม่ดี</h2>
+
+    <table>
+      <thead><tr><th>❌ ไม่ดี</th><th>✅ ดี</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>"เขียนเครื่องคิดเลข"</td>
+          <td>"เขียนเครื่องคิดเลข Python CLI สำหรับนักศึกษาคำนวณ BMI · รับน้ำหนัก kg + ส่วนสูง cm · ปัดทศนิยม 1 · บอก category WHO (underweight/normal/overweight/obese) · ใช้ Python 3.11 ไม่มี library นอก"</td>
+        </tr>
+        <tr>
+          <td>"ทำให้มันทำงาน"</td>
+          <td>"Test case 3 ไม่ผ่าน: เมื่อใส่ความสูง 0 ควรขึ้น error แต่โปรแกรม crash · ช่วยแก้ validation ไม่ต้องเปลี่ยน logic ส่วนอื่น"</td>
+        </tr>
+        <tr>
+          <td>"เพิ่ม feature นั้นด้วย"</td>
+          <td>"เพิ่ม feature: บันทึกประวัติ BMI ลง <code>history.txt</code> ทุกครั้งที่คำนวณ · บรรทัดละ 1 entry format: 'YYYY-MM-DD HH:MM | bmi=X | category=Y' · เพิ่ม non-goal: ยังไม่ทำ search/filter"</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>ข้อผิดที่พบบ่อย</h2>
+
+    <div class="callout warn">
+      <strong>Spec กว้างเกิน → AI เดามั่ว</strong>
+      "ทำระบบจองห้อง" — กว้างเกิน · กำหนดทีละชิ้น "CLI ที่รับการจอง 1 รายการแล้วเซฟลง JSON"
+    </div>
+
+    <div class="callout warn">
+      <strong>Test แค่ happy path</strong>
+      ใส่เคสปกติแล้วได้ผลถูก → คิดว่าใช้ได้ · ต้อง test edge case เสมอ (input ผิด, ค่าว่าง, ค่ามาก)
+    </div>
+
+    <div class="callout warn">
+      <strong>"ขอ AI เพิ่ม feature ต่อ ๆ ไป"</strong>
+      โดยไม่แก้ spec → code รก, ไม่ตรง spec · เพิ่ม feature = update spec ก่อน
+    </div>
+
+    <h2>ส่งงานสัปดาห์นี้</h2>
+    <ul>
+      <li>📄 <strong>spec.md</strong> × 2 (โปรแกรม 1, โปรแกรม 2)</li>
+      <li>🐍 <strong>code.py</strong> × 2 ที่ทำงานได้</li>
+      <li>📋 <strong>test-results.md</strong> ทุกเคส ผ่าน/ไม่ผ่าน</li>
+      <li>📁 GitHub repo มี README.md + screenshot การรัน</li>
+    </ul>
+
+    <h3>Reference จาก slide เดิม</h3>
+    <p>เนื้อหานี้ขยาย <a href="references.html#topic-11">Topic 11 — GenAI in Coding</a> โดย Mainidea ให้กลายเป็น <em>core skill</em> ของยุค AI ไม่ใช่ topic ปิดท้าย</p>
+
+    <div class="pager">
+      <a href="w05-modify-ai-code.html"><div class="label">← สัปดาห์ที่แล้ว</div><div class="title">W05 — แก้ไข + ต่อยอด</div></a>
+      <a href="w07-cli-workshop.html" class="next"><div class="label">สัปดาห์ถัดไป →</div><div class="title">W07 — Workshop 3 CLI Tools</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+<script src="js/diagram-tools/mermaid-editor.js" defer></script>
+<script src="js/code-tools/python-runner.js" defer></script>
+<script src="js/code-tools/spec-scorecard.js" defer></script>
+</body>
+</html>

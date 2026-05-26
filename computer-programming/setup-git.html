@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Git + GitHub Setup | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>🚀 เริ่มต้น (Setup)</h4>
+      <a href="setup-python.html"><span class="num">🐍</span> ติดตั้ง Python</a>
+      <a href="setup-vscode.html"><span class="num">💻</span> VS Code / Cursor</a>
+      <a href="setup-terminal.html"><span class="num">🖥️</span> Terminal พื้นฐาน</a>
+      <a href="setup-pip.html"><span class="num">📦</span> pip + Packages</a>
+      <a href="setup-git.html" class="active"><span class="num">🌿</span> Git + GitHub</a>
+      <a href="setup-colab.html"><span class="num">☁️</span> Google Colab</a>
+      <a href="setup-ai.html"><span class="num">🤖</span> AI Accounts</a>
+      <a href="python-basics.html"><span class="num">📖</span> Python Cheat-sheet</a>
+
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">Setup · เซฟผลงาน · กลับไปย้อนได้ · ของคุณตลอดชีวิต</span>
+    <h1>🌿 Git + GitHub Setup</h1>
+    <p class="lede">
+      <strong>Git</strong> = "time machine สำหรับ code" — เซฟทุกการแก้ · ย้อนได้ทุกจุด ·
+      <strong>GitHub</strong> = "Google Drive สำหรับ code + portfolio ให้คนเห็น" ·
+      W04 จะเริ่มใช้เลย · Final Project (W15) ต้องส่งผ่าน GitHub
+    </p>
+
+    <div class="callout info">
+      <strong>ทำไม Git ตั้งแต่ W04</strong>
+      Git ดูยากตอนแรก · แต่ถ้าฝึกตั้งแต่ <em>"โปรเจกต์เล็ก"</em> ของ W04 — พอถึง W15 ใช้คล่อง ·
+      ถ้าเริ่มตอน W15 ที่ project ใหญ่แล้วเรียน Git → สับสนสองชั้น
+    </div>
+
+    <h2>📥 ขั้นที่ 1 — ติดตั้ง Git</h2>
+
+    <h3>Windows</h3>
+    <ol class="steps">
+      <li>
+        <strong>ดาวน์โหลด <a href="https://git-scm.com/download/win" target="_blank">git-scm.com/download/win</a></strong>
+        — โหลดอัตโนมัติ Git for Windows installer
+      </li>
+      <li>
+        <strong>รัน installer · ค่า default เกือบทั้งหมดดีพอ</strong>
+        — มี <em>"Adjusting your PATH environment"</em> → เลือก <em>"Git from the command line and also from 3rd-party software"</em>
+      </li>
+      <li>
+        <strong>"Choosing the default editor used by Git"</strong>
+        → เลือก <em>"Use Visual Studio Code as Git's default editor"</em> (ลง VS Code ไว้แล้ว)
+      </li>
+      <li>
+        <strong>"Choose the default branch name"</strong>
+        → เลือก <em>"Override the default branch name for new repositories"</em> · พิมพ์ <code>main</code>
+        · GitHub ใช้ <code>main</code> เป็น default · ตรงกัน
+      </li>
+      <li>ส่วนที่เหลือ — กด Next ไปเรื่อย ๆ</li>
+    </ol>
+
+    <h3>Mac</h3>
+    <ol class="steps">
+      <li>
+        <strong>ตรวจก่อน — Mac ส่วนใหญ่มี Git ติดมาด้วย</strong>
+        <pre><code>git --version
+# git version 2.39.x (Apple Git-xxx) → มีแล้ว ข้ามได้</code></pre>
+      </li>
+      <li>
+        <strong>ถ้าไม่มี — ผ่าน Xcode Command Line Tools</strong>
+        <pre><code>xcode-select --install</code></pre>
+        Mac จะ popup ขออนุญาตลง · ใช้เวลา ~5 นาที
+      </li>
+      <li>
+        <strong>หรือผ่าน Homebrew</strong>
+        <pre><code>brew install git</code></pre>
+      </li>
+    </ol>
+
+    <h3>ตรวจสอบ</h3>
+    <pre><code>git --version
+# ต้องเห็น: git version 2.40.x หรือใหม่กว่า</code></pre>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>👤 ขั้นที่ 2 — Configure Git (ครั้งเดียวจบ)</h2>
+
+    <p>บอก Git ว่าใครเป็นคนทำการเปลี่ยนแปลง · ข้อมูลนี้จะติดในทุก commit:</p>
+
+    <pre><code>git config --global user.name "Thummaros Ratanapongsai"
+git config --global user.email "your-email@ubu.ac.th"
+
+# ตรวจว่าตั้งถูก
+git config --global --list</code></pre>
+
+    <div class="callout warn">
+      <strong>ใช้ email เดียวกับ GitHub</strong>
+      ใช้ email ที่จะ register GitHub · ถ้าใช้คนละ email — commit จะไม่ขึ้นเชื่อมโยงกับ profile GitHub
+    </div>
+
+    <h3>เพิ่ม config ที่แนะนำ</h3>
+    <pre><code># ใช้ main เป็น default branch
+git config --global init.defaultBranch main
+
+# สีสันใน terminal
+git config --global color.ui auto
+
+# แก้ Windows line-ending ให้เรียบร้อย (Windows only)
+git config --global core.autocrlf true</code></pre>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🐙 ขั้นที่ 3 — สร้างบัญชี GitHub</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>ไปที่ <a href="https://github.com" target="_blank">github.com</a> → Sign up</strong>
+        — ฟรี · ใช้ email เดียวกับที่ตั้งใน <code>git config user.email</code>
+      </li>
+      <li>
+        <strong>ตั้ง username</strong>
+        — สั้น · จำง่าย · มืออาชีพ (อย่า <code>cute_unicorn_2025</code>) · username คือ <em>"portfolio URL"</em> ของคุณ
+      </li>
+      <li>
+        <strong>ยืนยัน email</strong>
+        — GitHub ส่งลิงก์มา · กดยืนยัน
+      </li>
+      <li>
+        <strong>(แนะนำ) เปิด 2FA</strong>
+        — Settings → Password and authentication → Two-factor authentication ·
+        ใช้ Google Authenticator / Authy · <em>"ป้องกัน account หาย"</em>
+      </li>
+    </ol>
+
+    <h2>🔑 ขั้นที่ 4 — ให้ Git บนเครื่องคุยกับ GitHub ได้</h2>
+
+    <p>GitHub ไม่ยอมให้ <code>git push</code> ด้วย password ตั้งแต่ 2021 · ต้องใช้ <strong>Personal Access Token (PAT)</strong> หรือ <strong>SSH Key</strong></p>
+
+    <h3>ทางง่ายที่สุด — Git Credential Manager (Windows/Mac)</h3>
+    <ul>
+      <li>Git for Windows มี Credential Manager ติดมาด้วย · ครั้งแรกที่ <code>git push</code> จะเด้ง browser ให้ login GitHub · กด Authorize → จำให้ตลอดไป</li>
+      <li>Mac: Xcode CLI / brew git ก็มีเหมือนกัน · จะใช้ Keychain เก็บ token</li>
+    </ul>
+
+    <h3>ทางเลือก — Personal Access Token (PAT)</h3>
+    <ol class="steps">
+      <li>GitHub → Settings → Developer settings → <em>Personal access tokens (classic)</em> → Generate new token</li>
+      <li>Note: <code>cp-course-laptop</code> · Expiration: <code>90 days</code></li>
+      <li>เลือก scope: <code>repo</code> + <code>workflow</code></li>
+      <li>กด Generate · <strong>copy token ทันที</strong> (เห็นครั้งเดียว!)</li>
+      <li>ครั้งแรกที่ <code>git push</code> ถาม password → paste token (ไม่ใช่ password GitHub)</li>
+    </ol>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🚀 ขั้นที่ 5 — Workflow แรก (5 คำสั่งที่ใช้ 90%)</h2>
+
+    <p>สมมุติ workflow ของการเริ่ม project ใหม่ที่จะ push ขึ้น GitHub:</p>
+
+    <h3>วิธีที่ 1 — เริ่มจาก local แล้ว push ขึ้น GitHub</h3>
+    <pre><code># 1. cd เข้า folder project
+cd cp-w04
+
+# 2. init Git ใน folder นี้ (ทำครั้งเดียว)
+git init
+
+# 3. ดูสถานะ — ตอนนี้ทุกไฟล์เป็น "untracked"
+git status
+
+# 4. เพิ่มไฟล์ทั้งหมดเข้า "staging area"
+git add .
+# หรือเฉพาะไฟล์:
+git add hello.py grade_calc.py
+
+# 5. commit — บันทึก snapshot · ใส่ข้อความสั้น ๆ
+git commit -m "first version of grade calculator"
+
+# 6. ไปสร้าง repo เปล่าบน GitHub (ไม่ติ๊ก "Add README")
+# https://github.com/new
+
+# 7. เชื่อม local ↔ GitHub (URL ดูจากหน้า repo ที่สร้าง)
+git remote add origin https://github.com/USERNAME/cp-w04.git
+
+# 8. push ขึ้น GitHub
+git branch -M main          # ตั้งชื่อ branch หลักเป็น main
+git push -u origin main</code></pre>
+
+    <h3>วิธีที่ 2 — สร้างบน GitHub ก่อน · clone ลง local</h3>
+    <pre><code># 1. สร้าง repo บน github.com/new
+#    ติ๊ก "Add a README" · กด Create
+
+# 2. ที่หน้า repo · กดปุ่ม "Code" → Copy URL
+
+# 3. ใน terminal local — clone
+git clone https://github.com/USERNAME/cp-w04.git
+cd cp-w04
+
+# พร้อมเขียน code · commit + push ได้เลย</code></pre>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🔁 Loop ที่ใช้ทุกวัน — แก้ → commit → push</h2>
+
+    <pre><code># 1. แก้ไขไฟล์ใน VS Code · Save
+
+# 2. ดูว่ามีอะไรเปลี่ยน
+git status
+
+# 3. ดู diff (เพิ่ม/ลบบรรทัดไหน)
+git diff
+
+# 4. add + commit
+git add .
+git commit -m "fix bug in grade calc for score over 100"
+
+# 5. push ขึ้น GitHub
+git push</code></pre>
+
+    <div class="callout tip">
+      <strong>เขียน commit message ที่ดี</strong>
+      <ul style="margin-top:6px">
+        <li>✅ <em>"add CSV import to grade calc"</em></li>
+        <li>✅ <em>"fix off-by-one error in score loop"</em></li>
+        <li>❌ <em>"update"</em> — ไม่บอกอะไร</li>
+        <li>❌ <em>"asdf"</em> — เพื่อนตามไม่ได้</li>
+      </ul>
+      เริ่มด้วย verb (add, fix, update, remove, refactor) · บอกว่า <em>"ทำอะไร"</em>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>📂 .gitignore — บอก Git ว่าไฟล์ไหนไม่ต้องเก็บ</h2>
+
+    <p>สร้างไฟล์ชื่อ <code>.gitignore</code> ใน root ของ project · ทุกไฟล์ที่ Match จะถูกข้าม:</p>
+
+    <pre><code># Python
+__pycache__/
+*.pyc
+*.pyo
+.venv/
+venv/
+
+# Secrets — ห้าม commit
+.env
+*.key
+credentials.json
+
+# OS
+.DS_Store           # Mac
+Thumbs.db           # Windows
+
+# IDE
+.vscode/
+.idea/
+
+# Data ใหญ่
+*.csv
+data/raw/
+*.sqlite
+
+# Output
+output/
+logs/</code></pre>
+
+    <div class="callout warn">
+      <strong>⚠️ ตรวจก่อน commit ครั้งแรก</strong>
+      <code>git status</code> · ดูว่า <em>"ไม่มี .env / token / password"</em> ใน list · ถ้ามี → เพิ่มใน .gitignore ก่อน
+      · <em>"commit secrets เข้า GitHub = ของหลุดทันที"</em>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🧰 ดู History · ย้อนกลับ</h2>
+
+    <pre><code># ดู log commits ทั้งหมด
+git log
+git log --oneline           # สั้น ๆ
+git log --oneline -5        # 5 commits ล่าสุด
+
+# ดู diff ของ commit เดียว
+git show abc1234
+
+# ดูไฟล์ใน commit เก่า (ดูเฉย ๆ ไม่แก้)
+git show abc1234:hello.py
+
+# ย้อนไฟล์เดียวกลับสู่ commit เก่า
+git checkout abc1234 -- hello.py
+
+# ยกเลิก changes ที่ยังไม่ commit
+git restore hello.py         # ของ Git ใหม่ (2.23+)
+git checkout -- hello.py     # ของเก่า · ทำงานเหมือนกัน</code></pre>
+
+    <h2>🌿 Branch — ทดลองโดยไม่กระทบ main</h2>
+
+    <pre><code># ดู branch ทั้งหมด
+git branch
+
+# สร้าง branch ใหม่ + switch ไปเลย
+git checkout -b add-csv-import
+
+# ทำงาน · commit ตามปกติ
+git add .
+git commit -m "add CSV import"
+
+# กลับมา main
+git checkout main
+
+# รวม branch กลับเข้า main
+git merge add-csv-import
+
+# ลบ branch ที่ใช้เสร็จแล้ว
+git branch -d add-csv-import</code></pre>
+
+    <p style="color:var(--text-muted);font-size:13.5px">
+      📚 ใน W04–W10 ส่วนใหญ่ทำงาน main · branch จะใช้จริงตอน W14 (deploy) + W15 (project ใหญ่)
+    </p>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🔧 ปัญหาที่พบบ่อย</h2>
+
+    <h3>1. <code>fatal: not a git repository</code></h3>
+    <ul>
+      <li>ลืม <code>git init</code> · หรืออยู่ผิด folder · <code>pwd</code> ตรวจก่อน</li>
+    </ul>
+
+    <h3>2. <code>fatal: remote origin already exists</code></h3>
+    <pre><code>git remote remove origin
+git remote add origin https://github.com/USERNAME/repo.git</code></pre>
+
+    <h3>3. <code>error: failed to push some refs</code></h3>
+    <ul>
+      <li>GitHub มีการเปลี่ยนแปลง (เช่น เพิ่ม README ตอนสร้าง) ที่ local ไม่มี · <code>git pull --rebase</code> ก่อน push</li>
+    </ul>
+
+    <h3>4. push แล้วถาม password — <code>Authentication failed</code></h3>
+    <ul>
+      <li>GitHub ไม่รับ password แบบเก่าตั้งแต่ 2021 · ใช้ PAT (ดูขั้นที่ 4) แทน password</li>
+      <li>หรือใช้ Credential Manager → ครั้งแรกจะเด้ง browser ให้ authorize</li>
+    </ul>
+
+    <h3>5. เผลอ commit .env ที่มี secret</h3>
+    <ul>
+      <li>ถ้ายังไม่ push: <code>git rm --cached .env</code> + เพิ่ม .env ใน .gitignore + commit</li>
+      <li>ถ้า push ไปแล้ว: token รั่วแล้ว · <em>"ต้องเปลี่ยน token / password ทันที"</em></li>
+      <li>ใช้ <a href="https://github.com/newren/git-filter-repo" target="_blank">git-filter-repo</a> ลบจาก history (ขั้น advanced)</li>
+    </ul>
+
+    <h3>6. ลืมว่า commit ไหนเปลี่ยนอะไร</h3>
+    <pre><code>git log --oneline --all
+git reflog                  # log ของ HEAD movement · กู้ commit หายได้</code></pre>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🤖 ใช้ AI ช่วยกับ Git</h2>
+
+    <div class="callout info">
+      <strong>Prompts ที่ใช้ได้</strong>
+      <ul style="margin-top:6px">
+        <li><em>"git status บอกว่า untracked + modified + staged ต่างกันยังไง?"</em></li>
+        <li><em>"ช่วยเขียน commit message สำหรับ diff นี้: [paste]"</em></li>
+        <li><em>"ลบ commit ที่มี secret ออกจาก history ทำยังไง?"</em></li>
+        <li><em>"merge conflict ใน hello.py · ช่วยอธิบายว่า &lt;&lt;&lt;&lt;&lt;&lt;&lt; ===== &gt;&gt;&gt;&gt;&gt;&gt;&gt; หมายความว่ายังไง"</em></li>
+        <li><em>"undo commit ล่าสุดแต่เก็บ changes ใน working dir ทำยังไง?"</em></li>
+      </ul>
+    </div>
+
+    <h2>🎨 GUI Alternative — สำหรับคนที่ไม่ชอบ terminal</h2>
+
+    <table>
+      <thead><tr><th>เครื่องมือ</th><th>ดี</th><th>เหมาะกับ</th></tr></thead>
+      <tbody>
+        <tr><td><strong>VS Code Source Control</strong></td><td>ในตัว · ไม่ต้องลงอะไรเพิ่ม</td><td>ทุกคนในคอร์สนี้</td></tr>
+        <tr><td><strong>GitHub Desktop</strong></td><td>UI ง่าย · clone/push ปุ่มเดียว</td><td>คนเริ่มต้น</td></tr>
+        <tr><td><strong>GitKraken</strong></td><td>visualize branch สวย</td><td>project ที่ branch เยอะ</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>VS Code Source Control — ใช้ได้ทันที</strong>
+      หลัง <code>git init</code> ใน folder · กด icon ⎇ ใน sidebar ซ้าย ·
+      เห็นไฟล์เปลี่ยน · กด + เพื่อ stage · พิมพ์ commit message · กดเครื่องหมายถูก · กด ··· → Push
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🎯 Workshop — ครั้งแรกของคุณ (15 นาที)</h2>
+    <ol class="steps">
+      <li>
+        <strong>สร้าง repo บน GitHub</strong>
+        — github.com/new · ชื่อ <code>cp-w04-test</code> · ติ๊ก "Add a README" · Create
+      </li>
+      <li>
+        <strong>clone ลง local</strong>
+        — copy URL → terminal: <code>git clone https://github.com/USERNAME/cp-w04-test.git</code>
+      </li>
+      <li>
+        <strong>cd เข้า folder + เปิดใน VS Code</strong>
+        <code>cd cp-w04-test &amp;&amp; code .</code>
+      </li>
+      <li>
+        <strong>สร้าง <code>hello.py</code></strong>
+        ใส่ <code>print("first commit!")</code>
+      </li>
+      <li>
+        <strong>commit + push</strong>
+        <pre><code>git add .
+git commit -m "add hello.py"
+git push</code></pre>
+      </li>
+      <li>
+        <strong>เช็คบน GitHub</strong>
+        — refresh หน้า repo · เห็น hello.py ✅
+      </li>
+      <li>
+        <strong>แก้ + push ครั้งที่ 2</strong>
+        — เพิ่มบรรทัด · save · <code>git add . &amp;&amp; git commit -m "add greeting" &amp;&amp; git push</code>
+      </li>
+      <li>
+        <strong>ดู history</strong>
+        — บน GitHub: ปุ่ม "Commits" · เห็น 2 commit ที่ทำไป
+      </li>
+    </ol>
+
+    <h2>🎯 Checklist ก่อนไปต่อ</h2>
+    <ul>
+      <li>☐ <code>git --version</code> ทำงาน</li>
+      <li>☐ <code>git config user.name / user.email</code> ตั้งแล้ว</li>
+      <li>☐ มี GitHub account + 2FA</li>
+      <li>☐ <code>git push</code> ครั้งแรกสำเร็จ (Workshop ข้อ 5)</li>
+      <li>☐ มี <code>.gitignore</code> ใน project (อย่างน้อยมี <code>.env</code>)</li>
+    </ul>
+
+    <div class="pager">
+      <a href="setup-pip.html"><div class="label">← ก่อนหน้า</div><div class="title">pip + Packages</div></a>
+      <a href="setup-ai.html" class="next"><div class="label">ขั้นถัดไป →</div><div class="title">AI Accounts</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+</body>
+</html>

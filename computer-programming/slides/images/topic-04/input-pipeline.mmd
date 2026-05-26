@@ -1,0 +1,20 @@
+---
+title: Input Validation Pipeline
+---
+flowchart LR
+    S["🌐 Source<br/>terminal · file · API"] --> C["1️⃣ Capture<br/>read raw bytes"]
+    C --> T["2️⃣ Convert<br/>str → int / float / date"]
+    T --> V["3️⃣ Validate<br/>range · format · rules"]
+    V --> N["4️⃣ Sanitise<br/>strip · escape · normalise"]
+    N --> P["✅ Trusted value<br/>safe to use"]
+
+    V -.->|invalid| R["🔄 Reject<br/>or re-prompt"]
+
+    classDef src fill:#e8f0f8,stroke:#3776ab,color:#0b1020
+    classDef step fill:#3776ab,stroke:#1e4870,color:#ffffff,stroke-width:2px
+    classDef ok fill:#34d399,stroke:#0b8a5a,color:#0b1020,stroke-width:2px
+    classDef bad fill:#ef4444,stroke:#9e2929,color:#ffffff
+    class S src
+    class C,T,V,N step
+    class P ok
+    class R bad

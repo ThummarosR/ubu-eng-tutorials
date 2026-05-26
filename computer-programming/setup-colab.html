@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Google Colab — Quickstart | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>🚀 เริ่มต้น (Setup)</h4>
+      <a href="setup-python.html"><span class="num">🐍</span> ติดตั้ง Python</a>
+      <a href="setup-vscode.html"><span class="num">💻</span> VS Code / Cursor</a>
+      <a href="setup-terminal.html"><span class="num">🖥️</span> Terminal พื้นฐาน</a>
+      <a href="setup-pip.html"><span class="num">📦</span> pip + Packages</a>
+      <a href="setup-git.html"><span class="num">🌿</span> Git + GitHub</a>
+      <a href="setup-colab.html" class="active"><span class="num">☁️</span> Google Colab</a>
+      <a href="setup-ai.html"><span class="num">🤖</span> AI Accounts</a>
+      <a href="python-basics.html"><span class="num">📖</span> Python Cheat-sheet</a>
+
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">Setup · Python บน cloud ไม่ต้องลง</span>
+    <h1>☁️ Google Colab — Quickstart</h1>
+    <p class="lede">
+      <strong>Google Colab</strong> = Jupyter Notebook ที่ Google โฮสต์ไว้ให้ฟรี · เปิดในเบราว์เซอร์ ·
+      <em>"ไม่ต้องลงอะไรเลย"</em> · มี Python + pandas + numpy + matplotlib พร้อมใช้
+      · เหมาะกับ <strong>Chromebook / iPad / เครื่องที่ลง Python ไม่ได้</strong>
+    </p>
+
+    <h2>🤔 เมื่อไหร่ใช้ Colab เมื่อไหร่ใช้ VS Code</h2>
+
+    <table>
+      <thead>
+        <tr><th>สถานการณ์</th><th>เลือก</th><th>เพราะ</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>เครื่องเป็น Chromebook / iPad / ห้องสมุดมหาลัย</td>
+          <td>🟢 <strong>Colab</strong></td>
+          <td>เปิดเบราว์เซอร์เท่านั้น</td>
+        </tr>
+        <tr>
+          <td>ห้องคอมพิวเตอร์ที่ลงโปรแกรมไม่ได้ (ไม่มี admin)</td>
+          <td>🟢 <strong>Colab</strong></td>
+          <td>ไม่ต้องลงอะไร</td>
+        </tr>
+        <tr>
+          <td>ทำ data analysis · plot · ทดลอง numpy/pandas</td>
+          <td>🟢 <strong>Colab</strong></td>
+          <td>ดู plot inline · cell-by-cell ดีกว่า</td>
+        </tr>
+        <tr>
+          <td>สอน / แชร์ code ให้เพื่อนรันเห็นทันที</td>
+          <td>🟢 <strong>Colab</strong></td>
+          <td>แชร์ link เปิดทันที</td>
+        </tr>
+        <tr>
+          <td>เขียน CLI tool / app หลายไฟล์ (W04–W07, W11–W15)</td>
+          <td>🔵 <strong>VS Code</strong></td>
+          <td>Colab จัดการหลายไฟล์ลำบาก</td>
+        </tr>
+        <tr>
+          <td>ทำ project ใหญ่ที่ต้อง deploy</td>
+          <td>🔵 <strong>VS Code</strong></td>
+          <td>Colab ไม่มี git / deploy พร้อมในที่เดียว</td>
+        </tr>
+        <tr>
+          <td>เน็ตช้า / ไม่เสถียร</td>
+          <td>🔵 <strong>VS Code</strong></td>
+          <td>Colab ต้องออนไลน์ตลอด</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>คำแนะนำสำหรับคอร์สนี้</strong>
+      ใช้ <strong>คู่กัน</strong> · VS Code เป็น editor หลัก (W04–W07, W11–W15) ·
+      Colab สำหรับ <strong>W08 (CSV), W09 (NumPy + Matplotlib), W10 (Data Project)</strong> ที่มี plot
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🚀 ขั้นที่ 1 — เปิด Colab ครั้งแรก</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>เปิด <a href="https://colab.research.google.com" target="_blank">colab.research.google.com</a></strong>
+        — login ด้วย Google account (ของมหาลัย <em>@ubu.ac.th</em> หรือ Gmail ส่วนตัว)
+      </li>
+      <li>
+        <strong>กด "New notebook"</strong>
+        — มุมขวาล่างของ popup ที่เด้งขึ้นครั้งแรก · หรือเมนู File → New notebook
+      </li>
+      <li>
+        <strong>เปลี่ยนชื่อ notebook</strong>
+        — คลิกที่ <code>Untitled0.ipynb</code> บนซ้าย → ตั้งชื่อใหม่เช่น <code>w08-tables.ipynb</code>
+      </li>
+      <li>
+        <strong>ลองรัน cell แรก</strong>
+        — ใน cell ว่าง พิมพ์:
+        <pre><code>print("สวัสดี Colab!")
+2 + 3</code></pre>
+        กด <kbd>Shift + Enter</kbd> · cell จะรันและสร้าง cell ใหม่ข้างล่าง
+      </li>
+    </ol>
+
+    <div class="callout info">
+      <strong>"Connecting..." แรกใช้เวลา 5–10 วินาที</strong>
+      Colab จัด VM ให้ใหม่ทุกครั้ง · ครั้งแรกของ session ช้าหน่อย · ครั้งต่อไปเร็ว
+    </div>
+
+    <h2>📓 ขั้นที่ 2 — รู้จัก Cell</h2>
+
+    <p>
+      Notebook ประกอบด้วย <em>cells</em> — กล่องเล็ก ๆ ที่รันแยกกันได้ · มี 2 ประเภท:
+    </p>
+
+    <table>
+      <thead><tr><th>ประเภท Cell</th><th>ใช้ทำอะไร</th><th>วิธีเพิ่ม</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Code cell</strong></td>
+          <td>เขียน + รัน Python</td>
+          <td>กด <em>+ Code</em> บน toolbar</td>
+        </tr>
+        <tr>
+          <td><strong>Text cell</strong></td>
+          <td>เขียนคำอธิบาย (Markdown)</td>
+          <td>กด <em>+ Text</em> บน toolbar</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>Shortcut ที่ใช้ทุกวัน</h3>
+    <table>
+      <thead><tr><th>Shortcut</th><th>ทำอะไร</th></tr></thead>
+      <tbody>
+        <tr><td><kbd>Shift + Enter</kbd></td><td>รัน cell + ไปต่อ cell ถัดไป</td></tr>
+        <tr><td><kbd>Ctrl + Enter</kbd></td><td>รัน cell + อยู่ที่เดิม</td></tr>
+        <tr><td><kbd>Alt + Enter</kbd></td><td>รัน + สร้าง cell ใหม่ใต้ต่อ</td></tr>
+        <tr><td><kbd>Ctrl + M B</kbd></td><td>เพิ่ม cell ใหม่ใต้ปัจจุบัน</td></tr>
+        <tr><td><kbd>Ctrl + M D</kbd> (2 ครั้ง)</td><td>ลบ cell ปัจจุบัน</td></tr>
+        <tr><td><kbd>Ctrl + M M</kbd></td><td>เปลี่ยน cell เป็น Text (Markdown)</td></tr>
+        <tr><td><kbd>Ctrl + M Y</kbd></td><td>เปลี่ยนกลับเป็น Code</td></tr>
+      </tbody>
+    </table>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>📦 ขั้นที่ 3 — Package ที่มีให้แล้ว vs ที่ต้องลงเอง</h2>
+
+    <h3>มีให้แล้ว (ใช้ได้ทันที)</h3>
+    <p style="color:var(--text-muted)">
+      <code>numpy</code> · <code>pandas</code> · <code>matplotlib</code> · <code>seaborn</code> ·
+      <code>scipy</code> · <code>sklearn</code> · <code>requests</code> · <code>beautifulsoup4</code> ·
+      <code>tensorflow</code> · <code>torch</code> — ส่วนใหญ่ของคอร์สนี้พร้อมใช้
+    </p>
+
+    <h3>ต้องลงเอง (พิมพ์ใน cell)</h3>
+    <pre><code>!pip install streamlit
+!pip install line-bot-sdk</code></pre>
+    <p style="color:var(--text-muted);font-size:13.5px">
+      เครื่องหมาย <code>!</code> ข้างหน้า = "รันคำสั่ง shell ไม่ใช่ Python" · ต้องลงใหม่ทุกครั้งที่เปิด notebook (VM ถูก reset)
+    </p>
+
+    <h2>📂 ขั้นที่ 4 — อัปโหลด CSV / ไฟล์ข้อมูล</h2>
+
+    <h3>วิธีที่ 1 — ลากวาง (ครั้งเดียวจบ)</h3>
+    <ol class="steps">
+      <li>คลิก icon <em>📁 Files</em> ใน sidebar ซ้าย</li>
+      <li>ลากไฟล์จากเครื่องเข้า panel · หรือกดปุ่ม Upload</li>
+      <li>ในโค้ด อ่านได้ทันที: <code>pd.read_csv("scores.csv")</code></li>
+      <li>⚠️ ไฟล์จะหายเมื่อ disconnect · ต้องอัปโหลดใหม่ทุก session</li>
+    </ol>
+
+    <h3>วิธีที่ 2 — Mount Google Drive (ใช้บ่อย)</h3>
+    <pre><code>from google.colab import drive
+drive.mount('/content/drive')
+
+# หลัง mount — อ่านไฟล์จาก Drive ได้ตรง ๆ
+import pandas as pd
+df = pd.read_csv('/content/drive/MyDrive/cp-w08/scores.csv')</code></pre>
+    <p style="color:var(--text-muted);font-size:13.5px">
+      ครั้งแรกจะ popup ขออนุญาตเข้า Drive · กด Allow · <em>"ตำแหน่งของไฟล์"</em> เหมือนใน Google Drive แต่ขึ้นต้น <code>/content/drive/MyDrive/</code>
+    </p>
+
+    <h3>วิธีที่ 3 — ดาวน์โหลดจาก URL</h3>
+    <pre><code>!wget https://example.com/data.csv -O scores.csv
+
+# หรือใน pandas โดยตรง
+df = pd.read_csv("https://example.com/data.csv")</code></pre>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>📊 ขั้นที่ 5 — Plot ใน Colab</h2>
+
+    <p>Colab เก่งเรื่องนี้สุด · plot จะ <em>"แสดงใต้ cell ทันที"</em>:</p>
+
+    <pre><code>import matplotlib.pyplot as plt
+import numpy as np
+
+x = np.linspace(0, 10, 100)
+y = np.sin(x)
+
+plt.plot(x, y)
+plt.title("sin(x)")
+plt.xlabel("x")
+plt.ylabel("y")
+plt.grid(True)
+plt.show()</code></pre>
+
+    <p>กด Shift+Enter → กราฟ sin(x) แสดงใต้ cell · ไม่ต้องเปิด window แยก</p>
+
+    <h2>💾 ขั้นที่ 6 — เซฟ + แชร์</h2>
+
+    <h3>เซฟ</h3>
+    <ul>
+      <li><strong>อัตโนมัติ:</strong> Colab save ทุก ~30 วินาที (Drive)</li>
+      <li><strong>เซฟทันที:</strong> <kbd>Ctrl + S</kbd></li>
+      <li>ไฟล์อยู่ใน Google Drive → <code>Colab Notebooks/</code></li>
+    </ul>
+
+    <h3>แชร์</h3>
+    <ul>
+      <li>กด <em>Share</em> มุมขวาบน → เปลี่ยนเป็น <em>"Anyone with the link"</em></li>
+      <li>copy link · ส่งให้เพื่อน → เพื่อนกด <em>"Open in Colab"</em> → รันได้ทันที</li>
+      <li>เพื่อนที่ไม่ได้รับสิทธิ์แก้ → กด <em>"File → Save a copy in Drive"</em> เพื่อมีของตัวเอง</li>
+    </ul>
+
+    <h3>Download เป็นไฟล์</h3>
+    <ul>
+      <li>File → Download → <code>.ipynb</code> (notebook) หรือ <code>.py</code> (Python script ปกติ)</li>
+      <li>เปิดใน VS Code ได้ทันที (VS Code มี Jupyter extension)</li>
+    </ul>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🌉 สะพาน Colab → VS Code</h2>
+
+    <p>
+      Colab เหมาะกับ <em>"ทดลอง"</em> · พอจะทำเป็น project จริง — ย้ายลง VS Code · 3 วิธี:
+    </p>
+
+    <table>
+      <thead><tr><th>วิธี</th><th>ขั้นตอน</th><th>ใช้เมื่อ</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>ดาวน์โหลด .py</strong></td>
+          <td>File → Download → .py · เปิดใน VS Code</td>
+          <td>ของ Colab แค่ทดลอง · จะรันเป็น script ปกติ</td>
+        </tr>
+        <tr>
+          <td><strong>ดาวน์โหลด .ipynb</strong></td>
+          <td>File → Download → .ipynb · เปิดใน VS Code (ลง Jupyter extension)</td>
+          <td>อยากเก็บโครงสร้าง cell ไว้</td>
+        </tr>
+        <tr>
+          <td><strong>copy-paste</strong></td>
+          <td>เลือก code cell · paste ในไฟล์ <code>.py</code> ของ VS Code</td>
+          <td>ของ Colab เป็น snippet · ใช้บางส่วน</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>⚠️ ข้อจำกัด Colab — รู้ไว้กันเซอร์ไพรส์</h2>
+
+    <h3>1. Session หมดอายุ</h3>
+    <ul>
+      <li><strong>Idle timeout:</strong> ไม่ใช้งาน ~90 นาที → disconnect</li>
+      <li><strong>Total runtime:</strong> ~12 ชั่วโมงสำหรับ free tier</li>
+      <li><strong>กระทบยังไง:</strong> ตัวแปร / package ที่ลงเอง / ไฟล์ที่อัปโหลด — <em>หายหมด</em></li>
+      <li><strong>แก้:</strong> Mount Drive ไว้ → ข้อมูลปลอดภัย · cell ลง package ให้รันตอนเริ่ม session</li>
+    </ul>
+
+    <h3>2. GPU มีจำกัด</h3>
+    <ul>
+      <li>Free tier มี GPU เป็น <em>"best effort"</em> — บางช่วงไม่ได้</li>
+      <li>คอร์สนี้ไม่ต้องใช้ GPU เลย · ไม่ต้องห่วง</li>
+    </ul>
+
+    <h3>3. ลำบากกับโปรเจกต์ที่มีหลายไฟล์</h3>
+    <ul>
+      <li>Colab ออกแบบสำหรับ <em>"1 notebook 1 ไฟล์"</em></li>
+      <li>ทำ <code>helpers.py</code> + import ใน notebook ได้ แต่จัดการลำบาก</li>
+      <li>W04–W07 (CLI tools) · W11+ (OOP project) → ใช้ VS Code ดีกว่า</li>
+    </ul>
+
+    <h3>4. Git ใช้ลำบาก</h3>
+    <ul>
+      <li>มี integration กับ GitHub (File → Save a copy in GitHub) แต่ workflow แปลก</li>
+      <li>W14 (deploy + git) → ใช้ VS Code</li>
+    </ul>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🤖 ใช้ AI ใน Colab</h2>
+
+    <p>Colab มี AI ในตัวเรียก <strong>Gemini</strong> (ฟรี · ใช้ Google account เดิม):</p>
+
+    <ul>
+      <li>👁️ กด icon ⭐ <em>"Gemini"</em> มุมขวาบน → chat ด้านขวา</li>
+      <li>เลือก code cell → กด <em>"Explain code"</em> → Gemini อธิบาย</li>
+      <li>กด <em>"Fix error"</em> ใต้ traceback → ลองแก้ให้</li>
+    </ul>
+
+    <p style="color:var(--text-muted);font-size:13.5px">
+      Gemini ใน Colab เก่งพอใช้ · ถ้าอยากใช้ Claude/ChatGPT คู่ — เปิดแท็บแยก · copy code ↔ paste
+    </p>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🎯 Checklist ก่อนไปต่อ</h2>
+    <ul>
+      <li>☐ เปิด <a href="https://colab.research.google.com" target="_blank">colab.research.google.com</a> + login ได้</li>
+      <li>☐ สร้าง notebook ใหม่ + รัน <code>print("hi")</code> ได้</li>
+      <li>☐ เพิ่ม / ลบ cell ได้</li>
+      <li>☐ อัปโหลดไฟล์ CSV → อ่านด้วย pandas ได้</li>
+      <li>☐ Mount Google Drive ได้ (ทดสอบครั้งเดียว · จะใช้ใน W08–W10)</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>3 ตัวเลือก setup ของคอร์สนี้</strong>
+      <ul style="margin-top:6px">
+        <li>💪 <em>เต็มสูบ:</em> Python + VS Code + Colab (ใช้คู่กันตามงาน) — แนะนำ</li>
+        <li>🚀 <em>เริ่มเร็ว:</em> Colab อย่างเดียว → W08+ จะลำบาก แต่ทำ W01–W07 ได้</li>
+        <li>🖥️ <em>offline:</em> Python + VS Code — ทำได้ทุกอย่าง แต่ plot ดูยากกว่า Colab</li>
+      </ul>
+    </div>
+
+    <div class="pager">
+      <a href="setup-vscode.html"><div class="label">← ก่อนหน้า</div><div class="title">VS Code / Cursor</div></a>
+      <a href="python-basics.html" class="next"><div class="label">ขั้นถัดไป →</div><div class="title">Python Cheat-sheet</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terminal พื้นฐาน — PowerShell / Terminal | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>🚀 เริ่มต้น (Setup)</h4>
+      <a href="setup-python.html"><span class="num">🐍</span> ติดตั้ง Python</a>
+      <a href="setup-vscode.html"><span class="num">💻</span> VS Code / Cursor</a>
+      <a href="setup-terminal.html" class="active"><span class="num">🖥️</span> Terminal พื้นฐาน</a>
+      <a href="setup-pip.html"><span class="num">📦</span> pip + Packages</a>
+      <a href="setup-git.html"><span class="num">🌿</span> Git + GitHub</a>
+      <a href="setup-colab.html"><span class="num">☁️</span> Google Colab</a>
+      <a href="setup-ai.html"><span class="num">🤖</span> AI Accounts</a>
+      <a href="python-basics.html"><span class="num">📖</span> Python Cheat-sheet</a>
+
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">Setup · Terminal คือเครื่องมือ ไม่ใช่หน้าจอน่ากลัว</span>
+    <h1>🖥️ Terminal พื้นฐาน — PowerShell / Terminal</h1>
+    <p class="lede">
+      <strong>Terminal</strong> = หน้าจอดำที่พิมพ์คำสั่งคุยกับเครื่อง · ไม่มี GUI · <em>"ทำของหลายอย่างเร็วกว่า mouse"</em>
+      · หน้านี้สอนคำสั่งที่ใช้บ่อยที่สุด <strong>~10 คำสั่ง</strong> ที่ครอบ 95% ของสิ่งที่ต้องใช้ในคอร์สนี้
+    </p>
+
+    <div class="callout info">
+      <strong>ทำไมต้องรู้ Terminal</strong>
+      ใน W04+ จะมีคำสั่ง <code>python file.py</code> · <code>pip install pandas</code> · <code>git push</code> ·
+      <em>"ทุกอย่างพิมพ์ใน terminal"</em> · ถ้ายังไม่รู้จัก <code>cd</code>/<code>ls</code> — หน้านี้ทำก่อน
+    </div>
+
+    <h2>🪟 vs 🍎 — Terminal คนละชื่อ คล้ายกัน</h2>
+
+    <table>
+      <thead><tr><th></th><th>Windows</th><th>Mac / Linux</th></tr></thead>
+      <tbody>
+        <tr><td><strong>ชื่อโปรแกรม</strong></td><td>PowerShell · Windows Terminal · CMD</td><td>Terminal.app · iTerm2</td></tr>
+        <tr><td><strong>เปิดยังไง</strong></td><td><kbd>Win + R</kbd> → <code>powershell</code> → Enter<br>หรือ <kbd>Win + X</kbd> → Terminal</td><td><kbd>Cmd + Space</kbd> → "Terminal"</td></tr>
+        <tr><td><strong>Shell ที่ใช้</strong></td><td>PowerShell (ใหม่) · cmd (เก่า)</td><td>zsh (default ตั้งแต่ macOS Catalina) · bash</td></tr>
+        <tr><td><strong>คำสั่ง ls</strong></td><td><code>ls</code> ใช้ได้ (alias ของ Get-ChildItem) · หรือ <code>dir</code></td><td><code>ls</code></td></tr>
+        <tr><td><strong>แยก folder ด้วย</strong></td><td>backslash <code>\</code> หรือ forward <code>/</code></td><td>forward <code>/</code></td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>ในคู่มือนี้</strong>
+      เราจะเขียนคำสั่งสำหรับ <em>"ทั้ง 2 ระบบ"</em> · ส่วนใหญ่เหมือนกัน · ที่ต่างจะระบุชัด ๆ
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>📍 10 คำสั่งที่ต้องรู้</h2>
+
+    <h3>1. <code>pwd</code> — ตอนนี้อยู่ folder ไหน</h3>
+    <pre><code>pwd
+# Windows ตอบ: C:\Users\Ploy
+# Mac ตอบ:     /Users/ploy</code></pre>
+    <p style="color:var(--text-muted);font-size:13.5px">
+      "Print Working Directory" · เปิด terminal ครั้งแรกอยู่ที่ <em>home folder</em>
+    </p>
+
+    <h3>2. <code>ls</code> หรือ <code>dir</code> — ดูว่าใน folder นี้มีอะไรบ้าง</h3>
+    <pre><code>ls
+# หรือ Windows-only:
+dir
+
+# ดู hidden files (เริ่มต้นด้วย .)
+ls -a       # Mac/PowerShell
+ls -Force   # PowerShell only</code></pre>
+
+    <h3>3. <code>cd</code> — เปลี่ยน folder (Change Directory)</h3>
+    <pre><code># เข้า folder ลูก
+cd Documents
+
+# เข้าหลาย ๆ ขั้น
+cd Documents/cp/cp-w04
+# หรือ Windows:
+cd Documents\cp\cp-w04
+
+# กลับขึ้นชั้น (.. = folder แม่)
+cd ..
+
+# กลับ 2 ชั้น
+cd ../..
+
+# กลับไป home folder
+cd ~        # Mac/PowerShell
+cd          # PowerShell — กลับ home
+
+# ไป folder ที่ระบุ absolute path
+cd C:\Users\Ploy\Documents     # Windows
+cd /Users/ploy/Documents       # Mac</code></pre>
+
+    <div class="callout tip">
+      <strong>ลากวาง folder เข้า terminal — เร็วที่สุด</strong>
+      Windows: ลาก folder จาก File Explorer มาวางที่ terminal → path จะถูกพิมพ์ให้อัตโนมัติ ·
+      Mac: เหมือนกัน · <em>"ไม่ต้องพิมพ์ path ยาว ๆ เอง"</em>
+    </div>
+
+    <h3>4. <code>mkdir</code> — สร้าง folder ใหม่</h3>
+    <pre><code>mkdir cp-w04
+mkdir my-project/data       # สร้าง my-project ที่ยังไม่มีก็พังบน Windows
+# PowerShell แนะ:
+mkdir my-project; cd my-project; mkdir data</code></pre>
+
+    <h3>5. รัน Python — <code>python file.py</code></h3>
+    <pre><code># Windows
+python hello.py
+
+# Mac (Mac มี Python 2 ใน /usr/bin · ของจริงคือ python3)
+python3 hello.py
+
+# รัน Python interactive
+python      # หรือ python3
+&gt;&gt;&gt; print("hi")
+&gt;&gt;&gt; exit()</code></pre>
+
+    <h3>6. <code>cat</code> หรือ <code>type</code> — ดูเนื้อหาไฟล์</h3>
+    <pre><code># Mac/PowerShell
+cat hello.py
+
+# Windows CMD เก่า
+type hello.py</code></pre>
+
+    <h3>7. <code>cp</code> หรือ <code>copy</code> — copy ไฟล์</h3>
+    <pre><code># Mac/PowerShell
+cp hello.py hello_backup.py
+
+# Windows CMD
+copy hello.py hello_backup.py</code></pre>
+
+    <h3>8. <code>mv</code> หรือ <code>move</code> — ย้าย / เปลี่ยนชื่อ</h3>
+    <pre><code># Mac/PowerShell
+mv hello.py hi.py            # rename
+mv hello.py archive/         # ย้ายเข้า folder archive/
+
+# Windows CMD
+move hello.py hi.py
+ren hello.py hi.py           # rename อย่างเดียว</code></pre>
+
+    <h3>9. <code>rm</code> หรือ <code>del</code> — ลบไฟล์</h3>
+    <pre><code># Mac/PowerShell
+rm hello.py
+rm -r my-folder              # ลบ folder + ของข้างใน (recursive)
+
+# Windows CMD
+del hello.py
+rmdir /s my-folder           # ลบ folder + ข้างใน</code></pre>
+
+    <div class="callout warn">
+      <strong>⚠️ ระวัง <code>rm -r</code></strong>
+      Terminal <em>ลบไม่เข้า Recycle Bin</em> · หายเลย · ตรวจ path ก่อนกด Enter เสมอ ·
+      <em>"พิมพ์ ls ก่อน rm ทุกครั้ง"</em> เพื่อยืนยันว่าจะลบของถูก
+    </div>
+
+    <h3>10. ล้างหน้าจอ + ออก</h3>
+    <pre><code>clear       # Mac/PowerShell
+cls         # Windows CMD
+
+# ออกจาก terminal
+exit</code></pre>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>⌨️ Shortcuts ที่ใช้ทุกวัน</h2>
+
+    <table>
+      <thead><tr><th>Shortcut</th><th>ทำอะไร</th></tr></thead>
+      <tbody>
+        <tr><td><kbd>↑</kbd> / <kbd>↓</kbd></td><td>เลื่อนดูคำสั่งที่พิมพ์ไปแล้ว — <em>"ใช้บ่อยที่สุด"</em></td></tr>
+        <tr><td><kbd>Tab</kbd></td><td>auto-complete ชื่อไฟล์ / folder · พิมพ์ <code>cd Do</code> + Tab → กลายเป็น <code>cd Documents</code></td></tr>
+        <tr><td><kbd>Ctrl + C</kbd></td><td>หยุดคำสั่งที่กำลังรัน (เช่น infinite loop)</td></tr>
+        <tr><td><kbd>Ctrl + L</kbd></td><td>ล้างหน้าจอ (เหมือน <code>clear</code>)</td></tr>
+        <tr><td><kbd>Ctrl + A</kbd> / <kbd>Ctrl + E</kbd></td><td>cursor ไปหัว / ท้ายบรรทัด (Mac)</td></tr>
+        <tr><td><kbd>Home</kbd> / <kbd>End</kbd></td><td>cursor ไปหัว / ท้ายบรรทัด (Windows)</td></tr>
+      </tbody>
+    </table>
+
+    <h2>🔧 Tricks ที่ AI ใช้ในตัวอย่าง — ต้องรู้</h2>
+
+    <h3>1. <code>&amp;&amp;</code> — รัน 2 คำสั่งต่อเนื่อง</h3>
+    <pre><code># รันคำสั่ง 1 ถ้าสำเร็จค่อยรันคำสั่ง 2
+cd cp-w04 &amp;&amp; python hello.py</code></pre>
+    <p style="color:var(--text-muted);font-size:13.5px">
+      ⚠️ <strong>PowerShell เก่า (Windows 10)</strong>: <code>&amp;&amp;</code> ใช้ไม่ได้ · ใช้ <code>;</code> แทน หรือ <code>if ($?) { ... }</code>
+    </p>
+
+    <h3>2. <code>&gt;</code> — ส่ง output ไปไฟล์</h3>
+    <pre><code>python hello.py &gt; output.txt        # เขียนใหม่ทุกครั้ง
+python hello.py &gt;&gt; log.txt          # เพิ่มต่อท้าย</code></pre>
+
+    <h3>3. <code>|</code> (pipe) — ส่ง output ไปคำสั่งถัดไป</h3>
+    <pre><code># Mac/Linux:
+ls | grep ".py"               # หาเฉพาะไฟล์ที่ลงท้าย .py
+
+# PowerShell:
+ls | Select-String ".py"</code></pre>
+
+    <h3>4. wildcards</h3>
+    <pre><code>ls *.py            # ทุกไฟล์ .py
+rm test_*.py       # ลบไฟล์ที่เริ่มด้วย test_
+cp data*.csv backup/    # copy ทุกไฟล์ที่ขึ้นต้น data</code></pre>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🔧 ปัญหาที่พบบ่อย</h2>
+
+    <h3>1. <code>'python' is not recognized</code> / <code>command not found</code></h3>
+    <ul>
+      <li>Python ยังไม่ลง หรือลืม Add to PATH · กลับไปดู <a href="setup-python.html#troubleshoot">setup-python</a></li>
+      <li>Mac — ลอง <code>python3</code> แทน <code>python</code></li>
+    </ul>
+
+    <h3>2. <code>cd C:\Users\พลอย\Documents</code> ใช้ไม่ได้</h3>
+    <ul>
+      <li>ภาษาไทยใน path ทำให้บางคำสั่งพัง — ใช้ folder ภาษาอังกฤษเสมอ</li>
+      <li>Windows: เปลี่ยนชื่อ Windows user เป็นอังกฤษ (ลำบาก) · หรือสร้าง folder ที่ <code>C:\dev\cp\</code> ใช้แทน</li>
+    </ul>
+
+    <h3>3. terminal มี <code>(base)</code> หรือ <code>(venv)</code> ขึ้นต้น</h3>
+    <ul>
+      <li><code>(base)</code> = อยู่ใน Anaconda env</li>
+      <li><code>(venv)</code> = อยู่ใน Python virtual environment</li>
+      <li>ดีไม่ใช่เลว · บอกว่าใช้ Python ตัวไหน</li>
+    </ul>
+
+    <h3>4. Path มีช่องว่าง — <code>cd My Folder</code> พัง</h3>
+    <pre><code># ใส่ในเครื่องหมายคำพูด
+cd "My Folder"
+cd "C:\Users\Ploy\My Documents"</code></pre>
+
+    <h3>5. PowerShell แสดงภาษาไทยเพี้ยน</h3>
+    <pre><code>chcp 65001    # เปลี่ยนเป็น UTF-8
+# หรือใน $PROFILE เพิ่ม:
+# [Console]::OutputEncoding = [Text.Encoding]::UTF8</code></pre>
+
+    <h3>6. ลืม cd เข้า folder โปรเจกต์ก่อนรัน</h3>
+    <ul>
+      <li>เปิด terminal มา อยู่ที่ home · <code>python hello.py</code> → "No such file"</li>
+      <li>ต้อง <code>cd</code> เข้า folder ที่มีไฟล์ก่อน</li>
+      <li><strong>เร็วกว่า:</strong> เปิด terminal จาก VS Code (<kbd>Ctrl + `</kbd>) → terminal อยู่ที่ folder โปรเจกต์อัตโนมัติ</li>
+    </ul>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🎯 Workshop — ฝึก 10 นาที</h2>
+    <ol class="steps">
+      <li>เปิด terminal · พิมพ์ <code>pwd</code> · จดที่อยู่</li>
+      <li>พิมพ์ <code>cd ~</code> (หรือ <code>cd</code> บน Windows) · ตอนนี้อยู่ home folder</li>
+      <li><code>mkdir cp-test</code> · <code>cd cp-test</code></li>
+      <li>สร้างไฟล์ <code>hello.py</code> ด้วย VS Code · ใส่ <code>print("from terminal")</code></li>
+      <li>กลับมา terminal · <code>ls</code> ต้องเห็น <code>hello.py</code></li>
+      <li><code>python hello.py</code> · เห็น <em>"from terminal"</em> ← สำเร็จ!</li>
+      <li>กด ↑ ทดสอบดูประวัติคำสั่ง</li>
+      <li><code>cd ..</code> ออกมา · <code>rm -r cp-test</code> ลบ folder ทดสอบ</li>
+    </ol>
+
+    <h2>🎯 Checklist ก่อนไปต่อ</h2>
+    <ul>
+      <li>☐ เปิด terminal ได้ (PowerShell หรือ Terminal.app)</li>
+      <li>☐ <code>pwd</code> · <code>ls</code> · <code>cd folder</code> · <code>cd ..</code> ใช้ได้</li>
+      <li>☐ สร้าง folder ใหม่ด้วย <code>mkdir</code></li>
+      <li>☐ <code>python file.py</code> รันได้</li>
+      <li>☐ ใช้ <kbd>↑</kbd> ดูประวัติคำสั่ง · <kbd>Tab</kbd> auto-complete</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>ขั้นถัดไป</strong>
+      → <a href="setup-pip.html">pip + ลง package</a> · <a href="setup-git.html">Git + GitHub</a> ·
+      หรือเริ่ม <a href="w01-problem-finding.html">W01</a> ได้เลย
+    </div>
+
+    <div class="pager">
+      <a href="setup-vscode.html"><div class="label">← ก่อนหน้า</div><div class="title">VS Code / Cursor</div></a>
+      <a href="setup-pip.html" class="next"><div class="label">ขั้นถัดไป →</div><div class="title">pip + Packages</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+</body>
+</html>

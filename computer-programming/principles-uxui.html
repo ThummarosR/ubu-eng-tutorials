@@ -1,0 +1,1059 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UX/UI Principles — ตัดสินงาน AI ให้เป็น | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+<style>
+  /* Good vs Bad mockup blocks */
+  .ux-compare {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+    margin: 18px 0 24px;
+  }
+  @media (max-width: 880px) {
+    .ux-compare { grid-template-columns: 1fr; }
+  }
+  .ux-box {
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 14px 16px;
+    background: var(--bg-elev);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.55;
+    white-space: pre-wrap;
+    overflow-x: auto;
+  }
+  .ux-box.bad  { border-left: 4px solid var(--danger); }
+  .ux-box.good { border-left: 4px solid var(--ok); }
+  .ux-label {
+    display: inline-block;
+    font-family: 'Space Grotesk', sans-serif;
+    font-weight: 700;
+    font-size: 11.5px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-bottom: 8px;
+  }
+  .ux-label.bad  { background: rgba(239,68,68,0.15);  color: var(--danger); }
+  .ux-label.good { background: rgba(52,211,153,0.15); color: var(--ok); }
+  .ux-mockup {
+    background: #f7f8fb;
+    color: #1a1a2a;
+    border: 1px solid #d0d4de;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-top: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.5;
+    white-space: pre;
+    overflow-x: auto;
+  }
+</style>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>🚀 เริ่มต้น (Setup)</h4>
+      <a href="setup-python.html"><span class="num">🐍</span> ติดตั้ง Python</a>
+      <a href="setup-vscode.html"><span class="num">💻</span> VS Code / Cursor</a>
+      <a href="setup-terminal.html"><span class="num">🖥️</span> Terminal พื้นฐาน</a>
+      <a href="setup-pip.html"><span class="num">📦</span> pip + Packages</a>
+      <a href="setup-git.html"><span class="num">🌿</span> Git + GitHub</a>
+      <a href="setup-colab.html"><span class="num">☁️</span> Google Colab</a>
+      <a href="setup-ai.html"><span class="num">🤖</span> AI Accounts</a>
+      <a href="python-basics.html"><span class="num">📖</span> Python Cheat-sheet</a>
+
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+      <a href="principles-uxui.html" class="active"><span class="num">📐</span> UX/UI Principles</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">Reference · ใช้ตอน W12 / W14 / W15 — ทุกครั้งที่ AI สร้าง UI</span>
+    <h1>📐 UX/UI Principles — ตัดสินงาน AI ให้เป็น</h1>
+    <p class="lede">
+      หน้านี้ <em>"ไม่ใช่"</em> design school · เป็นพื้นฐานแค่พอ <strong>"อ่าน UI ที่ AI สร้างให้แล้วบอกได้ว่าดี/แย่"</strong>
+      · AI เขียน UI ที่ <em>"ดูเสร็จ"</em> ได้ใน 30 วินาที — แต่ <em>"ใช้จริงไม่ได้"</em> · งานของคุณคือ <strong>จับให้ทัน</strong>
+    </p>
+
+    <div class="callout warn" style="border-left-width:5px">
+      <strong>🔒 ทำไม UX/UI ยังเป็นงานของคน ไม่ใช่ AI</strong>
+      AI ไม่รู้ว่า <em>"user ของคุณคือใคร"</em> · ไม่รู้ <em>"ทำงานอยู่ในมือถือ/desktop"</em> · ไม่รู้
+      <em>"data ของคุณจะหน้าตายังไงจริง"</em> · มัน <strong>"เดา"</strong> ทุกอย่าง · ผลที่ได้ดูดี แต่ส่วนใหญ่ไม่ตรงงานจริง
+    </div>
+
+    <h2>📑 สารบัญ</h2>
+    <ol style="columns:2;column-gap:30px" start="0">
+      <li><a href="#tech-choice"><strong>เลือก UI Technology ให้ตรงงาน 🎯</strong></a></li>
+      <li><a href="#user">รู้จัก user ก่อนเขียน UI</a></li>
+      <li><a href="#hierarchy">ลำดับความสำคัญ (Hierarchy)</a></li>
+      <li><a href="#states">5 States ที่ AI ลืมเสมอ</a></li>
+      <li><a href="#feedback">Feedback &amp; Confirmation</a></li>
+      <li><a href="#forms">Forms ที่ใช้ได้จริง</a></li>
+      <li><a href="#tables">Tables &amp; Lists</a></li>
+      <li><a href="#layouts">Layout Patterns ที่ใช้บ่อย</a></li>
+      <li><a href="#mobile">คิดถึงมือถือ</a></li>
+      <li><a href="#color">สี · ไอคอน · ความหมาย</a></li>
+      <li><a href="#dont">10 ข้อ "อย่าทำ"</a></li>
+      <li><a href="#a11y">Accessibility พื้นฐาน</a></li>
+      <li><a href="#ai-traps">⚠️ AI-Era UX Traps</a></li>
+      <li><a href="#checklist">Checklist ก่อนส่งงาน</a></li>
+    </ol>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2 id="tech-choice">0. เลือก UI Technology ให้ตรงงาน 🎯</h2>
+
+    <p>
+      <strong>"คำถามแรก ก่อนพูดถึง design — UI ของคุณจะรันที่ไหน?"</strong> ·
+      ถ้าตอบผิดตรงนี้ → design ดีแค่ไหนก็ <em>"ใช้ไม่ได้"</em> ·
+      ตัวอย่างคลาสสิก: นักศึกษาสร้าง tkinter app สวย ๆ แล้วอยาก <em>"deploy ขึ้น cloud"</em> → ทำไม่ได้
+    </p>
+
+    <div class="callout warn" style="border-left-width:5px">
+      <strong>⚠️ Mismatch ที่เจอบ่อยที่สุดในนักศึกษา</strong>
+      เริ่มเขียน <strong>Tkinter / PyQt</strong> (desktop GUI) แล้วอยาก <em>"ให้เพื่อนเปิดบนมือถือ"</em>
+      หรือ <em>"deploy บน Cloud Run"</em> — <strong>"ทำไม่ได้"</strong> · desktop GUI รันใน browser ไม่ได้ ·
+      ต้องสร้างเป็น .exe แล้วส่งให้ทุกคนติดตั้ง · <em>"เลือก tech ก่อนเขียน · ไม่ใช่หลัง"</em>
+    </div>
+
+    <h3>🤔 ตอบ 3 คำถามนี้ก่อนเลือก tech</h3>
+    <ol class="steps">
+      <li><strong>user จะใช้ที่ไหน?</strong> — เครื่องเดียวกับคุณ / เครื่องคนละเครื่อง / มือถือ / ที่ไหนก็ได้ที่มีเน็ต</li>
+      <li><strong>user จะเปิดยังไง?</strong> — double-click .exe / เปิด browser แล้ว URL / chat กับ bot ใน LINE</li>
+      <li><strong>มีกี่คนใช้พร้อมกัน?</strong> — แค่ฉัน / 5 คน / 100 คน / 10,000 คน</li>
+    </ol>
+
+    <h3>📊 7 UI Technologies — เปรียบเทียบ</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Technology</th>
+          <th>เหมาะกับ</th>
+          <th>รันที่</th>
+          <th>Deploy cloud?</th>
+          <th>Learning curve</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>CLI</strong><br><code>input()</code>, <code>click</code>, <code>argparse</code></td>
+          <td>tool ของตัวเอง · script · automation · workshop W07</td>
+          <td>terminal บนเครื่อง user</td>
+          <td>❌ no</td>
+          <td>⭐ ง่ายสุด</td>
+        </tr>
+        <tr>
+          <td><strong>Tkinter / PyQt</strong><br>(Desktop GUI)</td>
+          <td>app เครื่องเดียว · ออฟไลน์ · ใช้กับ hardware · kiosk</td>
+          <td>desktop ของ user</td>
+          <td>❌ <strong>NO</strong> — ส่งเป็น .exe เท่านั้น</td>
+          <td>⭐⭐ ปานกลาง</td>
+        </tr>
+        <tr>
+          <td><strong>Streamlit</strong></td>
+          <td>data dashboard · prototype · internal tool · W09/W10/W12</td>
+          <td>browser ของ user (server-rendered)</td>
+          <td>✅ yes (Streamlit Cloud · Cloud Run)</td>
+          <td>⭐⭐ ง่าย-ปานกลาง</td>
+        </tr>
+        <tr>
+          <td><strong>Gradio</strong></td>
+          <td>demo ML model · quick form · share link</td>
+          <td>browser</td>
+          <td>✅ yes (Hugging Face Spaces)</td>
+          <td>⭐⭐ ง่าย</td>
+        </tr>
+        <tr>
+          <td><strong>Flask / FastAPI + HTML</strong></td>
+          <td>web app จริงจัง · multi-page · login · DB · W12+</td>
+          <td>browser (server-rendered)</td>
+          <td>✅ yes (Cloud Run · Render · Fly.io)</td>
+          <td>⭐⭐⭐ ปานกลาง-ยาก</td>
+        </tr>
+        <tr>
+          <td><strong>HTML/JS frontend + Python API</strong></td>
+          <td>web app ที่ต้องการ UI ขั้นสูง · real-time · mobile-feel</td>
+          <td>browser + cloud server</td>
+          <td>✅ yes (frontend: Cloudflare/Vercel · backend: Cloud Run)</td>
+          <td>⭐⭐⭐⭐ ยาก</td>
+        </tr>
+        <tr>
+          <td><strong>LINE / Discord Bot</strong></td>
+          <td>command via chat · notification · ส่งภาพ · ใช้บนมือถือ</td>
+          <td>chat client (LINE/Discord) ของ user</td>
+          <td>✅ yes (webhook + Cloud Run/Lambda)</td>
+          <td>⭐⭐⭐ ปานกลาง</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>🌳 Decision Tree — "ฉันควรใช้อะไร?"</h3>
+
+    <pre class="ux-mockup" style="background:var(--bg-elev);color:var(--text);border-color:var(--border)">
+ใครจะใช้ + ที่ไหน?
+│
+├─ แค่ฉัน · บนเครื่องฉัน · ออฟไลน์ก็ได้
+│   ├─ งานสั้น · ใช้ครั้งเดียว        → <strong>CLI</strong> (W07)
+│   ├─ ต้องมี GUI ปุ่มกด · ต่อ hardware → <strong>Tkinter</strong>
+│   └─ data analysis · plot          → <strong>Jupyter / Colab</strong>
+│
+├─ คน 5–50 คน · มือถือ/desktop · ต้องการ URL
+│   ├─ data dashboard · quick proto  → <strong>Streamlit</strong> (W09–W12)
+│   ├─ form + DB + login + multi-page → <strong>Flask + HTML</strong> (W12+)
+│   └─ ML demo · share link          → <strong>Gradio</strong>
+│
+├─ command บนมือถือ · ส่งข้อความ
+│   └─ → <strong>LINE / Discord Bot</strong>
+│
+└─ คน 1,000+ · UI ขั้นสูง · real-time
+    └─ → <strong>HTML/JS frontend + Python API</strong>
+        (เกินขอบเขตคอร์สนี้ · เป็นเป้าหมายปี 2-3)</pre>
+
+    <h3>⚠️ Common Mismatches — กับดักที่นักศึกษาเจอบ่อย</h3>
+
+    <table>
+      <thead><tr><th>ทำ</th><th>แล้วอยาก</th><th>ปัญหา</th><th>ทำยังไง</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Tkinter app</strong></td>
+          <td>"deploy บน Cloud Run"</td>
+          <td>❌ ทำไม่ได้ · Tkinter รันใน browser ไม่ได้</td>
+          <td>เขียนใหม่เป็น Streamlit / Flask · หรือสร้างเป็น .exe ส่งให้ติดตั้ง</td>
+        </tr>
+        <tr>
+          <td><strong>Tkinter app</strong></td>
+          <td>"เพื่อนเปิดบนมือถือ"</td>
+          <td>❌ ทำไม่ได้ · ไม่มี Python บนมือถือ · ไม่มี windowing</td>
+          <td>เขียนเป็น web app (Streamlit/Flask) → URL → มือถือเปิดได้</td>
+        </tr>
+        <tr>
+          <td><strong>Streamlit</strong></td>
+          <td>"รับ user 10,000 คน"</td>
+          <td>⚠️ ช้า + แพง · Streamlit ออกแบบสำหรับ internal tool</td>
+          <td>เขียนเป็น Flask/FastAPI + HTML/JS · scale ได้ดีกว่า</td>
+        </tr>
+        <tr>
+          <td><strong>Flask + HTML</strong></td>
+          <td>"แค่ทำ chart ดู"</td>
+          <td>⚠️ over-engineering · ใช้เวลา 1 อาทิตย์ทั้งที่ Streamlit ทำได้ใน 30 นาที</td>
+          <td>ใช้ Streamlit ก่อน · ถ้าจำเป็นค่อยย้ายไป Flask</td>
+        </tr>
+        <tr>
+          <td><strong>CLI</strong></td>
+          <td>"ส่งคุณยายใช้"</td>
+          <td>❌ คุณยายเปิด terminal ไม่เป็น</td>
+          <td>ทำเป็น web app หรือ bot</td>
+        </tr>
+        <tr>
+          <td><strong>LINE Bot</strong></td>
+          <td>"admin panel แก้ database"</td>
+          <td>⚠️ Bot UI จำกัด · table ใหญ่ใส่ไม่ได้</td>
+          <td>ใช้ web app สำหรับ admin · bot เก็บไว้ใช้กับ end-user</td>
+        </tr>
+        <tr>
+          <td><strong>Jupyter Notebook</strong></td>
+          <td>"ให้คนกดใช้งาน"</td>
+          <td>❌ Notebook = environment ของ developer · ไม่ใช่ของ user</td>
+          <td>เขียน code ใน <code>.py</code> → ใส่ใน Streamlit / Flask</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>🚢 Deployment Reality Check</h3>
+
+    <p>เลือก tech แล้ว · ตรวจว่า <em>"จริง ๆ deploy ยังไง"</em> ก่อนใช้เวลาเขียน:</p>
+
+    <table>
+      <thead><tr><th>Tech</th><th>วิธี distribute</th><th>ค่าใช้จ่าย</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Tkinter / PyQt</strong></td>
+          <td>PyInstaller → .exe · ส่งไฟล์ให้ user / USB / เซิร์ฟเวอร์ download</td>
+          <td>ฟรี · ใช้ disk บนเครื่อง user</td>
+        </tr>
+        <tr>
+          <td><strong>Streamlit</strong></td>
+          <td>Streamlit Cloud (ฟรี · เชื่อม GitHub) · หรือ Cloud Run</td>
+          <td>ฟรี-เริ่มต้น · เพิ่มขึ้นถ้าใช้เยอะ</td>
+        </tr>
+        <tr>
+          <td><strong>Flask</strong></td>
+          <td>Cloud Run (Google) · Render · Fly.io · Heroku</td>
+          <td>ฟรี-เริ่มต้น (มี free tier · จำกัด)</td>
+        </tr>
+        <tr>
+          <td><strong>HTML/JS + API</strong></td>
+          <td>Frontend: Cloudflare Pages / Vercel · Backend: Cloud Run</td>
+          <td>ฟรี-เริ่มต้น (มี free tier เยอะ)</td>
+        </tr>
+        <tr>
+          <td><strong>LINE Bot</strong></td>
+          <td>Webhook URL บน Cloud Run + LINE Developers Console</td>
+          <td>ฟรี (LINE ไม่คิดเงิน webhook)</td>
+        </tr>
+        <tr>
+          <td><strong>CLI</strong></td>
+          <td>user ลง Python + รัน <code>pip install ของฉัน</code> หรือใช้ <code>pipx</code></td>
+          <td>ฟรี</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>💪 ในคอร์สนี้เน้นอะไร</h3>
+
+    <ul>
+      <li><strong>W07:</strong> CLI tools (3 ตัว · ไม่มี GUI)</li>
+      <li><strong>W09–W10:</strong> Jupyter/Colab notebook (data analysis)</li>
+      <li><strong>W12:</strong> Streamlit (เริ่มต้น) + Flask (ถ้าต้องการ)</li>
+      <li><strong>W14:</strong> Deploy Streamlit/Flask ขึ้น Cloud Run / Streamlit Cloud</li>
+      <li><strong>W15 Final Project:</strong> ใช้อันไหนก็ได้ที่เหมาะกับ user persona</li>
+    </ul>
+
+    <div class="callout info">
+      <strong>📌 ในคอร์สนี้ <em>"ไม่สอน"</em> tkinter</strong>
+      เพราะ Year-1 ส่วนใหญ่อยากทำของแชร์ได้ · web app เหมาะกว่า · ถ้าต้องการเขียน desktop app
+      (มี hardware) → เรียนได้ตอนปี 2-3 หรือศึกษาเอง · แต่ <em>"อย่าเริ่มต้นที่ tkinter ถ้าตั้งใจ deploy"</em>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2 id="user">1. รู้จัก user ก่อนเขียน UI</h2>
+
+    <p>
+      ก่อนถาม AI ว่า <em>"ทำหน้านี้ให้หน่อย"</em> — ตอบ 4 คำถามนี้ในใจก่อน:
+    </p>
+
+    <ol class="steps">
+      <li><strong>user ใช้บนอะไร?</strong> — มือถือ / desktop / tablet / TV / kiosk</li>
+      <li><strong>user มีเวลาแค่ไหน?</strong> — อ่านยาวได้ / 3 วินาทีต้องเข้าใจ</li>
+      <li><strong>user ทำสำเร็จเมื่อไหร่?</strong> — กดอะไรเสร็จ → success?</li>
+      <li><strong>user พลาดเมื่อไหร่?</strong> — กดผิด / ใส่ผิด → จะเสียอะไร?</li>
+    </ol>
+
+    <div class="callout tip">
+      <strong>💡 Prompt ที่ดีถึง AI</strong>
+      <em>"ทำหน้า login สำหรับ TA · ใช้บนมือถือ · ต้องเปิดเป็นโหมดมืดด้วย · มีปุ่ม 'ลืมรหัส'
+      ที่กด 2 ขั้นถึงจะเซ็ตใหม่ได้ (ป้องกันกดเล่น)"</em> —
+      <strong>"ระบุ context"</strong> ก่อนขอ UI · AI จะตอบตรงงานมากขึ้น 10x
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2 id="hierarchy">2. ลำดับความสำคัญ — Information Hierarchy</h2>
+
+    <p>UI ที่ดี = <em>"มองครั้งแรกรู้ทันทีว่าต้องกดอะไร"</em></p>
+
+    <div class="ux-compare">
+      <div class="ux-box bad">
+<span class="ux-label bad">❌ Bad — ทุกอย่างเท่ากันหมด</span>
+<div class="ux-mockup">
+┌─────────────────────────────┐
+│ [Save] [Delete] [Export]    │
+│ [Settings] [Help] [Share]   │
+│ [Print] [Email] [Cancel]    │
+│                             │
+│ User Name: ____________     │
+│ Email:     ____________     │
+│ Phone:     ____________     │
+└─────────────────────────────┘
+</div>
+9 ปุ่ม · ขนาดเท่ากัน · สีเดียวกัน · ใช้เวลานานกว่าจะหาว่าปุ่มไหนหลัก
+      </div>
+      <div class="ux-box good">
+<span class="ux-label good">✅ Good — 1 ปุ่มหลัก ปุ่มรองเทาๆ</span>
+<div class="ux-mockup">
+┌─────────────────────────────┐
+│ User Name: ____________     │
+│ Email:     ____________     │
+│ Phone:     ____________     │
+│                             │
+│       ┏━━━━━━━━━━━┓         │
+│       ┃   Save    ┃         │
+│       ┗━━━━━━━━━━━┛         │
+│       Cancel  ·  Delete     │
+└─────────────────────────────┘
+</div>
+Save = primary (ใหญ่ · สีเด่น) · Cancel/Delete = secondary (ตัวอักษรเฉยๆ) · ลำดับชัด
+      </div>
+    </div>
+
+    <h3>กฎ 1-2-3 ของ primary action</h3>
+    <ul>
+      <li><strong>1 หน้า = 1 primary action</strong> · มากกว่านี้ user สับสน</li>
+      <li><strong>2 ปุ่มรอง</strong> (cancel + 1 อื่น) · เกินนั้นต้องคิดใหม่</li>
+      <li><strong>3 วินาที</strong> · ถ้ามองหน้าครั้งแรกแล้วยังไม่รู้ว่ากดอะไร → ปรับ hierarchy</li>
+    </ul>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2 id="states">3. 5 States ที่ AI ลืมเสมอ 🔥</h2>
+
+    <p>
+      <strong>"#1 จุดที่ AI สร้าง UI ผิดบ่อยที่สุด"</strong> · AI สมมุติว่า data มีเสมอ · มีถูกต้อง · โหลดเสร็จ ·
+      ไม่มี error · realtime · — โลกจริงไม่ใช่
+    </p>
+
+    <h3>State ที่ทุก UI ต้องคิด</h3>
+    <table>
+      <thead><tr><th>State</th><th>เกิดเมื่อ</th><th>ต้องโชว์อะไร</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Loading</strong></td><td>กำลังโหลด data</td><td>spinner / skeleton · บอก "กี่วินาที" ถ้าได้</td></tr>
+        <tr><td><strong>Empty</strong></td><td>data ว่าง (เพิ่งเริ่ม / ลบหมด)</td><td>คำอธิบาย + ปุ่ม "เพิ่มอันแรก"</td></tr>
+        <tr><td><strong>Error</strong></td><td>โหลดผิด · ไม่มี internet · 403</td><td>error message ภาษาคน + ปุ่ม "ลองใหม่"</td></tr>
+        <tr><td><strong>Partial</strong></td><td>โหลดบางส่วน · บางช่องว่าง</td><td>โชว์ของที่มี + dim ของที่ขาด · ไม่ใช่ blank ทั้งหน้า</td></tr>
+        <tr><td><strong>Success</strong></td><td>data มา · กดสำเร็จ</td><td>feedback ชัด · ไม่ใช่หน้าเดิมเฉย ๆ</td></tr>
+      </tbody>
+    </table>
+
+    <div class="ux-compare">
+      <div class="ux-box bad">
+<span class="ux-label bad">❌ Bad — Empty State หายไป</span>
+<div class="ux-mockup">
+┌─────────────────────────────┐
+│  รายชื่อนักศึกษา             │
+├─────────────────────────────┤
+│                             │
+│                             │
+│                             │
+│                             │
+│                             │
+└─────────────────────────────┘
+</div>
+user งง · มี bug? · หรือว่ายังไม่มี data? · ไม่รู้ทำอะไรต่อ
+      </div>
+      <div class="ux-box good">
+<span class="ux-label good">✅ Good — Empty State ที่อธิบายชัด</span>
+<div class="ux-mockup">
+┌─────────────────────────────┐
+│  รายชื่อนักศึกษา             │
+├─────────────────────────────┤
+│                             │
+│      👥                     │
+│   ยังไม่มีนักศึกษา           │
+│                             │
+│  เพิ่มคนแรกเพื่อเริ่มต้น     │
+│                             │
+│   ┏━━━━━━━━━━━━━━┓         │
+│   ┃ + เพิ่มนักศึกษา ┃        │
+│   ┗━━━━━━━━━━━━━━┛         │
+└─────────────────────────────┘
+</div>
+อธิบายสถานะ + บอก next action · user รู้ทันทีว่าต้องทำอะไร
+      </div>
+    </div>
+
+    <div class="callout warn">
+      <strong>🤖 Prompt ที่ใช้บังคับ AI ให้คิด state</strong>
+      <em>"ออกแบบหน้า [X] · ต้องครอบ 5 state: loading, empty, error, partial, success ·
+      อธิบายว่าแต่ละ state โชว์อะไร ก่อนเขียน code"</em>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2 id="feedback">4. Feedback &amp; Confirmation</h2>
+
+    <h3>4 กฎ "ตอบกลับ user"</h3>
+    <ol class="steps">
+      <li><strong>การกระทำที่ใช้เวลา &gt;0.5 วินาที</strong> ต้องโชว์ loading · ไม่ใช่ปล่อยให้นั่งงง</li>
+      <li><strong>การกระทำที่กลับไม่ได้</strong> (ลบ, ส่ง email, จ่ายเงิน) ต้องถาม confirm ก่อน</li>
+      <li><strong>การกระทำที่กลับได้</strong> (toggle, edit) ไม่ต้องถาม · ทำเลย · ถ้าผิด user กดกลับ</li>
+      <li><strong>หลังกดสำเร็จ</strong> ต้องมี feedback (toast, change color, redirect) · ไม่ใช่หน้าเงียบ</li>
+    </ol>
+
+    <div class="ux-compare">
+      <div class="ux-box bad">
+<span class="ux-label bad">❌ Bad — ลบแล้วเงียบ</span>
+<div class="ux-mockup">
+┌─────────────────────────────┐
+│ นักศึกษา                     │
+├─────────────────────────────┤
+│ Ploy   85   [Delete] ✓      │
+│ Nat    72   [Delete]        │
+│ Mint   91   [Delete]        │
+└─────────────────────────────┘
+     ↓ (กด Delete)
+┌─────────────────────────────┐
+│ นักศึกษา                     │
+├─────────────────────────────┤
+│ Nat    72   [Delete]        │
+│ Mint   91   [Delete]        │
+└─────────────────────────────┘
+</div>
+ลบไปแล้ว · ทำไม? เผลอกด? · ไม่มี undo · ไม่มีคำว่า "ลบสำเร็จ"
+      </div>
+      <div class="ux-box good">
+<span class="ux-label good">✅ Good — Confirm + Undo</span>
+<div class="ux-mockup">
+┌─────────────────────────────┐
+│ นักศึกษา                     │
+├─────────────────────────────┤
+│ Ploy   85   [Delete] ✓      │
+│                             │
+│  ┌───────────────────────┐  │
+│  │ ลบ Ploy?              │  │
+│  │ การลบกลับไม่ได้        │  │
+│  │   [Cancel]  [ลบ]      │  │
+│  └───────────────────────┘  │
+└─────────────────────────────┘
+     ↓ (กด ลบ)
+┌─────────────────────────────┐
+│ ✓ ลบ Ploy แล้ว · [Undo]      │
+└─────────────────────────────┘
+</div>
+ถาม confirm สำหรับการลบ · หลังลบมี toast + undo 5 วินาที · user ปลอดภัย
+      </div>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2 id="forms">5. Forms ที่ใช้ได้จริง</h2>
+
+    <h3>กฎพื้นฐาน 8 ข้อ</h3>
+    <ol class="steps">
+      <li><strong>Label อยู่บนช่อง</strong> (ไม่ใช่ข้างใน) — ช่อง placeholder ไม่ใช่ label</li>
+      <li><strong>Required ใส่ *</strong> หรือบอก "(จำเป็น)" · optional ใส่ "(ไม่จำเป็น)"</li>
+      <li><strong>Validate ใต้ช่อง</strong> (ไม่ใช่ alert popup)</li>
+      <li><strong>Validate ตอนกด Submit</strong> (ไม่ใช่ขณะพิมพ์) · ยกเว้น email/password ที่มี rule ชัด</li>
+      <li><strong>Error message บอก "ทำยังไงต่อ"</strong> · ไม่ใช่แค่ "ผิด"</li>
+      <li><strong>Default value ดี ๆ</strong> · ลด typing — user ไม่ต้องเดาว่าใส่อะไร</li>
+      <li><strong>เรียง field ตามลำดับธรรมชาติ</strong> · ชื่อ → email → เบอร์ (ไม่ใช่ตรงข้าม)</li>
+      <li><strong>กลุ่ม field ที่เกี่ยวกัน</strong> (ที่อยู่ทุก field ติดกัน · ไม่ใช่กระจาย)</li>
+    </ol>
+
+    <div class="ux-compare">
+      <div class="ux-box bad">
+<span class="ux-label bad">❌ Bad — Error ไม่ช่วยอะไร</span>
+<div class="ux-mockup">
+┌─────────────────────────────┐
+│  ลงทะเบียน                   │
+├─────────────────────────────┤
+│  Email:                     │
+│  [ploy@                  ]  │
+│                             │
+│  Password:                  │
+│  [123                    ]  │
+│                             │
+│   [ลงทะเบียน]                │
+│                             │
+│ ⚠️ Error                     │
+└─────────────────────────────┘
+</div>
+"Error" ลอย ๆ · ไม่บอกว่าผิดที่ไหน · ไม่บอกว่าต้องทำยังไงต่อ
+      </div>
+      <div class="ux-box good">
+<span class="ux-label good">✅ Good — Error เฉพาะที่ + แนะนำ</span>
+<div class="ux-mockup">
+┌─────────────────────────────┐
+│  ลงทะเบียน                   │
+├─────────────────────────────┤
+│  Email *                    │
+│  [ploy@                  ]  │
+│  ⚠ ใส่ email ให้ครบ          │
+│    (เช่น ploy@ubu.ac.th)    │
+│                             │
+│  Password * (อย่างน้อย 8)    │
+│  [•••                    ]  │
+│  ⚠ ต้องอย่างน้อย 8 ตัว        │
+│    เหลืออีก 5 ตัว             │
+│                             │
+│   [ลงทะเบียน]                │
+└─────────────────────────────┘
+</div>
+ใต้แต่ละช่อง · บอกชัดว่าผิดอะไร · บอก "next step" · ใช้ได้ทันที
+      </div>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2 id="tables">6. Tables &amp; Lists</h2>
+
+    <h3>ตาราง = 80% ของ admin panel</h3>
+    <p>AI ชอบทำ table แบบ vanilla — ไม่มี sort, filter, empty state · ของจริงต้องมี:</p>
+
+    <ul>
+      <li><strong>คอลัมน์ที่จำเป็นเท่านั้น</strong> · 5-7 คอลัมน์เกินไป → ซ่อนใน "detail view"</li>
+      <li><strong>Sort ได้</strong> (คลิก header)</li>
+      <li><strong>Filter / Search</strong> · ถ้ามี &gt;20 แถว · ขาดไม่ได้</li>
+      <li><strong>Pagination</strong> หรือ <strong>infinite scroll</strong> · ถ้ามี &gt;100 แถว</li>
+      <li><strong>Empty state</strong> ถ้าตารางว่าง (filter หาไม่เจอ ก็ empty)</li>
+      <li><strong>Loading skeleton</strong> ตอนโหลด · ไม่ใช่ blank table</li>
+      <li><strong>Action ของแต่ละแถว</strong> · ปุ่มเดียวต่อแถว · ลึก ๆ ในเมนู ⋮</li>
+      <li><strong>Bulk action</strong> ถ้าต้องทำหลายแถวพร้อมกัน (checkbox + bar ขึ้นมา)</li>
+    </ul>
+
+    <div class="ux-compare">
+      <div class="ux-box bad">
+<span class="ux-label bad">❌ Bad — Action เต็มแถว</span>
+<div class="ux-mockup">
+┌──────┬──────┬─────┬─────────────────────────┐
+│ Name │Score │Grade│ Actions                 │
+├──────┼──────┼─────┼─────────────────────────┤
+│ Ploy │ 85   │ A   │[View][Edit][Del][Mail]  │
+│ Nat  │ 72   │ B   │[View][Edit][Del][Mail]  │
+│ Mint │ 91   │ A   │[View][Edit][Del][Mail]  │
+└──────┴──────┴─────┴─────────────────────────┘
+</div>
+4 ปุ่มต่อแถว · กดผิดง่าย · ใช้พื้นที่เยอะ · บนมือถือล้น
+      </div>
+      <div class="ux-box good">
+<span class="ux-label good">✅ Good — 1 ปุ่มหลัก + เมนู</span>
+<div class="ux-mockup">
+┌──────┬──────┬─────┬──────────────┐
+│ Name │Score │Grade│              │
+├──────┼──────┼─────┼──────────────┤
+│ Ploy │ 85   │ A   │ [View]   ⋮   │
+│ Nat  │ 72   │ B   │ [View]   ⋮   │
+│ Mint │ 91   │ A   │ [View]   ⋮   │
+└──────┴──────┴─────┴──────────────┘
+   ↑ คลิก row = view  ⋮ = edit/del/mail
+</div>
+1 primary action ต่อแถว · อันรองอยู่ใน menu · คลีน · ใช้กับมือถือก็ได้
+      </div>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2 id="layouts">7. Layout Patterns ที่ใช้บ่อย</h2>
+
+    <p>มี ~6 layout ที่ครอบ 95% ของแอปที่จะทำในคอร์สนี้ · เลือกให้ตรง <em>"ก่อนสั่ง AI"</em></p>
+
+    <h3>(a) List-Detail</h3>
+    <p>ซ้าย = list · ขวา = detail ของที่เลือก · เหมาะกับ email, chat, file manager</p>
+    <pre class="ux-mockup" style="margin-top:6px">
+┌─────────────┬──────────────────────┐
+│ ▸ Ploy      │ Ploy                 │
+│ ▾ Nat       │ ID: 640002           │
+│   Mint      │ Email: nat@ubu...    │
+│   Pim       │ Scores: 85, 72, 91   │
+│             │ [Edit] [Mail]        │
+└─────────────┴──────────────────────┘</pre>
+
+    <h3>(b) Dashboard / Cards</h3>
+    <p>กลุ่ม metric / status · เหมาะกับ overview · <em>"ระวัง — อย่าใส่ dashboard ถ้าไม่จำเป็น"</em></p>
+    <pre class="ux-mockup" style="margin-top:6px">
+┌─────────┬─────────┬─────────┐
+│ Total   │ Passed  │ Failed  │
+│  42     │  35     │   7     │
+└─────────┴─────────┴─────────┘
+┌────────────────────────────┐
+│ Recent Activity            │
+│  • Ploy submitted lab 3    │
+│  • Nat updated profile     │
+└────────────────────────────┘</pre>
+
+    <h3>(c) Wizard / Stepper</h3>
+    <p>สำหรับ workflow หลายขั้น · บังคับลำดับ · ใช้กับ form ยาว, registration, checkout</p>
+    <pre class="ux-mockup" style="margin-top:6px">
+┌─────────────────────────────────┐
+│ ●─────●─────○─────○             │
+│ Info  Course Submit Confirm     │
+├─────────────────────────────────┤
+│  Step 2: Choose course          │
+│  [ ] ENG101                     │
+│  [ ] ENG102                     │
+│  [x] CPM 101                    │
+│                                 │
+│         [Back]    [Next →]      │
+└─────────────────────────────────┘</pre>
+
+    <h3>(d) Settings / Tabs</h3>
+    <p>เมนูซ้าย / tab บน · เปลี่ยน content ขวา · เหมาะกับ admin / preferences</p>
+    <pre class="ux-mockup" style="margin-top:6px">
+┌─────────┬──────────────────────┐
+│ Profile │ ▸ Account            │
+│ Account │                      │
+│ Security│  Username: ploy      │
+│ Notifs  │  Email:    ____      │
+│         │       [Save]         │
+└─────────┴──────────────────────┘</pre>
+
+    <h3>(e) Public landing</h3>
+    <p>หน้าโฮม · hero + features + call-to-action · เหมาะกับ marketing / portfolio</p>
+    <pre class="ux-mockup" style="margin-top:6px">
+┌─────────────────────────────────┐
+│  [Logo]            [Sign in]    │
+├─────────────────────────────────┤
+│                                 │
+│     Big Headline Here           │
+│   Subtitle explaining what      │
+│         [Get Started]           │
+│                                 │
+├─────────────────────────────────┤
+│  Feature 1  Feature 2  Feature 3│
+└─────────────────────────────────┘</pre>
+
+    <h3>(f) Single-action page</h3>
+    <p>1 ปุ่มใหญ่กลางจอ · เหมาะกับ kiosk, quick action, mobile-first</p>
+    <pre class="ux-mockup" style="margin-top:6px">
+┌─────────────────────────────────┐
+│                                 │
+│                                 │
+│           Scan QR              │
+│       ┏━━━━━━━━━━━┓             │
+│       ┃   ▢▢▢▢   ┃             │
+│       ┗━━━━━━━━━━━┛             │
+│                                 │
+│      [Open Camera]              │
+│                                 │
+└─────────────────────────────────┘</pre>
+
+    <div class="callout tip">
+      <strong>💡 บอก AI ตอน prompt</strong>
+      <em>"ใช้ layout pattern แบบ <strong>list-detail</strong>"</em> ·
+      <em>"แบบ <strong>wizard 3 step</strong>"</em> ·
+      <em>"แบบ <strong>single-action mobile</strong>"</em> —
+      AI จะรู้ทันทีว่าต้องสร้างอะไร · ไม่ต้องบรรยาย 10 บรรทัด
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2 id="mobile">8. คิดถึงมือถือ</h2>
+
+    <p>
+      <strong>"นักศึกษาส่วนใหญ่เปิด web app บนมือถือ"</strong> · ถ้าไม่ทดสอบบนมือถือ → AI สร้าง UI ที่ใช้บนมือถือไม่ได้
+    </p>
+
+    <h3>5 กฎพื้นฐานมือถือ</h3>
+    <ol class="steps">
+      <li><strong>ปุ่มอย่างน้อย 44×44 px</strong> · นิ้วต้องกดได้</li>
+      <li><strong>font ≥ 16 px</strong> · ไม่งั้น iOS จะ zoom ทุกครั้งที่กรอก</li>
+      <li><strong>1 column</strong> · อย่ายัด 2-3 column บนหน้าจอแคบ</li>
+      <li><strong>Form fields ใช้ <code>type</code> ที่ถูก</strong> · <code>type="email"</code>, <code>type="tel"</code> · มือถือเปลี่ยน keyboard ให้</li>
+      <li><strong>ไม่ต้อง hover</strong> · มือถือไม่มี · ทำให้ทุกอย่างกดได้</li>
+    </ol>
+
+    <div class="callout info">
+      <strong>📱 ทดสอบใน DevTools</strong>
+      เปิด Chrome / Edge → F12 → กดไอคอนมือถือ (Toggle device toolbar) → เลือก iPhone/Pixel ·
+      เห็นว่า UI ใช้ได้บนมือถือมั้ย · <em>"ทดสอบบนมือถือจริง = ทดสอบบน devtools"</em>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2 id="color">9. สี · ไอคอน · ความหมาย</h2>
+
+    <h3>สีมีความหมาย — อย่าใช้สุ่ม</h3>
+    <table>
+      <thead><tr><th>สี</th><th>หมายถึง</th><th>ตัวอย่างใช้</th></tr></thead>
+      <tbody>
+        <tr><td style="background:#ef4444;color:#fff">🔴 แดง</td><td>danger · destructive</td><td>ปุ่ม Delete · error message</td></tr>
+        <tr><td style="background:#34d399;color:#0b1020">🟢 เขียว</td><td>success · positive</td><td>"บันทึกสำเร็จ" · ผ่าน</td></tr>
+        <tr><td style="background:#f59e0b;color:#1a1410">🟡 เหลือง / ส้ม</td><td>warning · ต้องระวัง</td><td>"คุณยังไม่ได้ save" · เตือน</td></tr>
+        <tr><td style="background:#3776ab;color:#fff">🔵 ฟ้า / น้ำเงิน</td><td>info · primary · neutral</td><td>ปุ่มหลัก · ลิงก์ · ข้อมูล</td></tr>
+        <tr><td style="background:#6b748c;color:#fff">⬜ เทา</td><td>disabled · secondary</td><td>ปุ่มที่กดไม่ได้ตอนนี้</td></tr>
+      </tbody>
+    </table>
+
+    <h3>3 กฎสี</h3>
+    <ol class="steps">
+      <li><strong>1 สี primary · 1 สี accent · neutral grayscale 4-5 ระดับ</strong> — มากกว่านี้จะดูเหมือนรุ้ง</li>
+      <li><strong>contrast พอ</strong> — text สีเทาบนพื้นเทา = อ่านไม่ออก · ใช้ <a href="https://webaim.org/resources/contrastchecker/" target="_blank">contrast checker</a></li>
+      <li><strong>ใช้สีให้ตรงความหมาย</strong> — แดง = อันตราย · ไม่ใช่แดง = ปุ่มหลักเพราะเด่นดี (สับสน)</li>
+    </ol>
+
+    <h3>ไอคอน — ใช้ที่ user รู้</h3>
+    <ul>
+      <li>🔍 = search · ⚙️ = settings · 🗑️ = delete · ✏️ = edit · ➕ = add — มาตรฐาน · ใช้ได้</li>
+      <li>ไอคอนแปลก ๆ → ใส่ label คู่ด้วย · อย่าให้ user เดา</li>
+      <li>หลีกเลี่ยง icon-only buttons ถ้าไม่จำเป็น · text + icon ดีกว่า icon เปล่า</li>
+    </ul>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2 id="dont">10. ❌ 10 ข้อ "อย่าทำ"</h2>
+
+    <table>
+      <thead><tr><th>อย่า</th><th>เพราะ</th><th>ทำแทน</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Modal popup ทุกอย่าง</strong></td>
+          <td>กระทบ flow · มือถือใช้ไม่สะดวก</td>
+          <td>inline edit · drawer · navigate page ใหม่</td>
+        </tr>
+        <tr>
+          <td><strong>ซ่อน action สำคัญในเมนู ⋮</strong></td>
+          <td>user หาไม่เจอ</td>
+          <td>primary action เห็นทันที</td>
+        </tr>
+        <tr>
+          <td><strong>ใส่ dashboard ที่ user ไม่ดู</strong></td>
+          <td>เสียพื้นที่ · AI ชอบเสริมเข้ามาเอง</td>
+          <td>ถาม user ว่าต้องการดู metric อะไรจริง</td>
+        </tr>
+        <tr>
+          <td><strong>Form ยาว 30 ช่อง</strong></td>
+          <td>user ทิ้ง</td>
+          <td>แบ่งเป็น wizard / เก็บแค่จำเป็น</td>
+        </tr>
+        <tr>
+          <td><strong>auto-save ที่ไม่บอก</strong></td>
+          <td>user ไม่รู้ว่า save แล้วหรือยัง</td>
+          <td>มี indicator "Saved · 3s ago"</td>
+        </tr>
+        <tr>
+          <td><strong>Color-only signal</strong></td>
+          <td>color-blind มองไม่ออก</td>
+          <td>ใส่ icon + text + color</td>
+        </tr>
+        <tr>
+          <td><strong>Disable ปุ่มเงียบ ๆ</strong></td>
+          <td>user ไม่รู้ว่าทำไมกดไม่ได้</td>
+          <td>tooltip บอกเหตุผล · หรือบอกเงื่อนไขข้างปุ่ม</td>
+        </tr>
+        <tr>
+          <td><strong>Error "Something went wrong"</strong></td>
+          <td>ไม่ช่วยอะไร</td>
+          <td>บอกว่าผิดอะไร + ทำยังไงต่อ</td>
+        </tr>
+        <tr>
+          <td><strong>Carousel/slider บน landing</strong></td>
+          <td>คนกดดูจริงน้อยมาก · เสีย performance</td>
+          <td>โชว์ทุก feature เรียง · ให้ scroll</td>
+        </tr>
+        <tr>
+          <td><strong>Animation 1+ วินาที</strong></td>
+          <td>ช้า · annoying</td>
+          <td>animation ≤ 300ms · functional ไม่ใช่ decorative</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2 id="a11y">11. Accessibility พื้นฐาน</h2>
+
+    <p>
+      <strong>"a11y"</strong> = accessibility · ทำให้ user ที่ตาบอด/หูหนวก/มือไม่สะดวก ใช้ได้ ·
+      <em>"ไม่ใช่แค่จริยธรรม · ส่วนหนึ่งของกฎหมายในหลายประเทศ"</em>
+    </p>
+
+    <h3>6 ข้อขั้นต่ำ (เริ่มได้ทันที)</h3>
+    <ol class="steps">
+      <li><strong>contrast ≥ 4.5:1</strong> สำหรับ text · ตรวจที่ <a href="https://webaim.org/resources/contrastchecker/" target="_blank">WebAIM Contrast Checker</a></li>
+      <li><strong><code>alt</code> attribute ใน <code>&lt;img&gt;</code></strong> ทุกรูป · ถ้าเป็น decorative ใส่ <code>alt=""</code></li>
+      <li><strong>Button ใช้ <code>&lt;button&gt;</code></strong> ไม่ใช่ <code>&lt;div onclick&gt;</code> · screen reader อ่านออก · keyboard ใช้ได้</li>
+      <li><strong>Form ทุกช่องมี <code>&lt;label&gt;</code></strong> · ผูกกับ <code>&lt;input&gt;</code> ด้วย <code>for</code> + <code>id</code></li>
+      <li><strong>ใช้ <code>&lt;h1&gt; &lt;h2&gt; &lt;h3&gt;</code> ตามลำดับ</strong> · ไม่ใช่ใช้ขนาด font อย่างเดียว</li>
+      <li><strong>Keyboard navigation ใช้ได้</strong> — Tab ผ่านทุกปุ่ม · กด Enter / Space ทำงาน · ทดสอบ: ปิด mouse, ใช้ Tab อย่างเดียว</li>
+    </ol>
+
+    <div class="callout info">
+      <strong>🤖 Prompt AI</strong>
+      <em>"ตรวจ HTML นี้ว่า accessibility ผ่านมั้ย · บอก issue 5 ข้อหลัก · ใช้ WCAG 2.1 AA"</em> —
+      AI เก่ง a11y review · ใช้ก่อน deploy ทุกครั้ง
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2 id="ai-traps">12. ⚠️ AI-Era UX Traps — กับดักที่เจอบ่อย</h2>
+
+    <p>AI สร้าง UI ที่ <em>"ดูดี ใช้ไม่ได้"</em> ในรูปแบบเหล่านี้:</p>
+
+    <h3>Trap 1 — Dashboard syndrome</h3>
+    <p>
+      ถาม AI ให้ทำ "หน้าแรก" → ออกมาเป็น dashboard เต็มไปด้วย metric ที่ user ไม่ดู ·
+      AI default ทำแบบนี้เพราะเห็นใน training data เยอะ
+    </p>
+    <div class="callout warn">
+      <strong>วิธีจับ</strong> ถามตัวเองว่า <em>"user มาหน้านี้เพื่อทำอะไร?"</em> — ถ้าตอบไม่ได้ใน 5 วินาที → ตัด dashboard ออก
+    </div>
+
+    <h3>Trap 2 — Feature creep</h3>
+    <p>
+      ขอ AI ทำ form login · มันใส่ "remember me" + "social login" + "magic link" + "2FA" + "captcha"
+      ทั้งที่ไม่ได้ขอ
+    </p>
+    <div class="callout warn">
+      <strong>วิธีจับ</strong> เขียน prompt: <em>"ทำ form login พื้นฐานที่สุด · มีแค่ email + password + ปุ่ม login · ห้ามเพิ่มอย่างอื่น"</em>
+    </div>
+
+    <h3>Trap 3 — State-less UI</h3>
+    <p>
+      AI สร้าง UI ที่ <em>"ดูเสร็จ"</em> แต่ไม่มี loading / empty / error state · ใช้กับ real data ไม่ได้
+    </p>
+    <div class="callout warn">
+      <strong>วิธีจับ</strong> หลัง AI สร้าง · ถามต่อ: <em>"แล้วถ้า API ช้า · ถ้า data ว่าง · ถ้า request fail · UI โชว์อะไร?"</em>
+    </div>
+
+    <h3>Trap 4 — Pretty placeholder data</h3>
+    <p>
+      AI ใส่ name "Lorem Ipsum", score "85, 92, 78" สวย ๆ · พอใช้ data จริง — ชื่อยาว 60 ตัวอักษร, score 0/null → layout พัง
+    </p>
+    <div class="callout warn">
+      <strong>วิธีจับ</strong> Prompt: <em>"ใส่ test data ที่ extreme: ชื่อยาว 100 ตัว · email ว่าง · score 0 · score null · 1000 แถว"</em>
+    </div>
+
+    <h3>Trap 5 — Desktop-first design</h3>
+    <p>
+      AI default ออกแบบบน desktop ก่อน · มือถือกลายเป็นของแถม · ของจริง 70% user อยู่บนมือถือ
+    </p>
+    <div class="callout warn">
+      <strong>วิธีจับ</strong> Prompt: <em>"design mobile-first · 375px wide · ตรวจว่าทุกปุ่มกดได้ด้วยนิ้ว · text อ่านออกบนมือถือ"</em>
+    </div>
+
+    <h3>Trap 6 — Over-animated</h3>
+    <p>
+      AI ชอบใส่ transition, fade-in, hover effect ทุกที่ · ของจริง animation นาน &gt; 300ms = annoying
+    </p>
+    <div class="callout warn">
+      <strong>วิธีจับ</strong> Prompt: <em>"ลบ animation ทั้งหมด · ยกเว้น functional transition (modal open · toast slide)"</em>
+    </div>
+
+    <h3>Trap 7 — Color = signal alone</h3>
+    <p>
+      AI ใช้สีบอกความหมาย (เขียว=success, แดง=fail) แต่ไม่มี icon/text ประกอบ · color-blind user เห็นเทาเหมือนกัน
+    </p>
+    <div class="callout warn">
+      <strong>วิธีจับ</strong> เปิด DevTools → emulate color blindness · ดูว่ายังแยกออกมั้ย
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2 id="checklist">13. ✅ Checklist ก่อนส่งงาน (W12 / W14 / W15)</h2>
+
+    <p>ก่อนคิดว่า UI "เสร็จ" — เช็คตามนี้:</p>
+
+    <h3>🧑 User</h3>
+    <ul>
+      <li>☐ มี user persona ชัด · "user ของหน้านี้คือใคร · มาทำอะไร"</li>
+      <li>☐ Primary action ของแต่ละหน้าชัด · มองครั้งแรกเห็นทันที</li>
+    </ul>
+
+    <h3>📐 Layout</h3>
+    <ul>
+      <li>☐ เลือก layout pattern ที่ตรงงาน (list-detail / dashboard / wizard / ...)</li>
+      <li>☐ Hierarchy ชัด — primary &gt; secondary &gt; tertiary</li>
+      <li>☐ ลอง responsive: desktop / tablet / mobile (375px) ใช้ได้</li>
+    </ul>
+
+    <h3>🔄 States</h3>
+    <ul>
+      <li>☐ Loading state ทุก async</li>
+      <li>☐ Empty state ทุก list / table</li>
+      <li>☐ Error state — บอกผิดอะไร + ทำยังไงต่อ</li>
+      <li>☐ Success feedback หลังกด action</li>
+      <li>☐ Partial / loading-some state</li>
+    </ul>
+
+    <h3>📝 Forms</h3>
+    <ul>
+      <li>☐ Label บนช่อง · required ระบุ</li>
+      <li>☐ Validation ใต้ช่อง · message ภาษาคน</li>
+      <li>☐ Default value ที่ดี · ลด typing</li>
+      <li>☐ ทดสอบด้วย: input ว่าง / ยาวมาก / มี emoji / มีภาษาไทย</li>
+    </ul>
+
+    <h3>♻️ Reversibility</h3>
+    <ul>
+      <li>☐ Destructive action มี confirm + undo</li>
+      <li>☐ ไม่มี action ที่กลับไม่ได้โดยไม่ถาม</li>
+    </ul>
+
+    <h3>♿ Accessibility</h3>
+    <ul>
+      <li>☐ Contrast ≥ 4.5:1</li>
+      <li>☐ ทุก image มี <code>alt</code></li>
+      <li>☐ Keyboard nav ใช้ได้ (Tab + Enter)</li>
+      <li>☐ ใช้ <code>&lt;button&gt;</code> ไม่ใช่ <code>&lt;div onclick&gt;</code></li>
+    </ul>
+
+    <h3>📱 Mobile</h3>
+    <ul>
+      <li>☐ ปุ่ม ≥ 44×44 px</li>
+      <li>☐ font ≥ 16 px ใน input</li>
+      <li>☐ 1 column บนมือถือ</li>
+      <li>☐ ทดสอบบนมือถือจริง · ไม่ใช่แค่ devtools</li>
+    </ul>
+
+    <h3>🤖 AI Output Review</h3>
+    <ul>
+      <li>☐ ตัด feature ที่ AI ใส่เกินมา</li>
+      <li>☐ เพิ่ม state ที่ AI ลืม (loading/empty/error)</li>
+      <li>☐ ทดสอบด้วย data extreme · ไม่ใช่แค่ Lorem Ipsum</li>
+      <li>☐ ตรวจ accessibility</li>
+    </ul>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>📚 อ่านเพิ่ม (Optional)</h2>
+    <ul>
+      <li><a href="https://www.nngroup.com/articles/" target="_blank">Nielsen Norman Group</a> — usability research ที่อ้างอิงได้</li>
+      <li><a href="https://refactoringui.com/" target="_blank">Refactoring UI</a> — หนังสือสั้น ๆ ใช้ได้ทันที (Tailwind authors)</li>
+      <li><a href="https://www.smashingmagazine.com/" target="_blank">Smashing Magazine</a> — บทความ UX/UI ใหม่ ๆ</li>
+      <li><a href="https://www.checklist.design/" target="_blank">checklist.design</a> — UX/UI checklist ตามประเภทของแอป</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>📌 ใช้หน้านี้ยังไง</strong>
+      เปิดทิ้งไว้ในแท็บ <em>"ขณะทำ W12 (Flask/Streamlit) / W14 (Deploy) / W15 (Final Project)"</em> ·
+      ทุกครั้งที่ AI สร้าง UI → กลับมาเช็ค checklist ก่อนรับงาน · <strong>"ไม่ใช่อ่านครั้งเดียวจบ"</strong>
+    </div>
+
+    <div class="pager">
+      <a href="python-basics.html"><div class="label">← reference อื่น</div><div class="title">Python Cheat-sheet</div></a>
+      <a href="w12-apis.html" class="next"><div class="label">ใช้กับ →</div><div class="title">W12 — APIs + Flask + Streamlit</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W11 — OOP + จัดระเบียบโค้ด | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html" class="active"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">สัปดาห์ที่ 11 · Advanced · 🐰 Tamagotchi Edition</span>
+    <h1>OOP + จัดระเบียบโค้ด</h1>
+    <p class="lede">
+      สัปดาห์นี้สอน OOP <em>"ผ่านการเลี้ยง Pet ดิจิทัล"</em> 🐰 — เพราะมันมี <strong>state</strong>
+      (หิว/เบื่อ/อายุ) ที่เปลี่ยนได้ · มีหลาย <strong>instance</strong> (Mochi vs Tofu vs Mango) ·
+      และมี <strong>behavior</strong> (feed/play/sleep) — ตัวอย่างที่สอน OOP ได้สมบูรณ์แบบที่สุด ·
+      เริ่มเลย!
+    </p>
+
+    <h2>เป้าหมายสัปดาห์นี้</h2>
+    <ul>
+      <li>เข้าใจ <code>class</code>, <code>method</code>, <code>__init__</code>, <code>self</code> — ผ่าน Pet 🐰</li>
+      <li>เห็นว่า <em>"หลาย instance = หลาย state แยกกัน"</em></li>
+      <li>แยก code เป็นหลาย module (file)</li>
+      <li>รู้ <em>"เมื่อไหร่ใช้ OOP / เมื่อไหร่ใช้แค่ function"</em></li>
+      <li>จับ AI เมื่อมัน <strong>over-engineer</strong> code ของคุณ</li>
+    </ul>
+
+    <div class="callout warn" style="border-left-width:5px">
+      <strong>🔒 ทำไม "ตัดสินใจใช้ OOP หรือไม่ใช้" คือทักษะที่ AI ทำให้คุณไม่ได้</strong>
+      AI <em>"เขียน class ได้"</em> · แต่ AI ชอบ <strong>over-engineer</strong> — ขอเครื่องคำนวณ
+      มันสร้าง 5 class · ขอ TODO list มันสร้าง abstract factory pattern · งานของคุณคือ
+      <strong>"กด reject"</strong> เมื่อ AI ทำเกินที่ต้อง · ทักษะนี้ใช้ได้ทั้งชีวิต
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🐰 Meet Mochi — Pet ตัวแรกของเรา</h2>
+    <p>
+      ก่อนเรียน <em>"theory"</em> ของ OOP · มารู้จัก <strong>Mochi</strong> ก่อน — Pet กระต่ายดิจิทัลของเรา
+      · Mochi มี state ที่เปลี่ยนตามเวลา (ความหิว ความสุข อายุ) และเราสามารถดูแลด้วย method 3 อย่าง
+      (feed/play/sleep)
+    </p>
+
+    <h3>🎮 ลองเลี้ยง Mochi เลย!</h3>
+    <p>ลองรัน Pet class ด้านล่าง · แก้บรรทัด "ใช้งาน" เพื่อ feed/play/sleep หลาย ๆ ครั้ง · ดู state เปลี่ยน</p>
+
+    <div class="python-runner">class Pet:
+    def __init__(self, name, species="🐰"):
+        self.name = name
+        self.species = species
+        self.hunger = 5     # 0=อิ่ม · 10=หิวมาก
+        self.happy = 5      # 0=เศร้า · 10=มีความสุข
+        self.age_days = 0
+
+    def status(self):
+        face = "😊" if self.happy &gt;= 7 else "😐" if self.happy &gt;= 4 else "😢"
+        belly = "🍔" * max(0, 10 - self.hunger)
+        return f"{self.species} {self.name} {face}  หิว={self.hunger}/10  สุข={self.happy}/10  {belly}  (อายุ {self.age_days} วัน)"
+
+    def feed(self, food="แครอท"):
+        self.hunger = max(0, self.hunger - 3)
+        self.happy = min(10, self.happy + 1)
+        print(f"😋 {self.name} กิน {food} → อิ่มขึ้น!")
+
+    def play(self):
+        self.happy = min(10, self.happy + 3)
+        self.hunger = min(10, self.hunger + 1)
+        print(f"🎾 {self.name} เล่นกับคุณ → สุขใจมาก!")
+
+    def sleep(self):
+        self.happy = min(10, self.happy + 2)
+        self.age_days += 1
+        print(f"💤 {self.name} หลับ... อายุเพิ่มเป็น {self.age_days} วัน")
+
+
+# ใช้งาน — ลองเปลี่ยน / เพิ่มบรรทัดดู
+mochi = Pet("Mochi", "🐰")
+print(mochi.status())
+
+mochi.feed("แครอท")
+mochi.play()
+mochi.sleep()
+print(mochi.status())</div>
+
+    <p style="color:var(--text-muted);font-size:13.5px">
+      💡 ลองเพิ่ม <code>mochi.play()</code> 5 ครั้ง → ดูว่า hunger จะถึง 10 มั้ย (เล่นเยอะแล้วหิว!)
+    </p>
+
+    <h2>🤔 ทำไมไม่ใช้ dict?</h2>
+    <p>
+      ถ้าแค่ pet ตัวเดียว · ใช้ dict ก็ได้ — แต่พอมี 3 ตัว · code เริ่ม <em>"ปวดหัว"</em>:
+    </p>
+
+    <div class="python-runner"># ❌ Version 1: ใช้ dict — เริ่มมั่ว
+mochi = {"name": "Mochi", "hunger": 5, "happy": 5, "age": 0}
+tofu  = {"name": "Tofu",  "hunger": 5, "happy": 5, "age": 0}
+mango = {"name": "Mango", "hunger": 5, "happy": 5, "age": 0}
+
+def feed(pet, food):
+    pet["hunger"] = max(0, pet["hunger"] - 3)
+    print(f"{pet['name']} กิน {food}")
+
+def play(pet):
+    pet["happy"] = min(10, pet["happy"] + 3)
+    pet["hunger"] = min(10, pet["hunger"] + 1)
+    print(f"{pet['name']} เล่น")
+
+# ปัญหา 1: ต้องส่ง pet เป็น parameter ทุกครั้ง
+feed(mochi, "แครอท")
+play(tofu)
+
+# ปัญหา 2: ถ้าพิมพ์ key ผิด — เงียบ ๆ ไม่มี error
+mochi["hungry"] = 0   # ❌ พิมพ์ผิด — แต่ Python ไม่ error
+print(mochi)          # ตอนนี้ dict มี "hunger" AND "hungry" — งง!
+
+# ปัญหา 3: ถ้าเปลี่ยน field "hunger" → "hunger_level"
+# ต้องไปแก้ทุกที่ที่ใช้ — ลืม 1 ที่ = bug</div>
+
+    <div class="callout info">
+      <strong>OOP แก้ปัญหา 3 อย่าง</strong>
+      <ol style="margin-top:8px">
+        <li><strong>ผูก data + function เข้าด้วยกัน</strong> · <code>mochi.feed()</code> &gt; <code>feed(mochi)</code></li>
+        <li><strong>field กำหนดใน <code>__init__</code> ที่เดียว</strong> · ไม่ต้องจำว่ามี field อะไร</li>
+        <li><strong>เปลี่ยน field ใน 1 ที่</strong> · IDE ช่วยเช็คทุกที่ที่ใช้</li>
+      </ol>
+    </div>
+
+    <h2>🧩 องค์ประกอบของ class — กายวิภาคของ Mochi</h2>
+
+    <p>มาแยก code ของ Pet ออกเป็น <em>"ชิ้นส่วน"</em> ที่ตั้งชื่อให้รู้จัก:</p>
+
+    <pre><code class="language-python">class Pet:                              # ① class definition
+    def __init__(self, name, species):  # ② constructor
+        self.name = name                 # ③ attribute (instance data)
+        self.species = species
+        self.hunger = 5                  # ④ default value
+        self.happy = 5
+
+    def feed(self, food):                # ⑤ method
+        self.hunger -= 3                  # ⑥ self = "ตัวกระต่ายตัวนี้"
+        print(f"{self.name} กิน {food}")
+
+
+mochi = Pet("Mochi", "🐰")               # ⑦ create instance
+mochi.feed("แครอท")                      # ⑧ call method
+print(mochi.hunger)                      # ⑨ access attribute</code></pre>
+
+    <table>
+      <thead><tr><th>หมายเลข</th><th>ชื่อ</th><th>ความหมายในแบบ "เลี้ยงสัตว์"</th></tr></thead>
+      <tbody>
+        <tr><td>①</td><td><code>class Pet:</code></td><td>"พิมพ์เขียว" ของ pet — บอกว่า pet ทุกตัวมีอะไร / ทำอะไรได้</td></tr>
+        <tr><td>②</td><td><code>__init__</code></td><td>"พิธีต้อนรับน้องใหม่" — ทำงานครั้งเดียวตอนเกิด</td></tr>
+        <tr><td>③</td><td><code>self.name</code></td><td>"แบบฟอร์มประจำตัว" ของ pet ตัวนี้</td></tr>
+        <tr><td>④</td><td><code>self.hunger = 5</code></td><td>"ค่าเริ่มต้น" ตอนเกิด — ทุกตัวเริ่มที่ 5</td></tr>
+        <tr><td>⑤</td><td><code>def feed(self):</code></td><td>"ความสามารถ" ของ pet — ทุกตัวมี method นี้</td></tr>
+        <tr><td>⑥</td><td><code>self</code></td><td>"ตัวฉัน" — pet ตัวนี้ของฉัน · ไม่ใช่ตัวอื่น</td></tr>
+        <tr><td>⑦</td><td><code>Pet(...)</code></td><td>"เลี้ยงตัวใหม่ขึ้นมา" — เกิด instance</td></tr>
+        <tr><td>⑧</td><td><code>mochi.feed(...)</code></td><td>"ให้อาหารกระต่ายชื่อ Mochi"</td></tr>
+        <tr><td>⑨</td><td><code>mochi.hunger</code></td><td>"ดูว่า Mochi หิวแค่ไหน"</td></tr>
+      </tbody>
+    </table>
+
+    <h3>📐 Class Diagram (Mermaid)</h3>
+
+    <div class="mermaid">classDiagram
+    class Pet {
+        +string name
+        +string species
+        +int hunger
+        +int happy
+        +int age_days
+        +status() string
+        +feed(food) void
+        +play() void
+        +sleep() void
+    }
+
+    note for Pet "+ = public · ทุก attribute / method"
+    note for Pet "🐰 Mochi · 🐱 Tofu · 🐶 Mango = แต่ละ instance"</div>
+
+    <h2>🎯 หลาย Pet = หลาย State แยกกัน</h2>
+    <p>
+      <em>"ทำไมไม่ใช้ global variable?"</em> — เพราะ pet หลายตัวต้องมี state ของตัวเอง · class ให้คุณสร้าง
+      <strong>หลาย instance</strong> โดยแต่ละตัวมี state ไม่ปะปนกัน
+    </p>
+
+    <div class="python-runner">class Pet:
+    def __init__(self, name, species):
+        self.name = name
+        self.species = species
+        self.hunger = 5
+        self.happy = 5
+
+    def feed(self):
+        self.hunger = max(0, self.hunger - 3)
+
+    def status(self):
+        return f"{self.species} {self.name}: หิว={self.hunger}, สุข={self.happy}"
+
+
+# สร้าง 3 ตัว — แต่ละตัวเริ่มที่ state เริ่มต้นเหมือนกัน
+mochi = Pet("Mochi", "🐰")
+tofu  = Pet("Tofu",  "🐱")
+mango = Pet("Mango", "🐶")
+
+print("=== เริ่มต้น ===")
+print(mochi.status())
+print(tofu.status())
+print(mango.status())
+
+# feed แค่ Mochi 2 ครั้ง
+mochi.feed()
+mochi.feed()
+
+print("\n=== หลัง feed Mochi 2 ครั้ง ===")
+print(mochi.status())   # หิว 0 (อิ่มที่สุด!)
+print(tofu.status())    # หิวยัง 5 — ไม่ได้ถูก feed
+print(mango.status())   # หิวยัง 5
+
+# self ทำให้ Python รู้ว่า "feed ตัวไหน"</div>
+
+    <div class="predict-quiz" data-question="โปรแกรมนี้พิมพ์อะไร?">
+      <pre class="pq-code">class Pet:
+    def __init__(self, name):
+        self.name = name
+        self.hp = 100
+
+    def attack(self, other, dmg):
+        other.hp -= dmg
+
+a = Pet("Mochi")
+b = Pet("Tofu")
+a.attack(b, 30)
+a.attack(b, 20)
+print(a.hp, b.hp)</pre>
+      <pre class="pq-answer">100 50</pre>
+      <div class="pq-explain">
+        <code>a.attack(b, 30)</code> ลด <code>b.hp</code> เป็น 70 · <code>a.attack(b, 20)</code> ลดอีก เป็น 50 ·
+        <strong>a.hp ไม่เปลี่ยน</strong> — เพราะ method <em>ทำกับ other (=b)</em> · นี่คือพลังของ <code>self</code>
+        ที่แยกระหว่าง 2 instance
+      </div>
+    </div>
+
+    <h2>✅ เมื่อไหร่ "ควรใช้" OOP</h2>
+
+    <table>
+      <thead><tr><th>สัญญาณ</th><th>ตัวอย่าง</th><th>ใช้ class ดีกว่า function</th></tr></thead>
+      <tbody>
+        <tr><td>มีหลาย instance ที่มี structure เหมือนกัน</td><td>pet หลายตัว · sensor หลายตัว · booking หลายรายการ</td><td>✅</td></tr>
+        <tr><td>มี state ที่เก็บ + เปลี่ยน</td><td>Cart (เพิ่ม/ลบของ) · BankAccount (deposit/withdraw)</td><td>✅</td></tr>
+        <tr><td>operation หลายอันที่ทำกับข้อมูลชุดเดียว</td><td><code>player.attack()</code>, <code>player.move()</code>, <code>player.heal()</code></td><td>✅</td></tr>
+        <tr><td>ต้องการ encapsulation — ซ่อน detail</td><td>internal counter, cache, lazy loading</td><td>✅</td></tr>
+      </tbody>
+    </table>
+
+    <h2>🚫 เมื่อไหร่ "ไม่ควรใช้" OOP</h2>
+
+    <table>
+      <thead><tr><th>สัญญาณ</th><th>ตัวอย่าง</th><th>ใช้ function ก็พอ</th></tr></thead>
+      <tbody>
+        <tr><td>Script สั้น ๆ ที่ทำครั้งเดียว</td><td>"แปลง CSV เป็น JSON ทีเดียว"</td><td>✅</td></tr>
+        <tr><td>มี instance เดียว</td><td>config app, global logger</td><td>✅ ใช้ module + function</td></tr>
+        <tr><td>Data analysis pipeline</td><td>groupby/merge/plot</td><td>✅ ใช้ pandas DataFrame ก็พอ</td></tr>
+        <tr><td>Utility ไม่มี state</td><td><code>def calc_grade(score)</code> · <code>def hash_id(s)</code></td><td>✅</td></tr>
+      </tbody>
+    </table>
+
+    <h2>🤖 AI Over-Engineer Detector — ฉากตลก ๆ ที่เจอจริง</h2>
+    <p>
+      AI ชอบ "show off" ทุกอย่างที่เรียน — รวมทั้ง design patterns ที่ไม่ต้องใช้ · นี่คือฉากที่นักศึกษาเจอบ่อย:
+    </p>
+
+    <div class="diff-viewer" data-title="🥁 ขอเครื่องคำนวณ — AI ตอบยังไง">
+      <div class="diff-before">user: "ขอ Python ที่บวก 2 เลข"
+
+# 🎯 What you wanted:
+def add(a, b):
+    return a + b
+
+print(add(3, 5))</div>
+      <div class="diff-after">user: "ขอ Python ที่บวก 2 เลข"
+
+# 🎭 What AI gave:
+from abc import ABC, abstractmethod
+from typing import Protocol
+
+class Calculator(Protocol):
+    def calculate(self, a: float, b: float) -&gt; float: ...
+
+class AbstractOperation(ABC):
+    @abstractmethod
+    def execute(self, a, b): pass
+
+class AddOperation(AbstractOperation):
+    def execute(self, a, b):
+        return a + b
+
+class CalculatorEngine:
+    def __init__(self, op: AbstractOperation):
+        self.op = op
+    def run(self, a, b):
+        return self.op.execute(a, b)
+
+engine = CalculatorEngine(AddOperation())
+print(engine.run(3, 5))</div>
+    </div>
+
+    <div class="callout warn">
+      <strong>❌ ทำไม AI version ถึงไม่ดี</strong>
+      <ul style="margin-top:8px">
+        <li>ใช้ <code>ABC</code>, <code>Protocol</code>, <code>@abstractmethod</code> — concepts ปี 4</li>
+        <li>15 บรรทัดแทนที่จะใช้ 2 บรรทัด</li>
+        <li>ทุกอย่างคือ <strong>"flexibility ที่ไม่มีใครต้องการ"</strong> — YAGNI principle</li>
+        <li>ถ้าจริง ๆ แล้ว project ต้องการ flex — รอ "เมื่อต้องการครั้งที่ 2" ค่อยเพิ่ม</li>
+      </ul>
+    </div>
+
+    <h3>🚩 5 สัญญาณว่า AI Over-Engineer</h3>
+    <table>
+      <thead><tr><th>สัญญาณ</th><th>ตัวอย่าง</th><th>วิธี reject</th></tr></thead>
+      <tbody>
+        <tr><td>1 ฟังก์ชัน → 3+ class</td><td>"add" → CalculatorEngine + AddOp + AbstractOperation</td><td>"เขียนเป็น function อันเดียวพอ"</td></tr>
+        <tr><td>import แปลก ๆ</td><td><code>abc</code>, <code>Protocol</code>, <code>metaclass</code></td><td>"ไม่ใช้ abc · ใช้ basic Python เท่านั้น"</td></tr>
+        <tr><td>มี Factory / Builder / Strategy pattern</td><td>class TodoFactory · class StoreBuilder</td><td>"ลบ pattern ทั้งหมด · เขียน straightforward"</td></tr>
+        <tr><td>ทุก method แค่ wrap call ของ method อื่น</td><td>class A → call B → call C → return value เดิม</td><td>"flatten · ลบ class ที่ไม่มี state"</td></tr>
+        <tr><td>เพิ่ม generic / typing เกินจำเป็น</td><td><code>Generic[T, U, V]</code> ทั้งที่ใช้ int</td><td>"ใช้ type ปกติ · ไม่ต้อง generic"</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>🪄 เคล็ดลับ — Prompt ที่ดีกว่า</strong>
+      ขอ AI <em>"เขียนเป็น function ก่อน · ถ้าจำเป็นค่อยใส่ class · ห้ามใช้ design pattern"</em>
+      → AI จะถ่อมตัวลงและให้ code ที่ใช้งานได้จริง
+    </div>
+
+    <h2>📁 แยก code เป็น module (file) — เลี้ยง Pet เริ่มใหญ่</h2>
+    <p>
+      ตอนนี้ Pet class โต — มี save/load, มี shop, มี battle · ถ้าใส่ทุกอย่างใน <code>main.py</code>
+      → 500+ บรรทัด หา function ไม่เจอ · ทางออก: <strong>แยก concern เป็นไฟล์</strong>
+    </p>
+
+    <pre><code>pet_app/
+├── main.py          ← entry point — รันจากที่นี่
+├── pet.py           ← class Pet (data + behavior หลัก)
+├── store.py         ← save_pets(), load_pets() — JSON I/O
+├── shop.py          ← buy_food(), buy_toy() — ระบบเศรษฐกิจ
+└── ui.py            ← show_menu(), print_status() — display</code></pre>
+
+    <h3><code>pet.py</code></h3>
+    <pre><code class="language-python">class Pet:
+    def __init__(self, name, species="🐰"):
+        self.name = name
+        self.species = species
+        self.hunger = 5
+        self.happy = 5
+
+    def feed(self, food):
+        self.hunger = max(0, self.hunger - 3)
+
+    def status(self):
+        return f"{self.species} {self.name}: หิว={self.hunger}"</code></pre>
+
+    <h3><code>store.py</code></h3>
+    <pre><code class="language-python">import json
+from pet import Pet
+
+def save_pets(pets, filename="pets.json"):
+    data = [{"name": p.name, "species": p.species,
+             "hunger": p.hunger, "happy": p.happy} for p in pets]
+    with open(filename, "w", encoding="utf-8") as f:
+        json.dump(data, f, ensure_ascii=False, indent=2)
+
+def load_pets(filename="pets.json"):
+    with open(filename, encoding="utf-8") as f:
+        data = json.load(f)
+    pets = []
+    for d in data:
+        p = Pet(d["name"], d["species"])
+        p.hunger = d["hunger"]
+        p.happy = d["happy"]
+        pets.append(p)
+    return pets</code></pre>
+
+    <h3><code>main.py</code></h3>
+    <pre><code class="language-python">from pet import Pet
+from store import save_pets, load_pets
+
+def main():
+    mochi = Pet("Mochi", "🐰")
+    tofu  = Pet("Tofu",  "🐱")
+    mochi.feed("แครอท")
+
+    save_pets([mochi, tofu])
+    print("เซฟแล้ว!")
+
+if __name__ == "__main__":
+    main()</code></pre>
+
+    <div class="callout info">
+      <strong>กฎ — แยกตาม "ทำอะไร" ไม่ใช่ "มีอะไร"</strong>
+      <em>"pet.py"</em> = data + behavior หลัก · <em>"store.py"</em> = I/O · <em>"ui.py"</em> = display ·
+      ห้ามมี <code>everything.py</code>
+    </div>
+
+    <h2>🔄 Refactor — แตก 1 ไฟล์ใหญ่</h2>
+    <p>เอา <code>todo.py</code> จาก W07 (TODO Manager) มา refactor:</p>
+
+    <pre><code>todo_v2/
+├── main.py          ← parse argv, call commands
+├── todo.py          ← class Todo (id, text, done)
+├── store.py         ← load_todos(), save_todos()
+└── commands.py      ← add_command(), list_command(), done_command(), delete_command()</code></pre>
+
+    <p>ขอ AI ช่วย refactor — แต่ <em>ทีละไฟล์</em>:</p>
+    <pre><code>spec: refactor todo.py เดิม (paste code) ให้แตกเป็น 4 ไฟล์ตาม structure ด้านบน
+ทำทีละไฟล์ — เริ่มที่ todo.py · ต้องเก็บ behavior เดิมไว้ทุกประการ
+อย่าเพิ่ม feature ที่ไม่อยู่ในเวอร์ชันเดิม</code></pre>
+
+    <div class="callout tip">
+      <strong>กฎทอง — Refactor ≠ Add Feature</strong>
+      Refactor คือเปลี่ยน <em>"รูปแบบ"</em> โดย behavior เหมือนเดิม · ถ้า AI เพิ่ม feature → reject
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🐱 Bonus: Inheritance — Cat สืบทอดจาก Pet</h2>
+    <p>
+      <em>"แล้วถ้า Cat กับ Dog ทำงานต่างกัน?"</em> — Cat ชอบกินปลา · Dog ชอบเล่นเยอะกว่า ·
+      ใช้ <strong>inheritance</strong> ให้ Cat / Dog "สืบทอด" จาก Pet โดยเปลี่ยนแค่ส่วนที่ต่าง
+    </p>
+
+    <div class="python-runner">class Pet:
+    def __init__(self, name, species):
+        self.name = name
+        self.species = species
+        self.hunger = 5
+        self.happy = 5
+
+    def feed(self, food):
+        self.hunger = max(0, self.hunger - 3)
+        print(f"😋 {self.name} กิน {food}")
+
+    def sound(self):
+        return "..."     # default — Pet เฉย ๆ
+
+
+# Cat สืบทอดจาก Pet — เพิ่ม "ชอบปลา"
+class Cat(Pet):
+    def __init__(self, name):
+        super().__init__(name, "🐱")    # เรียก __init__ ของ Pet
+
+    def feed(self, food):
+        if food == "ปลา":
+            self.happy = min(10, self.happy + 5)   # ปลา = ดีใจสุด
+            print(f"😻 {self.name} อร่อยมาก!")
+        super().feed(food)              # เรียก feed ของ Pet ปกติ
+
+    def sound(self):
+        return "เมี้ยว~"
+
+
+# Dog สืบทอดจาก Pet — เพิ่ม "ชอบเล่นเยอะ"
+class Dog(Pet):
+    def __init__(self, name):
+        super().__init__(name, "🐶")
+        self.energy = 10                # field ใหม่เฉพาะ Dog
+
+    def fetch(self):
+        if self.energy &gt; 0:
+            self.happy = min(10, self.happy + 4)
+            self.energy -= 2
+            print(f"🎾 {self.name} วิ่งเอาลูกบอลมาให้!")
+        else:
+            print(f"😴 {self.name} เหนื่อยแล้ว · นอนก่อน")
+
+    def sound(self):
+        return "โฮ่ง โฮ่ง!"
+
+
+# ใช้งาน
+mochi = Cat("Mochi")
+mango = Dog("Mango")
+
+mochi.feed("ปลา")              # Cat's special feed
+print(f"  {mochi.name} พูดว่า: {mochi.sound()}")
+
+mango.fetch()                   # Dog-only method
+mango.fetch()
+print(f"  {mango.name} พูดว่า: {mango.sound()}")
+print(f"  energy: {mango.energy}/10")
+
+# Both ยังใช้ feed/property ของ Pet ได้
+print(f"\n{mochi.name}: หิว={mochi.hunger}, สุข={mochi.happy}")
+print(f"{mango.name}: หิว={mango.hunger}, สุข={mango.happy}")</div>
+
+    <div class="callout info">
+      <strong>Inheritance ในแบบ "สายเลือดสัตว์"</strong>
+      <ul style="margin-top:8px">
+        <li><strong>Pet</strong> = ปู่ย่า · กำหนดสิ่งที่ทุกสัตว์มี (hunger, happy, feed)</li>
+        <li><strong>Cat / Dog</strong> = ลูกหลาน · สืบทอดของเดิม + เพิ่ม/เปลี่ยนตามชนิด</li>
+        <li><code>super().feed()</code> = "เรียกของพ่อแม่" — ทำของพื้นฐานก่อนค่อยเพิ่ม</li>
+      </ul>
+    </div>
+
+    <h3>📐 Mermaid — Inheritance Tree</h3>
+
+    <div class="mermaid">classDiagram
+    Pet &lt;|-- Cat
+    Pet &lt;|-- Dog
+
+    class Pet {
+        +name : str
+        +species : str
+        +hunger : int
+        +happy : int
+        +feed(food)
+        +sound() str
+    }
+
+    class Cat {
+        +feed(food) [override]
+        +sound() ["เมี้ยว~"]
+    }
+
+    class Dog {
+        +energy : int
+        +fetch() [new!]
+        +sound() ["โฮ่ง!"]
+    }</div>
+
+    <div class="callout warn">
+      <strong>⚠️ ใช้ inheritance เมื่อ "is-a" จริง ๆ</strong>
+      Cat <em>"is a"</em> Pet ✅ · Dog <em>"is a"</em> Pet ✅ · แต่ Cart <em>"is a"</em> Pet ❌ ·
+      ถ้าฝืน inherit ที่ไม่ใช่ is-a → code งงและพัง · ปลอดภัยกว่า: <em>"composition"</em> (Pet has-a Inventory)
+    </div>
+
+    <h2>🎨 Type hints — สำคัญในยุค AI</h2>
+    <p>ใส่ type ใน function signature — AI อ่านง่ายขึ้น 5 เท่า · IDE auto-complete ฉลาดขึ้น · เครื่องมือเช็คได้</p>
+
+    <div class="python-runner">from typing import Optional
+
+class Pet:
+    def __init__(
+        self,
+        name: str,
+        species: str = "🐰",
+        hunger: int = 5,
+        owner: Optional[str] = None,
+    ) -&gt; None:
+        self.name = name
+        self.species = species
+        self.hunger = hunger
+        self.owner = owner
+
+    def feed(self, food: str, amount: int = 1) -&gt; int:
+        """ให้อาหาร · คืนค่า hunger หลังกิน"""
+        self.hunger = max(0, self.hunger - amount * 3)
+        return self.hunger
+
+    def is_hungry(self) -&gt; bool:
+        return self.hunger &gt;= 7
+
+
+# AI / IDE จะรู้ทันที ว่า:
+# - name ต้องเป็น str (ไม่ใช่ int)
+# - amount default = 1
+# - feed() คืน int
+# - is_hungry() คืน bool
+
+mochi = Pet("Mochi", "🐰")
+new_hunger = mochi.feed("แครอท", amount=2)
+print(f"หลังกิน หิว = {new_hunger}")
+print(f"หิวมั้ย? {mochi.is_hungry()}")</div>
+
+    <div class="callout tip">
+      <strong>กฎ — ทุก method สำคัญใส่ type hint</strong>
+      โดยเฉพาะ <code>__init__</code> · type hint = <em>"contract"</em> ที่บอกว่าใช้ class นี้ยังไง ·
+      AI ใช้ type hint เพื่อแก้ code ได้แม่นขึ้น
+    </div>
+
+    <h2>🧰 Standard structure ของ Python project</h2>
+
+    <pre><code>my_project/
+├── README.md              ← อธิบายโปรเจกต์
+├── requirements.txt       ← list ของ library ที่ต้องลง
+├── .gitignore             ← บอก git ว่าไฟล์ไหนไม่เก็บ
+├── .env                   ← secrets (ไม่ commit!)
+├── main.py                ← entry point
+├── src/                   ← code หลัก
+│   ├── __init__.py
+│   ├── student.py
+│   └── grading.py
+├── tests/                 ← unit tests (W13)
+│   └── test_grading.py
+└── data/                  ← ข้อมูล (มัก gitignore)
+    └── students.csv</code></pre>
+
+    <h3><code>requirements.txt</code></h3>
+    <pre><code>pandas==2.1.0
+numpy&gt;=1.26
+matplotlib&gt;=3.8
+requests</code></pre>
+
+    <p>วิธีใช้: <code>pip install -r requirements.txt</code></p>
+
+    <h3><code>.gitignore</code></h3>
+    <pre><code>__pycache__/
+*.pyc
+.venv/
+.env
+*.csv
+*.db</code></pre>
+
+    <h2>🌍 Virtual environment (.venv)</h2>
+    <p>เก็บ library ของแต่ละ project ไว้ในห้องของตัวเอง · ไม่ปนกัน</p>
+
+    <pre><code># สร้าง .venv ใน project folder
+python -m venv .venv
+
+# Activate
+# Windows:
+.venv\Scripts\activate
+# Mac/Linux:
+source .venv/bin/activate
+
+# ตอนนี้ pip install จะลงใน .venv เฉพาะ project นี้
+pip install pandas
+
+# ปิด
+deactivate</code></pre>
+
+    <h2>🧪 Workshop — Refactor TODO Manager + ออกแบบ Pet ของตัวเอง</h2>
+
+    <h3>Part A: Refactor TODO Manager เป็น Module-based</h3>
+
+    <ol class="steps">
+      <li>
+        <strong>Copy todo.py จาก W07</strong> มาวางใน folder ใหม่ <code>todo_v2/</code>
+      </li>
+      <li>
+        <strong>วาด class diagram (Mermaid)</strong>
+        — มีอะไรเป็น class · มีอะไรเป็น function อิสระ
+      </li>
+      <li>
+        <strong>แตกเป็นไฟล์</strong>
+        ตาม structure ด้านบน · refactor ทีละไฟล์
+      </li>
+      <li>
+        <strong>ใส่ type hints</strong>
+        ทุก function/method
+      </li>
+      <li>
+        <strong>เซ็ต virtual environment + requirements.txt</strong>
+      </li>
+      <li>
+        <strong>ทดสอบ</strong>
+        ว่าทุก command ที่เคยทำงานได้ใน v1 ยังทำงานได้ใน v2 — <em>regression test (W05)</em>
+      </li>
+      <li>
+        <strong>commit + push GitHub</strong>
+        — README อธิบายว่า "ทำไม refactor + structure ใหม่"
+      </li>
+    </ol>
+
+    <h3>Part B: 🐰 Adopt Your Own Pet — ออกแบบ class จากศูนย์</h3>
+    <p>
+      เลือก <strong>1 ตัว</strong> ที่ <em>"คุณอยากเลี้ยง"</em> · ออกแบบ class + เขียน + commit
+    </p>
+
+    <table>
+      <thead><tr><th>ตัวเลือก</th><th>State (attributes)</th><th>Behaviors (methods)</th></tr></thead>
+      <tbody>
+        <tr><td>🌱 <strong>Plant</strong> (เลี้ยงต้นไม้)</td><td>name, height, water_level, sunlight, age</td><td>water(), give_sun(), trim(), grow()</td></tr>
+        <tr><td>🤖 <strong>Robot</strong> (Mechatronics)</td><td>battery, position_x, position_y, payload</td><td>move(), turn(), pickup(), recharge()</td></tr>
+        <tr><td>🎮 <strong>Player</strong> (RPG)</td><td>name, hp, level, xp, inventory</td><td>attack(), heal(), level_up(), pick_up()</td></tr>
+        <tr><td>🚗 <strong>Car</strong> (Engineering sim)</td><td>fuel, speed, position, gear</td><td>accelerate(), brake(), refuel(), shift()</td></tr>
+        <tr><td>☕ <strong>Drink</strong> (สั่งกาแฟ)</td><td>name, size, sweet_level, milk, price</td><td>add_topping(), customize(), price()</td></tr>
+        <tr><td>📦 <strong>Order</strong> (ก๋วยเตี๋ยว)</td><td>items, total, status, table</td><td>add(), remove(), checkout(), receipt()</td></tr>
+      </tbody>
+    </table>
+
+    <ol class="steps">
+      <li>
+        <strong>เลือก 1 อัน · เขียน spec ใน Spec Scorecard</strong>
+        — ระบุ attributes + methods + invariants (e.g. "battery 0-100")
+      </li>
+      <li>
+        <strong>วาด class diagram (Mermaid)</strong>
+        — ดูตัวอย่าง Pet ด้านบน
+      </li>
+      <li>
+        <strong>เขียน class + รัน + ทดสอบ 5 scenarios</strong>
+        — ใช้ Python Runner ด้านบนเป็น template
+      </li>
+      <li>
+        <strong>สร้าง 3 instances · ทดสอบว่า state แยกกัน</strong>
+      </li>
+      <li>
+        <strong>เพิ่ม subclass</strong>
+        — เช่น Cactus extends Plant (น้ำน้อย) · CleanRobot extends Robot
+      </li>
+      <li>
+        <strong>commit + push</strong>
+      </li>
+    </ol>
+
+    <h2>ข้อผิดที่พบบ่อย</h2>
+
+    <div class="callout warn">
+      <strong>🤖➜🐰 ใส่ class ทุกที่ทั้งที่ function พอ</strong>
+      AI ชอบเปลี่ยน <code>def add(a, b)</code> เป็น <code>class Calculator</code> · ถามตัวเอง:
+      <em>"จะมีหลาย instance ของสิ่งนี้มั้ย?"</em> · ตอบไม่ = ไม่ต้องใช้ class ·
+      เป็น function ก็ <strong>"คนรัก AI ไม่ใช้ class เก่งกว่าคนที่ใส่ class ทุกที่"</strong>
+    </div>
+
+    <div class="callout warn">
+      <strong>🔥 ลืมใส่ <code>self</code> หน้า attribute</strong>
+      <code>def feed(self): hunger -= 3</code> ← ไม่มี <code>self.</code> = Python หา hunger ใน scope ของ method ไม่เจอ → NameError ·
+      ทุก attribute ต้อง <code>self.hunger</code>
+    </div>
+
+    <div class="callout warn">
+      <strong>🪢 Refactor + Add feature พร้อมกัน</strong>
+      เปลี่ยน structure + เพิ่ม feature ทีเดียว → ถ้าพังไม่รู้ว่าจุดไหน · refactor → ทดสอบ → ค่อยเพิ่ม feature
+    </div>
+
+    <div class="callout warn">
+      <strong>🌀 Import แบบ wildcard (<code>from x import *</code>)</strong>
+      ทำให้ไม่รู้ว่าชื่อมาจากไหน · IDE auto-complete ไม่รู้ · เพื่อนอ่าน code งง · ใช้
+      <code>from x import name1, name2</code> เสมอ
+    </div>
+
+    <div class="callout warn">
+      <strong>🧬 Inheritance ผิดทาง — "ไม่ใช่ is-a"</strong>
+      <code>class Cart(Pet)</code> — Cart ไม่ใช่ Pet · นี่คือ <em>misuse inheritance</em> ·
+      ตรวจ: "X is a Y?" — ถ้าตอบไม่ได้ ใช้ composition แทน
+    </div>
+
+    <h2>ส่งงานสัปดาห์นี้</h2>
+    <ul>
+      <li>📁 <code>todo_v2/</code> ที่ refactor เสร็จแล้ว · มี structure ตามมาตรฐาน</li>
+      <li>📊 Mermaid class diagram ของ todo_v2 ใน <code>diagrams.md</code></li>
+      <li>✅ test results — v2 ทำทุก command ได้เหมือน v1</li>
+      <li>🐰 <strong>My Own Pet</strong> (Part B) — class + subclass + 5 scenarios ทดสอบ + Mermaid diagram</li>
+      <li>📝 commit log อธิบาย refactor steps</li>
+    </ul>
+
+    <h3>Reference จาก slide เดิม</h3>
+    <p>ครอบคลุม <a href="references.html#topic-9">Topic 9 — OOP and Matplotlib</a> ส่วน OOP + ขยายไปการจัด module + type hints + virtual env ตามมาตรฐานยุค AI</p>
+
+    <div class="pager">
+      <a href="w10-data-project.html"><div class="label">← สัปดาห์ที่แล้ว</div><div class="title">W10 — Data Project ปลายทาง</div></a>
+      <a href="w12-apis.html" class="next"><div class="label">สัปดาห์ถัดไป →</div><div class="title">W12 — APIs + Integration</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+<script src="js/diagram-tools/mermaid-editor.js" defer></script>
+<script src="js/code-tools/python-runner.js" defer></script>
+<script src="js/code-tools/predict-quiz.js" defer></script>
+<script src="js/code-tools/diff-viewer.js" defer></script>
+</body>
+</html>

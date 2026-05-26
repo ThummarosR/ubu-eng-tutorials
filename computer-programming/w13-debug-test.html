@@ -1,0 +1,1237 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W13 — Debug + Test + Reality | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html" class="active"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">สัปดาห์ที่ 13 · Advanced</span>
+    <h1>Debug + Test + Reality</h1>
+    <p class="lede">
+      ใน lab — code รันได้ · ใน production — code พัง · สัปดาห์นี้แยกผู้พัฒนามืออาชีพออกจากนักศึกษาปี 1 ·
+      เรียน <strong>"ระเบียบวิธีหา bug"</strong> · <strong>เขียน test ที่ <em>ทดสอบจริง</em></strong>
+      (ไม่ใช่ test ที่แค่ผ่าน) · และ <strong>ตรวจ test ที่ AI สร้าง</strong> ก่อนเชื่อ
+    </p>
+
+    <h2>เป้าหมายสัปดาห์นี้</h2>
+    <ul>
+      <li>ใช้ <strong>scientific debugging</strong> 5 ขั้น (reproduce → isolate → hypothesize → test → fix)</li>
+      <li>สร้าง <strong>Minimum Reproducible Example (MRE)</strong> เมื่อขอความช่วยเหลือ</li>
+      <li>อ่าน stack trace + ใช้ debugger + write assert + pytest</li>
+      <li>เขียน test ตาม <strong>AAA pattern</strong> · ใช้ <strong>mocking</strong> · วัด <strong>coverage</strong></li>
+      <li><strong>ตรวจ test ที่ AI สร้าง</strong> ตาม checklist 8 ข้อ</li>
+      <li>จับ <em>"tests that pass but don't test"</em> — bug ใหญ่ที่สุดของ AI-era</li>
+      <li>เซ็ต <strong>CI/CD</strong> เบื้องต้น (GitHub Actions)</li>
+      <li>ฝึก mocking สำหรับ <strong>hardware / sensor</strong> (engineering)</li>
+    </ul>
+
+    <div class="callout warn" style="border-left-width:5px">
+      <strong>🔒 สิ่งที่ AI ทำให้คุณไม่ได้ในสัปดาห์นี้</strong>
+      AI <em>"เขียน test ได้"</em> · แต่ AI <strong>เขียน test ที่ผ่านได้ง่าย ๆ</strong> โดย "test ตามว่า code ทำอะไร"
+      ไม่ใช่ "test ว่า code ทำสิ่งที่ <em>ควรทำ</em>" · ความแตกต่างนี้ = สาเหตุของ bug 80% ในงานจริง ·
+      คุณต้องเป็นคน <strong>review test ที่ AI สร้าง</strong> และจับว่า "test นี้พิสูจน์อะไรจริง ๆ?"
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🔬 Scientific Debugging — 5 ขั้นไม่ "เดามั่ว"</h2>
+    <p>
+      นักศึกษาปี 1 เจอ bug → "ลองเปลี่ยนนู่นนี่ดู" · <em>"wiggle and hope"</em> ·
+      มืออาชีพใช้วิธีวิทยาศาสตร์ — เร็วกว่าและเรียนรู้ทุกครั้ง
+    </p>
+
+    <div class="mermaid">flowchart LR
+    bug[🐛 เจอ bug] --> R[1. Reproduce<br/><i>ทำให้พังซ้ำได้</i>]
+    R --> I[2. Isolate<br/><i>หาขอบเขตที่พัง</i>]
+    I --> H[3. Hypothesize<br/><i>เดาสาเหตุ</i>]
+    H --> T[4. Test hypothesis<br/><i>เปลี่ยน 1 อย่าง</i>]
+    T -->|ตรง| F[5. Fix + Test<br/><i>+ regression test</i>]
+    T -->|ไม่ตรง| H
+    F --> done[✅ done]
+
+    classDef step fill:#1e3a5f,stroke:#3776ab,color:#fff
+    classDef bad fill:#5c1818,stroke:#ef4444,color:#fff
+    classDef good fill:#064e3b,stroke:#34d399,color:#fff
+    class bug bad
+    class R,I,H,T step
+    class F,done good</div>
+
+    <h3>📋 5 ขั้น กับตัวอย่าง</h3>
+
+    <table>
+      <thead><tr><th>ขั้น</th><th>ถาม</th><th>ตัวอย่าง</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Reproduce</strong></td>
+          <td>"ทำให้พังซ้ำได้มั้ย?"</td>
+          <td>"feed Mochi 4 ครั้ง → hunger เป็น -2" · ทุกครั้งที่ทำ = พังเหมือนเดิม</td>
+        </tr>
+        <tr>
+          <td><strong>2. Isolate</strong></td>
+          <td>"พังที่ไหน?"</td>
+          <td>print หรือ debugger ดู: feed ครั้งที่ 4 → hunger = 1, ลบ 3 → -2 · มาจาก feed() ไม่มี max(0, ...)</td>
+        </tr>
+        <tr>
+          <td><strong>3. Hypothesize</strong></td>
+          <td>"น่าจะเป็นเพราะ..."</td>
+          <td>"<em>hunger ไม่มี lower bound</em> · ขั้นเดียวที่ลด hunger คือ feed → ต้องใส่ max(0, ...)"</td>
+        </tr>
+        <tr>
+          <td><strong>4. Test hypothesis</strong></td>
+          <td>"ถ้าถูก จะเห็น Y · ลองดู"</td>
+          <td>เพิ่ม <code>self.hunger = max(0, self.hunger - 3)</code> · feed 4 ครั้ง → hunger = 0 ✅</td>
+        </tr>
+        <tr>
+          <td><strong>5. Fix + regression test</strong></td>
+          <td>"แก้แล้ว · ป้องกันไม่ให้กลับมา"</td>
+          <td>เพิ่ม <code>test_hunger_never_negative()</code> ใน pytest · commit</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout warn">
+      <strong>⚠️ ขั้นที่นักศึกษาข้าม: "Reproduce" + "Hypothesize"</strong>
+      ข้าม Reproduce = แก้แล้วไม่รู้ว่าหายจริงมั้ย (อาจหายชั่วคราว) ·
+      ข้าม Hypothesize = สุ่มเปลี่ยน · ไม่ได้เรียน · พังที่อื่นต่อ
+    </div>
+
+    <h2>🔍 Minimum Reproducible Example (MRE)</h2>
+    <p>
+      เมื่อขอความช่วยเหลือ (จาก AI, เพื่อน, Stack Overflow) — ต้อง <em>"ย่อ bug ให้เล็กที่สุด"</em> ·
+      MRE = code ที่ <strong>สั้นที่สุดที่ยังพังเหมือนเดิม</strong>
+    </p>
+
+    <div class="diff-viewer" data-title="❌ Bad bug report → ✅ MRE">
+      <div class="diff-before"># ❌ Bug report ที่ไม่ช่วยใคร
+
+"ทำ Pet app แล้วพัง · code ของผมเยอะมาก · เปิด Cursor → ลงไฟล์ทั้ง folder
+→ ก็พัง · ขอความช่วยเหลือ"
+
+# ❌ Code ที่ส่ง: 500 บรรทัด · 10 ไฟล์ · มี database · มี Flask · มี LINE
+# ❌ ไม่บอกว่าพังแบบไหน · ไม่มี error message · ไม่มี expected vs actual</div>
+      <div class="diff-after"># ✅ MRE — สั้นที่สุดที่ยังพังเหมือนเดิม
+
+class Pet:
+    def __init__(self, name):
+        self.name = name
+        self.hunger = 5
+    def feed(self):
+        self.hunger -= 3   # ← พัง: ลบไม่หยุดที่ 0
+
+p = Pet("Mochi")
+p.feed(); p.feed()   # hunger = -1
+print(p.hunger)      # expected: 0 · got: -1
+
+# ✅ 10 บรรทัด · มี expected vs actual ชัด
+# ✅ AI/เพื่อน fix ได้ใน 30 วินาที</div>
+    </div>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับสร้าง MRE — "Halving method"</strong>
+      ตัด code ครึ่งหนึ่ง · ดูว่ายังพังมั้ย · ถ้ายังพัง → ตัดอีกครึ่ง · ถ้าหาย → bug อยู่ในครึ่งที่ตัดออก
+      → ใส่กลับเข้าไป · วน · ภายใน 10 รอบ จะเหลือ MRE
+    </div>
+
+    <h2>🧰 Debugging Toolbox — เครื่องมือเพิ่มเติม</h2>
+
+    <table>
+      <thead><tr><th>วิธี</th><th>ใช้เมื่อ</th><th>ทำยังไง</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>🦆 Rubber Duck Debugging</strong></td>
+          <td>ตอนคิดติด</td>
+          <td>อธิบาย code ของคุณให้ <em>ตุ๊กตาเป็ด / เพื่อน / AI</em> ฟังทีละบรรทัด · 70% จะเจอ bug ระหว่างอธิบาย</td>
+        </tr>
+        <tr>
+          <td><strong>⚖️ Binary Search Debugging</strong></td>
+          <td>ไม่รู้ว่า bug ใน code ส่วนไหน</td>
+          <td>comment ครึ่ง code · ดูว่ายังพังมั้ย · ถ้าพัง → bug ในที่ยังเหลือ · ถ้าหาย → bug ในที่ comment</td>
+        </tr>
+        <tr>
+          <td><strong>🌳 git bisect</strong></td>
+          <td>เคยใช้ได้ · ตอนนี้พัง · ไม่รู้ commit ไหนเป็นต้นเหตุ</td>
+          <td><code>git bisect start</code> · mark good/bad · git ค้นเองด้วย binary search</td>
+        </tr>
+        <tr>
+          <td><strong>📖 อ่าน docs (จริง ๆ)</strong></td>
+          <td>library ไม่ทำงานตามที่คาด</td>
+          <td>เปิด official docs · อ่าน method signature · เช็ค type ที่คืน · 50% ของ bug มาจากเข้าใจ API ผิด</td>
+        </tr>
+        <tr>
+          <td><strong>🪄 ส่ง bug ให้ AI</strong></td>
+          <td>หลังทำ MRE แล้ว · ยังไม่เข้าใจ</td>
+          <td>paste MRE + error + "ฉันคาดว่า X · ได้ Y · ทำไม?" — AI ตอบเร็วและมักถูก</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>🐞 อ่าน Stack Trace ให้เป็น</h2>
+
+    <pre><code>Traceback (most recent call last):
+  File "main.py", line 42, in &lt;module&gt;
+    process_students(students)
+  File "main.py", line 28, in process_students
+    grade = calc_grade(s["score"])
+  File "grading.py", line 8, in calc_grade
+    return rules[avg]
+TypeError: list indices must be integers or slices, not str</code></pre>
+
+    <h3>วิธีอ่าน — "ล่างขึ้นบน"</h3>
+    <ol>
+      <li><strong>TypeError: list indices must be integers</strong> — error คือใช้ str เป็น index ของ list</li>
+      <li><strong>grading.py line 8</strong> — เกิดที่ <code>return rules[avg]</code></li>
+      <li>ดู context ขึ้นไป — <code>avg</code> มาจาก parameter ของ <code>calc_grade</code></li>
+      <li>ขั้นถัดไป — <code>main.py line 28</code> ส่ง <code>s["score"]</code> เข้าไป</li>
+      <li>แต่ <code>s["score"]</code> เป็น string (จาก CSV ที่ยังไม่แปลง int)</li>
+    </ol>
+
+    <h2>🧪 Print Debugging — เริ่มที่นี่</h2>
+    <p>เครื่องมือ debug แรกที่นักศึกษาควรใช้ — เพิ่ม <code>print()</code> ในจุดสำคัญ</p>
+
+    <pre><code class="language-python">def calc_grade(score):
+    print(f"DEBUG calc_grade: score={score} type={type(score)}")  # ✨ เพิ่มชั่วคราว
+    if score &gt;= 80:
+        return "A"
+    ...
+
+# รัน → จะเห็น "DEBUG calc_grade: score=85 type=&lt;class 'str'&gt;"
+# พบทันทีว่า score เป็น str ไม่ใช่ int</code></pre>
+
+    <div class="callout tip">
+      <strong>ลบ DEBUG print ก่อน commit</strong>
+      หรือใช้ <code>logging</code> module แทน — มี level (DEBUG / INFO / WARNING / ERROR) เปิด-ปิดได้
+    </div>
+
+    <h2>🔍 Cursor / VS Code Debugger</h2>
+    <p>ขั้นสูงกว่า print — <em>"หยุด code กลางทาง · ดูค่าตัวแปร · เดินทีละบรรทัด"</em></p>
+
+    <ol class="steps">
+      <li>เปิดไฟล์ Python ใน Cursor</li>
+      <li>คลิกซ้ายของเลขบรรทัด → ขึ้นจุดแดง (<strong>breakpoint</strong>)</li>
+      <li>กด <kbd>F5</kbd> หรือ <em>Run → Start Debugging</em></li>
+      <li>โปรแกรมจะหยุดที่ breakpoint — ดูค่าตัวแปรในแถบซ้าย</li>
+      <li>กด <kbd>F10</kbd> (step over) หรือ <kbd>F11</kbd> (step into) เดินทีละบรรทัด</li>
+    </ol>
+
+    <h2>✅ Assert — Test แบบเร็ว</h2>
+    <pre><code class="language-python">def calc_grade(score):
+    if score &gt;= 80: return "A"
+    elif score &gt;= 70: return "B"
+    elif score &gt;= 60: return "C"
+    else: return "F"
+
+
+# ทดสอบทันทีในไฟล์เดียวกัน
+assert calc_grade(85) == "A"
+assert calc_grade(75) == "B"
+assert calc_grade(65) == "C"
+assert calc_grade(45) == "F"
+print("✅ All tests passed")</code></pre>
+
+    <p>ถ้า assert ผิด — โปรแกรมหยุด พร้อม <code>AssertionError</code> · ใช้ระหว่าง dev เพื่อ catch bug เร็ว ๆ</p>
+
+    <h2>🧬 pytest — Test framework</h2>
+    <p>เมื่อ test เริ่มเยอะ ใช้ <code>pytest</code> · ติดตั้ง: <code>pip install pytest</code></p>
+
+    <h3><code>tests/test_grading.py</code></h3>
+    <pre><code class="language-python">from grading import calc_grade
+
+
+def test_a_grade():
+    assert calc_grade(85) == "A"
+    assert calc_grade(80) == "A"
+
+
+def test_b_grade():
+    assert calc_grade(75) == "B"
+
+
+def test_f_grade():
+    assert calc_grade(40) == "F"
+    assert calc_grade(0) == "F"
+
+
+def test_edge_zero():
+    assert calc_grade(0) == "F"
+
+
+def test_negative():
+    # spec ไม่ได้บอก แต่เราอยากให้ behavior ชัด
+    assert calc_grade(-1) == "F"   # หรือ raise error?</code></pre>
+
+    <p>รัน: <code>pytest</code> ใน terminal · จะเห็นผลทุก test</p>
+
+    <pre><code>$ pytest
+========================= test session starts =========================
+collected 5 items
+
+tests/test_grading.py .....                                    [100%]
+
+========================== 5 passed in 0.02s ==========================</code></pre>
+
+    <h3>parametrize — test หลาย case ใน function เดียว</h3>
+    <pre><code class="language-python">import pytest
+
+@pytest.mark.parametrize("score,expected", [
+    (100, "A"), (85, "A"), (80, "A"),
+    (75, "B"), (70, "B"),
+    (65, "C"), (60, "C"),
+    (50, "D"), (40, "F"), (0, "F"),
+])
+def test_calc_grade(score, expected):
+    assert calc_grade(score) == expected</code></pre>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🚨 Error Handling — try/except/finally/raise</h2>
+    <p>
+      W04-W05 สอน "อ่าน error" · W13 ก่อนหน้านี้สอน "test ว่า error เกิด" · แต่ <strong>"เขียน code ที่
+      handle error ดี"</strong> ยังไม่ครอบ · นี่คือ producer-side ของ error
+    </p>
+
+    <h3>🌳 Exception Hierarchy ใน Python</h3>
+    <p>Python มี exception class ที่สืบทอด · จับ class แม่ = จับลูกหลานทั้งหมด</p>
+
+    <pre><code class="language-python">BaseException
+ └── Exception              ← จับตรงนี้ ครอบเกือบทุกอย่าง
+      ├── ArithmeticError
+      │    ├── ZeroDivisionError
+      │    └── OverflowError
+      ├── LookupError
+      │    ├── KeyError       ← dict["x"] · "x" ไม่มี
+      │    └── IndexError     ← list[100] · เกินขนาด
+      ├── OSError
+      │    ├── FileNotFoundError
+      │    └── PermissionError
+      ├── ValueError          ← int("abc")
+      ├── TypeError           ← 1 + "two"
+      ├── AttributeError      ← obj.no_such_method()
+      └── ImportError</code></pre>
+
+    <h3>🔧 try/except/else/finally — โครงสร้างเต็ม</h3>
+
+    <div class="python-runner">def safe_divide(a, b):
+    try:
+        # 🟢 ลองทำ — code ที่อาจพัง
+        result = a / b
+    except ZeroDivisionError:
+        # 🔴 จับ error เฉพาะชนิด
+        print(f"❌ หารด้วย 0 ไม่ได้")
+        return None
+    except TypeError as e:
+        # 🔴 จับ error อื่น
+        print(f"❌ Type ผิด: {e}")
+        return None
+    else:
+        # 🟡 ทำเมื่อไม่มี error
+        print(f"✅ คำนวณสำเร็จ")
+        return result
+    finally:
+        # 🔵 ทำทุกครั้ง · พังหรือไม่พังก็ตาม
+        print(f"  (เรียก safe_divide({a}, {b}))")
+
+
+# Test cases
+print(safe_divide(10, 2))     # ปกติ
+print()
+print(safe_divide(10, 0))     # ZeroDivisionError
+print()
+print(safe_divide(10, "x"))   # TypeError</div>
+
+    <table>
+      <thead><tr><th>Block</th><th>เมื่อทำ</th><th>ใช้สำหรับ</th></tr></thead>
+      <tbody>
+        <tr><td><code>try</code></td><td>เสมอ</td><td>code ที่อาจพัง</td></tr>
+        <tr><td><code>except</code></td><td>เมื่อ error เกิด</td><td>handle / fallback</td></tr>
+        <tr><td><code>else</code></td><td>เมื่อ try ไม่พัง</td><td>"happy path follow-up"</td></tr>
+        <tr><td><code>finally</code></td><td>เสมอ (พังหรือไม่ก็ทำ)</td><td>cleanup (ปิดไฟล์, ปิด connection)</td></tr>
+      </tbody>
+    </table>
+
+    <h3>📛 raise — ส่ง error ของตัวเอง</h3>
+
+    <div class="python-runner">def calc_grade(score: int) -&gt; str:
+    # ✅ Validate input ก่อน · raise ถ้าผิด
+    if not isinstance(score, (int, float)):
+        raise TypeError(f"score ต้องเป็นเลข · ได้ {type(score).__name__}")
+    if score &lt; 0 or score &gt; 100:
+        raise ValueError(f"score ต้อง 0-100 · ได้ {score}")
+
+    # Happy path — เรียบง่าย ไม่ต้องเช็คอีก
+    if score &gt;= 80: return "A"
+    if score &gt;= 70: return "B"
+    if score &gt;= 60: return "C"
+    return "F"
+
+
+# ใช้ใน function อื่น — handle error
+def grade_student(score):
+    try:
+        grade = calc_grade(score)
+        print(f"score={score} → {grade}")
+    except (TypeError, ValueError) as e:
+        print(f"❌ Bad input: {e}")
+
+
+grade_student(85)       # ✅ A
+grade_student(150)      # ❌ ValueError
+grade_student("abc")    # ❌ TypeError
+grade_student(72.5)     # ✅ C</div>
+
+    <h3>🎨 Custom Exception — สร้าง error class ของตัวเอง</h3>
+
+    <pre><code class="language-python">class GradingError(Exception):
+    """Base exception สำหรับ Grading App"""
+    pass
+
+class InvalidScoreError(GradingError):
+    """Score อยู่นอกช่วง 0-100"""
+    pass
+
+class IncompleteSubmissionError(GradingError):
+    """ส่งงานไม่ครบ"""
+    def __init__(self, missing: list):
+        self.missing = missing
+        super().__init__(f"ขาด: {', '.join(missing)}")
+
+
+# ใช้
+def grade(submission):
+    if not submission.get("drawing"):
+        raise IncompleteSubmissionError(["drawing"])
+    if submission["score"] &lt; 0:
+        raise InvalidScoreError(...)
+
+# caller จับ class แม่ = ครอบทุก subclass
+try:
+    grade(sub)
+except GradingError as e:
+    log.error(f"Grading failed: {e}")</code></pre>
+
+    <h3>📋 Best Practices — Error Handling Rules</h3>
+
+    <table>
+      <thead><tr><th>กฎ</th><th>เพราะ</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>1. จับเฉพาะ error ที่รู้ว่าจะเกิด</strong></td>
+          <td>การจับ <code>except:</code> เปล่า = ซ่อน bug ที่เราไม่รู้</td>
+        </tr>
+        <tr>
+          <td><strong>2. ห้าม <code>except: pass</code></strong></td>
+          <td>"swallow error" = ที่มาของ bug ที่ debug ไม่เจอ · log ทุกครั้งที่จับ</td>
+        </tr>
+        <tr>
+          <td><strong>3. raise ใหม่ดีกว่าเปลี่ยน error type</strong></td>
+          <td>ใช้ <code>raise NewError(...) from e</code> · เก็บ original cause</td>
+        </tr>
+        <tr>
+          <td><strong>4. validate input ที่ boundary</strong></td>
+          <td>raise ที่จุดรับ input · ไม่ปล่อยให้ error เกิดลึก ๆ ใน code</td>
+        </tr>
+        <tr>
+          <td><strong>5. ใช้ specific exception</strong></td>
+          <td><code>ValueError("score ต้อง 0-100")</code> &gt; <code>Exception("bad")</code></td>
+        </tr>
+        <tr>
+          <td><strong>6. finally สำหรับ cleanup เท่านั้น</strong></td>
+          <td>ปิด file, db connection, network · ไม่ใช่ business logic</td>
+        </tr>
+        <tr>
+          <td><strong>7. ใช้ context manager (<code>with</code>)</strong></td>
+          <td><code>with open(f)</code> = auto-close · ดีกว่า try/finally manual</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout warn">
+      <strong>🚨 Anti-pattern: "Silent failure"</strong>
+      <pre><code class="language-python"># ❌ AI ชอบทำ — bug ที่เลวร้ายที่สุด
+try:
+    result = call_api()
+except Exception:
+    result = None       # error หาย · ไม่มี log
+
+# ✅ ทำให้ดี
+try:
+    result = call_api()
+except requests.Timeout:
+    log.warning("API timeout · retry...")
+    result = None
+except requests.RequestException as e:
+    log.error(f"API failed: {e}")
+    raise   # re-raise ถ้า caller ต้องรู้</code></pre>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🅰️🅰️🅰️ AAA Pattern — โครงสร้างของ test ที่ดี</h2>
+    <p>
+      ทุก test ที่ดี = 3 ส่วน <strong>Arrange · Act · Assert</strong> — แยกบรรทัดให้ชัด ·
+      อ่านง่าย · ดูออกว่า test "พิสูจน์อะไร"
+    </p>
+
+    <pre><code class="language-python">def test_feed_reduces_hunger():
+    # 🟢 ARRANGE — เตรียม object + ข้อมูล
+    pet = Pet("Mochi")
+    pet.hunger = 8
+
+    # 🟡 ACT — เรียก behavior ที่ทดสอบ
+    pet.feed("แครอท")
+
+    # 🔴 ASSERT — เช็คผล
+    assert pet.hunger == 5     # หิวลดลง 3</code></pre>
+
+    <h3>📝 Test naming — บอก behavior ไม่ใช่ implementation</h3>
+    <table>
+      <thead><tr><th>❌ ชื่อแบบเทคนิค</th><th>✅ ชื่อแบบ behavior</th></tr></thead>
+      <tbody>
+        <tr><td><code>test_feed</code></td><td><code>test_feed_reduces_hunger_by_three</code></td></tr>
+        <tr><td><code>test_grade</code></td><td><code>test_score_80_returns_grade_A</code></td></tr>
+        <tr><td><code>test_validate</code></td><td><code>test_negative_score_raises_value_error</code></td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>Naming convention: <code>test_when_X_then_Y</code></strong>
+      อ่านชื่อ → รู้ทันทีว่า test อะไร · เมื่อ test fail → ชื่อบอกปัญหาทันที ·
+      <em>ดีกว่าเห็น "test_feed failed"</em>
+    </div>
+
+    <h2>🎭 Mocking — แทนของจริงตอน test</h2>
+    <p>
+      ปัญหา: test ต้องเรียก IQAir API จริง → ช้า · ใช้ key · network แตก · ผลไม่แน่นอน ·
+      ทางแก้: <strong>mock</strong> — ปลอม response ให้
+    </p>
+
+    <h3>💡 เมื่อไหร่ใช้ Mock</h3>
+    <table>
+      <thead><tr><th>สิ่งที่ควร mock</th><th>เพราะ</th></tr></thead>
+      <tbody>
+        <tr><td>External API (IQAir, LINE, Claude)</td><td>ช้า · ใช้ token · ผลไม่คงที่</td></tr>
+        <tr><td>Database</td><td>state กระทบ test อื่น</td></tr>
+        <tr><td>เวลา (<code>datetime.now()</code>)</td><td>test ไม่ deterministic</td></tr>
+        <tr><td>Random</td><td>ผลเปลี่ยนทุก run</td></tr>
+        <tr><td>File I/O</td><td>กระทบ filesystem จริง</td></tr>
+        <tr><td>Hardware (sensor, motor)</td><td>ไม่มีอุปกรณ์ใน CI</td></tr>
+      </tbody>
+    </table>
+
+    <h3>🐾 ตัวอย่าง: Mock IQAir API</h3>
+
+    <pre><code class="language-python"># aqi.py — production code
+import requests
+
+def fetch_pm25(city):
+    r = requests.get(f"https://api.airvisual.com/.../{city}", timeout=10)
+    r.raise_for_status()
+    return r.json()["data"]["current"]["pollution"]["aqius"]
+
+
+def alert_if_unhealthy(city):
+    pm = fetch_pm25(city)
+    if pm &gt; 100:
+        return f"⚠️ {city}: PM2.5 = {pm}"
+    return None
+
+
+# test_aqi.py
+from unittest.mock import patch
+import aqi
+
+@patch("aqi.fetch_pm25")    # 🎭 mock fetch_pm25
+def test_alert_when_unhealthy(mock_fetch):
+    mock_fetch.return_value = 150   # ปลอม PM2.5 = 150
+
+    result = aqi.alert_if_unhealthy("Bangkok")
+
+    assert "PM2.5 = 150" in result
+    mock_fetch.assert_called_once_with("Bangkok")
+
+
+@patch("aqi.fetch_pm25")
+def test_no_alert_when_safe(mock_fetch):
+    mock_fetch.return_value = 50
+
+    result = aqi.alert_if_unhealthy("Bangkok")
+
+    assert result is None</code></pre>
+
+    <div class="callout warn">
+      <strong>⚠️ Mock พลาดที่พบบ่อย</strong>
+      <ul style="margin-top:8px">
+        <li><strong>Mock มากเกินไป</strong> — test แค่ "mock ทำงาน" ไม่ได้ test logic จริง</li>
+        <li><strong>Mock ที่ตำแหน่งผิด</strong> — <code>@patch("requests.get")</code> ❌ vs <code>@patch("aqi.requests.get")</code> ✅
+          (mock ที่ "ที่ที่ใช้" ไม่ใช่ "ที่ที่ define")</li>
+        <li><strong>ไม่ assert ว่า mock ถูกเรียก</strong> — code อาจไม่ได้เรียก fetch_pm25 เลย</li>
+      </ul>
+    </div>
+
+    <h2>📊 Test Coverage — วัดว่า test ครอบคลุมแค่ไหน</h2>
+    <p>
+      <code>pytest-cov</code> รัน test แล้วบอกว่า <em>"บรรทัดไหนของ code ที่ test ไม่ได้แตะ"</em>
+    </p>
+
+    <pre><code># ติดตั้ง
+pip install pytest-cov
+
+# รัน
+pytest --cov=src --cov-report=term-missing
+
+# output:
+Name              Stmts   Miss  Cover   Missing
+-------------------------------------------------
+src/grading.py       12      2    83%   18-19   ← บรรทัดที่ test ไม่แตะ
+src/pet.py           20      0   100%
+-------------------------------------------------
+TOTAL                32      2    94%</code></pre>
+
+    <div class="callout info">
+      <strong>📌 Coverage % เท่าไหร่ถึง "พอ"</strong>
+      <ul style="margin-top:8px">
+        <li><strong>&lt; 50%</strong> — ส่วนใหญ่ไม่ได้ test · เสี่ยง</li>
+        <li><strong>60-80%</strong> — พอใช้สำหรับ project นักศึกษา · happy path + edge cases หลัก ๆ ครบ</li>
+        <li><strong>80-90%</strong> — ดี · production-ready</li>
+        <li><strong>&gt; 95%</strong> — ระวัง! · มักทำได้ด้วยการ test "บรรทัด" ไม่ใช่ "behavior" · false confidence</li>
+      </ul>
+      <strong>กฎ:</strong> Coverage บอกว่า "บรรทัดถูกแตะ" ไม่ได้บอกว่า "test ดี" · 100% coverage ที่ test ห่วย = ปลอดภัยจอมปลอม
+    </div>
+
+    <table>
+      <thead><tr><th>Category</th><th>ตัวอย่าง</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Empty / Zero</strong></td><td>list ว่าง, string ว่าง, 0, None</td></tr>
+        <tr><td><strong>Boundary</strong></td><td>ค่าที่อยู่ตรง threshold (เช่น 80 พอดี, 79.999)</td></tr>
+        <tr><td><strong>Negative / Out of range</strong></td><td>-1, &gt; 100, &gt; max_size</td></tr>
+        <tr><td><strong>Wrong type</strong></td><td>ใส่ string ใน int parameter</td></tr>
+        <tr><td><strong>Special characters</strong></td><td>ภาษาไทย, emoji, quote, &lt; &gt;</td></tr>
+        <tr><td><strong>Duplicate</strong></td><td>เพิ่ม id เดียวกัน 2 ครั้ง</td></tr>
+        <tr><td><strong>Concurrent</strong></td><td>2 คนเขียน file พร้อมกัน</td></tr>
+        <tr><td><strong>Network</strong></td><td>API ช้า, timeout, return 500</td></tr>
+        <tr><td><strong>Time zone</strong></td><td>UTC vs ICT, daylight saving</td></tr>
+        <tr><td><strong>Large input</strong></td><td>file 1 GB, list 1 ล้านตัว</td></tr>
+      </tbody>
+    </table>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🤖 AI Test Review — Checklist 8 ข้อ ก่อนเชื่อ Test ที่ AI สร้าง</h2>
+    <p>
+      สถานการณ์: คุณบอก AI <em>"เขียน test สำหรับ <code>calc_grade</code>"</em> · AI สร้างให้ 10 test
+      ทั้งหมดผ่าน · <strong>หยุดก่อน!</strong> · test ที่ผ่าน ≠ test ที่ดี ·
+      ตรวจ 8 ข้อนี้ก่อนเชื่อ
+    </p>
+
+    <div class="callout warn" style="border-left-width:5px">
+      <strong>💡 ทำไมเรื่องนี้สำคัญที่สุดในยุค AI</strong>
+      AI <em>เขียน test ที่ผ่านได้</em> เก่งกว่านักศึกษา · แต่ AI <em>"test ตามว่า code ทำอะไร"</em>
+      ไม่ใช่ <em>"test ว่า code ทำสิ่งที่ควรทำ"</em> · ความแตกต่างนี้คือ <strong>bug 80%</strong> ในงานจริง
+    </div>
+
+    <h3>✅ Checklist 8 ข้อ</h3>
+
+    <table>
+      <thead><tr><th>ข้อ</th><th>คำถาม</th><th>วิธีตรวจ</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Test test "behavior" หรือ "implementation"?</strong></td>
+          <td>Test ดูว่า "result ถูก" หรือ "เรียก function X ภายใน"?</td>
+          <td>ลอง refactor implementation ขณะ test เดิม — ถ้า test fail = test implementation (ไม่ดี)</td>
+        </tr>
+        <tr>
+          <td><strong>2. ครอบ edge cases มั้ย?</strong></td>
+          <td>0 · empty · None · negative · max · type ผิด</td>
+          <td>เช็คจาก "Edge Cases ต้องคิด" table · อย่างน้อย 5 หมวด</td>
+        </tr>
+        <tr>
+          <td><strong>3. ทุก test "fail ตอน code ผิด" จริงมั้ย?</strong></td>
+          <td>เปลี่ยน code ผิดเล็ก ๆ · test ควร fail</td>
+          <td><strong>Mutation testing</strong> — เปลี่ยน <code>&gt;= 80</code> เป็น <code>&gt;= 81</code> ·
+            ถ้าไม่มี test fail = test ไม่จริง</td>
+        </tr>
+        <tr>
+          <td><strong>4. Test มี hidden assumption มั้ย?</strong></td>
+          <td>Test ทำงานเพราะ "เผอิญ" หรือ "ตามที่ควร"?</td>
+          <td>เปลี่ยน input คล้าย ๆ — เช่น 85 → 84.9 · ผลควรชัดเจน</td>
+        </tr>
+        <tr>
+          <td><strong>5. Mock realistic มั้ย?</strong></td>
+          <td>Mock return value เป็น format จริงของ API มั้ย</td>
+          <td>เทียบ mock value กับ response จริงของ API · ใช้ <code>response.json()</code> ของจริง 1 รอบเป็น reference</td>
+        </tr>
+        <tr>
+          <td><strong>6. Test อิสระจากกันมั้ย?</strong></td>
+          <td>รัน test แค่อันใดอันหนึ่งได้มั้ย · order matter มั้ย</td>
+          <td><code>pytest tests/test_x.py::test_specific</code> · ถ้า fail = ไม่ isolated</td>
+        </tr>
+        <tr>
+          <td><strong>7. Test ไม่ผิดจาก "การ copy-paste" มั้ย?</strong></td>
+          <td>AI ก็อปแล้วเปลี่ยนแค่ตัวเลข · ลืมเปลี่ยน expected</td>
+          <td>อ่านทุก assert · เปรียบเทียบกับ test ก่อนหน้า</td>
+        </tr>
+        <tr>
+          <td><strong>8. มี "regression test" สำหรับ bug ที่เจอมั้ย?</strong></td>
+          <td>หลังแก้ bug · มี test ป้องกัน bug นั้นกลับมามั้ย</td>
+          <td>ทุก bug ที่แก้ → ต้องมี test เพิ่ม · test ชื่อ <code>test_regression_issue_X</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🐛 Tests That Pass But Don't Test — false confidence</h2>
+    <p>
+      <strong>นี่คือปัญหาที่ใหญ่ที่สุดของ AI-generated tests</strong> · test ผ่าน 100% — แต่ <em>ไม่ได้พิสูจน์อะไร</em>
+    </p>
+
+    <h3>🚩 Pattern 1: Test แค่ "code รันได้ไม่ crash"</h3>
+
+    <div class="python-runner">def divide(a, b):
+    return a / b
+
+
+# ❌ Test ที่ AI เขียน — ผ่านง่ายแต่ไม่พิสูจน์อะไร
+def test_divide():
+    result = divide(10, 2)
+    assert result is not None     # ผ่านเสมอถ้าไม่ crash
+    assert isinstance(result, (int, float))   # ผ่านเสมอ
+
+test_divide()
+print("✅ test ผ่าน — แต่...")
+print(f"  divide(10, 2) = {divide(10, 2)}")  # 5.0
+print(f"  divide(10, 3) = {divide(10, 3)}")  # 3.33...
+# ถ้า divide() คืน 9999 ก็ยังผ่าน test! เพราะ test ไม่เช็คค่าจริง
+
+# ✅ Test ที่ดี
+def test_divide_correct_value():
+    assert divide(10, 2) == 5
+    assert divide(7, 2) == 3.5
+    assert divide(0, 5) == 0
+    # มี boundary
+    import pytest
+    # divide(10, 0) ควร raise ZeroDivisionError
+
+test_divide_correct_value()
+print("✅ test ที่ดี ผ่าน — และจริง ๆ พิสูจน์ behavior")</div>
+
+    <h3>🚩 Pattern 2: Test สะท้อนความผิดของ code</h3>
+
+    <pre><code class="language-python"># ❌ Code มี bug
+def add(a, b):
+    return a - b      # BUG: ลบแทนบวก
+
+# ❌ AI เขียน test โดยรัน code ก่อน แล้วใช้ผลเป็น expected
+def test_add():
+    assert add(5, 3) == 2     # ✅ ผ่าน · แต่ผิดจาก spec
+# Test ผ่าน 100% · ทั้งที่ code ผิด!
+
+
+# ✅ Test ที่ดี — เขียนจาก spec ก่อนรู้ผล
+def test_add():
+    # spec บอก: add(a, b) = a + b
+    assert add(5, 3) == 8      # ❌ FAIL — เห็น bug!</code></pre>
+
+    <h3>🚩 Pattern 3: Test ที่ทดสอบ mock ตัวเอง</h3>
+
+    <pre><code class="language-python">@patch("aqi.fetch_pm25")
+def test_alert(mock_fetch):
+    mock_fetch.return_value = 150
+    result = aqi.alert_if_unhealthy("Bangkok")
+
+    # ❌ Bad — test แค่ว่า fetch_pm25 ถูกเรียก
+    mock_fetch.assert_called_once()
+    # → ไม่ได้ check ผลลัพธ์ของ alert_if_unhealthy เลย
+
+    # ✅ Good — check behavior ที่อยากให้เกิด
+    assert "150" in result
+    assert "⚠️" in result</code></pre>
+
+    <h3>🚩 Pattern 4: Test ไม่มี edge case</h3>
+
+    <pre><code class="language-python"># ❌ AI เขียน — ครอบ happy path เท่านั้น
+def test_grade():
+    assert calc_grade(85) == "A"
+    assert calc_grade(75) == "B"
+    assert calc_grade(65) == "C"
+    assert calc_grade(45) == "F"
+
+
+# ✅ Test ที่ดี — มี boundary + edge case
+def test_grade():
+    # happy path
+    assert calc_grade(85) == "A"
+    # boundaries (ตรงเกณฑ์)
+    assert calc_grade(80) == "A"
+    assert calc_grade(79) == "B"   # ← จุดอ่อนของ off-by-one
+    # edge cases
+    assert calc_grade(0) == "F"
+    assert calc_grade(100) == "A"
+    # invalid
+    import pytest
+    with pytest.raises(ValueError):
+        calc_grade(-1)</code></pre>
+
+    <h3>🧬 Mutation Testing — ทดสอบ "ว่า test จริง" ด้วยมือ</h3>
+    <p>
+      <strong>Idea:</strong> ตั้งใจ <em>"ทำลาย code"</em> ทีละจุด · ดูว่า test fail มั้ย ·
+      ถ้า test ไม่ fail = test ไม่ test ส่วนนั้นจริง
+    </p>
+
+    <table>
+      <thead><tr><th>Mutation</th><th>เปลี่ยนใน code</th><th>Test ที่ดีต้อง fail</th></tr></thead>
+      <tbody>
+        <tr><td>เปลี่ยน operator</td><td><code>&gt;=</code> → <code>&gt;</code></td><td>ใช่ — boundary test ต้องจับ</td></tr>
+        <tr><td>เปลี่ยน threshold</td><td><code>80</code> → <code>81</code></td><td>ใช่</td></tr>
+        <tr><td>swap arguments</td><td><code>divide(a, b)</code> → <code>divide(b, a)</code></td><td>ใช่</td></tr>
+        <tr><td>negate boolean</td><td><code>if x</code> → <code>if not x</code></td><td>ใช่</td></tr>
+        <tr><td>ลบบรรทัด validation</td><td>ลบ <code>if score &lt; 0: raise</code></td><td>ใช่</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับ — Manual mutation 1 นาที</strong>
+      หลัง AI เขียน test เสร็จ · ลอง mutate code 3 จุด · รัน test · ถ้า test ไม่ fail = AI เขียน test อ่อน ·
+      บอก AI: <em>"test ของคุณไม่จับ mutation นี้ — แก้"</em>
+    </div>
+
+    <h2>🤥 จับ AI Hallucination — ระดับ Medium</h2>
+
+    <table>
+      <thead><tr><th>รูปแบบ</th><th>วิธีจับ</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Function ที่ไม่มีจริง</strong> — เช่น <code>pandas.smart_clean()</code></td><td>รัน → AttributeError</td></tr>
+        <tr><td><strong>Parameter ที่ไม่มี</strong> — <code>requests.get(url, retry=3)</code></td><td>ตรวจ docs / รัน → TypeError</td></tr>
+        <tr><td><strong>Logic ผิดแบบ subtle</strong> — off-by-one, &lt;= แทน &lt;</td><td>test boundary case</td></tr>
+        <tr><td><strong>"ใช้ได้แล้ว!"</strong> ทั้งที่ยังไม่ test</td><td>รันด้วยตัวเอง</td></tr>
+        <tr><td><strong>เพิ่ม feature ที่ไม่ขอ</strong></td><td>diff กับ spec บรรทัดต่อบรรทัด</td></tr>
+        <tr><td><strong>เปลี่ยน behavior ที่ไม่ขอ</strong></td><td>compare กับ test cases เดิม (regression)</td></tr>
+        <tr><td><strong>Library version ไม่ตรง</strong> — ใช้ method ที่ deprecate ไป</td><td>เช็ค <code>requirements.txt</code> + docs</td></tr>
+        <tr><td><strong>Confidence สูง คำตอบมั่ว</strong></td><td>verify ทุกครั้ง · "show me, don't tell me"</td></tr>
+      </tbody>
+    </table>
+
+    <h2>📋 "Works on My Machine" — ปัญหาคลาสสิก</h2>
+
+    <p>code รันได้บนเครื่องคุณ · ไม่ทำงานบนเครื่องเพื่อน · เพราะ:</p>
+
+    <ul>
+      <li><strong>Library version ต่าง</strong> — ใส่ใน <code>requirements.txt</code> + เลข version</li>
+      <li><strong>Python version ต่าง</strong> — บอกใน README ว่าใช้ Python 3.11+</li>
+      <li><strong>OS ต่าง</strong> — path มี <code>\</code> vs <code>/</code> — ใช้ <code>pathlib.Path</code> เสมอ</li>
+      <li><strong>Locale / encoding</strong> — เปิดไฟล์ Thai ต้อง <code>encoding="utf-8"</code></li>
+      <li><strong>Environment variable หาย</strong> — ใส่ใน <code>.env.example</code></li>
+      <li><strong>Database state</strong> — ลืม migration / seed data</li>
+      <li><strong>External service</strong> — API key ของคุณคนเดียว · เพื่อนไม่มี</li>
+    </ul>
+
+    <div class="callout tip">
+      <strong>การทดสอบที่ดีที่สุด — "rerun on fresh clone"</strong>
+      <pre><code>1. clone repo ลงเครื่องใหม่ / folder ใหม่
+2. python -m venv .venv && activate
+3. pip install -r requirements.txt
+4. cp .env.example .env (เติมค่า)
+5. python main.py
+ถ้าทำงานได้ = พอใช้</code></pre>
+    </div>
+
+    <h2>📊 Logging แทน print</h2>
+    <pre><code class="language-python">import logging
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+)
+
+log = logging.getLogger(__name__)
+
+def fetch_aqi(city):
+    log.info(f"Fetching AQI for {city}")
+    try:
+        r = requests.get(URL, timeout=10)
+        r.raise_for_status()
+        log.debug(f"Response: {r.json()}")
+        return r.json()
+    except requests.RequestException as e:
+        log.error(f"API failed: {e}")
+        return None</code></pre>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>⚙️ CI/CD with GitHub Actions — รัน test ทุก push อัตโนมัติ</h2>
+    <p>
+      <strong>CI</strong> (Continuous Integration) = ทุกครั้งที่ push code · server รัน test ให้อัตโนมัติ ·
+      ถ้า test fail → แสดง ❌ บน GitHub · ป้องกัน merge code ที่พัง · ฟรีสำหรับ public repo
+    </p>
+
+    <h3>📝 Setup ใน 3 นาที</h3>
+
+    <pre><code># สร้างไฟล์: .github/workflows/test.yml
+
+name: Python Tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install deps
+        run: |
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+
+      - name: Run tests
+        run: pytest --cov=src --cov-report=term-missing
+
+      - name: Lint
+        run: |
+          pip install ruff
+          ruff check .</code></pre>
+
+    <p>หลังจาก push:</p>
+    <ul>
+      <li>เปิด GitHub → tab "Actions" → ดูผล</li>
+      <li>✅ = test ผ่าน · ❌ = fail · เห็น log เต็มได้</li>
+      <li>เพิ่ม badge ใน README: <code>![tests](https://github.com/USER/REPO/actions/workflows/test.yml/badge.svg)</code></li>
+    </ul>
+
+    <div class="callout info">
+      <strong>📌 Benefits ของ CI</strong>
+      <ul style="margin-top:8px">
+        <li>เพื่อน clone repo → push pull request → คุณรู้ทันทีว่า test ผ่านมั้ย</li>
+        <li>"fresh clone test" อัตโนมัติ — works on my machine ไม่หลุดเข้า main</li>
+        <li>Portfolio: <em>"repo ของฉันมี CI"</em> = สัญญาณว่า dev มืออาชีพ</li>
+      </ul>
+    </div>
+
+    <h3>🎯 Common CI strategies</h3>
+
+    <table>
+      <thead><tr><th>Strategy</th><th>เมื่อไหร่ใช้</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Run all tests</strong></td><td>project เล็ก-กลาง · test &lt; 5 นาที</td></tr>
+        <tr><td><strong>Run on push to main only</strong></td><td>ประหยัด minutes</td></tr>
+        <tr><td><strong>Run on PR</strong></td><td>ก่อน merge — บังคับให้ test ผ่าน</td></tr>
+        <tr><td><strong>Matrix test</strong> (multi Python)</td><td>library ที่ support หลาย version</td></tr>
+        <tr><td><strong>Cache deps</strong></td><td>เร็วขึ้น 30-60s</td></tr>
+        <tr><td><strong>Run smoke tests on schedule</strong></td><td>ตรวจว่า external API ยังทำงาน</td></tr>
+      </tbody>
+    </table>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🔧 Engineering Testing — Sensor / Hardware patterns</h2>
+    <p>
+      วิศวกรรม ≠ pure software · มี <strong>hardware</strong> · sensor มี noise · serial port ไม่เสถียร ·
+      ทดสอบยังไงไม่ต้องเอาเครื่องจริงทุกครั้ง?
+    </p>
+
+    <h3>🎭 Pattern 1: Stub sensor — ใช้ class ที่ทำตัวเหมือน sensor</h3>
+
+    <pre><code class="language-python"># production
+class TempSensor:
+    def __init__(self, port="/dev/ttyUSB0"):
+        import serial
+        self.serial = serial.Serial(port, 9600)
+
+    def read(self):
+        line = self.serial.readline().decode()
+        return float(line.strip())
+
+
+# test stub — ทำตัวเหมือน sensor
+class FakeTempSensor:
+    def __init__(self, values):
+        self.values = iter(values)
+
+    def read(self):
+        return next(self.values)
+
+
+# code ที่ใช้ — รับ sensor เป็น dependency
+class TempLogger:
+    def __init__(self, sensor):
+        self.sensor = sensor
+        self.history = []
+
+    def log(self):
+        t = self.sensor.read()
+        self.history.append(t)
+        return t
+
+
+# test ใช้ Fake — ไม่ต้องมี hardware
+def test_logger_tracks_history():
+    fake = FakeTempSensor([25.0, 26.5, 27.0])
+    logger = TempLogger(fake)
+
+    logger.log()
+    logger.log()
+    logger.log()
+
+    assert logger.history == [25.0, 26.5, 27.0]
+
+
+def test_logger_handles_overheat():
+    fake = FakeTempSensor([95.0])
+    logger = TempLogger(fake)
+    t = logger.log()
+    assert t &gt; 90  # alert range</code></pre>
+
+    <h3>🎬 Pattern 2: Replay test — บันทึก data จริง · เล่นซ้ำใน test</h3>
+
+    <pre><code class="language-python"># บันทึก 1 ครั้ง — ตอนวัดจริง
+import csv, datetime
+with open("recorded_data.csv", "w") as f:
+    w = csv.writer(f)
+    w.writerow(["ts", "temp", "humidity"])
+    for _ in range(1000):
+        w.writerow([datetime.datetime.now(), sensor.read(), hum.read()])
+
+
+# test — เล่นซ้ำจาก CSV ไม่ใช้ sensor จริง
+class ReplayDataSource:
+    def __init__(self, csv_path):
+        import csv
+        with open(csv_path) as f:
+            self.rows = list(csv.DictReader(f))
+        self.idx = 0
+
+    def read(self):
+        row = self.rows[self.idx]
+        self.idx += 1
+        return float(row["temp"])
+
+
+def test_analyze_24h_data():
+    src = ReplayDataSource("test_data/24h_normal.csv")
+    result = analyze_period(src, hours=24)
+    assert result["max_temp"] &lt; 30
+    assert result["alerts"] == 0</code></pre>
+
+    <h3>🛠 Pattern 3: Calibration test</h3>
+
+    <pre><code class="language-python"># Sensor มี noise — test ใช้ "ช่วง" ไม่ใช่ "ค่าตรง"
+def test_temp_reading_within_tolerance():
+    sensor = TempSensor("/dev/ttyUSB0")
+    readings = [sensor.read() for _ in range(10)]
+    mean = sum(readings) / len(readings)
+
+    # known-good range สำหรับห้องที่ 25°C ± 2
+    assert 23 &lt;= mean &lt;= 27, f"temp out of expected range: {mean}"
+
+    # standard deviation ของ noise
+    import statistics
+    std = statistics.stdev(readings)
+    assert std &lt; 0.5, f"noisy sensor: stdev = {std}"</code></pre>
+
+    <h3>🛡 Pattern 4: Safety test — ทดสอบ failure mode</h3>
+
+    <pre><code class="language-python">def test_motor_stops_on_emergency():
+    motor = FakeMotor()
+    controller = SafetyController(motor)
+    controller.start()
+    assert motor.is_running()
+
+    controller.emergency_stop()
+    assert not motor.is_running()
+    assert motor.stop_time_ms &lt; 100   # ต้องหยุดใน 100ms
+
+def test_sensor_disconnect_triggers_alarm():
+    sensor = FakeTempSensor([25.0, None, None, None])   # disconnect
+    controller = ProcessController(sensor)
+    for _ in range(4):
+        controller.tick()
+    assert controller.alarm_state == "SENSOR_FAILURE"</code></pre>
+
+    <div class="callout info">
+      <strong>กฎทอง Engineering Testing</strong>
+      <ul style="margin-top:8px">
+        <li>Sensor มี noise → test ช่วง · ไม่ test ค่าตรง</li>
+        <li>Hardware ไม่มี → ใช้ Fake/Stub · inject เป็น dependency</li>
+        <li>Data จริง → บันทึก replay · test ไม่ต้องต่อ hardware</li>
+        <li><strong>Safety test สำคัญที่สุด</strong> — emergency stop, sensor failure, power loss</li>
+      </ul>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🧪 Workshop — Test Suite for "Smart Lab Monitor"</h2>
+
+    <p>เอา project จาก W12 มา เพิ่ม tests + handle error ดีขึ้น</p>
+
+    <ol class="steps">
+      <li>
+        <strong>สร้าง folder <code>tests/</code></strong> + <code>tests/test_aqi.py</code> + <code>tests/test_storage.py</code> + <code>tests/test_alert.py</code>
+      </li>
+      <li>
+        <strong>เขียน test สำหรับ pure functions ตาม AAA pattern</strong>
+        — function ที่ไม่ต้อง network · เช่น <code>parse_response</code>, <code>format_alert</code>,
+        <code>calc_average</code> · ใช้ <code>test_when_X_then_Y</code> naming
+      </li>
+      <li>
+        <strong>Mock external API</strong>
+        — ใช้ <code>unittest.mock.patch("aqi.requests.get")</code> · mock IQAir + LINE + Claude ·
+        เช็คทั้ง <em>"called with correct args"</em> และ <em>"result ถูก"</em>
+      </li>
+      <li>
+        <strong>เพิ่ม edge cases ครบ 5 หมวด</strong>
+        — empty/zero · boundary · negative · wrong type · network failure (timeout, 500, malformed JSON)
+      </li>
+      <li>
+        <strong>🤖 ใช้ AI ช่วย generate test เพิ่ม</strong>
+        — paste code + spec → <em>"เขียน pytest 10 cases · มี edge case · ใช้ AAA pattern"</em>
+      </li>
+      <li>
+        <strong>🔍 ตรวจ AI test ตาม Checklist 8 ข้อ</strong>
+        — เช็คทุก test ของ AI · ลอง mutation testing manual 3 จุด · บันทึกใน <code>ai-review.md</code>
+      </li>
+      <li>
+        <strong>📊 Run coverage</strong>
+        — <code>pytest --cov=src --cov-report=term-missing</code> · ตั้งเป้า ≥ 70% ·
+        เพิ่ม test สำหรับบรรทัดที่ขาด
+      </li>
+      <li>
+        <strong>⚙️ เพิ่ม GitHub Actions</strong>
+        — <code>.github/workflows/test.yml</code> · push และดูว่า test ผ่าน · เพิ่ม badge ใน README
+      </li>
+      <li>
+        <strong>🐛 Break test ตัวเอง</strong>
+        — เปลี่ยน threshold ใน production code · ดูว่า test fail ที่ตรงไหน · ถ้าไม่ fail = test อ่อน
+      </li>
+      <li>
+        <strong>📝 Bug log</strong>
+        — บันทึก 3 bug ที่ test จับได้ใน <code>error-log.md</code> · ใช้ format Scientific Debugging
+      </li>
+    </ol>
+
+    <h2>🎯 Test Pyramid — ออกแบบ test ที่สมดุล</h2>
+
+    <div class="flowdiagram">
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node output" style="max-width:160px;margin:0 auto"><h4>E2E</h4><p class="fd-sub">few · slow</p><p>"คนใช้จริงคลิกได้"</p></div>
+      </div>
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node cpu" style="margin:0 auto;max-width:280px"><h4>Integration</h4><p class="fd-sub">some · medium</p><p>"function หลายตัวคุยกัน"</p></div>
+      </div>
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node input"><h4>Unit Tests</h4><p class="fd-sub">many · fast</p><p>"แต่ละ function ทำงานถูก"</p></div>
+      </div>
+    </div>
+
+    <p>เริ่มจาก <strong>unit test เยอะ ๆ ก่อน</strong> · integration น้อยกว่า · E2E น้อยที่สุด</p>
+
+    <h2>ข้อผิดที่พบบ่อย</h2>
+
+    <div class="callout warn">
+      <strong>Test แค่ happy path</strong>
+      — เคสปกติผ่าน คิดว่าใช้ได้ · ของจริงพังเพราะ edge case
+    </div>
+
+    <div class="callout warn">
+      <strong>เชื่อ AI ว่า code ใช้ได้</strong>
+      AI พูดว่า "tested" — มันไม่ได้รันจริง · เรารันเอง
+    </div>
+
+    <div class="callout warn">
+      <strong>Test ที่ flaky (สุ่มผ่าน/ไม่ผ่าน)</strong>
+      มัก involve time, network, random · ทำให้ deterministic
+    </div>
+
+    <div class="callout warn">
+      <strong>ไม่เขียน test เพราะ "ยังไม่มีเวลา"</strong>
+      เขียน test เร็วกว่า debug bug ภายหลัง · กฎ: ทุก function ที่มี logic → ≥ 3 test cases
+    </div>
+
+    <h2>ส่งงานสัปดาห์นี้</h2>
+    <ul>
+      <li>📁 <code>tests/</code> folder ที่มี ≥ 15 test cases · ใช้ AAA pattern + naming</li>
+      <li>🎭 ใช้ <strong>mock</strong> สำหรับ external API · มี test ที่ใช้ pre-recorded data (replay)</li>
+      <li>📊 <strong>Coverage ≥ 70%</strong> + screenshot output ของ <code>pytest --cov</code></li>
+      <li>🤖 <code>ai-review.md</code> — review AI's tests ตาม checklist 8 ข้อ · บันทึก mutation testing 3 จุด</li>
+      <li>⚙️ <strong>GitHub Actions</strong> setup · badge ใน README · ผ่านสีเขียว</li>
+      <li>📋 <code>error-log.md</code> รวม 3 bug ที่เจอ + Scientific Debugging 5 ขั้น</li>
+      <li>📝 <code>edge-cases.md</code> ครอบคลุม 5 หมวด</li>
+      <li>📝 README อัพเดต วิธีรัน test + coverage badge</li>
+    </ul>
+
+    <h3>Reference จาก slide เดิม</h3>
+    <p>เนื้อหานี้ <em>ไม่มี</em> ใน slide เดิม — เป็น Mainidea Foundation 8 (Debug) + 9 (Testing) + 10 (AI Operation) ที่ขาดไม่ได้ในยุค AI</p>
+
+    <div class="pager">
+      <a href="w12-apis.html"><div class="label">← สัปดาห์ที่แล้ว</div><div class="title">W12 — APIs + Integration</div></a>
+      <a href="w14-deploy.html" class="next"><div class="label">สัปดาห์ถัดไป →</div><div class="title">W14 — Deploy + Maintain</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+<script src="js/diagram-tools/mermaid-editor.js" defer></script>
+<script src="js/code-tools/python-runner.js" defer></script>
+<script src="js/code-tools/predict-quiz.js" defer></script>
+<script src="js/code-tools/diff-viewer.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>System Calls (ecall) — คู่มือ Ripes</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="images/logo.png" alt="Ripes logo">
+      <div>
+        <div class="title">Ripes Tutorial</div>
+        <div class="subtitle">คู่มือการใช้งานฉบับภาษาไทย</div>
+      </div>
+    </div>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html">หน้าแรก &amp; ติดตั้ง</a>
+      <h4>แท็บการใช้งาน</h4>
+      <a href="editor.html">1. แท็บ Editor</a>
+      <a href="processor.html">2. แท็บ Processor</a>
+      <a href="memory.html">3. แท็บ Memory</a>
+      <a href="cache.html">4. แท็บ Cache</a>
+      <a href="io.html">5. แท็บ I/O</a>
+      <h4>อ้างอิง</h4>
+      <a href="ecalls.html" class="active">System Calls (ecall)</a>
+      <h4>ตัวอย่างประกอบ</h4>
+      <a href="examples/factorial.html">Factorial (Assembly)</a>
+      <a href="examples/leds.html">LEDs (I/O)</a>
+      <a href="examples/matrixmul.html">Matrix Multiply (C)</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <h1>System Calls (ecall)</h1>
+    <p class="lede">คำสั่ง <code>ecall</code> ใน RISC-V ใช้สำหรับขอบริการจากระบบ — ใน Ripes ใช้สำหรับพิมพ์ข้อความออกหน้าจอและสั่งหยุด simulator</p>
+
+    <h2>หลักการใช้งาน</h2>
+    <p>การเรียก ecall ใน Ripes มี 3 ขั้นตอน:</p>
+
+    <ol class="steps">
+      <li>ใส่ <strong>service number</strong> ลงใน register <code>a7</code> — เป็นเลขที่บอกว่าจะขอบริการอะไร</li>
+      <li>ใส่ argument (ถ้ามี) ลงใน register <code>a0</code></li>
+      <li>เรียกคำสั่ง <code>ecall</code></li>
+    </ol>
+
+    <h2>ตาราง System Call ที่รองรับ</h2>
+    <table>
+      <thead>
+        <tr><th><code>a7</code></th><th>ชื่อ</th><th><code>a0</code></th><th>ผลลัพธ์</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td>print_int</td><td>เลขจำนวนเต็ม</td><td>พิมพ์เลข signed integer ใน <code>a0</code> ออกหน้าจอ</td></tr>
+        <tr><td>2</td><td>print_float</td><td>เลขทศนิยม</td><td>พิมพ์เลขทศนิยมใน <code>a0</code> ออกหน้าจอ</td></tr>
+        <tr><td>4</td><td>print_string</td><td>pointer ไปยัง string</td><td>พิมพ์ null-terminated string ที่ <code>a0</code> ชี้อยู่</td></tr>
+        <tr><td>10</td><td>exit</td><td>—</td><td>หยุด simulator</td></tr>
+        <tr><td>11</td><td>print_char</td><td>เลข ASCII</td><td>พิมพ์ตัวอักษรตามค่า ASCII ใน <code>a0</code></td></tr>
+        <tr><td>34</td><td>print_hex</td><td>เลข</td><td>พิมพ์เป็นเลขฐาน 16</td></tr>
+        <tr><td>35</td><td>print_bin</td><td>เลข</td><td>พิมพ์เป็นเลขฐาน 2</td></tr>
+        <tr><td>36</td><td>print_unsigned</td><td>เลข</td><td>พิมพ์เป็น unsigned integer</td></tr>
+        <tr><td>93</td><td>exit</td><td>status code</td><td>หยุด simulator พร้อม exit code</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout note">
+      <strong>หาดูตารางในโปรแกรม</strong>
+      Ripes เวอร์ชัน 2.1.0 ขึ้นไปมีตาราง ecall ในเมนู <code>Help → System calls</code> ในตัวโปรแกรม
+    </div>
+
+    <h2>ตัวอย่างที่ 1: พิมพ์เลขจำนวนเต็ม</h2>
+<pre><code>.text
+li a0 42       # โหลดค่า 42 เข้า a0
+li a7 1        # ecall service 1 = print_int
+ecall          # พิมพ์ "42" ออก Output</code></pre>
+
+    <h2>ตัวอย่างที่ 2: พิมพ์ตัวอักษร</h2>
+<pre><code>.text
+li a0 42       # โหลดค่า 42 เข้า a0
+li a7 11       # ecall service 11 = print_char
+ecall          # พิมพ์ "*" (เพราะ ASCII 42 = '*')</code></pre>
+
+    <h2>ตัวอย่างที่ 3: พิมพ์ string</h2>
+<pre><code>.data
+str: .string "Hello, RISC-V!"
+
+.text
+la a0 str      # โหลด address ของ str เข้า a0
+li a7 4        # ecall service 4 = print_string
+ecall          # พิมพ์ "Hello, RISC-V!"</code></pre>
+
+    <div class="callout tip">
+      <strong>คำสั่ง <code>la</code> (load address)</strong>
+      <code>la</code> เป็น pseudo-instruction ของ RISC-V ที่จะถูกแปลเป็นชุดคำสั่ง <code>lui</code> + <code>addi</code> ใช้สำหรับโหลด address ของ label เข้า register
+    </div>
+
+    <h2>ตัวอย่างที่ 4: หยุด simulator</h2>
+<pre><code>.text
+main:
+        li a7 10
+        ecall          # หยุด simulator ตรงนี้
+
+        # คำสั่งหลัง ecall จะไม่ถูก execute
+        li a1 1
+        li a2 1
+        li a3 1</code></pre>
+
+    <p>อีกวิธีในการหยุด simulator คือให้โปรแกรม <strong>branch ไปยัง label ที่อยู่ท้าย <code>.text</code> segment</strong> เพื่อให้ PC ชี้ไปที่ตำแหน่งว่าง</p>
+
+    <h2>ตัวอย่างที่ 5: รวมหลาย ecall</h2>
+<pre><code>.data
+str1: .string "Result is "
+
+.text
+main:
+        # พิมพ์ "Result is "
+        la a0 str1
+        li a7 4
+        ecall
+
+        # พิมพ์เลข 100
+        li a0 100
+        li a7 1
+        ecall
+
+        # ขึ้นบรรทัดใหม่ด้วย newline (ASCII 10)
+        li a0 10
+        li a7 11
+        ecall
+
+        # ออกจากโปรแกรม
+        li a7 10
+        ecall</code></pre>
+
+    <p>ผลลัพธ์ใน Output console:</p>
+<pre><code>Result is 100
+</code></pre>
+
+    <h2>การใช้ ecall ในภาษา C (โหมด -nostdlib)</h2>
+    <p>เมื่อ compile โดยไม่ใช้ standard library สามารถสร้าง wrapper function เรียก ecall ได้ดังนี้:</p>
+
+<pre><code>void prints(volatile char* ptr) {
+    // ptr ถูกส่งผ่าน register a0 อยู่แล้วตาม ABI
+    asm("li a7, 4");
+    asm("ecall");
+}
+
+void print_int(int val) {
+    // val ถูกส่งผ่าน a0 อยู่แล้ว
+    asm("li a7, 1");
+    asm("ecall");
+}
+
+int main() {
+    prints("Answer: ");
+    print_int(42);
+    return 0;
+}</code></pre>
+
+    <div class="pager">
+      <a href="io.html">
+        <div class="label">← บทก่อนหน้า</div>
+        <div class="title">5. แท็บ I/O</div>
+      </a>
+      <a class="next" href="examples/factorial.html">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">ตัวอย่าง: Factorial</div>
+      </a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

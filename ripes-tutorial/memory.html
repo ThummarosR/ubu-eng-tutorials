@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แท็บ Memory — คู่มือ Ripes</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="images/logo.png" alt="Ripes logo">
+      <div>
+        <div class="title">Ripes Tutorial</div>
+        <div class="subtitle">คู่มือการใช้งานฉบับภาษาไทย</div>
+      </div>
+    </div>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html">หน้าแรก &amp; ติดตั้ง</a>
+      <h4>แท็บการใช้งาน</h4>
+      <a href="editor.html">1. แท็บ Editor</a>
+      <a href="processor.html">2. แท็บ Processor</a>
+      <a href="memory.html" class="active">3. แท็บ Memory</a>
+      <a href="cache.html">4. แท็บ Cache</a>
+      <a href="io.html">5. แท็บ I/O</a>
+      <h4>อ้างอิง</h4>
+      <a href="ecalls.html">System Calls (ecall)</a>
+      <h4>ตัวอย่างประกอบ</h4>
+      <a href="examples/factorial.html">Factorial (Assembly)</a>
+      <a href="examples/leds.html">LEDs (I/O)</a>
+      <a href="examples/matrixmul.html">Matrix Multiply (C)</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <h1>แท็บ Memory</h1>
+    <p class="lede">หน้าจอที่ใช้สำรวจ address space ทั้งหมดของ CPU — เห็นทั้ง code segment, data segment และค่าที่โปรแกรมเขียนไว้ในหน่วยความจำ</p>
+
+    <figure>
+      <img src="images/memorytab.png" alt="หน้าจอแท็บ Memory">
+      <figcaption>หน้าจอ Memory tab — แสดงค่าใน address space ของ simulator</figcaption>
+    </figure>
+
+    <h2>วิธีอ่านตาราง Memory</h2>
+    <p>แท็บ Memory แสดงค่าในหน่วยความจำเป็นตาราง โดยแต่ละแถวคือ 1 word (4 bytes) ของหน่วยความจำ คอลัมน์ที่สำคัญ:</p>
+    <ul>
+      <li><strong>Address</strong> — ที่อยู่ของ word นั้น (แสดงเป็น hex)</li>
+      <li><strong>Value</strong> — ค่าที่เก็บอยู่ ปรับเลขฐานการแสดงผลได้</li>
+    </ul>
+
+    <h2>วิธีนำทางในหน่วยความจำ</h2>
+    <p>หน่วยความจำมีขนาดใหญ่ การ scroll หา address ที่ต้องการอาจใช้เวลานาน Ripes จึงมีปุ่มช่วยนำทาง:</p>
+
+    <ul>
+      <li><strong>Scrolling</strong> — เลื่อนขึ้นลงเพื่อดูพื้นที่ใกล้เคียง</li>
+      <li><strong>Go to register</strong> — กระโดดไปยัง address ที่เก็บอยู่ใน register ที่เลือก เหมาะมากเมื่อต้องการดู array ที่ pointer ใน <code>a0</code> หรือ <code>sp</code> ชี้อยู่</li>
+      <li><strong>Go to section</strong> — กระโดดไปยังจุดเริ่มต้นของ segment ต่าง ๆ ในโปรแกรม
+        <ul>
+          <li><code>.text</code> — Code segment (คำสั่งของโปรแกรม)</li>
+          <li><code>.data</code> — Static data (ตัวแปร global ที่มีค่าเริ่มต้น)</li>
+          <li><code>.bss</code> — Uninitialized static data</li>
+          <li><strong>Address...</strong> — กระโดดไปยัง address ที่ระบุเอง</li>
+        </ul>
+      </li>
+    </ul>
+
+    <h2>การ Reset และผลต่อหน่วยความจำ</h2>
+    <div class="callout warn">
+      <strong>ข้อควรระวัง</strong>
+      เมื่อกดปุ่ม <strong>Reset</strong> ใน toolbar — หน่วยความจำที่โปรแกรมเขียนระหว่างการรันจะถูกล้างกลับสู่ค่าเริ่มต้น ค่าใน <code>.data</code> segment จะกลับเป็นค่าที่ประกาศไว้ในโค้ด
+    </div>
+
+    <h2>เทคนิคการ Debug ผ่านแท็บ Memory</h2>
+    <p>แท็บ Memory เป็นเครื่องมือ debug ที่ทรงพลังมาก ตัวอย่างการใช้:</p>
+
+    <ol class="steps">
+      <li>เมื่อโปรแกรมมีตัวแปร global อยู่ใน <code>.data</code> — ใช้ <strong>Go to section → .data</strong> เพื่อดูว่าค่าถูกอัปเดตตรงตามที่คาดหวังหรือไม่</li>
+      <li>เมื่อโปรแกรมใช้ stack (เช่นเรียก function) — ใช้ <strong>Go to register → sp</strong> เพื่อดูค่าใน stack frame ปัจจุบัน</li>
+      <li>เมื่อโปรแกรมจัดการ array — โหลด address เริ่มต้นของ array ใน register แล้วใช้ <strong>Go to register</strong> เพื่อดูข้อมูล array ทั้งก้อน</li>
+    </ol>
+
+    <h2>ตัวอย่างการอ่าน .text segment</h2>
+    <p>หากโหลดโปรแกรม factorial และไปยัง <code>.text</code> segment คุณจะเห็น:</p>
+
+<pre><code>Address     Value (hex)    Instruction
+0x00000000  0x00002517     lw   a0, 0x2(zero)  ; lw a0, argument
+0x00000004  0x008000ef     jal  ra, 8         ; jal ra, fact
+...</code></pre>
+
+    <p>โดยแต่ละ 4 bytes คือ 1 คำสั่ง 32-bit ตามสถาปัตยกรรม RV32I</p>
+
+    <div class="callout tip">
+      <strong>เปรียบเทียบกับแท็บ Editor</strong>
+      ฝั่งขวาของแท็บ Editor (program viewer) ก็แสดงข้อมูลส่วน <code>.text</code> แต่ในรูปแบบที่อ่านง่ายกว่า แท็บ Memory เหมาะกับการดูข้อมูลใน <code>.data</code> และ stack มากกว่า
+    </div>
+
+    <div class="pager">
+      <a href="processor.html">
+        <div class="label">← บทก่อนหน้า</div>
+        <div class="title">2. แท็บ Processor</div>
+      </a>
+      <a class="next" href="cache.html">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">4. แท็บ Cache</div>
+      </a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

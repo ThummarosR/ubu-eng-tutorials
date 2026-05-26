@@ -1,0 +1,15 @@
+/* OPC UA tutorial theme — softer orange, distinct from PLC's bold industrial orange.
+   Loaded after style.css; overrides only the accent colors. */
+:root {
+  --accent:      #fb923c;             /* orange-400 — softer than PLC's #ff7a18 */
+  --accent-2:    #fed7aa;             /* orange-200 — peachy highlight */
+  --accent-soft: rgba(251, 146, 60, 0.12);
+}
+
+/* For tutorials that still use the text-logo (.logo without .logo-img),
+   make the gradient follow the theme too. OPC UA uses the icon image so
+   this is dormant — kept for cross-tutorial consistency if the convention spreads. */
+.sidebar .brand .logo:not(.logo-img) {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 6px 20px rgba(251, 146, 60, 0.35);
+}

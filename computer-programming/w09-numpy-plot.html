@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W09 — NumPy + Matplotlib | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html" class="active"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">สัปดาห์ที่ 09 · Data with AI</span>
+    <h1>NumPy + Matplotlib — คำนวณและเห็นข้อมูล</h1>
+    <p class="lede">
+      ตาราง (W08) เก็บข้อมูลได้ · NumPy <strong>คำนวณ</strong> ได้เร็ว · Matplotlib ทำให้เรา
+      <strong>"เห็น"</strong> ได้ · 2 library นี้คือเครื่องมือมาตรฐานของวิศวกรในยุค Python
+    </p>
+
+    <h2>เป้าหมายสัปดาห์นี้</h2>
+    <ul>
+      <li>เข้าใจ NumPy array vs Python list และเลือกใช้ถูก</li>
+      <li>คำนวณสถิติพื้นฐาน (mean, std, min, max) ด้วย vectorize</li>
+      <li>วาด <strong>5 ชนิดกราฟ</strong>: line, scatter, bar, hist, box — เลือกตามข้อมูล</li>
+      <li>ทำกราฟที่ <em>"อ่านง่าย"</em> (มี title, axis labels, legend)</li>
+    </ul>
+
+    <h2>🧮 NumPy — array แทน list สำหรับงานคำนวณ</h2>
+    <pre><code class="language-python">import numpy as np
+
+# สร้าง array
+scores = np.array([85, 72, 91, 60, 45, 78, 88])
+
+# operation แบบ vectorized — ทั้ง array ทีเดียว
+scores * 2              # [170, 144, 182, 120, 90, 156, 176]
+scores + 5              # [90, 77, 96, 65, 50, 83, 93]
+scores &gt;= 50            # [True, True, True, True, False, True, True]
+scores[scores &gt;= 50]    # [85, 72, 91, 60, 78, 88]
+
+# สถิติ
+scores.mean()           # ค่าเฉลี่ย
+scores.std()            # ส่วนเบี่ยงเบนมาตรฐาน
+scores.min()            # ต่ำสุด
+scores.max()            # สูงสุด
+scores.sum()            # ผลรวม
+np.median(scores)       # ค่ามัธยฐาน
+np.percentile(scores, 75)  # quartile ที่ 3</code></pre>
+
+    <h3>ทำไม NumPy เร็วกว่า list</h3>
+    <pre><code class="language-python"># Python list — วน 1 ล้านครั้ง
+nums = list(range(1_000_000))
+doubled = []
+for n in nums:
+    doubled.append(n * 2)
+# ~50 ms
+
+# NumPy
+nums = np.arange(1_000_000)
+doubled = nums * 2
+# ~2 ms — เร็วกว่า 20 เท่า</code></pre>
+
+    <p>เคล็ดลับ: <em>NumPy เก็บข้อมูลเป็น C array · ไม่ใช่ object · ทำงานทีเดียวทั้งก้อน</em></p>
+
+    <h2>🏗️ สร้าง array แบบต่าง ๆ</h2>
+    <pre><code class="language-python">np.array([1, 2, 3])           # จาก list
+np.zeros(5)                    # [0, 0, 0, 0, 0]
+np.ones(5)                     # [1, 1, 1, 1, 1]
+np.arange(0, 10, 2)            # [0, 2, 4, 6, 8]
+np.linspace(0, 1, 5)           # 5 ค่าจาก 0 ถึง 1: [0, 0.25, 0.5, 0.75, 1]
+
+# 2D
+matrix = np.array([
+    [1, 2, 3],
+    [4, 5, 6],
+])
+matrix.shape   # (2, 3) — 2 rows, 3 cols
+matrix[0, 1]   # 2 — row 0, col 1
+matrix[:, 0]   # column 0: [1, 4]
+matrix[0, :]   # row 0: [1, 2, 3]</code></pre>
+
+    <h2>📐 ตัวอย่างวิศวกรรม — คำนวณแรงดันไฟฟ้า</h2>
+    <pre><code class="language-python">import numpy as np
+
+# เวลา (วินาที) — 1000 จุด ตั้งแต่ 0 ถึง 0.05
+t = np.linspace(0, 0.05, 1000)
+
+# สัญญาณ sinusoidal 50 Hz
+V = 220 * np.sin(2 * np.pi * 50 * t)
+
+# คำนวณ
+V_rms = np.sqrt(np.mean(V**2))   # RMS = 220/sqrt(2) ≈ 155.6
+V_peak = V.max()
+print(f"V_rms = {V_rms:.2f} V")
+print(f"V_peak = {V_peak:.2f} V")</code></pre>
+
+    <h2>📊 Matplotlib — กราฟ 5 ชนิด</h2>
+
+    <h3>1. Line plot — สำหรับ "time series" หรือ "x ↔ y ต่อเนื่อง"</h3>
+    <pre><code class="language-python">import matplotlib.pyplot as plt
+
+t = np.linspace(0, 0.05, 1000)
+V = 220 * np.sin(2 * np.pi * 50 * t)
+
+plt.figure(figsize=(10, 4))
+plt.plot(t, V, label="220V 50Hz")
+plt.xlabel("Time (s)")
+plt.ylabel("Voltage (V)")
+plt.title("AC Power Signal")
+plt.legend()
+plt.grid(True)
+plt.show()</code></pre>
+
+    <h3>2. Scatter plot — ดู "ความสัมพันธ์ระหว่าง 2 ตัวแปร"</h3>
+    <pre><code class="language-python">study_hours = [2, 5, 8, 3, 10, 6, 4, 12, 7, 9]
+exam_score = [55, 70, 85, 60, 92, 78, 65, 95, 80, 88]
+
+plt.scatter(study_hours, exam_score)
+plt.xlabel("ชั่วโมงทบทวน")
+plt.ylabel("คะแนนสอบ")
+plt.title("Study Time vs Exam Score")
+plt.grid(True)
+plt.show()</code></pre>
+
+    <h3>3. Bar chart — เปรียบเทียบ "กลุ่ม"</h3>
+    <pre><code class="language-python">subjects = ["Math", "Physics", "CP", "Lab", "Eng"]
+avg_scores = [75, 68, 82, 88, 70]
+
+plt.bar(subjects, avg_scores, color="#3776ab")
+plt.ylabel("คะแนนเฉลี่ย")
+plt.title("คะแนนเฉลี่ยแต่ละวิชา")
+plt.show()</code></pre>
+
+    <h3>4. Histogram — ดู "การกระจาย" ของข้อมูล 1 ตัวแปร</h3>
+    <pre><code class="language-python"># คะแนนของนักศึกษา 100 คน
+scores = np.random.normal(70, 12, 100)  # mean=70, std=12
+
+plt.hist(scores, bins=15, color="#ffd43b", edgecolor="black")
+plt.xlabel("คะแนน")
+plt.ylabel("จำนวนนักศึกษา")
+plt.title("การกระจายคะแนนสอบ")
+plt.show()</code></pre>
+
+    <h3>5. Box plot — เปรียบเทียบ "การกระจาย" หลายกลุ่ม</h3>
+    <pre><code class="language-python">year1 = np.random.normal(65, 10, 30)
+year2 = np.random.normal(72, 8, 30)
+year3 = np.random.normal(78, 7, 30)
+
+plt.boxplot([year1, year2, year3], labels=["Year 1", "Year 2", "Year 3"])
+plt.ylabel("คะแนน")
+plt.title("กระจายคะแนนแต่ละชั้นปี")
+plt.show()</code></pre>
+
+    <h2>🎯 เลือกกราฟแบบไหน?</h2>
+    <table>
+      <thead><tr><th>คำถาม</th><th>กราฟ</th></tr></thead>
+      <tbody>
+        <tr><td>ค่าเปลี่ยนตามเวลา / x ต่อเนื่อง</td><td>line</td></tr>
+        <tr><td>ดูความสัมพันธ์ 2 ตัวแปร</td><td>scatter</td></tr>
+        <tr><td>เปรียบเทียบกลุ่ม (categorical)</td><td>bar</td></tr>
+        <tr><td>ดูการกระจายของ 1 ตัวแปร</td><td>histogram</td></tr>
+        <tr><td>เปรียบเทียบกระจายของหลายกลุ่ม</td><td>box plot</td></tr>
+        <tr><td>สัดส่วน (รวมเป็น 100%)</td><td>pie (ใช้ระวัง — อ่านยาก)</td></tr>
+        <tr><td>เปลี่ยนแปลงสะสม</td><td>area</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout warn">
+      <strong>หลีกเลี่ยง pie chart</strong>
+      — มนุษย์อ่านมุมยากกว่าความยาว · ใช้ bar chart แทนแทบทุกครั้ง · ยกเว้นข้อมูล 2-3 กลุ่ม
+    </div>
+
+    <h2>✨ ทำกราฟให้ "อ่านง่าย"</h2>
+    <pre><code class="language-python">plt.figure(figsize=(10, 5))                        # ขนาด
+plt.plot(t, V, label="V(t)", linewidth=2)          # เส้นหนา
+plt.xlabel("Time (s)", fontsize=12)                # axis label
+plt.ylabel("Voltage (V)", fontsize=12)
+plt.title("AC Power 50 Hz", fontsize=14, fontweight="bold")
+plt.legend(loc="upper right")                      # ตำแหน่ง legend
+plt.grid(True, alpha=0.3)                          # grid อ่อน ๆ
+plt.axhline(0, color="black", linewidth=0.5)       # เส้นแกน
+plt.tight_layout()                                 # padding
+plt.savefig("ac_signal.png", dpi=150)              # เซฟเป็นรูป
+plt.show()</code></pre>
+
+    <h3>กฎ "ทุกกราฟต้องมี"</h3>
+    <ol>
+      <li>Title — บอกว่าเป็นกราฟอะไร</li>
+      <li>X / Y label พร้อมหน่วย</li>
+      <li>Legend ถ้ามีหลายเส้น</li>
+      <li>Grid (สำหรับอ่านค่า)</li>
+    </ol>
+
+    <h2>🖼️ Subplots — หลายกราฟใน figure เดียว</h2>
+    <pre><code class="language-python">fig, axes = plt.subplots(1, 2, figsize=(12, 4))
+
+axes[0].plot(t, V)
+axes[0].set_title("Voltage")
+axes[0].set_xlabel("Time (s)")
+
+axes[1].plot(t, V**2 / 100)  # power
+axes[1].set_title("Power")
+axes[1].set_xlabel("Time (s)")
+
+plt.tight_layout()
+plt.show()</code></pre>
+
+    <h2>🤖 ใช้ AI ช่วยทำกราฟ — เคล็ดลับ</h2>
+
+    <ul>
+      <li>
+        บอก AI เรื่อง <strong>ข้อมูล</strong>: <em>"ฉันมี DataFrame ที่มี column 'year', 'gpa' จากนักศึกษา 200 คน"</em>
+      </li>
+      <li>
+        บอก <strong>คำถามที่อยากตอบ</strong>: <em>"อยากดูว่า GPA เปลี่ยนตามชั้นปียังไง"</em>
+      </li>
+      <li>
+        ถาม <strong>"กราฟไหนเหมาะ"</strong> ก่อน — AI จะแนะนำ box plot
+      </li>
+      <li>
+        สั่งให้เขียน code <strong>+ คำอธิบายของแต่ละ axis</strong>
+      </li>
+    </ul>
+
+    <h2>🧪 Workshop — Visualize ข้อมูลของตัวเอง</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>ใช้ CSV จาก W08</strong>
+        — เปิดใน Jupyter/Colab notebook ใหม่
+      </li>
+      <li>
+        <strong>คำนวณสถิติ 5 ตัว</strong>
+        — mean, std, min, max, median ของ column ที่เป็น numeric
+      </li>
+      <li>
+        <strong>วาดกราฟ 4 ชนิด</strong>
+        — line, scatter, bar, histogram ของข้อมูลในชุดเดียวกัน
+      </li>
+      <li>
+        <strong>ใส่ title, axis label, legend ครบ</strong>
+      </li>
+      <li>
+        <strong>เซฟกราฟเป็น .png 4 ไฟล์</strong>
+        — <code>plt.savefig(..., dpi=150)</code>
+      </li>
+      <li>
+        <strong>เขียน "Story" ใต้แต่ละกราฟ</strong>
+        — 2-3 ประโยคว่าเห็นอะไรจากกราฟ
+      </li>
+      <li>
+        <strong>ถาม AI ว่ายังขาดกราฟอะไร</strong>
+        — paste preview ของ DataFrame + กราฟที่ทำแล้ว → ขอ AI แนะนำกราฟที่ 5
+      </li>
+    </ol>
+
+    <h2>ข้อผิดที่พบบ่อย</h2>
+
+    <div class="callout warn">
+      <strong>ลืม import</strong>
+      — <code>import numpy as np</code> + <code>import matplotlib.pyplot as plt</code> เป็น 2 บรรทัดที่ต้องมีทุก notebook
+    </div>
+
+    <div class="callout warn">
+      <strong>ใช้ Python list ใน NumPy operation</strong>
+      — เช่น <code>my_list * 2</code> = ทำ list ซ้ำ 2 ครั้ง <em>ไม่ใช่</em> คูณ 2 · ต้องแปลงเป็น array ก่อน
+    </div>
+
+    <div class="callout warn">
+      <strong>กราฟไม่มี title / axis label</strong>
+      — ทำให้คน (และ AI) อ่านไม่ออกว่ากำลังดูอะไร · ตรวจสอบทุกกราฟก่อนเซฟ
+    </div>
+
+    <div class="callout warn">
+      <strong>ใช้ pie chart 7 ชิ้น</strong>
+      — อ่านยาก · ใช้ bar chart เรียงจากใหญ่ไปเล็กแทน
+    </div>
+
+    <h2>ส่งงานสัปดาห์นี้</h2>
+    <ul>
+      <li>📓 notebook ที่ Workshop ครบ 7 ขั้น</li>
+      <li>🖼️ ภาพ PNG 4-5 ภาพของกราฟต่าง ๆ</li>
+      <li>📝 README สรุป "เห็นอะไร" จากการ visualize</li>
+    </ul>
+
+    <h3>Reference จาก slide เดิม</h3>
+    <p>ครอบคลุม <a href="references.html#topic-8">Topic 8 — NumPy</a> และส่วน Matplotlib ของ <a href="references.html#topic-9">Topic 9 — OOP and Matplotlib</a></p>
+
+    <div class="pager">
+      <a href="w08-tables.html"><div class="label">← สัปดาห์ที่แล้ว</div><div class="title">W08 — ตาราง list/dict/CSV</div></a>
+      <a href="w10-data-project.html" class="next"><div class="label">สัปดาห์ถัดไป →</div><div class="title">W10 — Data Project ปลายทาง</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · ภาควิชาวิศวกรรมเครื่องกลและเมคาทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+</body>
+</html>

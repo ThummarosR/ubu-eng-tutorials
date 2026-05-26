@@ -1,0 +1,23 @@
+---
+title: Pandas Five-Stage Data Pipeline
+---
+flowchart LR
+    S["📁 Source<br/>CSV · Excel · JSON · API"] --> L["1️⃣ Load<br/>pd.read_csv()<br/>pd.read_excel()"]
+    L --> C["2️⃣ Clean<br/>dropna · fillna<br/>drop_duplicates · astype"]
+    C --> T["3️⃣ Transform<br/>assign · groupby<br/>pivot_table · merge"]
+    T --> A["4️⃣ Analyse<br/>describe · corr<br/>value_counts"]
+    A --> E["5️⃣ Export<br/>to_csv · to_excel<br/>matplotlib · report"]
+
+    L -.- V1["✅ Verify rows"]
+    C -.- V2["✅ Verify nulls"]
+    T -.- V3["✅ Verify aggregates"]
+    A -.- V4["✅ Verify ranges"]
+
+    classDef source fill:#e8f0f8,stroke:#3776ab,color:#0b1020
+    classDef stage fill:#3776ab,stroke:#1e4870,color:#ffffff,stroke-width:2px
+    classDef export fill:#ffd43b,stroke:#cc9c00,color:#1a1410,stroke-width:2px
+    classDef verify fill:#d1fae5,stroke:#10b981,color:#064e3b
+    class S source
+    class L,C,T,A stage
+    class E export
+    class V1,V2,V3,V4 verify

@@ -1,0 +1,1254 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W12 — APIs + Integration | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html" class="active"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+      <a href="principles-uxui.html"><span class="num">📐</span> UX/UI Principles</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">สัปดาห์ที่ 12 · Advanced</span>
+    <h1>APIs + Integration</h1>
+    <p class="lede">
+      สัปดาห์นี้คือจุดที่ Python <em>"คุยกับโลก"</em> — ใช้ <strong>API ของคนอื่น</strong>
+      (Google, LINE, Anthropic Claude, OpenAI, weather, …) · <strong>สร้าง API ของตัวเอง</strong> ด้วย Flask ·
+      <strong>เรียก LLM API</strong> ใส่ AI ใน app · รู้จัก <strong>GCP catalog</strong> ของ engineer ·
+      ครอบคลุมที่สุดของหลักสูตร
+    </p>
+
+    <div class="callout info">
+      <strong>📐 สัปดาห์นี้ = เริ่มมี UI</strong>
+      เปิด <a href="principles-uxui.html"><strong>UX/UI Principles</strong></a> ค้างไว้แท็บข้าง ๆ ·
+      โดยเฉพาะ <a href="principles-uxui.html#tech-choice">Section 0 — เลือก UI Technology</a>
+      (เลือก Streamlit vs Flask vs HTML/JS ให้ตรงงาน) ·
+      <a href="principles-uxui.html#states">Section 3 — 5 States ที่ AI ลืม</a> ·
+      <a href="principles-uxui.html#forms">Section 5 — Forms</a> · ใช้กับ W12 ทั้งหมด
+    </div>
+
+    <h2>เป้าหมายสัปดาห์นี้</h2>
+    <ul>
+      <li>เข้าใจ <strong>"API คืออะไร"</strong> และมี<strong>กี่ประเภท</strong></li>
+      <li>เรียก <strong>external REST API</strong> ด้วย <code>requests</code> (GET, POST, headers, JSON)</li>
+      <li>เข้าใจ <strong>auth patterns</strong> 4 แบบ (API key / Bearer / OAuth / Service Account)</li>
+      <li>เรียก <strong>LLM API</strong> (Claude / OpenAI / Gemini) จาก Python</li>
+      <li>รู้จัก <strong>Google Cloud APIs</strong> ที่ engineer ใช้บ่อย</li>
+      <li>สร้าง <strong>Flask API</strong> เล็ก ๆ ของตัวเอง</li>
+      <li>เก็บ <strong>API key</strong> ใน <code>.env</code> อย่างปลอดภัย + handle error + rate limit</li>
+    </ul>
+
+    <div class="callout warn" style="border-left-width:5px">
+      <strong>🔒 ทำไม "ออกแบบ + เลือก API" คือทักษะที่ AI ทำให้คุณไม่ได้</strong>
+      AI <em>"เขียน API call"</em> ได้ใน 5 วินาที · แต่ตัดสินใจว่า <strong>"ใช้ API ไหน · เก็บ key ยังไง ·
+      จัดการ rate limit · เลือก auth pattern · เลือก LLM ตัวไหนสำหรับงานไหน"</strong> = หน้าที่คุณ · นี่คือ
+      ทักษะที่แยกนักศึกษาที่ "ใช้ API ได้" จาก "ใช้ AI ทำของจริงได้"
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🌐 API คืออะไร — เริ่มจาก mental model</h2>
+    <p>
+      <strong>API</strong> (Application Programming Interface) = <em>"ประตูที่ระบบใช้คุยกัน"</em> · ลองคิดเปรียบเทียบ:
+    </p>
+
+    <table>
+      <thead><tr><th>โลกจริง</th><th>API คือ</th></tr></thead>
+      <tbody>
+        <tr><td>ร้านอาหาร — คนกินไม่ต้องเข้าครัว</td><td>เมนู + พนักงาน = API · ครัว = internal logic</td></tr>
+        <tr><td>ATM — ไม่ต้องเข้าธนาคาร</td><td>ปุ่ม + จอ = API · ระบบบัญชี = backend</td></tr>
+        <tr><td>เครื่องชงกาแฟ — กดปุ่ม</td><td>ปุ่มกาแฟ-นม-ฟอง = API · มอเตอร์ภายใน = implementation</td></tr>
+      </tbody>
+    </table>
+
+    <p>
+      <strong>หลักการ:</strong> ระบบ A อยาก "ใช้" ระบบ B โดย <em>"ไม่ต้องรู้ว่า B ทำงานยังไงข้างใน"</em>
+      · B เปิด API เป็น contract · A เรียก API → ได้ผลลัพธ์
+    </p>
+
+    <h2>🗺 API มีกี่ประเภท?</h2>
+
+    <div class="mermaid">flowchart TB
+    api["🌐 API<br/>(ประตูคุยกับระบบ)"]
+    api --> web["💻 Web API<br/>(ผ่าน internet)"]
+    api --> lib["📦 Library API<br/>(ใน Python)"]
+    api --> os["🖥 OS API<br/>(เรียก system)"]
+    api --> hw["🔌 Hardware API<br/>(สื่อสารกับอุปกรณ์)"]
+
+    web --> rest["REST<br/><i>HTTP + JSON · ปกติที่สุด</i>"]
+    web --> graphql["GraphQL<br/><i>1 endpoint · query ที่อยาก</i>"]
+    web --> ws["WebSocket<br/><i>real-time bi-directional</i>"]
+    web --> rpc["gRPC<br/><i>เร็ว · ใน datacenter</i>"]
+
+    lib --> pylib["pandas · numpy · requests<br/><i>import แล้วใช้</i>"]
+
+    os --> file["file system<br/>open() / read() / write()"]
+    os --> proc["subprocess<br/>เรียกโปรแกรมอื่น"]
+
+    hw --> serial["Serial / UART<br/><i>Arduino · sensor</i>"]
+    hw --> modbus["Modbus / OPC-UA<br/><i>industrial</i>"]
+    hw --> mqtt["MQTT<br/><i>IoT pub/sub</i>"]
+
+    classDef cat fill:#1e3a5f,stroke:#3776ab,color:#fff
+    classDef impl fill:#3d2c1a,stroke:#ffd43b,color:#fff
+    class api,web,lib,os,hw cat
+    class rest,graphql,ws,rpc,pylib,file,proc,serial,modbus,mqtt impl</div>
+
+    <h3>📊 เปรียบเทียบประเภท API</h3>
+    <table>
+      <thead><tr><th>ประเภท</th><th>ตัวอย่าง</th><th>ใช้เมื่อ</th><th>เรียกจาก Python ด้วย</th></tr></thead>
+      <tbody>
+        <tr><td><strong>REST API</strong></td><td>Twitter, LINE, GitHub, Claude, IQAir</td><td>ปกติทั่วไป · public services</td><td><code>requests</code></td></tr>
+        <tr><td><strong>GraphQL</strong></td><td>GitHub v4, Shopify</td><td>ดึง data ที่อยากเฉพาะ field</td><td><code>requests</code> + query string</td></tr>
+        <tr><td><strong>WebSocket</strong></td><td>chat, live dashboard, game</td><td>real-time 2 ทาง</td><td><code>websockets</code></td></tr>
+        <tr><td><strong>gRPC</strong></td><td>Google internal services</td><td>service-to-service ภายใน</td><td><code>grpcio</code></td></tr>
+        <tr><td><strong>Library API</strong></td><td><code>pandas</code>, <code>numpy</code></td><td>ทำงานใน Python ปกติ</td><td><code>import</code></td></tr>
+        <tr><td><strong>OS API</strong></td><td>file system, process</td><td>คุยกับเครื่อง</td><td><code>os</code>, <code>subprocess</code></td></tr>
+        <tr><td><strong>Hardware</strong></td><td>Modbus PLC, MQTT sensor, Serial Arduino</td><td>คุยกับอุปกรณ์</td><td><code>pyserial</code>, <code>pymodbus</code>, <code>paho-mqtt</code></td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <strong>📌 สัปดาห์นี้เน้น REST API + LLM API</strong>
+      เพราะ <em>95% ของ API ที่นักศึกษาจะเจอใน 5 ปีข้างหน้า</em> = REST + LLM ·
+      แต่รู้ว่ามีประเภทอื่นไว้ — เผื่อเจอในงาน
+    </div>
+
+    <h2>🔌 REST API — พื้นฐานที่ต้องรู้</h2>
+
+    <p>API = "ประตู" ระหว่างระบบ · REST = แบบที่ใช้บ่อยที่สุด · เป็น <strong>HTTP requests</strong> ปกติ</p>
+
+    <table>
+      <thead><tr><th>HTTP Method</th><th>หมายความ</th><th>ตัวอย่าง</th></tr></thead>
+      <tbody>
+        <tr><td><code>GET</code></td><td>ดึงข้อมูล</td><td>GET <code>/students</code> — ขอรายชื่อ</td></tr>
+        <tr><td><code>POST</code></td><td>เพิ่ม</td><td>POST <code>/students</code> — เพิ่มคน</td></tr>
+        <tr><td><code>PUT/PATCH</code></td><td>แก้</td><td>PATCH <code>/students/5</code> — แก้คน id 5</td></tr>
+        <tr><td><code>DELETE</code></td><td>ลบ</td><td>DELETE <code>/students/5</code></td></tr>
+      </tbody>
+    </table>
+
+    <h3>Status code ที่เจอบ่อย</h3>
+    <table>
+      <tbody>
+        <tr><td><code>200 OK</code></td><td>สำเร็จ</td></tr>
+        <tr><td><code>201 Created</code></td><td>สร้างแล้ว</td></tr>
+        <tr><td><code>400 Bad Request</code></td><td>ส่งข้อมูลผิด</td></tr>
+        <tr><td><code>401 Unauthorized</code></td><td>ไม่ได้ login / API key ผิด</td></tr>
+        <tr><td><code>404 Not Found</code></td><td>ไม่พบ</td></tr>
+        <tr><td><code>429 Too Many Requests</code></td><td>เกิน rate limit</td></tr>
+        <tr><td><code>500 Server Error</code></td><td>server พัง — ไม่ใช่ความผิดเรา</td></tr>
+      </tbody>
+    </table>
+
+    <h2>📡 เรียก API ด้วย <code>requests</code></h2>
+
+    <p>ติดตั้ง: <code>pip install requests</code></p>
+
+    <h3>GET — ดึงข้อมูล</h3>
+    <pre><code class="language-python">import requests
+
+# ตัวอย่าง 1: Public API ไม่ต้อง auth
+r = requests.get("https://api.coindesk.com/v1/bpi/currentprice.json")
+print(r.status_code)         # 200
+print(r.json())              # เป็น dict
+
+# ตัวอย่าง 2: GET with parameter
+r = requests.get(
+    "https://api.airvisual.com/v2/city",
+    params={
+        "city": "Ubon Ratchathani",
+        "state": "Ubon Ratchathani",
+        "country": "Thailand",
+        "key": "YOUR_API_KEY",
+    }
+)
+data = r.json()
+print(data["data"]["current"]["pollution"]["aqius"])</code></pre>
+
+    <h3>POST — ส่งข้อมูล (เช่นส่ง LINE)</h3>
+    <pre><code class="language-python">import requests
+
+LINE_TOKEN = "your_channel_access_token"
+USER_ID = "Uxxxxxxxxxxxxxxxx"
+
+r = requests.post(
+    "https://api.line.me/v2/bot/message/push",
+    headers={
+        "Authorization": f"Bearer {LINE_TOKEN}",
+        "Content-Type": "application/json",
+    },
+    json={
+        "to": USER_ID,
+        "messages": [{"type": "text", "text": "สวัสดีจาก Python 🎉"}],
+    }
+)
+print(r.status_code)        # 200 ถ้าสำเร็จ</code></pre>
+
+    <h2>🔑 เก็บ API Key ปลอดภัย — <code>.env</code></h2>
+
+    <div class="callout warn">
+      <strong>ห้าม commit API key ใน Git!</strong>
+      ถ้า key หลุดบน GitHub — โดน abuse ภายในไม่กี่ชั่วโมง · ค่าธรรมเนียมอาจหลายพัน บาท
+    </div>
+
+    <p>ติดตั้ง: <code>pip install python-dotenv</code></p>
+
+    <h3>โครงสร้างที่ถูก</h3>
+    <pre><code>my_project/
+├── .env                ← เก็บ secrets (อย่าลืม gitignore)
+├── .env.example        ← ตัวอย่างที่ commit ได้ (ไม่มีค่าจริง)
+├── .gitignore          ← มี .env
+└── main.py</code></pre>
+
+    <p><strong><code>.env</code></strong>:</p>
+    <pre><code>IQAIR_KEY=abc123_real_key_here
+LINE_TOKEN=Bearer_real_token_here</code></pre>
+
+    <p><strong><code>.env.example</code></strong>:</p>
+    <pre><code>IQAIR_KEY=your_iqair_key_here
+LINE_TOKEN=your_line_token_here</code></pre>
+
+    <p><strong><code>main.py</code></strong>:</p>
+    <pre><code class="language-python">import os
+from dotenv import load_dotenv
+
+load_dotenv()                # โหลด .env
+
+key = os.getenv("IQAIR_KEY")
+token = os.getenv("LINE_TOKEN")
+
+# ใช้ตามปกติ
+r = requests.get(url, params={"key": key, ...})</code></pre>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🔐 Auth Patterns — 4 แบบที่จะเจอ</h2>
+    <p>
+      "API key" เป็นแค่ <em>1 แบบ</em> ของ authentication · ในงานจริงเจอหลายแบบ ·
+      AI ใช้แต่ละแบบไม่เหมือนกัน — ต้องดู doc ของ API ที่ใช้
+    </p>
+
+    <h3>1️⃣ API Key (ในย่อ params หรือ header)</h3>
+    <p>ง่ายที่สุด · key เป็น string คงที่ · เหมาะกับ public API ทั่วไป</p>
+    <pre><code class="language-python"># แบบ A: ใส่ใน query params
+r = requests.get(url, params={"api_key": KEY})
+
+# แบบ B: ใส่ใน custom header
+r = requests.get(url, headers={"X-API-Key": KEY})</code></pre>
+    <p style="font-size:13.5px;color:var(--text-muted)">
+      ตัวอย่าง: IQAir, OpenWeather, NewsAPI, public APIs ส่วนใหญ่
+    </p>
+
+    <h3>2️⃣ Bearer Token (มาตรฐาน OAuth-style)</h3>
+    <p>ใช้ <code>Authorization: Bearer ...</code> header · มาตรฐานของ REST API สมัยใหม่</p>
+    <pre><code class="language-python">r = requests.post(
+    "https://api.line.me/v2/bot/message/push",
+    headers={
+        "Authorization": f"Bearer {LINE_TOKEN}",
+        "Content-Type": "application/json",
+    },
+    json=payload,
+)</code></pre>
+    <p style="font-size:13.5px;color:var(--text-muted)">
+      ตัวอย่าง: LINE, Anthropic Claude, OpenAI, GitHub
+    </p>
+
+    <h3>3️⃣ OAuth 2.0 (login กับ provider · ขอ permission)</h3>
+    <p>ซับซ้อนกว่า · ใช้เมื่อต้องการสิทธิ์ของ user (ไม่ใช่ของเรา) · เช่น "login ด้วย Google"</p>
+    <pre><code class="language-python"># Flow: user → ไป google.com/auth → approve → กลับมาที่ app เรา
+# ได้ access_token + refresh_token
+# ใช้ library: authlib, requests-oauthlib
+from authlib.integrations.requests_client import OAuth2Session
+
+oauth = OAuth2Session(CLIENT_ID, CLIENT_SECRET, scope="openid email")
+auth_url, state = oauth.create_authorization_url("https://accounts.google.com/o/oauth2/auth")
+# → redirect user → callback → exchange code for token</code></pre>
+    <p style="font-size:13.5px;color:var(--text-muted)">
+      ตัวอย่าง: Google Sign-In, GitHub OAuth, "Connect with Facebook"
+    </p>
+
+    <h3>4️⃣ Service Account (server-to-server)</h3>
+    <p>App ของเราติดต่อ Google ในนาม "ตัวเอง" — ไม่มี user · ใช้ JSON credentials file</p>
+    <pre><code class="language-python">import gspread
+# credentials.json = key file ที่ download จาก GCP Console
+gc = gspread.service_account(filename="credentials.json")
+sheet = gc.open("MySheet").sheet1</code></pre>
+    <p style="font-size:13.5px;color:var(--text-muted)">
+      ตัวอย่าง: Google Sheets API, GCS, BigQuery — เมื่อ app ทำงานเอง (cron job)
+    </p>
+
+    <h3>📊 เลือก auth แบบไหน</h3>
+    <table>
+      <thead><tr><th>สถานการณ์</th><th>Auth ที่ใช้</th></tr></thead>
+      <tbody>
+        <tr><td>Public API ของบุคคล (weather, news)</td><td>API Key</td></tr>
+        <tr><td>API ของบริการที่คุณ register</td><td>Bearer Token</td></tr>
+        <tr><td>App ต้องใช้ข้อมูลของ user (email, photos)</td><td>OAuth 2.0</td></tr>
+        <tr><td>Server background job (cron)</td><td>Service Account</td></tr>
+      </tbody>
+    </table>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🤖 LLM APIs — ใส่ AI ใน App ของคุณ</h2>
+    <p>
+      หลัง W14 เราจะ deploy app · ก่อนหน้านั้น app บางอันต้อง <strong>เรียก LLM</strong> เพื่อ:
+      สรุปข้อความ · แปลภาษา · ตอบคำถาม · จัดหมวด · สร้าง content · OCR
+    </p>
+
+    <h3>📊 เปรียบเทียบ Cloud LLM (ปี 2026)</h3>
+    <table>
+      <thead><tr><th>Provider</th><th>Model หลัก</th><th>Strength</th><th>ราคา input/output (per 1M tokens)</th></tr></thead>
+      <tbody>
+        <tr><td>Anthropic <strong>Claude</strong></td><td>claude-opus-4-7, claude-sonnet-4-6, claude-haiku-4-5</td><td>เก่งสุดที่ reasoning + code · ใส่ภาษาไทยได้ดี</td><td>$3-15 / $15-75 (opus) · $1 / $5 (sonnet) · $0.25 / $1.25 (haiku)</td></tr>
+        <tr><td>OpenAI <strong>GPT</strong></td><td>gpt-4o, gpt-4o-mini, o-series</td><td>ecosystem ใหญ่ · function calling เก่ง</td><td>$2.50 / $10 (4o) · $0.15 / $0.60 (mini)</td></tr>
+        <tr><td>Google <strong>Gemini</strong></td><td>gemini-2-flash, gemini-2-pro</td><td>context window ใหญ่ · เชื่อม Google services</td><td>$0.10 / $0.40 (flash) · $1.25 / $5 (pro)</td></tr>
+        <tr><td><strong>Local</strong> (Ollama)</td><td>llama-3, qwen-2.5, phi-3</td><td>ฟรี · ข้อมูลไม่ออกเครื่อง · ช้ากว่า · ต้อง GPU</td><td>$0 (ค่าไฟ + เครื่อง)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <strong>📌 เลือกตัวไหน?</strong>
+      <ul style="margin-top:8px">
+        <li><strong>เรียน + ทำ demo:</strong> Claude Haiku หรือ GPT-4o-mini หรือ Gemini Flash — ถูก + เร็ว</li>
+        <li><strong>งานยากต้อง reasoning / code:</strong> Claude Opus หรือ Sonnet</li>
+        <li><strong>Final Project:</strong> เริ่มที่ Haiku/mini · upgrade เมื่อจำเป็น</li>
+        <li><strong>ข้อมูล sensitive:</strong> Local LLM (Ollama)</li>
+      </ul>
+    </div>
+
+    <h3>🐾 Pattern 1: Basic Completion (Claude SDK)</h3>
+    <pre><code class="language-python"># pip install anthropic
+import os
+from anthropic import Anthropic
+from dotenv import load_dotenv
+
+load_dotenv()
+client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+msg = client.messages.create(
+    model="claude-haiku-4-5-20251001",
+    max_tokens=300,
+    messages=[
+        {"role": "user", "content": "สรุปย่อหน้านี้เป็น 1 ประโยค: ..."}
+    ],
+)
+
+print(msg.content[0].text)
+# Anthropic Python SDK: เอกสาร https://docs.claude.com</code></pre>
+
+    <h3>🐾 Pattern 2: System Prompt + User Prompt</h3>
+    <pre><code class="language-python">msg = client.messages.create(
+    model="claude-haiku-4-5-20251001",
+    max_tokens=500,
+    system="คุณคือ TA วิชา Computer Programming · ตอบเป็นภาษาไทย · กระชับ · ไม่ verbose",
+    messages=[
+        {"role": "user", "content": "อธิบาย concept 'self' ใน Python ในแบบนักศึกษาปี 1"}
+    ],
+)</code></pre>
+
+    <h3>🐾 Pattern 3: Multi-turn Conversation</h3>
+    <pre><code class="language-python">history = []
+
+def chat(user_msg):
+    history.append({"role": "user", "content": user_msg})
+    resp = client.messages.create(
+        model="claude-haiku-4-5-20251001",
+        max_tokens=500,
+        messages=history,
+    )
+    answer = resp.content[0].text
+    history.append({"role": "assistant", "content": answer})
+    return answer
+
+print(chat("เครื่อง CNC คืออะไร?"))
+print(chat("แล้ว 3-axis vs 5-axis ต่างกันยังไง?"))   # AI จำ context</code></pre>
+
+    <h3>🐾 Pattern 4: Streaming (ตอบทีละคำ · ใช้กับ chat UI)</h3>
+    <pre><code class="language-python">with client.messages.stream(
+    model="claude-haiku-4-5-20251001",
+    max_tokens=500,
+    messages=[{"role": "user", "content": "เล่าเรื่องสั้น ๆ"}],
+) as stream:
+    for text in stream.text_stream:
+        print(text, end="", flush=True)
+print()  # newline</code></pre>
+
+    <h3>🐾 Pattern 5: Structured Output (JSON ที่ parse ได้)</h3>
+    <pre><code class="language-python">import json
+
+prompt = """
+สกัด field 3 อย่างจากประโยคนี้: 'อยากจอง CNC วันศุกร์ 10 โมง'
+ตอบเป็น JSON มี keys: machine, day, time
+ห้ามใส่ markdown · ห้ามมีข้อความอื่น
+"""
+
+msg = client.messages.create(
+    model="claude-haiku-4-5-20251001",
+    max_tokens=200,
+    messages=[{"role": "user", "content": prompt}],
+)
+
+data = json.loads(msg.content[0].text)
+print(data)
+# → {"machine": "CNC", "day": "ศุกร์", "time": "10:00"}</code></pre>
+
+    <h3>🐾 Pattern 6: Function / Tool Calling</h3>
+    <pre><code class="language-python"># ให้ LLM เรียก function ของเราเองได้ — สำหรับ agent
+tools = [{
+    "name": "get_weather",
+    "description": "ดู PM2.5 ของเมือง",
+    "input_schema": {
+        "type": "object",
+        "properties": {"city": {"type": "string"}},
+        "required": ["city"],
+    },
+}]
+
+msg = client.messages.create(
+    model="claude-haiku-4-5-20251001",
+    max_tokens=500,
+    tools=tools,
+    messages=[{"role": "user", "content": "PM2.5 อุบลฯ เท่าไหร่?"}],
+)
+
+# LLM จะตอบ tool_use block — เราต้อง execute function เอง · ส่งผลกลับ
+# (ดู docs.claude.com/agents-and-tools/tool-use)</code></pre>
+
+    <h3>🐾 Pattern 7: Prompt Caching (ลด cost 90% เมื่อ context ซ้ำ)</h3>
+    <pre><code class="language-python"># ใส่ cache_control ใน large system prompt (≥ 1024 tokens)
+# ครั้งแรก: เสีย token + cost · ครั้งที่ 2-4 ภายใน 5 นาที: cache hit → ลด 90%
+msg = client.messages.create(
+    model="claude-haiku-4-5-20251001",
+    max_tokens=500,
+    system=[
+        {
+            "type": "text",
+            "text": LONG_TEXTBOOK_CONTENT,  # ≥ 1024 tokens
+            "cache_control": {"type": "ephemeral"},
+        }
+    ],
+    messages=[{"role": "user", "content": "ในหนังสือ section 3 พูดถึงอะไร?"}],
+)</code></pre>
+
+    <div class="callout warn">
+      <strong>⚠️ Cost gotchas</strong>
+      <ul style="margin-top:8px">
+        <li><strong>Output token แพงกว่า input 3-5 เท่า</strong> — limit <code>max_tokens</code> ให้ตรง</li>
+        <li><strong>Streaming = cost เหมือนกัน</strong> — แค่ UX ดีขึ้น</li>
+        <li><strong>Function calling = หลาย round trips</strong> — คูณ cost</li>
+        <li><strong>ตั้ง budget alert</strong> ใน dashboard · ครั้งหนึ่งเขียน loop ผิด = bill 1000 บาทใน 10 นาที</li>
+      </ul>
+    </div>
+
+    <h3>🔄 OpenAI / Gemini — เหมือนกันมาก</h3>
+    <pre><code class="language-python"># OpenAI
+# pip install openai
+from openai import OpenAI
+client = OpenAI(api_key=OPENAI_KEY)
+resp = client.chat.completions.create(
+    model="gpt-4o-mini",
+    messages=[{"role": "user", "content": "Hello"}],
+)
+print(resp.choices[0].message.content)
+
+# Gemini
+# pip install google-generativeai
+import google.generativeai as genai
+genai.configure(api_key=GOOGLE_KEY)
+model = genai.GenerativeModel("gemini-2-flash")
+resp = model.generate_content("Hello")
+print(resp.text)</code></pre>
+
+    <h3>🏠 Local LLM (Ollama)</h3>
+    <pre><code class="language-python"># 1. install Ollama จาก ollama.com
+# 2. terminal: ollama pull llama3.2:3b
+# 3. python:
+import ollama
+resp = ollama.chat(
+    model="llama3.2:3b",
+    messages=[{"role": "user", "content": "Hello"}],
+)
+print(resp["message"]["content"])
+# ไม่ต้องมี internet · ไม่ต้องมี key · ฟรี · ช้ากว่า cloud</code></pre>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🤖 AI Agents + RAG — ยุค 2026 ของ LLM</h2>
+    <p>
+      LLM ธรรมดา = "ถามตอบครั้งเดียว" · <strong>Agent</strong> = LLM ที่ <em>ตัดสินใจเรียก tools ของเรา</em>
+      ทำงานหลาย step · <strong>RAG</strong> = LLM ที่ <em>"ค้นข้อมูลของเราก่อนตอบ"</em> · 2 pattern นี้คือ
+      "ยุคใหม่" ของ LLM
+    </p>
+
+    <h3>🔄 Pattern A: Agent Loop — LLM เรียก Tool · วน</h3>
+    <p>
+      จาก Pattern 6 (tool calling) ขั้นต่อไป — <strong>"loop"</strong> · LLM ขอเรียก tool · เรารัน · ผลกลับให้ LLM ·
+      LLM อาจขอเรียก tool อีก · จนได้คำตอบ
+    </p>
+
+    <pre><code class="language-python">import os, json
+from anthropic import Anthropic
+
+client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+# ─── 1. Tools ที่ AI ใช้ได้ ───
+def get_weather(city: str) -&gt; dict:
+    """Mock — ของจริงเรียก IQAir/OpenWeather"""
+    return {"city": city, "pm25": 75, "temp": 32}
+
+def book_lab(machine: str, time: str) -&gt; dict:
+    """Mock — ของจริงเขียน DB"""
+    return {"status": "ok", "booking_id": "B001", "machine": machine, "time": time}
+
+TOOLS_REGISTRY = {"get_weather": get_weather, "book_lab": book_lab}
+
+# ─── 2. Tool schema ที่บอก AI ───
+TOOLS = [
+    {
+        "name": "get_weather",
+        "description": "ดูข้อมูลอากาศของเมือง",
+        "input_schema": {"type": "object", "properties": {"city": {"type": "string"}}, "required": ["city"]},
+    },
+    {
+        "name": "book_lab",
+        "description": "จองเครื่องใน lab",
+        "input_schema": {
+            "type": "object",
+            "properties": {"machine": {"type": "string"}, "time": {"type": "string"}},
+            "required": ["machine", "time"],
+        },
+    },
+]
+
+# ─── 3. Agent loop ───
+def run_agent(user_query: str, max_iterations: int = 5) -&gt; str:
+    messages = [{"role": "user", "content": user_query}]
+
+    for i in range(max_iterations):
+        resp = client.messages.create(
+            model="claude-haiku-4-5-20251001",
+            max_tokens=1024,
+            tools=TOOLS,
+            messages=messages,
+        )
+
+        # ถ้า AI หยุดเอง (ตอบเสร็จ) → break
+        if resp.stop_reason == "end_turn":
+            return resp.content[0].text
+
+        # ถ้า AI ขอเรียก tool → รัน · ส่งผลกลับ
+        if resp.stop_reason == "tool_use":
+            messages.append({"role": "assistant", "content": resp.content})
+
+            tool_results = []
+            for block in resp.content:
+                if block.type == "tool_use":
+                    tool = TOOLS_REGISTRY[block.name]
+                    result = tool(**block.input)
+                    tool_results.append({
+                        "type": "tool_result",
+                        "tool_use_id": block.id,
+                        "content": json.dumps(result),
+                    })
+
+            messages.append({"role": "user", "content": tool_results})
+
+    return "❌ เกิน max iterations"
+
+
+# ─── 4. ใช้ ───
+answer = run_agent("PM2.5 ที่อุบลฯ ตอนนี้ · ถ้าอากาศดีให้จอง CNC-1 บ่าย 2")
+print(answer)
+# Agent จะ:
+# 1. เรียก get_weather("Ubon")
+# 2. ดู PM2.5 → ตัดสินใจว่า "ดี" หรือไม่
+# 3. ถ้าดี → เรียก book_lab("CNC-1", "14:00")
+# 4. สรุปให้ user เป็นภาษาคน</code></pre>
+
+    <div class="callout warn">
+      <strong>⚠️ Agent ระวัง 3 อย่าง</strong>
+      <ul style="margin-top:8px">
+        <li><strong>Infinite loop</strong> — ใส่ <code>max_iterations</code> เสมอ · ป้องกัน bill ช็อก</li>
+        <li><strong>Cost ขึ้นเร็ว</strong> — ทุก iteration = 1 LLM call · 5 iterations × Sonnet = $$$</li>
+        <li><strong>Tool security</strong> — AI เลือกเรียก tool อะไรก็ได้ · ห้ามให้ tool ลบ data/ส่งเงิน โดยไม่มี human approval</li>
+      </ul>
+    </div>
+
+    <h3>📚 Pattern B: RAG — Retrieval-Augmented Generation</h3>
+    <p>
+      LLM ไม่รู้เรื่อง <em>ในบ้านของคุณ</em> (เอกสารภาควิชา · spec product · chat history) ·
+      <strong>RAG</strong> = "ค้นข้อมูลของเราก่อน · แล้วให้ LLM ตอบโดยใช้ข้อมูลนั้น"
+    </p>
+
+    <div class="mermaid">flowchart LR
+    docs[("📚 docs<br/>(PDF, MD, web)")] --> embed1[Embed<br/>(text → vector)]
+    embed1 --> vdb[(🌸 Vector DB<br/>Chroma/Qdrant)]
+
+    user(["👤 user question"]) --> embed2[Embed]
+    embed2 --> search{Search<br/>nearest vectors}
+    vdb --> search
+    search --> chunks[Top-K chunks]
+    chunks --> llm[LLM<br/>+ context]
+    user --> llm
+    llm --> answer([Answer<br/>with citation])
+
+    classDef store fill:#3b2962,stroke:#8b5cf6,color:#fff
+    classDef embed fill:#1e3a5f,stroke:#3776ab,color:#fff
+    classDef ai fill:#5c2618,stroke:#ff7a18,color:#fff
+    class docs,vdb store
+    class embed1,embed2,search,chunks embed
+    class llm,answer ai</div>
+
+    <h3>🐾 RAG ใน Python (ขั้นต่ำ)</h3>
+    <pre><code class="language-python"># pip install chromadb anthropic sentence-transformers
+import chromadb
+from anthropic import Anthropic
+
+client = Anthropic()
+chroma = chromadb.Client()
+collection = chroma.create_collection("lab_docs")
+
+# ─── 1. Index (ทำครั้งเดียว) ───
+docs = [
+    "เครื่อง CNC-1 มี travel 800x500x400 mm · spindle 12000 rpm",
+    "เครื่อง CNC-2 มี travel 600x400x300 mm · spindle 8000 rpm",
+    "PLC FX5U รุ่นใหม่ใช้ GX Works3 · ไม่ใช่ Works2",
+    "Lab เปิด 9:00-17:00 จันทร์-ศุกร์ · ห้ามใช้ตอนกลางคืน",
+]
+
+collection.add(
+    documents=docs,
+    ids=[f"doc-{i}" for i in range(len(docs))],
+)  # Chroma จะ embed ให้อัตโนมัติ
+
+# ─── 2. Query (ทุกครั้งที่ user ถาม) ───
+def rag_answer(question: str) -&gt; str:
+    # 2a. หา chunks ที่เกี่ยวข้องที่สุด
+    results = collection.query(query_texts=[question], n_results=2)
+    context = "\n".join(results["documents"][0])
+
+    # 2b. ใส่ context ใน prompt
+    prompt = f"""ข้อมูลจาก lab:
+{context}
+
+คำถาม: {question}
+
+ตอบเฉพาะจากข้อมูลข้างบน · ถ้าไม่มีคำตอบให้บอกว่า "ไม่พบในเอกสาร" """
+
+    resp = client.messages.create(
+        model="claude-haiku-4-5-20251001",
+        max_tokens=500,
+        messages=[{"role": "user", "content": prompt}],
+    )
+    return resp.content[0].text
+
+
+# ─── 3. ใช้ ───
+print(rag_answer("CNC-1 spindle หมุนเร็วแค่ไหน?"))
+# → "12,000 rpm" — มาจาก doc 0
+
+print(rag_answer("Lab เปิดเสาร์อาทิตย์มั้ย?"))
+# → "ไม่เปิด · จันทร์-ศุกร์เท่านั้น" — มาจาก doc 3</code></pre>
+
+    <div class="callout tip">
+      <strong>📌 ทำไม RAG ดีกว่า "ใส่ทุกอย่างใน prompt"</strong>
+      <ul style="margin-top:8px">
+        <li><strong>Cost</strong> — ส่งเฉพาะ chunks ที่เกี่ยว · ไม่ใช่หนังสือทั้งเล่ม</li>
+        <li><strong>Accuracy</strong> — context ตรงประเด็น · hallucination ลดลง</li>
+        <li><strong>Update</strong> — เพิ่ม doc ใหม่ → reindex · ไม่ต้อง retrain LLM</li>
+        <li><strong>Citation</strong> — บอกได้ว่าคำตอบมาจาก doc ไหน</li>
+      </ul>
+    </div>
+
+    <h3>🌸 Vector DB ตัวเลือก</h3>
+    <table>
+      <thead><tr><th>Tool</th><th>ดี</th><th>เหมาะ</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Chroma</strong></td><td>ฟรี · ใน Python · เริ่มง่าย</td><td>prototype · &lt; 100K docs</td></tr>
+        <tr><td><strong>Qdrant</strong></td><td>ฟรี · Rust · เร็ว · self-host</td><td>production · open-source</td></tr>
+        <tr><td><strong>Pinecone</strong></td><td>managed · scale ใหญ่</td><td>production · มี budget</td></tr>
+        <tr><td><strong>pgvector</strong></td><td>extension ของ Postgres</td><td>ใช้ Postgres อยู่แล้ว</td></tr>
+        <tr><td><strong>Weaviate</strong></td><td>built-in modules</td><td>เน้น semantic search</td></tr>
+      </tbody>
+    </table>
+
+    <h3>🚀 Agent + RAG = AI App สมัยใหม่</h3>
+    <p>App แบบ Cursor, ChatGPT (ที่ search web ได้), Notion AI = <strong>Agent + RAG รวมกัน</strong></p>
+    <ul>
+      <li><strong>RAG</strong> ดึงข้อมูลในระบบของคุณ</li>
+      <li><strong>Agent</strong> เรียก tools ทำงาน · ค้น web · เขียน file · ส่ง email</li>
+      <li>รวมกัน = <em>"copilot ที่รู้เรื่องของคุณและทำงานให้คุณได้"</em></li>
+    </ul>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>☁️ Google Cloud APIs — Catalog สำหรับ Engineer</h2>
+    <p>
+      GCP มี API หลายร้อยตัว — ที่นี่คือตัว <strong>ที่นักศึกษาวิศวะใช้บ่อยที่สุด</strong> ·
+      ทุกตัวมี free tier · ใช้ Service Account auth · เปิดใน
+      <a href="https://console.cloud.google.com" target="_blank">console.cloud.google.com</a>
+    </p>
+
+    <table>
+      <thead><tr><th>API</th><th>ทำอะไร</th><th>Engineer ใช้ทำอะไร</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Vision API</strong></td><td>OCR · object detection · face detection</td><td>อ่าน label / nameplate จากรูปอุปกรณ์ · QA visual inspection · อ่านลายมือ lab note</td></tr>
+        <tr><td><strong>Translation API</strong></td><td>แปล 100+ ภาษา</td><td>แปล manual จาก JP/CN เป็นไทย · แปล error message · แปล spec ของ vendor</td></tr>
+        <tr><td><strong>Speech-to-Text</strong></td><td>เสียง → ข้อความ (Thai support ดี)</td><td>ถอด lecture · transcript meeting · voice command บนเครื่องมือ</td></tr>
+        <tr><td><strong>Text-to-Speech</strong></td><td>ข้อความ → เสียง</td><td>warning audio บนเครื่อง · accessibility</td></tr>
+        <tr><td><strong>Maps Platform</strong></td><td>map · directions · places · geocoding</td><td>routing สำหรับ delivery · location-based booking · indoor maps</td></tr>
+        <tr><td><strong>Sheets API</strong></td><td>read/write Google Sheets</td><td>ใช้ Sheets เป็น database ฟรี (W08)</td></tr>
+        <tr><td><strong>Drive API</strong></td><td>upload/download/share files</td><td>เก็บ lab report · เก็บ CSV จาก sensor</td></tr>
+        <tr><td><strong>Gmail API</strong></td><td>ส่ง email</td><td>auto-notify · weekly report</td></tr>
+        <tr><td><strong>Calendar API</strong></td><td>read/write events</td><td>auto-book lab · check availability</td></tr>
+        <tr><td><strong>Cloud Run</strong></td><td>host Python container</td><td>deploy Flask API (W14)</td></tr>
+        <tr><td><strong>Cloud Storage (GCS)</strong></td><td>เก็บไฟล์ขนาดใหญ่</td><td>image archive · sensor data backup</td></tr>
+        <tr><td><strong>BigQuery</strong></td><td>SQL บน data ใหญ่ (TB+)</td><td>analyze sensor data หลายปี · cross-machine analytics</td></tr>
+        <tr><td><strong>Pub/Sub</strong></td><td>message queue</td><td>IoT events · async job</td></tr>
+        <tr><td><strong>Vertex AI</strong></td><td>ML platform · host Gemini</td><td>ใช้ Gemini API · host custom ML model</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับ — เริ่มต้นด้วย Vision + Translation</strong>
+      สำหรับ Final Project ถ้าอยากใช้ AI กับรูป/ภาษา · 2 อันนี้ <em>"ทำงานได้ทันที"</em> ·
+      ไม่ต้องเรียน ML · มี free tier 1000 calls/month
+    </div>
+
+    <h3>ตัวอย่าง: ใช้ Vision API อ่าน serial number จากรูปเครื่อง</h3>
+    <pre><code class="language-python"># pip install google-cloud-vision
+from google.cloud import vision
+
+client = vision.ImageAnnotatorClient()  # ใช้ Service Account จาก GOOGLE_APPLICATION_CREDENTIALS
+
+with open("machine_photo.jpg", "rb") as f:
+    image = vision.Image(content=f.read())
+
+# OCR
+response = client.text_detection(image=image)
+for text in response.text_annotations[:5]:
+    print(text.description)
+# → "Mitsubishi FX5U" "Serial: 12345678" ...</code></pre>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>📊 Integration จริง — 3 ตัวอย่าง</h2>
+
+    <h3>1) Google Sheets เป็น "Database" ฟรี</h3>
+    <p>ใช้ <code>gspread</code> + Google Service Account · เซฟ/อ่านลง Sheet ได้เหมือน database</p>
+
+    <pre><code class="language-python">import gspread
+gc = gspread.service_account(filename="credentials.json")
+sh = gc.open("StudentBookings").sheet1
+
+# อ่าน
+rows = sh.get_all_records()         # list of dicts
+
+# เพิ่ม row
+sh.append_row(["2026-05-15", "Ploy", "CNC-1", "10:00"])</code></pre>
+
+    <h3>2) LINE Messaging API</h3>
+    <p>ส่งแจ้งเตือนเข้า LINE ได้ฟรี · เหมาะกับโปรเจกต์นักศึกษาที่อยาก "demo"</p>
+
+    <pre><code class="language-python">def line_push(text):
+    requests.post(
+        "https://api.line.me/v2/bot/message/push",
+        headers={"Authorization": f"Bearer {LINE_TOKEN}"},
+        json={"to": USER_ID, "messages": [{"type": "text", "text": text}]}
+    )
+
+# ตัวอย่างใช้งาน
+if pm25 &gt; 100:
+    line_push(f"⚠️ PM2.5 = {pm25} — สูงผิดปกติ")</code></pre>
+
+    <h3>3) Weather / Air Quality (IQAir, OpenWeatherMap)</h3>
+    <pre><code class="language-python">def get_air_quality(city, state, country):
+    r = requests.get(
+        "https://api.airvisual.com/v2/city",
+        params={"city": city, "state": state, "country": country, "key": IQAIR_KEY},
+        timeout=10,
+    )
+    r.raise_for_status()    # error ถ้า status &gt;= 400
+    return r.json()["data"]["current"]["pollution"]["aqius"]</code></pre>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🔒 Web Security — ก่อน Deploy ขึ้น Internet</h2>
+    <p>
+      เมื่อ app ของเรา <strong>"เปิดให้คนอื่นเรียก"</strong> = ตกเป้าของ attacker ทั่วโลก ·
+      bot scraper · script kiddie · script ทดลอง · พวกนี้ทดสอบ <em>"จุดอ่อนพื้นฐาน"</em> ก่อนเสมอ ·
+      ทุก app ต้องป้องกัน 4 อย่างขั้นต่ำ
+    </p>
+
+    <h3>🛡 1. SQL Injection — ทำไมเราใช้ <code>?</code> placeholder</h3>
+    <p>
+      ถ้าคุณ <strong>concat user input ใส่ SQL</strong> ตรง ๆ → attacker ใส่ SQL แทนข้อมูล → ลบ table หมด
+    </p>
+
+    <div class="diff-viewer" data-title="SQL Injection — Bad vs Good">
+      <div class="diff-before"># ❌ NEVER DO THIS — SQL injection vulnerability
+
+@app.route("/student/&lt;name&gt;")
+def get_student(name):
+    # ❌ concat = bug
+    sql = f"SELECT * FROM students WHERE name = '{name}'"
+    cur.execute(sql)
+    return cur.fetchall()
+
+
+# Attacker ใส่ใน URL:
+# /student/Ploy' OR '1'='1
+#
+# → SELECT * FROM students WHERE name = 'Ploy' OR '1'='1'
+# → คืน "ทุกคน" · leak ข้อมูล!
+#
+# /student/'; DROP TABLE students; --
+# → ลบ table หมด!</div>
+      <div class="diff-after"># ✅ ALWAYS — parameterized query
+
+@app.route("/student/&lt;name&gt;")
+def get_student(name):
+    # ✅ ? placeholder — DB driver escape ให้
+    cur.execute(
+        "SELECT * FROM students WHERE name = ?",
+        (name,)
+    )
+    return cur.fetchall()
+
+
+# Attacker ใส่:
+# /student/Ploy' OR '1'='1
+#
+# → SQL ถูก escape:
+#   WHERE name = 'Ploy'' OR ''1''=''1'
+# → คืน 0 row (ไม่มีคนชื่อนี้) — ปลอดภัย ✅</div>
+    </div>
+
+    <div class="callout warn">
+      <strong>กฎเหล็ก — ใช้ <code>?</code> placeholder เสมอ</strong>
+      <code>cur.execute(sql, params)</code> ✅ · ไม่ใช่ <code>cur.execute(f"... {x} ...")</code> ❌ ·
+      ORM (SQLAlchemy/Django) ก็ทำให้อัตโนมัติ
+    </div>
+
+    <h3>🛡 2. XSS (Cross-Site Scripting) — Escape User Output</h3>
+    <p>
+      ถ้าคุณแสดง user input ใน HTML ตรง ๆ → attacker ใส่ <code>&lt;script&gt;</code> → รัน JS ในเครื่อง user คนอื่น
+    </p>
+
+    <pre><code class="language-python"># ❌ Unsafe — echo input ดิบ
+@app.route("/search")
+def search():
+    q = request.args.get("q")
+    return f"&lt;h1&gt;ผลค้น: {q}&lt;/h1&gt;"
+
+# Attacker เปิด:
+# /search?q=&lt;script&gt;steal_cookie()&lt;/script&gt;
+# → JS รันในทุก browser ที่เปิด link นี้!
+
+
+# ✅ Safe — ใช้ template engine
+from flask import render_template_string
+
+@app.route("/search")
+def search():
+    q = request.args.get("q")
+    # Jinja2 auto-escape &lt; &gt; &amp; ' "
+    return render_template_string("&lt;h1&gt;ผลค้น: {{ q }}&lt;/h1&gt;", q=q)
+
+# ✅ หรือ manual escape
+from markupsafe import escape
+return f"&lt;h1&gt;ผลค้น: {escape(q)}&lt;/h1&gt;"</code></pre>
+
+    <h3>🛡 3. Password Hashing — ห้ามเก็บ Plaintext</h3>
+    <p>
+      ถ้า DB หลุด · ผู้โจมตีเห็น password ของทุก user → ใช้กับ Facebook/email/bank ของ user ทันที ·
+      ใช้ <strong>bcrypt</strong> เสมอ
+    </p>
+
+    <div class="python-runner" data-packages="bcrypt"># pip install bcrypt
+import bcrypt
+
+# ─── Register (เก็บ user) ───
+def hash_password(password: str) -&gt; bytes:
+    """Hash password — เก็บใน DB"""
+    salt = bcrypt.gensalt()
+    return bcrypt.hashpw(password.encode(), salt)
+
+
+# ─── Login (ตรวจ password) ───
+def verify_password(password: str, hashed: bytes) -&gt; bool:
+    return bcrypt.checkpw(password.encode(), hashed)
+
+
+# ─── ทดสอบ ───
+user_password = "my_secret_pw_123"
+
+# ตอน register
+stored_hash = hash_password(user_password)
+print(f"Stored in DB: {stored_hash}")
+print(f"  type: {type(stored_hash).__name__}, length: {len(stored_hash)}")
+
+# ตอน login — ลองหลายแบบ
+print(f"\nถูก: {verify_password('my_secret_pw_123', stored_hash)}")
+print(f"ผิด: {verify_password('wrong_password',   stored_hash)}")
+print(f"ผิด: {verify_password('my_secret_pw_124', stored_hash)}")
+
+# 💡 สังเกต: ทุกครั้งที่ hash จะได้ output ต่างกัน · เพราะ salt random
+print(f"\nhash อีกครั้ง: {hash_password(user_password)}")
+print(f"hash อีกครั้ง: {hash_password(user_password)}")
+# → ต่างกัน · แต่ verify ทั้งคู่ได้ ✅</div>
+
+    <div class="callout warn">
+      <strong>⚠️ ห้ามใช้ MD5 / SHA-256 ตรง ๆ สำหรับ password</strong>
+      MD5/SHA = fast hash · attacker GPU crack ได้ใน 1 วัน · ใช้ <code>bcrypt</code> (slow by design) ·
+      Argon2 ยิ่งดี · libraries: <code>bcrypt</code>, <code>passlib</code>, <code>argon2-cffi</code>
+    </div>
+
+    <h3>🛡 4. CSRF (Cross-Site Request Forgery)</h3>
+    <p>
+      Attacker หลอก user login อยู่ → click link ที่ส่ง form ไปยัง app เรา → ทำ action ในนาม user (โอนเงิน, ลบ data)
+    </p>
+
+    <pre><code class="language-python"># pip install flask-wtf
+from flask_wtf.csrf import CSRFProtect
+
+app = Flask(__name__)
+app.config["SECRET_KEY"] = os.getenv("SECRET_KEY")  # random ใน .env
+csrf = CSRFProtect(app)
+
+# ตอนนี้ทุก POST/PUT/DELETE form ต้องมี CSRF token
+# &lt;form method="post"&gt;
+#   {{ csrf_token() }}    ← inject token
+#   ...
+# &lt;/form&gt;
+# → Flask-WTF ตรวจ token ทุกครั้ง · ปลอม token ไม่ได้</code></pre>
+
+    <h3>🛡 5. Bonus — Headers ที่ต้องเปิด</h3>
+
+    <pre><code class="language-python">from flask_talisman import Talisman
+
+app = Flask(__name__)
+Talisman(app)   # auto-set security headers
+
+# Headers ที่ Talisman ตั้งให้:
+# - Strict-Transport-Security  → บังคับ HTTPS
+# - X-Content-Type-Options     → no MIME sniffing
+# - X-Frame-Options            → ป้องกัน clickjacking
+# - Content-Security-Policy    → จำกัด script source</code></pre>
+
+    <h3>📋 Security Checklist ก่อน Deploy</h3>
+    <ul>
+      <li>☐ ใช้ <code>?</code> placeholder ใน SQL ทุกที่ · ไม่มี f-string ใน SQL</li>
+      <li>☐ Template engine auto-escape ใน HTML output</li>
+      <li>☐ Password ทุกตัว hash ด้วย bcrypt</li>
+      <li>☐ <code>.env</code> ใน <code>.gitignore</code> · API key/secret ไม่ commit</li>
+      <li>☐ HTTPS เปิด (Cloud Run/Render auto · Streamlit auto)</li>
+      <li>☐ CSRF protection ใน Flask form (Flask-WTF)</li>
+      <li>☐ Rate limit ทุก endpoint public (<code>flask-limiter</code>)</li>
+      <li>☐ Validate input ที่ boundary ทุกครั้ง (Pydantic / WTForms)</li>
+      <li>☐ Dependency audit — <code>pip-audit</code> ก่อน deploy</li>
+      <li>☐ Sentry/log ทุก error · debug=False ใน production</li>
+    </ul>
+
+    <div class="callout info">
+      <strong>📌 Year 1 ทำไหวกี่ข้อ?</strong>
+      ขั้นต่ำ 5 ข้อแรก = ป้องกัน 95% ของ attack ที่นักศึกษาจะเจอ · 5 ข้อหลังเป็น "production-grade" ·
+      เรียนเพิ่มเมื่อ deploy public จริง
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🌐 สร้าง API ของตัวเอง — Flask</h2>
+
+    <p>ติดตั้ง: <code>pip install flask</code></p>
+
+    <pre><code class="language-python"># app.py
+from flask import Flask, request, jsonify
+
+app = Flask(__name__)
+
+# in-memory store (เปลี่ยนเป็น SQLite/Postgres ใน production)
+students = []
+next_id = 1
+
+
+@app.route("/students", methods=["GET"])
+def list_students():
+    return jsonify(students)
+
+
+@app.route("/students", methods=["POST"])
+def add_student():
+    global next_id
+    data = request.json
+    if "name" not in data:
+        return jsonify({"error": "missing name"}), 400
+
+    new_student = {
+        "id": next_id,
+        "name": data["name"],
+        "year": data.get("year", 1),
+    }
+    students.append(new_student)
+    next_id += 1
+    return jsonify(new_student), 201
+
+
+@app.route("/students/&lt;int:sid&gt;", methods=["DELETE"])
+def delete_student(sid):
+    global students
+    before = len(students)
+    students = [s for s in students if s["id"] != sid]
+    if len(students) == before:
+        return jsonify({"error": "not found"}), 404
+    return jsonify({"deleted": sid})
+
+
+if __name__ == "__main__":
+    app.run(debug=True, port=5000)</code></pre>
+
+    <p>รัน: <code>python app.py</code> · เปิด browser ไป <code>http://localhost:5000/students</code> หรือใช้ <code>curl</code>:</p>
+    <pre><code>curl -X POST http://localhost:5000/students \
+  -H "Content-Type: application/json" \
+  -d '{"name": "Ploy", "year": 1}'
+
+curl http://localhost:5000/students</code></pre>
+
+    <div class="callout info">
+      <strong>Streamlit เป็นทางเลือกที่ "ง่ายกว่า"</strong>
+      ถ้าอยากแค่ทำ UI สำหรับ data analysis → Streamlit (W14 จะลงลึก) · ถ้าอยากให้ระบบอื่นเรียก → Flask
+    </div>
+
+    <h2>🐘 PostgreSQL — เมื่อ SQLite ไม่พอ</h2>
+
+    <h3>เมื่อไหร่ต้องเปลี่ยนจาก SQLite</h3>
+    <ul>
+      <li>มี user หลายคนเขียนพร้อมกัน — SQLite ล็อกทั้ง file ตอนเขียน</li>
+      <li>มี deployment ที่ <em>scale</em> — Cloud Run multiple instances ใช้ SQLite ไม่ได้</li>
+      <li>ข้อมูลเกิน 1-10 GB</li>
+      <li>ต้องการ network access (app บนเครื่องหนึ่ง · db บนอีกเครื่อง)</li>
+    </ul>
+
+    <h3>ติดตั้ง PostgreSQL ใน Docker (ง่ายที่สุด)</h3>
+    <pre><code>docker run --name pg -e POSTGRES_PASSWORD=mysecret -p 5432:5432 -d postgres:16</code></pre>
+
+    <h3>เชื่อมจาก Python — <code>psycopg2</code> หรือ <code>SQLAlchemy</code></h3>
+    <pre><code class="language-python">import psycopg2
+
+conn = psycopg2.connect(
+    host="localhost",
+    port=5432,
+    database="mydb",
+    user="postgres",
+    password=os.getenv("PG_PASSWORD"),
+)
+cur = conn.cursor()
+
+cur.execute("SELECT * FROM students WHERE year = %s", (1,))
+for row in cur.fetchall():
+    print(row)
+
+conn.close()</code></pre>
+
+    <p>หรือใช้ <code>SQLAlchemy</code> (ORM) — เขียน Python class แทน SQL · จะลึกใน W14</p>
+
+    <h3>SQLite → PostgreSQL ใช้ pandas ก็ได้</h3>
+    <pre><code class="language-python">import pandas as pd
+from sqlalchemy import create_engine
+
+# อ่านจาก SQLite
+src = create_engine("sqlite:///students.db")
+df = pd.read_sql("SELECT * FROM students", src)
+
+# เขียนไป Postgres
+dst = create_engine("postgresql://postgres:mysecret@localhost:5432/mydb")
+df.to_sql("students", dst, if_exists="replace", index=False)</code></pre>
+
+    <h2>🔁 Webhook vs Polling</h2>
+
+    <p>2 แบบของการ "ฟังเหตุการณ์จากภายนอก":</p>
+
+    <table>
+      <thead><tr><th></th><th>Polling</th><th>Webhook</th></tr></thead>
+      <tbody>
+        <tr><td>วิธี</td><td>เคาะถามทุก X วินาที</td><td>external ส่งมาเมื่อมี event</td></tr>
+        <tr><td>เร็ว</td><td>ช้า (delay = interval)</td><td>real-time</td></tr>
+        <tr><td>เปลือง</td><td>เปลือง resource (เคาะแม้ไม่มีอะไร)</td><td>ประหยัด</td></tr>
+        <tr><td>ทำง่าย</td><td>ง่าย (loop)</td><td>ต้องมี public URL</td></tr>
+        <tr><td>ตัวอย่าง</td><td>ดึง weather ทุก 5 นาที</td><td>LINE Webhook (user ส่งมา → server ได้ทันที)</td></tr>
+      </tbody>
+    </table>
+
+    <h2>🧪 Workshop — สร้าง "Smart Lab Monitor + AI Summarizer"</h2>
+
+    <p>Tool ที่ใช้ <strong>3 ประเภท API</strong> + LLM:</p>
+    <ul>
+      <li>📡 <strong>GET external API</strong>: ดึงค่า PM2.5 + อุณหภูมิจาก IQAir ทุก 30 นาที</li>
+      <li>💾 เซฟลง SQLite</li>
+      <li>📨 <strong>POST external API</strong>: ถ้า PM2.5 &gt; 100 → ส่ง LINE แจ้งเตือน</li>
+      <li>🤖 <strong>LLM API</strong>: ทุกคืน 22:00 — ขอ Claude สรุปข้อมูล 24 ชม. + แนะนำ</li>
+      <li>🌐 <strong>Make your own API</strong>: Flask endpoint <code>/status</code> + <code>/summary</code></li>
+    </ul>
+
+    <div class="mermaid">flowchart LR
+    iqair[/IQAir API/] -->|GET พ.5/30 นาที| poller[poller.py<br/>cron loop]
+    poller --> db[(SQLite<br/>history)]
+    poller -->|ถ้า PM &gt; 100| line[/LINE API/]
+    db -->|ดึงล่าสุด| flask[Flask app<br/>/status, /summary]
+    db -->|รวม 24 ชม.| claude[/Claude API<br/>Anthropic/]
+    claude -->|สรุป + แนะนำ| flask
+    user(["👤 user"]) -->|browser| flask
+
+    classDef external fill:#3b2962,stroke:#8b5cf6,color:#fff
+    classDef internal fill:#1e3a5f,stroke:#3776ab,color:#fff
+    classDef db fill:#3d2c1a,stroke:#ffd43b,color:#fff
+    class iqair,line,claude external
+    class poller,flask internal
+    class db db</div>
+
+    <ol class="steps">
+      <li>
+        <strong>สมัคร 3 บริการ + เก็บ key ใน <code>.env</code></strong>
+        — IQAir · LINE Messaging · Anthropic Claude · gitignore .env เสมอ
+      </li>
+      <li>
+        <strong>เขียน <code>fetch_aqi(city)</code></strong>
+        — GET IQAir · timeout=10 · raise_for_status · คืน dict
+      </li>
+      <li>
+        <strong>SQLite schema + <code>save_reading(data)</code></strong>
+        — table reading(ts, aqi, temp, humidity)
+      </li>
+      <li>
+        <strong><code>line_alert(text)</code></strong>
+        — POST LINE Messaging API
+      </li>
+      <li>
+        <strong>เขียน <code>poller.py</code></strong>
+        — loop: fetch → save → if &gt; 100 alert · sleep 1800
+      </li>
+      <li>
+        <strong>🤖 เขียน <code>summarize_today()</code></strong>
+        — query 24 ชม. ล่าสุด → ส่งให้ Claude พร้อม prompt:
+        <em>"สรุป PM2.5 24 ชม. + แนะนำ ภาษาไทย กระชับ"</em> · cache 1 ชั่วโมง
+      </li>
+      <li>
+        <strong>🌐 Flask app</strong>
+        — <code>/status</code> = JSON ล่าสุด · <code>/summary</code> = AI summary ของวันนี้
+      </li>
+      <li>
+        <strong><code>requirements.txt</code> + <code>.env.example</code> + README</strong>
+        — sequence diagram (W03) อธิบาย flow
+      </li>
+      <li>
+        <strong>commit + push GitHub</strong>
+        — ห้าม commit <code>.env</code>
+      </li>
+    </ol>
+
+    <div class="callout tip">
+      <strong>💸 ระวัง LLM cost — ใช้ Haiku + cache</strong>
+      ใช้ <code>claude-haiku-4-5-20251001</code> ($0.25/M input) · เรียก /summary แค่ 1-2 ครั้ง/วัน
+      · cache ผลลัพธ์ใน SQLite · cost &lt; $0.01/เดือน
+    </div>
+
+    <h2>💡 ข้อควรระวังกับ API</h2>
+
+    <div class="callout warn">
+      <strong>ไม่ใส่ timeout — โปรแกรมแฮงค์</strong>
+      ถ้า API ค้าง ไม่มี <code>timeout=</code> = แฮงค์ตลอดไป · ใส่ <code>timeout=10</code> ทุกครั้ง
+    </div>
+
+    <div class="callout warn">
+      <strong>ไม่ handle error — crash</strong>
+      API down ได้ตลอด · ครอบด้วย try/except + retry logic
+    </div>
+
+    <div class="callout warn">
+      <strong>เกิน rate limit (429)</strong>
+      ส่วนใหญ่ free tier จำกัด 100-1000 request/วัน · เก็บ cache, ไม่เรียกถี่
+    </div>
+
+    <div class="callout warn">
+      <strong>Commit .env</strong>
+      — ครั้งหนึ่งใน git history = ตลอดกาล · ต้อง rotate key ทันที + ใช้ <code>git-secrets</code> ป้องกัน
+    </div>
+
+    <h2>ส่งงานสัปดาห์นี้</h2>
+    <ul>
+      <li>📁 GitHub repo "Smart Lab Monitor" ครบทั้ง poller + Flask + Claude</li>
+      <li>📷 screenshot LINE แจ้งเตือน + Flask <code>/status</code> JSON + <code>/summary</code> ภาษาไทย</li>
+      <li>📊 Sequence diagram ใน README (ดูตัวอย่างด้านบน)</li>
+      <li>📝 <code>.env.example</code> + <code>requirements.txt</code> + README วิธีติดตั้ง</li>
+      <li>💰 Screenshot Anthropic dashboard แสดง cost &lt; $1 (พิสูจน์ใช้ Haiku + cache ถูก)</li>
+    </ul>
+
+    <h3>Reference จาก slide เดิม</h3>
+    <p>เนื้อหานี้ <em>ไม่อยู่ใน</em> slide เดิม — เป็น Mainidea Foundation 17 (Industrial Communication) + 13 (System Composition) ที่ขยายเข้าสู่งานจริง</p>
+
+    <div class="pager">
+      <a href="w11-oop-structure.html"><div class="label">← สัปดาห์ที่แล้ว</div><div class="title">W11 — OOP + จัดระเบียบโค้ด</div></a>
+      <a href="w13-debug-test.html" class="next"><div class="label">สัปดาห์ถัดไป →</div><div class="title">W13 — Debug + Test + Reality</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+<script src="js/diagram-tools/mermaid-editor.js" defer></script>
+<script src="js/code-tools/python-runner.js" defer></script>
+<script src="js/code-tools/predict-quiz.js" defer></script>
+<script src="js/code-tools/diff-viewer.js" defer></script>
+</body>
+</html>

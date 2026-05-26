@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>เครื่องมือฝึก Code | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html" class="active"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">เครื่องมือ · Built-in Code Tools</span>
+    <h1>เครื่องมือฝึก Code</h1>
+    <p class="lede">
+      4 เครื่องมือที่ทำให้นักศึกษา <strong>"อ่านโค้ดเป็น · แก้ได้ · พิสูจน์ความเข้าใจได้"</strong>
+      — ทั้งหมดรันใน browser ไม่ต้องลง Python · เหมาะกับการเรียน W04–W07
+    </p>
+
+    <h2>🧰 5 เครื่องมือในหน้านี้</h2>
+
+    <div class="tools-grid">
+      <a href="#python-runner" class="tool-card">
+        <div class="tool-card-emoji">🐍</div>
+        <div class="tool-card-name">Python Runner</div>
+        <div class="tool-card-desc">รัน Python ใน browser (Pyodide) — แก้ + คลิก Run + เห็น output ทันที · ไม่ต้องลง Python</div>
+      </a>
+      <a href="#code-trace" class="tool-card">
+        <div class="tool-card-emoji">🔎</div>
+        <div class="tool-card-name">Code Trace Visualizer</div>
+        <div class="tool-card-desc">เดิน code ทีละบรรทัด · เห็นว่าตัวแปรเปลี่ยนยังไง · output เพิ่มยังไง</div>
+      </a>
+      <a href="#diff-viewer" class="tool-card">
+        <div class="tool-card-emoji">📋</div>
+        <div class="tool-card-name">Diff Viewer</div>
+        <div class="tool-card-desc">ดู code "before/after" คู่กัน · บรรทัดที่เปลี่ยน highlight สีแดง/เขียว</div>
+      </a>
+      <a href="#predict-quiz" class="tool-card">
+        <div class="tool-card-emoji">🎲</div>
+        <div class="tool-card-name">Predict-the-Output Quiz</div>
+        <div class="tool-card-desc">เห็น code · ทาย output · ตรวจคำตอบ · ดูเฉลย + คำอธิบาย</div>
+      </a>
+      <a href="#spec-scorecard" class="tool-card">
+        <div class="tool-card-emoji">📝</div>
+        <div class="tool-card-name">Spec Quality Scorecard</div>
+        <div class="tool-card-desc">วาง spec → ระบบเช็ค 8 criteria + ภาษากำกวม · บอกขาดอะไร · ใช้ก่อนสั่ง AI</div>
+      </a>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:48px 0">
+
+    <!-- ============================================ -->
+    <!-- TOOL 1: Python Runner -->
+    <!-- ============================================ -->
+    <h2 id="python-runner">🐍 Tool 1 — Python Runner</h2>
+    <p>
+      รัน Python ใน browser ของคุณเอง — ไม่ต้องลง · ไม่ต้องเปิด Cursor · ครั้งแรกใช้เวลา
+      ~30 วินาทีโหลด <strong>Pyodide</strong> (~10MB) ครั้งต่อไป cache ไว้แล้ว
+    </p>
+
+    <div class="callout info">
+      <strong>วิธีใช้</strong>
+      <ol style="margin-top:8px">
+        <li>แก้ code ทางซ้าย</li>
+        <li>ถ้ามี <code>input()</code> ใส่คำตอบใน "Input" (1 บรรทัดต่อ 1 input)</li>
+        <li>กด ▶️ Run (หรือ <kbd>Ctrl/Cmd + Enter</kbd>)</li>
+        <li>ดูผลในกล่อง Output</li>
+        <li>กด ↺ Reset เพื่อคืน code เดิม</li>
+      </ol>
+    </div>
+
+    <div class="python-runner" data-inputs="78&#10;72&#10;91">name = input("ชื่อ: ")
+hw = int(input("คะแนน homework (0-30): "))
+mid = int(input("คะแนน midterm (0-30): "))
+final = int(input("คะแนน final (0-40): "))
+
+total = hw + mid + final
+if total &gt;= 80:
+    grade = "A"
+elif total &gt;= 70:
+    grade = "B"
+elif total &gt;= 60:
+    grade = "C"
+else:
+    grade = "F"
+
+print(f"คะแนนรวม: {total} / 100")
+print(f"เกรด: {grade}")</div>
+
+    <p style="color:var(--text-muted);font-size:13.5px">
+      💡 ลองเปลี่ยนค่า input เป็น <code>85 / 75 / 95</code> แล้ว Run ดูผล
+    </p>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:48px 0">
+
+    <!-- ============================================ -->
+    <!-- TOOL 2: Code Trace Visualizer -->
+    <!-- ============================================ -->
+    <h2 id="code-trace">🔎 Tool 2 — Code Trace Visualizer</h2>
+    <p>
+      Code Trace ช่วยให้คุณ <em>"เห็นใน head ของ Python"</em> ตอนที่มันรัน — ตัวแปรไหนมีค่าอะไร
+      เมื่อไหร่ · ลูป iterate เป็นรอบ ๆ ยังไง · นี่คือ skill <strong>"คิดเหมือน Python"</strong>
+    </p>
+
+    <h3>ตัวอย่าง: นับเกรดของห้องเรียน</h3>
+
+    <script>
+      window.TRACES = window.TRACES || {};
+      window.TRACES['count-grades'] = {
+        title: 'นับเกรด A/B/C ของห้องเรียน',
+        desc: 'วน list ของคะแนน · นับว่ามีแต่ละเกรดกี่คน',
+        code: [
+          'scores = [85, 72, 60, 45]',
+          'count = {"A": 0, "B": 0, "C": 0, "F": 0}',
+          'for s in scores:',
+          '    if s >= 80:',
+          '        count["A"] += 1',
+          '    elif s >= 70:',
+          '        count["B"] += 1',
+          '    elif s >= 60:',
+          '        count["C"] += 1',
+          '    else:',
+          '        count["F"] += 1',
+          'print(count)'
+        ],
+        steps: [
+          { line: 0, vars: { scores: [85, 72, 60, 45] } },
+          { line: 1, vars: { count: { A: 0, B: 0, C: 0, F: 0 } } },
+          { line: 2, vars: { s: 85 } },
+          { line: 3 },
+          { line: 4, vars: { count: { A: 1, B: 0, C: 0, F: 0 } } },
+          { line: 2, vars: { s: 72 } },
+          { line: 5 },
+          { line: 6, vars: { count: { A: 1, B: 1, C: 0, F: 0 } } },
+          { line: 2, vars: { s: 60 } },
+          { line: 7 },
+          { line: 8, vars: { count: { A: 1, B: 1, C: 1, F: 0 } } },
+          { line: 2, vars: { s: 45 } },
+          { line: 9 },
+          { line: 10, vars: { count: { A: 1, B: 1, C: 1, F: 1 } } },
+          { line: 11, output: "{'A': 1, 'B': 1, 'C': 1, 'F': 1}\n" }
+        ]
+      };
+    </script>
+
+    <div class="code-trace" data-trace-id="count-grades"></div>
+
+    <p style="color:var(--text-muted);font-size:13.5px;text-align:center">
+      💡 คลิก <em>ถัดไป</em> ทีละขั้น · หรือ <em>Auto Play</em> ให้รันเอง · สังเกตว่า <code>s</code> และ <code>count</code> เปลี่ยนยังไง
+    </p>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:48px 0">
+
+    <!-- ============================================ -->
+    <!-- TOOL 3: Diff Viewer -->
+    <!-- ============================================ -->
+    <h2 id="diff-viewer">📋 Tool 3 — Diff Viewer</h2>
+    <p>
+      เมื่อ AI <em>"แก้โค้ดให้"</em> คุณต้องเช็คว่า <strong>"มันแก้ตรงไหนบ้าง"</strong>
+      · Diff Viewer แสดง before/after คู่กัน · บรรทัดที่ <em>เพิ่ม</em> = เขียว · บรรทัดที่ <em>ลบ</em> = แดง
+    </p>
+
+    <div class="diff-viewer" data-title="เพิ่ม case 'I' สำหรับคะแนนติดลบ">
+      <div class="diff-before">def calc_grade(score):
+    if score &gt;= 80:
+        return "A"
+    elif score &gt;= 70:
+        return "B"
+    elif score &gt;= 60:
+        return "C"
+    else:
+        return "F"</div>
+      <div class="diff-after">def calc_grade(score):
+    if score &lt; 0:
+        return "I"
+    elif score &gt;= 80:
+        return "A"
+    elif score &gt;= 70:
+        return "B"
+    elif score &gt;= 60:
+        return "C"
+    else:
+        return "F"</div>
+    </div>
+
+    <p style="color:var(--text-muted);font-size:13.5px">
+      💡 สังเกตว่า <code>if</code> ตัวแรกกลายเป็น <code>elif</code> · นี่คือการเปลี่ยนที่ <em>ละเอียด</em> ที่ AI ทำให้
+      โดยอัตโนมัติ · ถ้าไม่ใช้ Diff Viewer คุณจะ <em>"ไม่รู้ว่ามันเปลี่ยน"</em>
+    </p>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:48px 0">
+
+    <!-- ============================================ -->
+    <!-- TOOL 4: Predict the Output -->
+    <!-- ============================================ -->
+    <h2 id="predict-quiz">🎲 Tool 4 — Predict-the-Output Quiz</h2>
+    <p>
+      วิธีทดสอบว่า <em>"อ่าน code ออกจริง ๆ"</em> คือ — <strong>ปิด output ก่อน อ่านเอง แล้วทาย</strong>
+      ก่อน Run · ถ้าทายถูกบ่อย ๆ = สมองคุณ run Python ได้แล้ว
+    </p>
+
+    <div class="predict-quiz" data-question="โปรแกรมนี้พิมพ์อะไร?">
+      <pre class="pq-code">x = 5
+y = 3
+total = x + y
+print(f"{x} + {y} = {total}")
+print(total * 2)</pre>
+      <pre class="pq-answer">5 + 3 = 8
+16</pre>
+      <div class="pq-explain">
+        บรรทัด 4: f-string แทรกค่า <code>x=5</code>, <code>y=3</code>, <code>total=8</code> → <code>"5 + 3 = 8"</code><br>
+        บรรทัด 5: <code>total * 2</code> = <code>8 * 2</code> = <code>16</code>
+      </div>
+    </div>
+
+    <div class="predict-quiz" data-question="โปรแกรมนี้พิมพ์อะไร?">
+      <pre class="pq-code">scores = [60, 75, 90]
+passed = 0
+for s in scores:
+    if s &gt;= 70:
+        passed += 1
+print(f"ผ่าน {passed} จาก {len(scores)}")</pre>
+      <pre class="pq-answer">ผ่าน 2 จาก 3</pre>
+      <div class="pq-explain">
+        วน 3 รอบ: 60 (ไม่ผ่าน), 75 (ผ่าน → passed=1), 90 (ผ่าน → passed=2) ·
+        <code>len(scores)</code> = 3
+      </div>
+    </div>
+
+    <div class="predict-quiz" data-question="โปรแกรมนี้พิมพ์อะไร? (ระวัง type!)">
+      <pre class="pq-code">a = "5"
+b = 3
+print(a * b)</pre>
+      <pre class="pq-answer">555</pre>
+      <div class="pq-explain">
+        <code>a</code> เป็น <strong>string</strong> "5" · <code>"5" * 3</code> ใน Python =
+        ทำ string ซ้ำ 3 ครั้ง → <code>"555"</code> · ถ้าจะให้คูณเลข ต้องใช้ <code>int(a) * b</code>
+      </div>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:48px 0">
+
+    <!-- ============================================ -->
+    <!-- TOOL 5: Spec Quality Scorecard -->
+    <!-- ============================================ -->
+    <h2 id="spec-scorecard">📝 Tool 5 — Spec Quality Scorecard</h2>
+    <p>
+      <strong>ก่อน</strong>สั่ง AI ให้เขียน code — ต้องเขียน <em>spec</em> ที่ดี ·
+      Scorecard ตรวจ spec ของคุณตาม <strong>8 criteria</strong> + แจ้งภาษากำกวม ·
+      ทำให้รู้ว่า <em>"ขาดอะไรก่อนคุยกับ AI"</em>
+    </p>
+
+    <div class="callout info">
+      <strong>วิธีใช้</strong>
+      <ol style="margin-top:8px">
+        <li>วาง spec ของคุณ (Markdown หรือ plain text ก็ได้)</li>
+        <li>หรือกด <em>"ลอง spec ตัวอย่าง"</em> เพื่อดูว่า spec ที่ดีหน้าตายังไง</li>
+        <li>กด <em>"ตรวจ"</em> → ดูผล 8 criteria + คำเตือนภาษากำกวม</li>
+        <li>แก้ส่วนที่ ❌ → ตรวจอีก จน ≥ 75%</li>
+      </ol>
+    </div>
+
+    <div class="spec-scorecard"></div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:48px 0">
+
+    <h2>💡 ใช้ Code Tools ร่วมกัน — Workflow แนะนำ</h2>
+
+    <ol class="steps">
+      <li><strong>เขียน spec → ตรวจกับ Spec Scorecard</strong> — รู้ว่าขาดอะไรก่อนสั่ง AI</li>
+      <li><strong>สั่ง AI เขียน code · เอา code มา Predict Quiz</strong> — ทาย output ก่อน ลับสมอง</li>
+      <li><strong>ผิด? → ใช้ Code Trace</strong> เดิน code ทีละขั้น เห็นว่าทำไม</li>
+      <li><strong>เข้าใจแล้ว → แก้ใน Python Runner</strong> ลองเปลี่ยน ดูผล</li>
+      <li><strong>AI แก้ให้? → เอามาดูใน Diff Viewer</strong> เช็คว่าแก้ตรงไหน</li>
+      <li><strong>ส่งงาน — copy code ใส่ Cursor / ลงในไฟล์ <code>.py</code> ของจริง</strong></li>
+    </ol>
+
+    <div class="callout tip">
+      <strong>หมายเหตุ — Code Tools เป็น "สนามฝึก" ไม่ใช่ "เครื่องมือทำงานจริง"</strong>
+      สำหรับ project จริง ใช้ Cursor / VS Code · Python Runner ที่นี่ดีสำหรับ <em>"เรียน + ทดสอบสั้น ๆ"</em>
+      แต่ไม่สามารถ install package ใหม่ / เข้าถึง filesystem / ใช้ git ได้
+    </div>
+
+    <div class="pager">
+      <a href="tools.html">
+        <div class="label">← Diagram Tools</div>
+        <div class="title">🎨 สร้าง Diagram</div>
+      </a>
+      <a href="w04-read-ai-code.html" class="next">
+        <div class="label">เรียนต่อ →</div>
+        <div class="title">W04 — อ่านโค้ดที่ AI เขียน</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+<script src="js/code-tools/python-runner.js" defer></script>
+<script src="js/code-tools/code-trace.js" defer></script>
+<script src="js/code-tools/diff-viewer.js" defer></script>
+<script src="js/code-tools/predict-quiz.js" defer></script>
+<script src="js/code-tools/spec-scorecard.js" defer></script>
+</body>
+</html>

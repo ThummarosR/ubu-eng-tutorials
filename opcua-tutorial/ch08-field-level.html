@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>08 — OPC UA FX (Field Level) | OPC UA Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="OPC UA Tutorial"></div>
+      <div>
+        <div class="title">OPC UA</div>
+        <div class="subtitle">สะพานสู่ Industrie 4.0</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>แนวคิดหลัก</h4>
+      <a href="ch01-why-opcua.html"><span class="num">01</span> ทำไมต้อง OPC UA?</a>
+      <a href="ch02-architecture.html"><span class="num">02</span> สถาปัตยกรรมพื้นฐาน</a>
+      <a href="ch03-information-model.html"><span class="num">03</span> Information Model</a>
+      <a href="ch04-services.html"><span class="num">04</span> Services</a>
+      <a href="ch05-pubsub.html"><span class="num">05</span> PubSub &amp; MQTT</a>
+      <a href="ch06-security.html"><span class="num">06</span> Security</a>
+
+      <h4>ระบบนิเวศ</h4>
+      <a href="ch07-companion-specs.html"><span class="num">07</span> Companion Specifications</a>
+      <a href="ch08-field-level.html" class="active"><span class="num">08</span> OPC UA FX (Field Level)</a>
+      <a href="ch09-cloud.html"><span class="num">09</span> Cloud Integration</a>
+
+      <h4>ลงมือทำ</h4>
+      <a href="ch10-handson.html"><span class="num">10</span> 🧪 Hands-on (UaExpert)</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ 08 · OPC UA FX · TSN · 5G · Field Level</span>
+    <h1>OPC UA FX (Field Level)</h1>
+    <p class="lede">
+      ตั้งแต่ปี 2018 OPC Foundation เริ่ม Initiative ให้ OPC UA ลงไปถึง <em>ระดับ Field</em>
+      (เซ็นเซอร์/แอคชูเอเตอร์/Servo Drive) ที่เคยเป็นพื้นที่ของ Fieldbus เก่าๆ อย่าง PROFINET, EtherCAT, CC-Link, EtherNet/IP
+      — และอาจเปลี่ยนหน้าตาของระบบ Automation ในอีก 10 ปี
+    </p>
+
+    <h2>OPC UA Vision — From Sensor to Cloud</h2>
+
+    <p>
+      เดิมที OPC UA ใช้ระหว่าง <em>PLC ↔ MES ↔ Cloud</em> — แต่ใต้ PLC ลงไปยังเป็นเขตของ Fieldbus เดิม:
+      Modbus, PROFINET, EtherCAT, CC-Link, IO-Link, HART, …
+    </p>
+
+    <p>
+      ในปี 2018 OPC Foundation เปิดตัว <strong>Field Level Communications (FLC) Initiative</strong>
+      เป้าหมาย: ขยาย OPC UA <em>ลงไปถึงเซ็นเซอร์ตัวเดียว</em>
+    </p>
+
+    <figure>
+      <img src="images/08-flc-scope.png" alt="OPC UA enables secured industrial interoperability scaling from field to cloud — diagram with controllers, fieldbus, oil refinery, satellite, robots all communicating via OPC UA" style="max-width:740px">
+      <figcaption>
+        ภาพ Vision ของ OPC Foundation — OPC UA ครอบคลุมตั้งแต่ <strong>เซ็นเซอร์ → Controller → MES/SCADA → Cloud → Satellite</strong>
+        ในมาตรฐานเดียวกัน ไม่ต้องแปลภาษาระหว่างชั้น (ที่มา: OPC Foundation Brochure)
+      </figcaption>
+    </figure>
+
+    <p>2 ทิศทางที่ FLC ครอบคลุม:</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="num">↔️</div>
+        <div class="name">Horizontal Integration</div>
+        <div class="desc">
+          <strong>Controller-to-Controller (C2C)</strong> หรือ <strong>Machine-to-Machine (M2M)</strong>
+          — สายการผลิต A คุยกับสาย B โดยตรง · เครื่องจักรประสานงานกันได้โดยไม่ต้องผ่าน MES ทุกครั้ง
+        </div>
+      </div>
+      <div class="card">
+        <div class="num">↕️</div>
+        <div class="name">Vertical Integration</div>
+        <div class="desc">
+          <strong>Controller-to-Device (C2D)</strong> — Sensor/Actuator/Drive คุยตรงกับ PLC ผ่าน OPC UA
+          — ไม่ต้องใช้ Fieldbus เก่าอีกต่อไป
+        </div>
+      </div>
+    </div>
+
+    <h2>System Architecture — สถาปัตยกรรมของ OPC UA FX</h2>
+
+    <figure>
+      <img src="images/08-fx-architecture.png" alt="OPC UA FX system architecture: OPC UA Core + DI + Facets (Base Device, I/O, Motion, Instrumentation, Safety, Offline Configuration, Communication) + Mappings to PubSub/UDP/Layer 2/5G/TSN" style="max-width:780px">
+      <figcaption>
+        OPC UA FX System Architecture — Core (สีน้ำเงิน) + DI (Device Integration) + <strong>Facets</strong>
+        เฉพาะแต่ละ Application (I/O, Motion, Safety, …) + Mappings ไปยัง Network ที่เหมาะสม
+        (TSN, 5G, UDP, Layer 2) — มี Conformance Testing ในตัว (ที่มา: OPC Foundation Brochure)
+      </figcaption>
+    </figure>
+
+    <h3>แนวคิด "Facets"</h3>
+
+    <p>
+      OPC UA FX แบ่งหน้าที่เป็น <strong>Facets</strong> — แต่ละ Facet เป็นชุดของ Information Model + ความสามารถ
+      ที่ Application ประเภทหนึ่งใช้:
+    </p>
+
+    <ul>
+      <li><strong>Base Device Facet</strong> — สิ่งที่ทุก Controller/Device ต้องมี (Interface, State Machine)</li>
+      <li><strong>I/O Facet</strong> — สำหรับ Sensor/Actuator แบบ Digital/Analog ทั่วไป</li>
+      <li><strong>Motion Facet</strong> — สำหรับ Servo Drive, Stepper, Linear Actuator (ต้อง Real-time)</li>
+      <li><strong>Instrumentation Facet</strong> — สำหรับ Process Sensor (Temperature, Pressure, Flow) ใน Process Automation</li>
+      <li><strong>Safety</strong> — สำหรับ Safety PLC, Safety I/O — มาตรฐาน OPC UA Safety (Part 15)</li>
+      <li><strong>Communication Facet</strong> — กำหนด Lower-layer Network ที่ใช้</li>
+    </ul>
+
+    <h2>ทำไมต้อง TSN?</h2>
+
+    <p>
+      OPC UA ปกติใช้ TCP/IP — เร็วพอสำหรับ HMI แต่ <em>ไม่ Deterministic</em> สำหรับ Motion Control:
+    </p>
+
+    <ul>
+      <li>ระบบ Motion Control ต้องการ Cycle Time <strong>~1 millisecond</strong> หรือเร็วกว่า</li>
+      <li>ความผิดพลาดของเวลา (Jitter) ต้อง <strong>&lt; 1 microsecond</strong></li>
+      <li>TCP/IP ปกติมี Jitter หลาย ms — ไม่ work</li>
+    </ul>
+
+    <p>
+      <strong>TSN (Time-Sensitive Networking)</strong> = ส่วนขยายของ Ethernet (IEEE 802.1) ที่:
+    </p>
+
+    <ul>
+      <li>ทุก Switch บนเส้นทางทำ <strong>Time Synchronization</strong> (PTP, IEEE 1588) ระดับ nanosecond</li>
+      <li>มี <strong>Scheduled Traffic</strong> — ข้อความสำคัญมี "Time Slot" ของตัวเอง ไม่ชนกับ Traffic อื่น</li>
+      <li>มี <strong>Frame Preemption</strong> — Frame ของงาน Real-time แทรกหน้า Frame ที่กำลังส่งอยู่</li>
+      <li><strong>IEC/IEEE 60802</strong> = TSN Profile สำหรับ Industrial Automation</li>
+    </ul>
+
+    <p>
+      <strong>OPC UA FX over TSN</strong> = OPC UA PubSub + UDP + TSN — ทำให้ได้ Deterministic Communication
+      ที่เร็วและ Reliable พอที่จะแทน EtherCAT, PROFINET IRT, CC-Link IE ได้
+    </p>
+
+    <h2>Members ของ FLC Initiative — ใครอยู่ในนี้</h2>
+
+    <p>Steering Committee ของ FLC มีผู้ผลิตชั้นนำเกือบทุกค่าย — ทั้งหมดสนับสนุน OPC UA FX:</p>
+
+    <div class="flowdiagram">
+      <div class="flowdiagram-row" style="flex-wrap:wrap;justify-content:center;gap:8px">
+        <span class="tag">ABB</span>
+        <span class="tag">Beckhoff</span>
+        <span class="tag">Bosch Rexroth</span>
+        <span class="tag">B&amp;R</span>
+        <span class="tag">CoDeSys</span>
+        <span class="tag">Emerson</span>
+        <span class="tag">Festo</span>
+        <span class="tag">Hilscher</span>
+        <span class="tag">Hirschmann</span>
+        <span class="tag">Huawei</span>
+        <span class="tag">Intel</span>
+        <span class="tag">Lenze</span>
+        <span class="tag">Mitsubishi Electric</span>
+        <span class="tag">Moxa</span>
+        <span class="tag">Omron</span>
+        <span class="tag">Phoenix Contact</span>
+        <span class="tag">Pilz</span>
+        <span class="tag">Rockwell Automation</span>
+        <span class="tag">Schneider Electric</span>
+        <span class="tag">Siemens</span>
+        <span class="tag">Weidmüller</span>
+        <span class="tag">Yokogawa</span>
+      </div>
+    </div>
+
+    <p>
+      เกือบทุกผู้ผลิต PLC ที่คุณรู้จัก! รวมทั้ง <strong>Mitsubishi Electric</strong> ที่ขับเคลื่อน
+      <em>CC-Link IE TSN</em> — Network ใหม่ที่ผสม CC-Link เดิม + TSN + OPC UA
+    </p>
+
+    <h2>เกี่ยวกับ Mitsubishi FX5U ที่ใช้ใน Lab</h2>
+
+    <p>
+      มาเชื่อมกลับมาที่บทเรียน PLC ที่คุณเรียน — FX5U กับ OPC UA เป็นยังไง?
+    </p>
+
+    <div class="callout note">
+      <strong>ข้อเท็จจริง</strong> — Mitsubishi FX5U <em>CPU เองไม่มี OPC UA Server ในตัว</em>
+      ต้องเพิ่มโมดูล <code>FX5-OPC</code> (Intelligent Function Module) แยก ที่ติดข้างซ้ายของ CPU
+    </div>
+
+    <p>
+      สรุปทางเลือกของ Mitsubishi:
+    </p>
+
+    <table>
+      <thead>
+        <tr><th>PLC Series</th><th>OPC UA Support</th><th>วิธี</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>MELSEC iQ-F FX5U (ตัวที่ใช้ใน Lab)</td>
+          <td>⚠️ ผ่านโมดูลเสริม</td>
+          <td>ติดโมดูล <code>FX5-OPC</code> · ตั้งค่าใน GX Works3 + OPC UA Module Configuration Tool</td>
+        </tr>
+        <tr>
+          <td>MELSEC iQ-R</td>
+          <td>✅ Built-in (option)</td>
+          <td>ใช้ <code>RD81OPC96</code> หรือ <code>RnENCPU</code> ที่มี OPC UA ฝังในตัว</td>
+        </tr>
+        <tr>
+          <td>CC-Link IE TSN</td>
+          <td>✅ TSN-ready</td>
+          <td>Network ใหม่ที่ Mitsubishi ขับเคลื่อน — รองรับ OPC UA FX</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      หมายความว่า — Lab ปัจจุบันใช้ FX5U + Modbus เป็นหลัก ถ้าจะอัพเกรดเป็น OPC UA:
+    </p>
+
+    <ol class="steps">
+      <li><strong>ทางเลือก A</strong> — เพิ่มโมดูล <code>FX5-OPC</code> ที่ FX5U ปัจจุบัน เพื่อให้เป็น OPC UA Server</li>
+      <li><strong>ทางเลือก B</strong> — ใช้ <strong>OPC UA Gateway</strong> ของบุคคลที่สาม (เช่น Kepware, Matrikon)
+        เพื่ออ่าน Modbus จาก FX5U แล้วแปลงเป็น OPC UA</li>
+      <li><strong>ทางเลือก C</strong> — ใช้ MELSEC iQ-R Series ที่มี OPC UA ในตัว (สำหรับโครงการใหม่)</li>
+    </ol>
+
+    <h2>OPC UA FX vs Fieldbus เดิม</h2>
+
+    <p>
+      ในยุคปัจจุบัน Fieldbus เดิมยังครองส่วนแบ่งตลาดอยู่ — แต่ OPC UA FX มาเพื่อ <em>เป็นทางเลือกที่ Unified</em>:
+    </p>
+
+    <table>
+      <thead>
+        <tr><th>ประเด็น</th><th>Fieldbus เดิม</th><th>OPC UA FX</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>ตัวอย่าง</td>
+          <td>PROFINET, EtherCAT, CC-Link IE, EtherNet/IP, Modbus</td>
+          <td>OPC UA FX over TSN</td>
+        </tr>
+        <tr>
+          <td>เจ้าของ</td>
+          <td>แต่ละค่าย (Siemens, Beckhoff, Mitsubishi, Rockwell)</td>
+          <td>OPC Foundation (vendor-neutral)</td>
+        </tr>
+        <tr>
+          <td>Real-time</td>
+          <td>✅ Deterministic</td>
+          <td>✅ ผ่าน TSN</td>
+        </tr>
+        <tr>
+          <td>Security ในตัว</td>
+          <td>โดยทั่วไป ❌</td>
+          <td>✅ ตามมาตรฐาน OPC UA</td>
+        </tr>
+        <tr>
+          <td>Semantic Data</td>
+          <td>โดยทั่วไป ❌</td>
+          <td>✅ Information Model</td>
+        </tr>
+        <tr>
+          <td>Bridge ไป IT/Cloud</td>
+          <td>ต้องใช้ Gateway</td>
+          <td>Native — Protocol เดียวกัน</td>
+        </tr>
+        <tr>
+          <td>Hardware Support</td>
+          <td>เยอะมาก (ใช้มา 20+ ปี)</td>
+          <td>กำลังขยาย</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Safety — Safety PLC ผ่าน OPC UA</h2>
+
+    <p>
+      OPC UA Part 15 = <strong>Safety</strong> — ใช้ OPC UA เป็น Safety Communication Channel
+      สำหรับ Safety PLC, Light Curtain, E-Stop, Safety Door
+    </p>
+
+    <ul>
+      <li>มี <strong>Black Channel Approach</strong> — Safety Layer ทำงานอิสระจาก Transport Layer</li>
+      <li>มี Sequence Number, CRC, Timestamp — ตามมาตรฐาน IEC 61784-3</li>
+      <li>ผ่าน Certification ของ <strong>TÜV</strong> เพื่อใช้ในงาน Safety Integrity Level (SIL)</li>
+    </ul>
+
+    <p>
+      เปิดทางให้ Safety + Standard Communication ใช้ Network เดียวกันได้ — เคยต้องแยก Network สอง Layer
+      ตอนนี้รวมกันได้
+    </p>
+
+    <h2>อนาคต — เกิดอะไรขึ้นต่อ?</h2>
+
+    <p>OPC UA FX ยังพัฒนาอยู่ ในช่วง 5-10 ปีข้างหน้าน่าจะเห็น:</p>
+
+    <ul>
+      <li>Sensor/Actuator ราคาถูก เริ่มมี OPC UA Server ในตัว (เริ่มที่ ~15 kB flash)</li>
+      <li>CC-Link IE TSN, PROFINET TSN, EtherCAT TSN — ทุกค่ายเริ่มผสาน TSN เข้า Fieldbus เดิม</li>
+      <li>5G สำหรับ Industrial Wireless — รองรับ OPC UA FX</li>
+      <li>Safety PLC ใช้ OPC UA Safety แทน safety-specific bus</li>
+      <li>Plug-and-Produce เป็นจริง — ติดเซ็นเซอร์ใหม่ → เห็นใน MES ทันที</li>
+    </ul>
+
+    <h2>สรุปบทที่ 08</h2>
+
+    <ul>
+      <li>OPC UA Field Level Communications (FLC) Initiative เริ่มปี 2018 — ขยาย OPC UA ลงถึง Field</li>
+      <li>มี <strong>OPC UA FX</strong> (Field eXchange) Specifications ใหม่ — Parts 80-84 + Safety (Part 15)</li>
+      <li>สถาปัตยกรรม <strong>Facets</strong> — Base Device, I/O, Motion, Instrumentation, Safety</li>
+      <li><strong>TSN</strong> (IEEE 802.1) ทำให้ Ethernet กลายเป็น Deterministic — แทน EtherCAT/PROFINET IRT ได้</li>
+      <li>ผู้ผลิตเกือบทุกค่ายอยู่ใน Steering Committee — Mitsubishi รวมอยู่ด้วย</li>
+      <li>FX5U ที่ใช้ใน Lab ต้องเพิ่มโมดูล <code>FX5-OPC</code> — แต่ MELSEC iQ-R มี OPC UA ในตัว</li>
+      <li>เป้าหมายระยะยาว: <strong>Unified Communication</strong> ตั้งแต่เซ็นเซอร์ถึง Cloud</li>
+    </ul>
+
+    <p>บทต่อไป — <strong>Cloud Integration</strong> ดูภาพรวมของ Reference Architecture ที่ Microsoft, Google Cloud, AWS, SAP ใช้</p>
+
+    <div class="pager">
+      <a href="ch07-companion-specs.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">07 — Companion Specifications</div>
+      </a>
+      <a href="ch09-cloud.html" class="next">
+        <div class="label">ถัดไป →</div>
+        <div class="title">09 — Cloud Integration</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  OPC UA &amp; Industrie 4.0 Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){
+  var lb = document.getElementById('lightbox');
+  if(!lb) return;
+  var img = lb.querySelector('img');
+  document.querySelectorAll('.gallery a, .zoomable').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      img.src = a.getAttribute('href') || a.getAttribute('data-src');
+      lb.classList.add('open');
+    });
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') lb.classList.remove('open');
+  });
+})();
+</script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

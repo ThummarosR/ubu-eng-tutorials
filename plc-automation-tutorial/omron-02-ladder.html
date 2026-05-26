@@ -1,0 +1,374 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O02 — CX-Programmer Ladder | PLC Automation Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="PLC Automation"></div>
+      <div><div class="title">PLC Automation</div><div class="subtitle">คู่มือฉบับภาษาไทย — 2 Tracks</div></div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; เลือก Track</a>
+      <h4>🟥 Mitsubishi Track</h4>
+      <a href="mit-01-intro.html"><span class="num">M01</span> รู้จัก FX5U</a>
+      <a href="mit-02-ladder.html"><span class="num">M02</span> Ladder Logic</a>
+      <a href="mit-03-sensors.html"><span class="num">M03</span> เซ็นเซอร์ &amp; I/O</a>
+      <a href="mit-04-simulation.html"><span class="num">M04</span> GX Simulator</a>
+      <a href="mit-05-hmi.html"><span class="num">M05</span> HMI Samkoon</a>
+      <a href="mit-06-pid.html"><span class="num">M06</span> PID &amp; Auto-Tuning</a>
+      <a href="mit-07-modbus.html"><span class="num">M07</span> Modbus + PM2230</a>
+      <h4>🟦 Omron Track</h4>
+      <a href="omron-01-intro.html"><span class="num">O01</span> รู้จัก CP1L/CPM2A</a>
+      <a href="omron-02-ladder.html" class="active"><span class="num">O02</span> CX-Programmer Ladder</a>
+      <a href="omron-03-fbd.html"><span class="num">O03</span> Function Block (FBD)</a>
+      <a href="omron-04-modbus.html"><span class="num">O04</span> Modbus + Inverter</a>
+      <a href="omron-05-e5cc.html"><span class="num">O05</span> E5CC Temp Control</a>
+      <a href="omron-06-scada.html"><span class="num">O06</span> SCADA (CX-Supervisor)</a>
+      <a href="omron-07-scada-workshop.html"><span class="num">O07</span> 🏭 SCADA Workshop</a>
+      <h4>แหล่งข้อมูล</h4>
+      <a href="videos.html"><span class="num">▶</span> วิดีโอเลคเชอร์</a>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ O02 · CX-Programmer</span>
+    <h1>CX-Programmer Ladder &amp; คำสั่งพื้นฐาน</h1>
+    <p class="lede">
+      CX-Programmer เป็น IDE หลักของ Omron ตั้งแต่ปี 2000 — ใช้ได้กับ <strong>CP1E/CP1L/CP1H/CP2E</strong>
+      และซีรีส์ CJ/CS/CV ทั้งหมด. บทนี้พาเขียน Ladder ตั้งแต่ Contact-Coil พื้นฐาน, KEEP, TIM, CNTR, DIFU/DIFD ครบเซต
+    </p>
+
+    <div class="callout info">
+      <strong>CX-Programmer vs Sysmac Studio</strong>
+      Omron มี IDE 2 ตัวที่ทำหน้าที่คนละแบบ:
+      <br>· <strong>CX-Programmer</strong> (ในชุด <em>CX-One</em>) → CP1/CP2 และซีรีส์ Legacy
+      <br>· <strong>Sysmac Studio</strong> → NJ/NX series เท่านั้น (Machine Automation Controller)
+      <br><br>CP1L ห้อง Lab ของเราใช้ <strong>CX-Programmer</strong>
+    </div>
+
+    <h2>Device Memory — สัญลักษณ์ของ Omron</h2>
+
+    <table>
+      <thead><tr><th>Area</th><th>ตัวอย่าง</th><th>หน้าที่</th><th>ขนาด</th></tr></thead>
+      <tbody>
+        <tr><td><strong>CIO</strong> (I/O)</td><td><code>0.00</code>, <code>0.01</code></td><td>Input bits (จากหน้าตู้)</td><td>Word.Bit</td></tr>
+        <tr><td><strong>CIO</strong> (I/O)</td><td><code>100.00</code>, <code>100.01</code></td><td>Output bits (ไปหน้าตู้)</td><td>Word.Bit</td></tr>
+        <tr><td><strong>W</strong> (Work)</td><td><code>W0.00</code> ถึง <code>W511.15</code></td><td>"Internal Relay" — bit ภายในใช้ได้อิสระ</td><td>Bit</td></tr>
+        <tr><td><strong>H</strong> (Holding)</td><td><code>H0.00</code> ถึง <code>H511.15</code></td><td>Internal bit ที่ <em>ค้างค่าเมื่อปิดเปิด</em></td><td>Bit (Retentive)</td></tr>
+        <tr><td><strong>D</strong> (Data)</td><td><code>D0</code> ถึง <code>D32767</code></td><td>Data register 16-bit</td><td>Word</td></tr>
+        <tr><td><strong>T</strong></td><td><code>T0</code> ถึง <code>T4095</code></td><td>Timer (bit + word ของค่านับเหลือ)</td><td>Both</td></tr>
+        <tr><td><strong>C</strong></td><td><code>C0</code> ถึง <code>C4095</code></td><td>Counter</td><td>Both</td></tr>
+        <tr><td><strong>A</strong> (Auxiliary)</td><td><code>A640.00</code>, <code>P_1s</code></td><td>System flags (เช่น 1.0s clock pulse)</td><td>Special</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout warn">
+      <strong>กับดักของ Omron — Word.Bit address!</strong>
+      Mitsubishi เขียน <code>X0</code>, <code>Y10</code>, <code>M5</code> ตรง ๆ
+      <br>Omron <strong>ทุก bit เป็น Word.Bit</strong> — เช่น <code>0.00</code> (Word 0, bit 0), <code>0.05</code>, <code>0.06</code>... ขึ้น <code>0.15</code> แล้วต่อด้วย <code>1.00</code>
+      <br>Output เริ่มที่ <strong>Word 100</strong> เป็นต้นไป (PLC จะกำหนดช่วง CIO Word ของ Input/Output ตามรุ่น)
+    </div>
+
+    <h2>หน้าตา CX-Programmer</h2>
+
+    <figure>
+      <img src="images/cxprogrammer-traffic-light-tutorial.png" alt="CX-Programmer full IDE screenshot with Traffic Lights tutorial">
+      <figcaption>หน้าตา CX-Programmer แบบครบ — <strong>ซ้าย:</strong> Project Tree (Symbols, IO Table, Settings, Memory, Programs) · <strong>กลาง:</strong> Symbol table + Ladder editor · <strong>ล่าง:</strong> Output / Symbol watch / Compile result · ตัวอย่างคือ Traffic Light Controller</figcaption>
+    </figure>
+
+    <figure>
+      <img src="images/cxprogrammer-shortcut-bar.jpg" alt="CX-Programmer keyboard shortcut reference">
+      <figcaption>แถบ <strong>CX-Programmer Information</strong> — Shortcuts ที่ใช้บ่อย: Diff-Up/Down (Shift+Up/Down), Force On/Off (Ctrl+J/K), Run (Ctrl+4), Work Online (Ctrl+W), Monitor (Ctrl+1)</figcaption>
+    </figure>
+
+    <div class="callout note">
+      <strong>ประวัติยาวของ CX-Programmer</strong>
+      CX-Programmer มีตั้งแต่ปี <strong>1999</strong> (ทำงานบน Windows 98 ได้) ปัจจุบันรุ่น 9.x สำหรับ Windows 10/11 — UI หลักไม่ค่อยเปลี่ยน
+      เพราะฉะนั้นตำราเรียนเก่า ๆ ที่ใช้ Screenshots ของ CX-Programmer v3.2 ก็ยังศึกษาได้
+    </div>
+
+    <h2>เริ่มเขียน Project ใน CX-Programmer</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>สร้าง Project ใหม่</strong>
+        <code>File → New → CX-Programmer Project</code> → ตั้งชื่อ → <strong>Device Type</strong>: <code>CP1L</code> → <strong>Settings</strong>: เลือก CPU sub-type (เช่น CP1L-EM30D...)
+      </li>
+      <li>
+        <strong>วาด Rung แรก</strong>
+        คลิกที่ตำแหน่งใน Section ladder → กดคีย์ลัด:
+        <ul>
+          <li><kbd>C</kbd> = New Contact NO (—| |—)</li>
+          <li><kbd>/</kbd> = New Contact NC (—|/|—)</li>
+          <li><kbd>O</kbd> = New Coil (—( )—)</li>
+          <li><kbd>I</kbd> = Instruction (MOV, KEEP, TIM, ฯลฯ)</li>
+        </ul>
+      </li>
+      <li>
+        <strong>ใส่ Address</strong>
+        พิมพ์ address ในรูปแบบ Word.Bit หรือ Word — เช่น <code>0.00</code>, <code>100.01</code>, <code>D10</code> → Enter
+      </li>
+      <li>
+        <strong>Compile (F7)</strong>
+        ทุกครั้งที่แก้ Ladder → กด <kbd>F7</kbd> หรือเมนู <code>Program → Compile All PLC Programs</code>
+      </li>
+      <li>
+        <strong>เชื่อมต่อ PLC</strong>
+        <code>PLC → Work Online</code> (Ctrl+W) → เลือก Network Type (USB / Ethernet / Serial)
+      </li>
+      <li>
+        <strong>Transfer to PLC</strong>
+        <code>PLC → Transfer → To PLC</code> → เลือก Program + Settings + I/O Table → กด Yes
+      </li>
+    </ol>
+
+    <figure>
+      <img src="images/cxprogrammer-transfer-to-plc.jpg" alt="CX-Programmer Transfer to PLC dialog">
+      <figcaption>Dialog ยืนยันการ Download โปรแกรมเข้า PLC — กด <strong>Yes</strong> เพื่อ confirm</figcaption>
+    </figure>
+
+    <h2>⚙️ PLC ทำงานยังไง — Scan Cycle</h2>
+
+    <p>ก่อนเริ่มเขียน Ladder จริง — เข้าใจก่อนว่า CP1L (และ PLC ทุกตัว) <strong>ไม่ได้</strong>
+       ทำงานแบบ Event-driven แต่วน <strong>Scan Cycle</strong> ทีละเฟส · ลองกดสวิตช์ <code>0.00</code>
+       ในจังหวะต่าง ๆ ดูว่าเมื่อไหร่ <code>100.00</code> ติด</p>
+
+    <div class="scan-cycle" data-syntax="omron"></div>
+
+    <h2>คำสั่งกลุ่มที่ 1 — Logic พื้นฐาน</h2>
+
+    <h3>Start/Stop พร้อม Self-hold</h3>
+
+    <figure>
+      <img src="images/cxprogrammer-start-stop-interlock.png" alt="CX-Programmer Start/Stop interlock ladder">
+      <figcaption>ตัวอย่างจากใบงาน Workshop PLC: ปุ่ม Start1 (I:0.00) ปุ่ม Stop (I:0.01) → ขับ K1 (Q:100.00) · แถวล่าง: Start2 (I:0.02) → ขับ K2 (Q:100.01) — Interlock กับ Q:100.00 (K1) เพื่อกัน K1 และ K2 ติดพร้อมกัน</figcaption>
+    </figure>
+
+    <p>ในรูป — Rung 0:</p>
+    <pre><code>LD    0.00           ; ปุ่ม Start1 (NO)
+OR    100.00         ; Self-hold ของ K1
+ANDNOT 0.01          ; ปุ่ม Stop (NC contact)
+ANDNOT 100.01        ; Interlock — ห้าม K1 ON ถ้า K2 ON
+OUT   100.00         ; K1 (Output)</code></pre>
+
+    <h3><code>SET</code> / <code>RSET</code> — Latch / Unlatch</h3>
+    <p>Omron ใช้ <code>RSET</code> (ไม่ใช่ RST เหมือน Mitsubishi):</p>
+    <pre><code>LD    0.00           ; Start
+SET   100.00         ; ON ค้าง
+
+LD    0.01           ; Stop
+RSET  100.00         ; OFF</code></pre>
+
+    <h3><code>KEEP(11)</code> — เฉพาะ Omron</h3>
+    <p>Omron มีคำสั่ง KEEP ที่รวม SET/RST ไว้ใน Block เดียว — เรียบร้อยกว่าและอ่านง่ายกว่า:</p>
+
+    <figure>
+      <img src="images/omron-keep-instruction.png" alt="Omron KEEP(11) instruction example">
+      <figcaption>คำสั่ง <code>KEEP(11)</code> — input ด้านบน = Set, ด้านล่าง = Reset, output = bit ที่ค้างค่า. ในตัวอย่าง: I:0.01 (START) + I:0.03 (START1) → Set, I:0.02 (STOP) → Reset, output Y:100.00 (LAMP1)</figcaption>
+    </figure>
+
+    <pre><code>Set input    ──┤ ├──────┐
+                          │   KEEP(11)
+Reset input  ──┤ ├──────┤  Bit ที่ Latch
+                          ─────────────</code></pre>
+
+    <h3>🧩 ลองสร้าง Rung — Self-Hold (Omron syntax, Drag &amp; Drop)</h3>
+    <p>ลองประกอบ Rung เองด้วย Address ของ Omron — ลากบล็อกจาก palette ใส่ในช่อง:</p>
+    <div class="rung-builder" data-puzzle="self-hold-puzzle" data-syntax="omron"></div>
+
+    <h3>🎮 ลองเล่น — Self-Hold (Omron syntax)</h3>
+    <p>แบบเดียวกับ Mitsubishi M02 — แต่ Address ใช้ <code>0.00</code> (Start) / <code>0.01</code> (Stop) / <code>100.00</code> (Output) ตามแบบ Omron:</p>
+    <div class="ladder-sim" data-example="self-hold" data-syntax="omron"></div>
+
+    <h2>คำสั่งกลุ่มที่ 2 — Timer (TIM)</h2>
+
+    <figure>
+      <img src="images/omron-tim-instruction.png" alt="Omron TIM instruction example">
+      <figcaption>คำสั่ง <strong>TIM</strong> ใน CX-Programmer — Timer 0 หน่วงเวลา 10 วินาที (Set value = #100, หน่วยคือ 100ms × 100 = 10s)</figcaption>
+    </figure>
+
+    <table>
+      <thead><tr><th>คำสั่ง</th><th>หน่วยเวลา</th><th>ตัวอย่าง</th></tr></thead>
+      <tbody>
+        <tr><td><code>TIM</code></td><td>100 ms (0.1 s)</td><td><code>TIM 0 #50</code> = T0 ครบใน 5.0s</td></tr>
+        <tr><td><code>TIMH(15)</code></td><td>10 ms</td><td><code>TIMH(15) 0 #50</code> = 0.5s</td></tr>
+        <tr><td><code>TMHH(540)</code></td><td>1 ms</td><td><code>TMHH(540) 0 #500</code> = 0.5s</td></tr>
+        <tr><td><code>TIML(542)</code></td><td>100 ms (long, 32-bit count)</td><td>สำหรับเวลานานกว่า 99 นาที</td></tr>
+      </tbody>
+    </table>
+
+    <p>หลังจาก <code>TIM</code> ทำงานครบ — bit <code>T0</code> (เลขเดียวกับ Timer number) จะเป็น ON ใช้ในรังถัดไปได้:</p>
+    <pre><code>; รอ 5 วินาทีหลังกดปุ่ม → เปิด Lamp
+LD    0.00           ; ปุ่ม
+TIM   0 #50          ; T0 = 5.0s
+
+LD    T0
+OUT   100.00         ; LAMP ON</code></pre>
+
+    <h3>🧩 Build the Rungs — Timer ON-Delay (Omron)</h3>
+    <p>ลองประกอบ 2 Rung สำหรับ Timer — แต่ใช้ Address Omron:</p>
+    <div class="rung-builder" data-puzzle="timer-on-delay-puzzle" data-syntax="omron"></div>
+
+    <h3>🎮 ลองเล่น — Timer ON-Delay (Omron)</h3>
+    <p>กด <code>0.00</code> ค้างไว้ 3 วินาที → T0 ครบ → <code>100.00</code> ติด:</p>
+    <div class="ladder-sim" data-example="timer-on-delay" data-syntax="omron"></div>
+
+    <h2>คำสั่งกลุ่มที่ 3 — Counter (CNT / CNTR)</h2>
+
+    <figure>
+      <img src="images/omron-counter-difu.png" alt="Omron CNTR + DIFU instruction example">
+      <figcaption>การประยุกต์ Counter: <code>DIFU(013)</code> สร้าง Pulse 1 scan ตอนที่ Sensor เปลี่ยน OFF→ON → <code>CNTR(012) #10</code> นับครบ 10 ครั้ง → C0 ON → ปลุก Lamp1</figcaption>
+    </figure>
+
+    <table>
+      <thead><tr><th>คำสั่ง</th><th>ประเภท</th><th>หมายเหตุ</th></tr></thead>
+      <tbody>
+        <tr><td><code>CNT</code></td><td>Down counter</td><td>นับลงจาก preset</td></tr>
+        <tr><td><code>CNTR(12)</code></td><td>Reversible (Up/Down)</td><td>นับขึ้น-ลง — ใช้กับ Encoder, ระดับวัสดุ</td></tr>
+        <tr><td><code>DIFU(13)</code></td><td>Differentiate Up</td><td>สร้าง pulse 1 scan ตอน rising edge (OFF→ON)</td></tr>
+        <tr><td><code>DIFD(14)</code></td><td>Differentiate Down</td><td>สร้าง pulse 1 scan ตอน falling edge (ON→OFF)</td></tr>
+      </tbody>
+    </table>
+
+    <pre><code>; Sensor In + Sensor Out → CNTR up/down
+LD    0.01           ; Sensor In
+DIFU(13) W2.00       ; pulse บน W2.00
+
+LD    0.03           ; Sensor Out
+DIFU(13) W2.01       ; pulse บน W2.01
+
+LD    W2.00          ; up trigger
+LD    W2.01          ; down trigger
+LD    0.00           ; reset
+CNTR(12) 0 #10       ; C0 — reversible counter, preset 10
+
+LD    C0
+OUT   100.00         ; LAMP</code></pre>
+
+    <h3>🧩 Build the Rungs — Counter (Omron)</h3>
+    <p>ลองประกอบ 2 Rung สำหรับ Counter ด้วย Address Omron:</p>
+    <div class="rung-builder" data-puzzle="counter-puzzle" data-syntax="omron"></div>
+
+    <h3>🎮 ลองเล่น — Counter (Omron)</h3>
+    <p>กด <code>0.00</code> นับ Pulse 5 ครั้ง → <code>100.00</code> ติด · กด <code>0.01</code> = Reset:</p>
+    <div class="ladder-sim" data-example="counter-pulse" data-syntax="omron"></div>
+
+    <h2>ตัวอย่างใช้งานจริง — Star–Delta Motor Starter ใน Omron</h2>
+
+    <p>Sequence เหมือนกับฝั่ง Mitsubishi (ดู <a href="mit-02-ladder.html">M02</a>) แต่ Syntax ต่าง:</p>
+
+    <ol class="steps">
+      <li>
+        <strong>กำหนด I/O Mapping</strong>
+        <ul>
+          <li><code>0.00</code> = Start · <code>0.01</code> = Stop · <code>0.02</code> = Overload (NC)</li>
+          <li><code>100.00</code> = K1 Main · <code>100.01</code> = K2 Star · <code>100.02</code> = K3 Delta</li>
+        </ul>
+      </li>
+      <li>
+        <strong>Rung 1 — Main + Self-hold</strong>
+        <pre><code>LD     0.00           ; Start
+OR     100.00         ; Self-hold
+ANDNOT 0.01           ; Stop
+AND    0.02           ; Overload OK
+OUT    100.00         ; K1</code></pre>
+      </li>
+      <li>
+        <strong>Rung 2 — Star ON ระหว่าง T0 ยังไม่ครบ</strong>
+        <pre><code>LD     100.00         ; K1 ON
+ANDNOT T0             ; T0 ยังไม่ครบ
+OUT    100.01         ; K2 Star
+
+LD     100.00
+TIM    0 #50          ; 5.0s</code></pre>
+      </li>
+      <li>
+        <strong>Rung 3 — Delta หลัง T0 + Interlock</strong>
+        <pre><code>LD     T0             ; T0 ครบแล้ว
+ANDNOT 100.01         ; Interlock — กัน Star/Delta ซ้อน
+AND    100.00         ; K1 ยัง ON
+OUT    100.02         ; K3 Delta</code></pre>
+      </li>
+    </ol>
+
+    <h3>🧩 The Big One — Build Star–Delta (Omron)</h3>
+    <p>โจทย์ใหญ่ที่สุดของบทนี้ — ประกอบ 4 Rung ของ Star–Delta ทั้งหมด ด้วย 13 บล็อก ใน syntax Omron:</p>
+    <div class="rung-builder" data-puzzle="star-delta-puzzle" data-syntax="omron"></div>
+
+    <h3>🎮 ลองเล่น — Star–Delta (Omron syntax)</h3>
+    <p>เหมือน M02 — แต่ Address Omron: <code>0.00</code> Start · <code>0.01</code> Stop · <code>0.02</code> OL OK · Outputs <code>100.00</code> (Main) / <code>100.01</code> (Star) / <code>100.02</code> (Delta):</p>
+    <div class="ladder-sim" data-example="star-delta" data-syntax="omron"></div>
+
+    <h2>การ Simulate ใน CX-Simulator</h2>
+    <p>CX-One มี <strong>CX-Simulator</strong> ในตัว — เปิดผ่าน <code>Simulation → Work Online Simulator</code>
+       ในเมนู CX-Programmer → ตัว PLC เสมือนจะรันโปรแกรมที่เพิ่ง Compile</p>
+
+    <ol class="steps">
+      <li><strong>Force I/O</strong> — คลิกขวาที่ Contact → Force/Cancel Force → เลือก ON/OFF</li>
+      <li><strong>ดู Animation</strong> — Contact ที่ ON จะมี <span style="color:var(--ok)">สีเขียว</span>, ดู Coil เปลี่ยนตาม</li>
+      <li><strong>Watch ค่า</strong> — สร้าง Watch Window: <code>View → Windows → Watch</code> เพิ่ม device ที่ต้องการ Monitor</li>
+    </ol>
+
+    <h2>สรุปสำหรับบทนี้</h2>
+    <ul>
+      <li>Omron Address ใช้ <strong>Word.Bit</strong> — เช่น <code>0.00</code>, <code>100.05</code>, <code>W2.00</code></li>
+      <li>Output เริ่มที่ Word 100 (ตามรุ่น) · Internal ใช้ <code>W</code> · Retentive ใช้ <code>H</code></li>
+      <li><code>KEEP(11)</code> = Omron ของขวัญ — แทน Self-hold + SET/RST ได้ทั้งคู่</li>
+      <li>Timer: <code>TIM</code> (100ms), <code>TIMH</code> (10ms), <code>TMHH</code> (1ms)</li>
+      <li>Counter: <code>CNT</code> (down), <code>CNTR</code> (reversible) — มักคู่กับ <code>DIFU/DIFD</code></li>
+      <li><strong>F7 = Compile</strong>, <strong>Ctrl+W = Work Online</strong>, <strong>Ctrl+T = Transfer</strong></li>
+    </ul>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับเขียน Ladder Omron ให้สวย</strong>
+      ใช้ <strong>Symbols</strong> (View → Symbols) ตั้งชื่อ I/O ที่อ่านง่าย เช่น <code>START_BTN</code> แทน <code>0.00</code> —
+      โปรแกรมจะเป็นมิตรกับคนที่มาดูทีหลัง
+    </div>
+
+    <h2>เอกสารอ้างอิงสำหรับบทนี้</h2>
+    <ul class="doc-list">
+      <li><a href="PLC%20project/02_Lab_09_PLC_Basics/docs/Lab09_TH.pdf">ใบงาน Workshop PLC Lab (ภาษาไทย)</a> <span class="meta">PDF · ใช้ Omron Zen + CP1L</span></li>
+      <li><a href="PLC%20project/09_PLC_Book_Uthai/docs/บทที่%202.pdf">ตำรา PLC อ. อุทัย — บทที่ 2 (Ladder)</a> <span class="meta">PDF · ภาษาไทย</span></li>
+      <li><a href="PLC%20project/10_Omron_CPM2A_Book/docs/chapter2.pdf">หนังสือ Omron CPM2A — บทที่ 2</a> <span class="meta">PDF · ภาษาไทย</span></li>
+    </ul>
+
+    <div class="pager">
+      <a href="omron-01-intro.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">O01 — รู้จัก CP1L</div>
+      </a>
+      <a href="omron-03-fbd.html" class="next">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">O03 — Function Block Diagram</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  PLC Automation Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){var lb=document.getElementById('lightbox');if(!lb)return;var img=lb.querySelector('img');
+document.querySelectorAll('.content img').forEach(function(im){im.style.cursor='zoom-in';im.addEventListener('click',function(){img.src=im.src;lb.classList.add('open');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.classList.remove('open');});})();
+</script>
+<script src="js/progress.js" defer></script>
+<script src="js/activities/ladder-sim.js" defer></script>
+<script src="js/activities/scan-cycle.js" defer></script>
+<script src="js/activities/rung-builder.js" defer></script>
+</body>
+</html>

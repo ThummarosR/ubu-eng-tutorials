@@ -1,0 +1,459 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M02 — Ladder Logic &amp; คำสั่งพื้นฐาน | PLC Automation Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="PLC Automation"></div>
+      <div>
+        <div class="title">PLC Automation</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย — 2 Tracks</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; เลือก Track</a>
+
+      <h4>🟥 Mitsubishi Track</h4>
+      <a href="mit-01-intro.html"><span class="num">M01</span> รู้จัก FX5U</a>
+      <a href="mit-02-ladder.html" class="active"><span class="num">M02</span> Ladder Logic</a>
+      <a href="mit-03-sensors.html"><span class="num">M03</span> เซ็นเซอร์ &amp; I/O</a>
+      <a href="mit-04-simulation.html"><span class="num">M04</span> GX Simulator</a>
+      <a href="mit-05-hmi.html"><span class="num">M05</span> HMI Samkoon</a>
+      <a href="mit-06-pid.html"><span class="num">M06</span> PID &amp; Auto-Tuning</a>
+      <a href="mit-07-modbus.html"><span class="num">M07</span> Modbus + PM2230</a>
+
+      <h4>🟦 Omron Track</h4>
+      <a href="omron-01-intro.html"><span class="num">O01</span> รู้จัก CP1L/CPM2A</a>
+      <a href="omron-02-ladder.html"><span class="num">O02</span> CX-Programmer Ladder</a>
+      <a href="omron-03-fbd.html"><span class="num">O03</span> Function Block (FBD)</a>
+      <a href="omron-04-modbus.html"><span class="num">O04</span> Modbus + Inverter</a>
+      <a href="omron-05-e5cc.html"><span class="num">O05</span> E5CC Temp Control</a>
+      <a href="omron-06-scada.html"><span class="num">O06</span> SCADA (CX-Supervisor)</a>
+      <a href="omron-07-scada-workshop.html"><span class="num">O07</span> 🏭 SCADA Workshop</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="videos.html"><span class="num">▶</span> วิดีโอเลคเชอร์</a>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ M02 · Programming</span>
+    <h1>Ladder Logic &amp; คำสั่งพื้นฐาน</h1>
+    <p class="lede">
+      Ladder Diagram (LD) คือภาษาที่นิยมที่สุดในการเขียน PLC — เพราะหน้าตาเหมือนวงจรรีเลย์ที่วิศวกรไฟฟ้าคุ้นเคยอยู่แล้ว
+      บทนี้จะสอนตั้งแต่ <strong>Contact + Coil</strong> จนถึงคำสั่งสำคัญอย่าง <code>MOV</code>, <code>TIMER</code>, <code>COUNTER</code>, <code>ZRST</code>
+    </p>
+
+    <h2>หน้าตา Ladder Diagram</h2>
+    <p>Ladder อ่านจาก <strong>ซ้ายไปขวา · บนลงล่าง</strong> — เปรียบเสมือนสายไฟที่จ่ายกระแสจาก
+       <strong style="color:var(--accent)">Power Rail</strong> ฝั่งซ้าย ผ่าน <strong>Contact</strong> ต่าง ๆ ไปยัง
+       <strong>Coil</strong> ทางขวา</p>
+
+    <!-- Clean SVG ladder reference diagram -->
+    <figure style="background:rgba(0,0,0,0.22);border:1px solid var(--border);border-radius:12px;padding:18px;margin:18px 0">
+      <svg viewBox="0 0 720 245" style="width:100%;height:auto;max-width:720px;display:block;margin:0 auto" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <style>
+            .rail   { stroke: var(--accent); stroke-width: 4; }
+            .wire   { stroke: var(--text-muted); stroke-width: 3; fill: none; }
+            .brkt   { stroke: var(--text); stroke-width: 3; stroke-linecap: round; }
+            .slash  { stroke: var(--text); stroke-width: 2.5; }
+            .coil   { stroke: var(--accent-2); stroke-width: 3; fill: none; }
+            .lbl    { fill: var(--accent-2); font-family: 'JetBrains Mono', monospace; font-size: 16px; font-weight: 700; }
+            .lbl-s  { fill: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 12px; }
+            .ann    { fill: var(--cyan); font-family: 'Sarabun', sans-serif; font-size: 13px; font-weight: 600; }
+            .ann-pt { stroke: var(--cyan); stroke-width: 1.5; stroke-dasharray: 3 3; fill: none; }
+          </style>
+        </defs>
+        <!-- Rails -->
+        <line class="rail" x1="60"  y1="20" x2="60"  y2="200"/>
+        <line class="rail" x1="660" y1="20" x2="660" y2="200"/>
+        <text x="40"  y="14" class="ann" text-anchor="middle">L</text>
+        <text x="680" y="14" class="ann" text-anchor="middle">N</text>
+
+        <!-- Rung 1: X0 NO ─── X1 NC ─── Y0 ()  -->
+        <line class="wire" x1="60"  y1="60"  x2="180" y2="60"/>
+        <!-- X0 NO -->
+        <line class="brkt" x1="180" y1="45" x2="180" y2="75"/>
+        <line class="brkt" x1="210" y1="45" x2="210" y2="75"/>
+        <line class="wire" x1="210" y1="60" x2="350" y2="60"/>
+        <text x="195" y="90" class="lbl" text-anchor="middle">X0</text>
+        <!-- X1 NC -->
+        <line class="brkt"  x1="350" y1="45" x2="350" y2="75"/>
+        <line class="brkt"  x1="380" y1="45" x2="380" y2="75"/>
+        <line class="slash" x1="345" y1="78" x2="385" y2="42"/>
+        <line class="wire" x1="380" y1="60" x2="600" y2="60"/>
+        <text x="365" y="90" class="lbl" text-anchor="middle">X1</text>
+        <!-- Y0 coil -->
+        <circle cx="620" cy="60" r="14" class="coil"/>
+        <line class="wire" x1="634" y1="60" x2="660" y2="60"/>
+        <text x="620" y="92" class="lbl" text-anchor="middle">Y0</text>
+
+        <!-- Rung 2: X2 NO with Y1 self-hold branch ─── Y1 () -->
+        <line class="wire" x1="60"  y1="160" x2="180" y2="160"/>
+        <!-- X2 NO -->
+        <line class="brkt" x1="180" y1="145" x2="180" y2="175"/>
+        <line class="brkt" x1="210" y1="145" x2="210" y2="175"/>
+        <text x="195" y="190" class="lbl" text-anchor="middle">X2</text>
+        <!-- branch node -->
+        <line class="wire" x1="210" y1="160" x2="600" y2="160"/>
+        <!-- Self-hold branch below (parallel to X2) — taps OFF the rung at x=140 (well BEFORE X2's left bracket at 180) and rejoins at x=395 (AFTER both X2 and Y1 contact) -->
+        <line class="wire" x1="140" y1="160" x2="140" y2="195"/>
+        <line class="wire" x1="140" y1="195" x2="290" y2="195"/>
+        <line class="brkt" x1="290" y1="180" x2="290" y2="210"/>
+        <line class="brkt" x1="320" y1="180" x2="320" y2="210"/>
+        <line class="wire" x1="320" y1="195" x2="395" y2="195"/>
+        <line class="wire" x1="395" y1="195" x2="395" y2="160"/>
+        <text x="305" y="228" class="lbl-s" text-anchor="middle">Y1 (self-hold)</text>
+        <!-- Y1 coil -->
+        <circle cx="620" cy="160" r="14" class="coil"/>
+        <line class="wire" x1="634" y1="160" x2="660" y2="160"/>
+        <text x="620" y="192" class="lbl" text-anchor="middle">Y1</text>
+
+        <!-- Annotations -->
+        <text x="40" y="115" class="ann" text-anchor="middle" transform="rotate(-90, 40, 115)">Power Rail</text>
+        <line class="ann-pt" x1="60" y1="115" x2="50" y2="115"/>
+
+        <text x="195" y="35" class="ann" text-anchor="middle">Contact NO</text>
+        <text x="365" y="35" class="ann" text-anchor="middle">Contact NC</text>
+        <text x="620" y="35" class="ann" text-anchor="middle">Output Coil</text>
+      </svg>
+      <figcaption style="margin-top:10px;text-align:center;color:var(--text-muted);font-size:13.5px">
+        ตัวอย่าง Ladder 2 Rung — <strong>เส้นสีส้ม</strong> = Power Rail · ตัว <strong>┤ ├</strong> = Contact NO · <strong>┤/├</strong> = Contact NC · <strong>◯</strong> = Output Coil
+      </figcaption>
+    </figure>
+
+    <p>กฎพื้นฐานมีแค่ไม่กี่ข้อ:</p>
+
+    <div class="card-grid" style="margin:20px 0">
+      <div class="card">
+        <div class="num">SYMBOL</div>
+        <div class="name">┤ ├ &nbsp; Contact NO</div>
+        <div class="desc"><strong>Normally Open</strong> — "ปกติเปิด" ปล่อยไฟผ่านเมื่อ Bit = <strong style="color:var(--ok)">ON</strong></div>
+      </div>
+      <div class="card">
+        <div class="num">SYMBOL</div>
+        <div class="name">┤/├ &nbsp; Contact NC</div>
+        <div class="desc"><strong>Normally Closed</strong> — "ปกติปิด" ปล่อยไฟผ่านเมื่อ Bit = <strong style="color:var(--text-muted)">OFF</strong></div>
+      </div>
+      <div class="card">
+        <div class="num">SYMBOL</div>
+        <div class="name">◯ &nbsp; Output Coil</div>
+        <div class="desc"><strong>Coil</strong> — เป็น Output ของ Rung · ถ้ามีไฟมาถึง Coil จะเป็น <strong style="color:var(--accent-2)">ON</strong></div>
+      </div>
+      <div class="card">
+        <div class="num">PATTERN</div>
+        <div class="name">↺ &nbsp; Self-Hold</div>
+        <div class="desc">ใช้ Contact ของ Y ตัวเองคู่กับปุ่ม Start เพื่อให้ Y ค้าง <strong>ON</strong> หลังปล่อยปุ่ม</div>
+      </div>
+    </div>
+
+    <h2>⚙️ PLC ทำงานยังไง — Scan Cycle</h2>
+
+    <p>ก่อนจะเขียน Ladder ต้องเข้าใจก่อนว่า PLC <strong>ไม่ได้</strong> ทำงานแบบ Event-driven เหมือนภาษาคอมทั่วไป —
+       มันวนซ้ำ <strong>Scan Cycle</strong> ทีละเฟส ตามนี้ตลอด · ลองดูแอนิเมชันด้านล่าง แล้วลองกดสวิตช์ <code>X0</code>
+       ในจังหวะต่าง ๆ ดูว่าทำไม Output ถึงไม่เปลี่ยนทันที</p>
+
+    <div class="scan-cycle" data-syntax="mit"></div>
+
+    <h3>🧩 ลองสร้าง Rung — Self-Hold (Drag &amp; Drop)</h3>
+    <p>ก่อนจะดู Simulator ทำงาน — ลองประกอบ Rung ของตัวเองดู ลากบล็อกจากด้านล่างใส่ในช่องว่าง:</p>
+    <div class="rung-builder" data-puzzle="self-hold-puzzle" data-syntax="mit"></div>
+
+    <h3>🎮 ลองเล่นเลย — Self-Hold Simulator</h3>
+    <p>กดปุ่ม <code>X0</code> (Start) ดูว่า <code>Y0</code> ติดค้าง แม้ปล่อยปุ่มแล้วก็ยังติด — แล้วกด <code>X1</code> (Stop) เพื่อตัด:</p>
+    <div class="ladder-sim" data-example="self-hold" data-syntax="mit"></div>
+
+    <h2>Device Memory — สัญลักษณ์ที่ต้องรู้</h2>
+
+    <table>
+      <thead>
+        <tr><th>สัญลักษณ์</th><th>ชื่อ</th><th>ใช้ทำอะไร</th><th>เลข Bit/Word</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>X</code></td><td>Input</td><td>อ่านสถานะจากขั้ว Input</td><td>Bit (Octal: X0–X17)</td></tr>
+        <tr><td><code>Y</code></td><td>Output</td><td>สั่งงานออกขั้ว Output</td><td>Bit (Octal: Y0–Y17)</td></tr>
+        <tr><td><code>M</code></td><td>Internal Relay</td><td>"Bit ภายใน" ใช้เป็น flag ระหว่างขั้น</td><td>Bit (M0–M7679)</td></tr>
+        <tr><td><code>D</code></td><td>Data Register</td><td>เก็บค่าตัวเลข 16-bit</td><td>Word (D0–D7999)</td></tr>
+        <tr><td><code>T</code></td><td>Timer</td><td>นับเวลา</td><td>Bit + Word (T0–T511)</td></tr>
+        <tr><td><code>C</code></td><td>Counter</td><td>นับจำนวน</td><td>Bit + Word (C0–C255)</td></tr>
+        <tr><td><code>K</code> / <code>H</code></td><td>Constant</td><td>K = Decimal, H = Hex</td><td>เช่น <code>K10</code>, <code>H1F</code></td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <strong>เลข Octal — ระวัง!</strong>
+      X และ Y ของ Mitsubishi ใช้ฐาน 8 — ไม่มี X8/X9 จะข้ามไป X10, X11... เพราะฉะนั้น Input 16 ตัวคือ X0–X17 (ไม่ใช่ X0–X15)
+    </div>
+
+    <h2>คำสั่งกลุ่มที่ 1 — Logic พื้นฐาน</h2>
+
+    <h3><code>LD</code>, <code>OUT</code>, <code>AND</code>, <code>OR</code></h3>
+    <pre><code>LD    X0       ; โหลด Contact NO ของ X0
+AND   X1       ; AND กับ X1
+OUT   Y0       ; ถ้าทั้งคู่ ON → Y0 ON</code></pre>
+
+    <h3><code>SET</code> / <code>RST</code> — Latch / Unlatch</h3>
+    <p>ใช้แทน Self-hold ได้เมื่อโปรแกรมซับซ้อน — <code>SET</code> สั่งให้ Bit ค้าง ON, <code>RST</code> ทำให้ OFF</p>
+    <pre><code>LD    X0       ; ปุ่ม Start
+SET   Y0       ; Y0 = ON และค้าง
+
+LD    X1       ; ปุ่ม Stop
+RST   Y0       ; Y0 = OFF</code></pre>
+
+    <h2>คำสั่งกลุ่มที่ 2 — Data Move (MOV)</h2>
+
+    <p>คำสั่ง <code>MOV</code> ใช้ "ก็อปปี้" ค่าจากที่หนึ่งไปอีกที่หนึ่ง — เป็นพื้นฐานของงานคำนวณทุกอย่าง</p>
+
+    <table>
+      <thead><tr><th>คำสั่ง</th><th>Syntax</th><th>ทำอะไร</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>MOV</code></td>
+          <td><code>MOV S D</code></td>
+          <td>ก็อป S → D (ทำงานตราบเท่าที่ Input ON)</td>
+        </tr>
+        <tr>
+          <td><code>MOVP</code></td>
+          <td><code>MOVP S D</code></td>
+          <td>ก็อป S → D แค่ <strong>ครั้งเดียว</strong> ตอน Input เปลี่ยน OFF → ON (Pulse)</td>
+        </tr>
+        <tr>
+          <td><code>BMOV</code></td>
+          <td><code>BMOV S D N</code></td>
+          <td>ก็อป <strong>N ค่า</strong> จาก S → D (Block Move)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <pre><code>; ก็อปค่า 100 เข้า D10
+LD    M0
+MOV   K100  D10
+
+; ก็อป D10..D12 (3 ค่า) ไปที่ D100..D102
+LD    M1
+BMOV  D10   D100   K3</code></pre>
+
+    <figure>
+      <img src="images/ladder-mov-bmov.png" alt="MOV / BMOV ladder example in GX Works3">
+      <figcaption>ตัวอย่างจริงใน GX Works3 — กด X0 → SET M0 → MOV H0FF→K2Y0 (เปิด Y0–Y7), MOV D10→D12, BMOV D20→D40 K5, กด X1 → RST M0 + เคลียร์ Y0–Y7</figcaption>
+    </figure>
+
+    <figure>
+      <img src="images/device-watch-window.png" alt="Device Watch Window monitor">
+      <figcaption>หน้าต่าง <strong>Watch 1</strong> ใช้ Monitor ค่า D-register หลายตัวพร้อมกัน — เห็น D10=11, D20=22, D40=22, D44=66 ตรงกับที่ BMOV คัดลอกมา</figcaption>
+    </figure>
+
+    <h2>คำสั่งกลุ่มที่ 3 — Timer</h2>
+
+    <p>Timer ใน FX5U มี 3 ความละเอียด:</p>
+
+    <table>
+      <thead><tr><th>คำสั่ง</th><th>หน่วย</th><th>ใช้ตอน</th></tr></thead>
+      <tbody>
+        <tr><td><code>OUT  T0  K20</code></td><td>0.1 วินาที × 20 = 2 s</td><td>งานทั่วไป</td></tr>
+        <tr><td><code>OUTH T0  K20</code></td><td>0.01 วินาที × 20 = 0.2 s</td><td>ต้องการความละเอียดระดับ ms</td></tr>
+        <tr><td><code>OUTHS T0 K20</code></td><td>0.001 วินาที × 20 = 20 ms</td><td>งานความเร็วสูง</td></tr>
+      </tbody>
+    </table>
+
+    <pre><code>; รอ 2 วินาทีหลังกดปุ่ม X0 แล้วเปิด Y1
+LD    X0
+OUT   T0    K20      ; T0 หน่วงเวลา 20 × 0.1s = 2.0s
+
+LD    T0             ; Contact ของ T0 จะ ON เมื่อนับครบ
+OUT   Y1</code></pre>
+
+    <figure>
+      <img src="images/ladder-timers-three-precisions.png" alt="Timer ladder example with OUT, OUTH, OUTHS">
+      <figcaption>เปรียบเทียบ 3 ความละเอียดในรังเดียว — <code>OUT T0 K50</code> = 5 s, <code>OUTH T1 K500</code> = 5 s (0.01s × 500), <code>OUTHS T2 K5000</code> = 5 s (0.001s × 5000)</figcaption>
+    </figure>
+
+    <h3>🧩 Build the Rungs — Timer ON-Delay</h3>
+    <p>ก่อนเล่น Sim ลองประกอบเองดู — Timer ใช้ 2 Rung แยกกัน — ลากบล็อกใส่ในช่อง:</p>
+    <div class="rung-builder" data-puzzle="timer-on-delay-puzzle" data-syntax="mit"></div>
+
+    <h3>🎮 ลองเล่น — Timer ON-Delay</h3>
+    <p>กดปุ่ม <code>X0</code> ค้างไว้ → ดู T0 นับขึ้นเรื่อย ๆ จนครบ 3.0 วินาที → Y0 ติด:</p>
+    <div class="ladder-sim" data-example="timer-on-delay" data-syntax="mit"></div>
+
+    <h2>คำสั่งกลุ่มที่ 4 — Counter</h2>
+
+    <pre><code>; นับ pulse ที่ X0 ทุกครั้งที่เปลี่ยน OFF→ON
+; ครบ 10 ครั้ง → C0 ON → เปิด Y2
+LD    X0
+OUT   C0    K10
+
+LD    C0
+OUT   Y2
+
+; reset counter ด้วย X1
+LD    X1
+RST   C0</code></pre>
+
+    <figure>
+      <img src="images/ladder-counter.png" alt="Counter ladder example in GX Works3">
+      <figcaption>ตัวอย่างนับด้วย Counter — <code>OUT C0 K3</code> นับด้วย M0 + M6 ครบ 3 ครั้ง → C0 ON, ส่วน <code>OUT LC1 K5</code> = Long Counter (32-bit สำหรับนับเกิน 32,767)</figcaption>
+    </figure>
+
+    <h3>🧩 Build the Rungs — Counter</h3>
+    <p>ลองประกอบ 2 Rung สำหรับ Counter — Rung 1 ป้อน pulse · Rung 2 ใช้ Counter bit ขับ Coil:</p>
+    <div class="rung-builder" data-puzzle="counter-puzzle" data-syntax="mit"></div>
+
+    <h3>🎮 ลองเล่น — Counter (นับ 5 ครั้ง)</h3>
+    <p>กดปุ่ม <code>X0</code> 5 ครั้ง (รีลีสปุ่มทุกครั้ง — Counter นับ rising edge) → C0 → Y0 ติด · กด <code>X1</code> = Reset</p>
+    <div class="ladder-sim" data-example="counter-pulse" data-syntax="mit"></div>
+
+    <h2>คำสั่งกลุ่มที่ 5 — ZRST (Zone Reset)</h2>
+
+    <p><code>ZRST</code> ใช้ <strong>เคลียร์หลาย Bit หรือหลาย Word พร้อมกัน</strong> — ประหยัด Rung มาก
+       เวลา reset state ของระบบทั้งหมด</p>
+
+    <pre><code>; เคลียร์ Y0..Y7 พร้อมกัน
+LD    X10
+ZRST  Y0    Y7
+
+; เคลียร์ D0..D99 พร้อมกัน
+LD    X11
+ZRST  D0    D99</code></pre>
+
+    <h2>ตัวอย่างใช้งานจริง — Star–Delta Motor Starter</h2>
+
+    <p>ตัวอย่างคลาสสิกที่ต้องใช้ <em>ทุก</em> คำสั่งที่เพิ่งเรียน — สตาร์ทมอเตอร์แบบ Star เป็นเวลา 5 วินาที แล้วสลับเป็น Delta อัตโนมัติ</p>
+
+    <figure>
+      <img src="images/star-delta-power-circuit.jpg" alt="Star-Delta motor power circuit">
+      <figcaption>วงจรกำลังของระบบ Star–Delta — KM1 = Main, KM2 = Delta, KM3 = Star, Over Load Relay อนุกรมในวงจร</figcaption>
+    </figure>
+
+    <div class="fig-side">
+      <figure>
+        <img src="images/star-connection-terminal.jpg" alt="Star connection terminal">
+        <figcaption><strong>Star</strong> — ขั้ว W2/U2/V2 ของมอเตอร์ลัดวงจรร่วมกัน, V_phase = V_line/√3</figcaption>
+      </figure>
+      <figure>
+        <img src="images/delta-connection-terminal.jpg" alt="Delta connection terminal">
+        <figcaption><strong>Delta</strong> — ขั้วจับคู่แบบ U1-W2, V1-U2, W1-V2 → กระแสเต็มที่</figcaption>
+      </figure>
+    </div>
+
+    <ol class="steps">
+      <li>
+        <strong>กำหนด I/O Mapping</strong>
+        <ul>
+          <li><code>X0</code> = ปุ่ม Start · <code>X1</code> = ปุ่ม Stop · <code>X2</code> = Overload Relay (NC)</li>
+          <li><code>Y0</code> = K1 (Main Contactor) · <code>Y1</code> = K2 (Star) · <code>Y2</code> = K3 (Delta)</li>
+        </ul>
+      </li>
+      <li>
+        <strong>Rung 1 — Start/Stop Latch ของ Main</strong>
+        <pre><code>LD   X0      ; Start
+OR   Y0      ; Self-hold
+ANI  X1      ; Stop (NC)
+AND  X2      ; Overload OK (NC)
+OUT  Y0      ; Main Contactor</code></pre>
+      </li>
+      <li>
+        <strong>Rung 2 — Star ON เป็นเวลา 5 วินาที</strong>
+        <pre><code>LD   Y0      ; Main ON?
+ANI  T0      ; ยังไม่ครบ 5 วินาที
+OUT  Y1      ; Star Contactor
+
+LD   Y0
+OUT  T0  K50 ; 50 × 0.1s = 5.0s</code></pre>
+      </li>
+      <li>
+        <strong>Rung 3 — Delta ON หลัง T0 ครบ + Interlock กับ Y1</strong>
+        <pre><code>LD   T0      ; ครบเวลาแล้ว
+ANI  Y1      ; กัน Star/Delta ซ้อนกัน (Interlock)
+AND  Y0
+OUT  Y2      ; Delta Contactor</code></pre>
+      </li>
+      <li>
+        <strong>ทดลองใน Simulator</strong>
+        ก่อนต่อ Hardware จริง ลองรันใน <a href="mit-04-simulation.html">GX Simulator</a>
+        ดู Sequence ว่าถูกต้อง — Star ติด 5 วิ → Star ดับ → Delta ติด
+      </li>
+    </ol>
+
+    <figure>
+      <img src="images/ladder-star-delta-full.png" alt="Full Star-Delta ladder in GX Works3">
+      <figcaption>Ladder Star–Delta ครบทุก Rung ใน GX Works3 — Rung 1–3: Main + Star + T0 (5s), Rung 4–6: Delta + T1 interlock, Rung 7: <code>ZRST T0 T1</code> เคลียร์ Timer ทั้งคู่ตอนหยุด</figcaption>
+    </figure>
+
+    <figure>
+      <img src="images/star-delta-timing-diagram.png" alt="Star-Delta timing diagram">
+      <figcaption>Timing diagram ของ Start-Delta — START_SW → T0 นับ 5 วินาที → K2 (Star) ON ก่อน → ครบเวลา K2 OFF → K3 (Delta) ON → จนกระทั่ง STOP หรือ Emergency</figcaption>
+    </figure>
+
+    <h3>🧩 The Big One — Build the Star–Delta Rungs</h3>
+    <p>โจทย์ใหญ่ที่สุดของบทนี้ — ประกอบ 4 Rung ของ Star–Delta ทั้งหมด ด้วย 13 บล็อก. เลื่อนข้อความโจทย์ขึ้นไปดูข้อกำหนดแต่ละ Rung:</p>
+    <div class="rung-builder" data-puzzle="star-delta-puzzle" data-syntax="mit"></div>
+
+    <h3>🎮 ลองเล่น — Star–Delta แบบเต็มระบบ</h3>
+    <p>กด <code>X0</code> (Start) — สังเกตว่า Y0 (Main) + Y1 (Star) ติดพร้อมกัน → T0 นับขึ้น 5 วินาที → Y1 OFF + Y2 (Delta) ติด · ลอง force <code>X2</code> (OL) ให้ OFF ระหว่างทาง = จำลอง overload trip:</p>
+    <div class="ladder-sim" data-example="star-delta" data-syntax="mit"></div>
+
+    <div class="callout warn">
+      <strong>Interlock สำคัญมาก!</strong>
+      ระหว่าง Star (Y1) กับ Delta (Y2) ต้องมีจังหวะที่ <em>ทั้งคู่ดับ</em> สั้น ๆ ก่อนที่อีกตัวจะติด —
+      ไม่งั้น Contactor จะลัดวงจรเสียหายหนัก ในงานจริงนิยมใส่ Off-Delay timer ~50–100 ms ระหว่างสลับ
+    </div>
+
+    <h2>สรุปสำหรับบทนี้</h2>
+    <ul>
+      <li>Ladder อ่านซ้ายไปขวา · เริ่มจาก Contact (Input ของ Rung) จบที่ Coil (Output ของ Rung)</li>
+      <li>จำสัญลักษณ์ Device ให้ได้: <code>X</code> = Input · <code>Y</code> = Output · <code>M</code> = Internal · <code>D</code> = Data · <code>T</code> = Timer · <code>C</code> = Counter</li>
+      <li><strong>X/Y เป็น Octal</strong> — ไม่มี X8/X9</li>
+      <li><code>MOV</code> = ก็อปครั้งเดียว · <code>MOVP</code> = pulse · <code>BMOV</code> = block</li>
+      <li>Timer ใช้ <code>OUT T# K#</code> — K คือ "จำนวนหน่วยเวลา" ไม่ใช่หน่วยมิลลิวินาทีตรง ๆ</li>
+      <li>เสมอเขียน <strong>Interlock</strong> เมื่อต้องสลับ Contactor</li>
+    </ul>
+
+    <div class="pager">
+      <a href="mit-01-intro.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">M01 — รู้จัก FX5U</div>
+      </a>
+      <a href="mit-03-sensors.html" class="next">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">M03 — เซ็นเซอร์ &amp; I/O</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  PLC Automation Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){
+  var lb = document.getElementById('lightbox');
+  if(!lb) return;
+  var img = lb.querySelector('img');
+  document.querySelectorAll('.content img').forEach(function(im){
+    im.style.cursor = 'zoom-in';
+    im.addEventListener('click', function(){ img.src = im.src; lb.classList.add('open'); });
+  });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') lb.classList.remove('open'); });
+})();
+</script>
+<script src="js/progress.js" defer></script>
+<script src="js/activities/ladder-sim.js" defer></script>
+<script src="js/activities/scan-cycle.js" defer></script>
+<script src="js/activities/rung-builder.js" defer></script>
+</body>
+</html>

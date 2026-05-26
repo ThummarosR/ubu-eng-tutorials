@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ติดตั้ง VS Code / Cursor — Step by Step | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>🚀 เริ่มต้น (Setup)</h4>
+      <a href="setup-python.html"><span class="num">🐍</span> ติดตั้ง Python</a>
+      <a href="setup-vscode.html" class="active"><span class="num">💻</span> VS Code / Cursor</a>
+      <a href="setup-terminal.html"><span class="num">🖥️</span> Terminal พื้นฐาน</a>
+      <a href="setup-pip.html"><span class="num">📦</span> pip + Packages</a>
+      <a href="setup-git.html"><span class="num">🌿</span> Git + GitHub</a>
+      <a href="setup-colab.html"><span class="num">☁️</span> Google Colab</a>
+      <a href="setup-ai.html"><span class="num">🤖</span> AI Accounts</a>
+      <a href="python-basics.html"><span class="num">📖</span> Python Cheat-sheet</a>
+
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">Setup · Editor + AI in one place</span>
+    <h1>💻 ติดตั้ง VS Code / Cursor — Step by Step</h1>
+    <p class="lede">
+      <strong>VS Code</strong> และ <strong>Cursor</strong> เป็น editor ฟรีจาก Microsoft / Anysphere ·
+      ใช้สลับกันได้ <em>"คนละชื่อ interface เหมือนกัน 95%"</em> · หน้านี้สอนให้ใช้ตัวใดก็ได้
+    </p>
+
+    <h2>🤔 เลือกตัวไหนดี?</h2>
+
+    <table>
+      <thead>
+        <tr><th></th><th>VS Code</th><th>Cursor</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>ราคา</strong></td>
+          <td>ฟรี 100%</td>
+          <td>ฟรี + Pro ($20/เดือน)</td>
+        </tr>
+        <tr>
+          <td><strong>AI ในตัว</strong></td>
+          <td>ต้องลง extension (Copilot $10/เดือน)</td>
+          <td>มีในตัว — Claude / GPT-4 / ฟรี tier</td>
+        </tr>
+        <tr>
+          <td><strong>เหมาะกับ</strong></td>
+          <td>คนเริ่มต้น · งานทั่วไป · ใช้กับทุกภาษา</td>
+          <td>คนต้องการ AI ช่วยทุกขั้น (W04 เน้นใช้ Cursor)</td>
+        </tr>
+        <tr>
+          <td><strong>ข้อเสีย</strong></td>
+          <td>ต้องเปิด Claude/ChatGPT แท็บแยก</td>
+          <td>ฟรี tier มีจำกัด · ต้อง login</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>คำแนะนำ — ลงทั้งคู่ก็ได้</strong>
+      ขนาดประมาณ 300 MB ต่อตัว · นักศึกษาส่วนมากเริ่มที่ Cursor (เพราะคู่มือนี้ใช้ AI เยอะ) ·
+      <em>แต่</em> ถ้าเครื่องช้า / เน็ตช้า / ไม่อยาก login → VS Code ทำได้ทุกอย่างที่คอร์สนี้ต้องการ
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>📥 ขั้นที่ 1 — ดาวน์โหลด + ติดตั้ง</h2>
+
+    <h3>VS Code</h3>
+    <ol class="steps">
+      <li>
+        <strong>ไปที่ <a href="https://code.visualstudio.com" target="_blank">code.visualstudio.com</a></strong>
+        — เว็บตรวจระบบให้อัตโนมัติ · ปุ่มดาวน์โหลดสีฟ้าใหญ่ตรงกลาง
+      </li>
+      <li>
+        <strong>เปิดไฟล์ติดตั้ง</strong>
+        — Windows: <code>.exe</code> · Mac: <code>.dmg</code> ลากเข้า Applications · กดยอมรับ license
+      </li>
+      <li>
+        <strong>(Windows) เลือก option ตอนติดตั้ง</strong>
+        — ติ๊กทุกข้อใต้ "Additional tasks":
+        <ul style="margin-top:6px">
+          <li>☑ Add "Open with Code" action to Windows Explorer file context menu</li>
+          <li>☑ Add "Open with Code" action to Windows Explorer directory context menu</li>
+          <li>☑ Register Code as an editor for supported file types</li>
+          <li>☑ Add to PATH</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h3>Cursor</h3>
+    <ol class="steps">
+      <li>
+        <strong>ไปที่ <a href="https://cursor.com" target="_blank">cursor.com</a></strong>
+        — กดปุ่ม "Download for Windows/Mac" · ตรวจระบบให้อัตโนมัติ
+      </li>
+      <li>
+        <strong>เปิดไฟล์ติดตั้ง</strong>
+        — installer คล้าย VS Code · กด Next ตามค่า default
+      </li>
+      <li>
+        <strong>เปิด Cursor — login ครั้งแรก</strong>
+        — login ด้วย Google account ของมหาลัย (หรือ Gmail ส่วนตัว) · ใช้ free tier ก็พอสำหรับคอร์สนี้
+      </li>
+      <li>
+        <strong>ตอน setup wizard — เลือกค่าต่อไปนี้:</strong>
+        <ul style="margin-top:6px">
+          <li><strong>Editor settings:</strong> Default (เปลี่ยนทีหลังได้)</li>
+          <li><strong>Codebase indexing:</strong> Enabled</li>
+          <li><strong>Privacy mode:</strong> เปิดถ้ากังวลเรื่องข้อมูล · ปิดถ้าอยากให้ AI เรียนจาก code คุณ</li>
+        </ul>
+      </li>
+    </ol>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🐍 ขั้นที่ 2 — ติดตั้ง Python extension</h2>
+
+    <p>
+      VS Code / Cursor ไม่ได้รู้จัก Python มาตั้งแต่แรก · extension ของ Microsoft จะให้:
+      <em>"Run button, IntelliSense, debugger, format on save"</em>
+    </p>
+
+    <ol class="steps">
+      <li>
+        <strong>เปิด Extensions panel</strong>
+        — กด <kbd>Ctrl + Shift + X</kbd> (Win/Linux) หรือ <kbd>Cmd + Shift + X</kbd> (Mac) ·
+        หรือกด icon "tetris" ใน sidebar ซ้าย
+      </li>
+      <li>
+        <strong>ค้นหา "Python"</strong>
+        — ตัวบนสุดต้องเป็นของ <strong>Microsoft</strong> มีโลโก้สีฟ้า · ระวังของปลอม
+      </li>
+      <li>
+        <strong>กด Install</strong>
+        — VS Code จะลง <em>3 ตัวรวด</em>: Python, Pylance, Python Debugger · ไม่ต้องลงแยก
+      </li>
+      <li>
+        <strong>Reload window (ถ้าโดนถาม)</strong>
+        — Ctrl+Shift+P → "Developer: Reload Window" → Enter
+      </li>
+    </ol>
+
+    <h3>Extension อื่นที่แนะนำ (ลงเมื่ออยาก)</h3>
+    <table>
+      <thead><tr><th>Extension</th><th>ทำอะไร</th><th>เมื่อไหร่ใช้</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Black Formatter</strong> (Microsoft)</td>
+          <td>จัด indent + เว้นวรรคให้สวยอัตโนมัติเมื่อ save</td>
+          <td>เริ่ม W05 — โค้ดเริ่มยาว</td>
+        </tr>
+        <tr>
+          <td><strong>Jupyter</strong> (Microsoft)</td>
+          <td>เปิด <code>.ipynb</code> notebook ใน VS Code ได้</td>
+          <td>W08–W10 (ทำ data project)</td>
+        </tr>
+        <tr>
+          <td><strong>GitLens</strong></td>
+          <td>เห็น git history + blame ใน editor</td>
+          <td>W14 (เริ่มใช้ git จริง)</td>
+        </tr>
+        <tr>
+          <td><strong>Thai Language Pack</strong></td>
+          <td>เปลี่ยน UI VS Code เป็นภาษาไทย</td>
+          <td>ถ้าอ่านอังกฤษไม่คล่อง · <em>"แต่ภาษาอังกฤษช่วยตอนค้น error"</em></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>📁 ขั้นที่ 3 — สร้าง folder โปรเจกต์แรก</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>สร้าง folder ใน File Explorer / Finder</strong>
+        — ที่ <code>Documents/cp/</code> สร้าง folder ชื่อ <code>cp-w04</code> (หรืออะไรก็ได้ที่จำได้)
+        · <span class="pill warn">ห้ามใช้ภาษาไทย / เว้นวรรค ในชื่อ folder</span> path กว้าง ๆ พังบ่อย
+      </li>
+      <li>
+        <strong>เปิด folder ใน VS Code</strong>
+        — เมนู <em>File → Open Folder</em> · เลือก <code>cp-w04</code> · กด Open
+      </li>
+      <li>
+        <strong>(ครั้งแรก) "Do you trust the authors?"</strong>
+        — กด <strong>Yes, I trust the authors</strong> · เป็น code ของเราเอง
+      </li>
+      <li>
+        <strong>สร้างไฟล์ Python แรก</strong>
+        — กด icon "ไฟล์ใหม่" ใน Explorer panel (Ctrl+N) · ตั้งชื่อ <code>hello.py</code> ·
+        <em>ลงท้าย <code>.py</code> สำคัญมาก</em> — VS Code จะรู้ว่าเป็น Python
+      </li>
+      <li>
+        <strong>เขียนโค้ดบรรทัดแรก</strong>
+        <pre><code>print("สวัสดี โลก!")
+print("Hello, World!")
+print(2 + 3)</code></pre>
+        Save ด้วย <kbd>Ctrl + S</kbd> (Mac: <kbd>Cmd + S</kbd>)
+      </li>
+    </ol>
+
+    <h2>▶️ ขั้นที่ 4 — รันโปรแกรม (3 วิธี)</h2>
+
+    <h3>วิธีที่ 1 — ปุ่ม Run (ง่ายสุด)</h3>
+    <ul>
+      <li>มุมขวาบนของ editor มี ▷ สีเขียว</li>
+      <li>กด → panel "Terminal" จะเปิดข้างล่าง → เห็น output</li>
+    </ul>
+
+    <h3>วิธีที่ 2 — F5 + Debugger</h3>
+    <ul>
+      <li>กด <kbd>F5</kbd> · ครั้งแรกถามว่าจะใช้ "Python File" → Enter</li>
+      <li>รันแบบ debug · ใส่ breakpoint ได้ (คลิกซ้ายของเลขบรรทัด)</li>
+    </ul>
+
+    <h3>วิธีที่ 3 — Terminal เอง (ที่ใช้บ่อยที่สุดในงานจริง)</h3>
+    <ol class="steps">
+      <li>เปิด terminal: <kbd>Ctrl + `</kbd> (backtick — ปุ่มข้าง 1)</li>
+      <li>พิมพ์: <code>python hello.py</code> (Mac: <code>python3 hello.py</code>)</li>
+      <li>กด Enter → เห็น output</li>
+    </ol>
+
+    <div class="callout info">
+      <strong>"Python interpreter not found"?</strong>
+      VS Code ไม่เจอ Python · กด <kbd>Ctrl + Shift + P</kbd> → พิมพ์ <em>"Python: Select Interpreter"</em> →
+      เลือกเวอร์ชันที่ลงไว้ · ถ้าไม่มีในรายการ → กลับไปทำ <a href="setup-python.html#verify">ตรวจ Python</a> อีกครั้ง
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>⌨️ Shortcuts ที่ใช้ทุกวัน</h2>
+
+    <p>Windows: <kbd>Ctrl</kbd> · Mac: <kbd>Cmd</kbd></p>
+
+    <table>
+      <thead><tr><th>Shortcut</th><th>ทำอะไร</th></tr></thead>
+      <tbody>
+        <tr><td><kbd>Ctrl/Cmd + S</kbd></td><td>Save</td></tr>
+        <tr><td><kbd>Ctrl + `</kbd></td><td>เปิด/ปิด terminal</td></tr>
+        <tr><td><kbd>Ctrl + B</kbd></td><td>เปิด/ปิด sidebar (Explorer)</td></tr>
+        <tr><td><kbd>Ctrl + /</kbd></td><td>comment / uncomment บรรทัดที่ cursor อยู่</td></tr>
+        <tr><td><kbd>Ctrl + D</kbd></td><td>เลือกคำที่ cursor อยู่ทุกที่ในไฟล์</td></tr>
+        <tr><td><kbd>Alt + ↑/↓</kbd></td><td>เลื่อนบรรทัดขึ้น/ลง</td></tr>
+        <tr><td><kbd>Shift + Alt + ↓</kbd></td><td>copy บรรทัดลงข้างล่าง</td></tr>
+        <tr><td><kbd>Ctrl + Shift + K</kbd></td><td>ลบทั้งบรรทัด</td></tr>
+        <tr><td><kbd>Ctrl + F</kbd></td><td>ค้นหาในไฟล์</td></tr>
+        <tr><td><kbd>Ctrl + Shift + F</kbd></td><td>ค้นหาทุกไฟล์ใน folder</td></tr>
+        <tr><td><kbd>Ctrl + Shift + P</kbd></td><td>Command Palette — ทำอะไรก็ได้</td></tr>
+        <tr><td><kbd>F5</kbd></td><td>Run + debug</td></tr>
+      </tbody>
+    </table>
+
+    <h3>🤖 Cursor-specific (เพิ่มจาก VS Code)</h3>
+    <table>
+      <thead><tr><th>Shortcut</th><th>ทำอะไร</th><th>ใช้เมื่อ</th></tr></thead>
+      <tbody>
+        <tr><td><kbd>Ctrl + L</kbd></td><td>เปิด AI chat panel</td><td>ถาม AI เรื่อง code ที่ไฮไลต์</td></tr>
+        <tr><td><kbd>Ctrl + K</kbd></td><td>AI แก้/เขียน inline ตรงที่ cursor อยู่</td><td>"แก้บรรทัดนี้" · "เพิ่ม print"</td></tr>
+        <tr><td><kbd>Ctrl + I</kbd></td><td>AI Composer — แก้หลายไฟล์พร้อมกัน</td><td>refactor ใหญ่ (W11)</td></tr>
+        <tr><td><kbd>Tab</kbd> (ตอนพิมพ์)</td><td>รับคำแนะนำ AI autocomplete</td><td>เห็นข้อความเทา → กด Tab</td></tr>
+      </tbody>
+    </table>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🔧 ปัญหาที่พบบ่อย</h2>
+
+    <h3>1. รัน Python แล้วเห็น output แต่ <code>print()</code> ที่มีภาษาไทยกลายเป็น <code>???</code></h3>
+    <ul>
+      <li>เซฟไฟล์เป็น UTF-8 (VS Code ทำให้อัตโนมัติ · ตรวจที่ status bar ขวาล่าง — เขียน "UTF-8")</li>
+      <li>ถ้าเป็นไฟล์ที่ copy มาจาก Notepad — ลอง Save As → Encoding: UTF-8</li>
+      <li><strong>Windows PowerShell แสดงไทย:</strong> ใน terminal พิมพ์ <code>chcp 65001</code> แล้วรันใหม่</li>
+    </ul>
+
+    <h3>2. กด Run แล้วเห็น <code>IndentationError</code></h3>
+    <ul>
+      <li>Python ใช้ <em>การย่อหน้า (indentation)</em> แทนวงเล็บ · ภายใน <code>if</code> / <code>for</code> / <code>def</code> ต้องเยื้องเข้าไป 4 ช่อง</li>
+      <li>VS Code → File → Preferences → Settings → ค้น "Editor: Tab Size" → ตั้งเป็น 4</li>
+      <li>ค้น "Editor: Insert Spaces" → ติ๊ก ✅ (ห้ามใช้ Tab character ผสม spaces)</li>
+    </ul>
+
+    <h3>3. <code>ModuleNotFoundError: No module named 'pandas'</code></h3>
+    <ul>
+      <li>ยังไม่ลง package · เปิด terminal ใน VS Code (Ctrl + `) แล้ว: <code>pip install pandas</code></li>
+      <li>Mac: <code>pip3 install pandas</code></li>
+      <li>ถ้าลงแล้วยังพัง — เลือก interpreter ผิดเวอร์ชัน → Ctrl+Shift+P → "Python: Select Interpreter"</li>
+    </ul>
+
+    <h3>4. VS Code ช้า / กิน RAM เยอะ</h3>
+    <ul>
+      <li>ปิด extension ที่ไม่ใช้: Extensions panel → ⚙️ → Disable</li>
+      <li>ใน folder ใหญ่ — เพิ่ม <code>node_modules</code> + <code>.venv</code> ใน <em>"Files: Exclude"</em> setting</li>
+      <li>Cursor มี indexing เปิดอยู่ — ปิดได้ที่ Settings → Cursor → Codebase Indexing</li>
+    </ul>
+
+    <h3>5. Cursor — "Free tier reached limit"</h3>
+    <ul>
+      <li>ฟรี tier มีจำกัด ~500 fast requests/เดือน · พอสำหรับ W04 แต่ใช้หมดได้เร็ว</li>
+      <li>ทางเลือก: ใช้ Claude/ChatGPT (เว็บ) คู่กัน · copy code ↔ chat</li>
+      <li>หรือสลับมาใช้ VS Code + Continue.dev / Cline (extension ที่ฟรี + ใช้ key ของเราเอง)</li>
+    </ul>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🎯 Checklist ก่อนไปต่อ</h2>
+    <ul>
+      <li>☐ เปิด VS Code / Cursor ได้</li>
+      <li>☐ ลง Python extension (Microsoft) สำเร็จ</li>
+      <li>☐ สร้าง <code>hello.py</code> ในโฟลเดอร์ของตัวเอง</li>
+      <li>☐ กด Run แล้วเห็น <code>สวัสดี โลก!</code> ใน terminal</li>
+      <li>☐ เปิด terminal ใน editor ด้วย <kbd>Ctrl + `</kbd> ได้</li>
+    </ul>
+
+    <div class="callout tip">
+      <strong>เสร็จแล้ว?</strong>
+      ถ้าครบทั้ง 5 ข้อ — พร้อมเข้า W04 ได้เลย ·
+      หรือถ้าอยากลอง <strong><a href="setup-colab.html">Google Colab</a></strong> เป็นทางเลือก
+      (ใช้คู่กันได้ — Colab สำหรับทดลอง, VS Code สำหรับ project ใหญ่)
+    </div>
+
+    <div class="pager">
+      <a href="setup-python.html"><div class="label">← ก่อนหน้า</div><div class="title">ติดตั้ง Python</div></a>
+      <a href="setup-colab.html" class="next"><div class="label">ทางเลือก →</div><div class="title">Google Colab</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+</body>
+</html>

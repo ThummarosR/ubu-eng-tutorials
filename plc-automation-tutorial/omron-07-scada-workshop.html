@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O07 — SCADA Workshop | PLC Automation Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="PLC Automation"></div>
+      <div><div class="title">PLC Automation</div><div class="subtitle">คู่มือฉบับภาษาไทย — 2 Tracks</div></div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; เลือก Track</a>
+      <h4>🟥 Mitsubishi Track</h4>
+      <a href="mit-01-intro.html"><span class="num">M01</span> รู้จัก FX5U</a>
+      <a href="mit-02-ladder.html"><span class="num">M02</span> Ladder Logic</a>
+      <a href="mit-03-sensors.html"><span class="num">M03</span> เซ็นเซอร์ &amp; I/O</a>
+      <a href="mit-04-simulation.html"><span class="num">M04</span> GX Simulator</a>
+      <a href="mit-05-hmi.html"><span class="num">M05</span> HMI Samkoon</a>
+      <a href="mit-06-pid.html"><span class="num">M06</span> PID &amp; Auto-Tuning</a>
+      <a href="mit-07-modbus.html"><span class="num">M07</span> Modbus + PM2230</a>
+      <h4>🟦 Omron Track</h4>
+      <a href="omron-01-intro.html"><span class="num">O01</span> รู้จัก CP1L/CPM2A</a>
+      <a href="omron-02-ladder.html"><span class="num">O02</span> CX-Programmer Ladder</a>
+      <a href="omron-03-fbd.html"><span class="num">O03</span> Function Block (FBD)</a>
+      <a href="omron-04-modbus.html"><span class="num">O04</span> Modbus + Inverter</a>
+      <a href="omron-05-e5cc.html"><span class="num">O05</span> E5CC Temp Control</a>
+      <a href="omron-06-scada.html"><span class="num">O06</span> SCADA (CX-Supervisor)</a>
+      <a href="omron-07-scada-workshop.html" class="active"><span class="num">O07</span> 🏭 SCADA Workshop</a>
+      <h4>แหล่งข้อมูล</h4>
+      <a href="videos.html"><span class="num">▶</span> วิดีโอเลคเชอร์</a>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ O07 · SCADA Workshop · Capstone</span>
+    <h1>🏭 SCADA Workshop — Blink → Water Flow → Chocolate Factory</h1>
+    <p class="lede">
+      บทนี้คือ <strong>Workshop ลงมือทำ</strong> — ไม่ใช่บทอ่าน · เริ่มจากหลอดไฟกะพริบ (Concept ที่ง่ายที่สุด)
+      ไปสู่ระบบเติมน้ำอัตโนมัติ จนถึง <em>Capstone</em>: โรงงานช็อกโกแลตที่ใช้ Recipe จริง · ทุก Step มีทั้ง
+      <strong>Browser Sim</strong> ให้กดเล่นทันที + <strong>CX-Supervisor Lab Handout</strong> ให้ไปลงมือทำในซอฟต์แวร์จริง
+    </p>
+
+    <div class="callout info">
+      <strong>โครงสร้าง 3 Step</strong>
+      <br>· <strong>Step 1 · Blink</strong> — Boolean Point 1 ตัว · Animation ตัวเดียว · เข้าใจ Editor → Runtime
+      <br>· <strong>Step 2 · Water Flow</strong> — 6 Points + Percentage Fill + Script + Auto-stop
+      <br>· <strong>Step 3 · Chocolate Factory</strong> — Multi-pump + Mixing + Recipe + Alarm log · ครบทุก Concept ของ SCADA
+    </div>
+
+    <div class="callout tip">
+      <strong>วิธีใช้แต่ละ Step</strong>
+      <br>1. อ่าน <em>Objective</em> + <em>Process Diagram</em> ของ Step นั้น
+      <br>2. กดเล่น Browser Sim เพื่อทำความเข้าใจ Flow ก่อน
+      <br>3. เปิด CX-Supervisor Trial ลงมือทำตาม <em>Lab Handout</em>
+      <br>4. ผ่าน Checklist ท้าย Step ก่อนข้ามไป Step ถัดไป
+    </div>
+
+    <h3>🎯 เป้าหมายปลายทาง — SCADA จริงที่อยากให้ทำได้</h3>
+    <div class="cx-screens">
+      <figure>
+        <img src="PLC%20project/12_SCADA_CX_Supervisor/extracted/images/การประยุกต์ใช้โปรแกรม_SCADA_ในงานอุตสาหกรรม_2559_1/img-006-003.png" alt="Electric Furnace SCADA mimic">
+        <figcaption>
+          <span class="cx-tag">Industrial Sample</span> <strong>Electric Furnace #1 System</strong> — Plant overview พร้อม Operator name, Power Meter, Trend, Gauge, Alarm — Mimic เดียวเห็นทั้งโรงงาน
+          <span class="cx-book">เล่ม 1 · ตำราอ้างอิง</span>
+        </figcaption>
+      </figure>
+      <figure>
+        <img src="PLC%20project/12_SCADA_CX_Supervisor/extracted/images/การประยุกต์ใช้โปรแกรม_SCADA_ในงานอุตสาหกรรม_2559_1/img-007-004.png" alt="Sugar/Syrup plant mimic">
+        <figcaption>
+          <span class="cx-tag">Industrial Sample</span> <strong>Sugar Stew Plant</strong> — Stew Motor + Steam Valve + Sugar Hopper + Cyclone — Object หลากหลายชนิดบนหน้าเดียว · มีอักษรกำกับชัดเจน
+          <span class="cx-book">เล่ม 1 · ตำราอ้างอิง</span>
+        </figcaption>
+      </figure>
+      <figure>
+        <img src="PLC%20project/12_SCADA_CX_Supervisor/extracted/images/การประยุกต์ใช้โปรแกรม_SCADA_ในงานอุตสาหกรรม_2559_1/img-004-001.png" alt="6-step CX-Supervisor workflow diagram">
+        <figcaption>
+          <span class="cx-tag">Workflow</span> <strong>6 ขั้นตอนของ Page หนึ่งหน้า</strong>: วาดภาพ → กำหนดตัวแปร → กำหนดการเคลื่อนไหว → เขียน Script → เชื่อมต่อ PLC → รันโปรเจค · Workshop นี้พาทำครบทั้ง 6
+          <span class="cx-book">เล่ม 1 · บทที่ 1</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- STEP 1 · BLINK                                          -->
+    <!-- ====================================================== -->
+
+    <h2 id="step-1">🔴 Step 1 · Blink — ไฟกะพริบหน้าเดียว</h2>
+
+    <h3>Objective</h3>
+    <p>เข้าใจ <strong>ทาง 3 ทาง</strong> ของทุก SCADA project: <em>Point</em> (Tag) → <em>Animation</em> บน Shape → <em>Runtime</em>
+      · จุดประสงค์ของ Step นี้ <strong>ไม่ใช่</strong> ให้ไฟกะพริบ แต่ให้รู้ว่า "อะไรเชื่อมกับอะไร" ก่อนเข้าระบบที่ซับซ้อน</p>
+
+    <h3>Process Diagram</h3>
+    <div class="flowdiagram">
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node cpu" style="flex:1 1 200px">
+          <h4>Point: <code>Lamp_Run</code></h4>
+          <p class="fd-sub">Boolean · 100.00</p>
+        </div>
+        <div class="flowdiagram-arrow">→</div>
+        <div class="flowdiagram-node" style="flex:1 1 220px;border-color:rgba(45,212,191,0.4)">
+          <h4 style="color:var(--cyan)">Animation: Visibility / Color</h4>
+          <p class="fd-sub">Shape บน Mimic Page</p>
+        </div>
+        <div class="flowdiagram-arrow">→</div>
+        <div class="flowdiagram-node output" style="flex:1 1 200px">
+          <h4>Runtime</h4>
+          <p class="fd-sub">Toggle 0↔1 / Script</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>🖥️ Browser Sim — ลองสร้างก่อน</h3>
+    <p>กรอก Point → คลิกหลอดเพื่อเลือก → กดปุ่ม Animation → กด ▶ Build &amp; Run → Toggle หรือเปิด Auto-blink</p>
+    <div class="scada-ws-blink"></div>
+
+    <h3>📘 Lab Handout — ลงมือใน CX-Supervisor Developer</h3>
+
+    <div class="cx-screens">
+      <figure>
+        <img src="PLC%20project/12_SCADA_CX_Supervisor/extracted/images/การประยุกต์ใช้โปรแกรม_SCADA_ในงานอุตสาหกรรม_2559_1/img-011-008.png" alt="New Project menu in CX-Supervisor">
+        <figcaption>
+          <span class="cx-tag">Step 1</span> <strong>File → New Project → CX-Supervisor Plus Project</strong>
+          <br>เมนูตอนเริ่มสร้าง Project ใหม่ · ถ้ามี Lite license เลือก "Machine Edition Project" แทน
+          <span class="cx-book">เล่ม 1 · Exam 1 Blink</span>
+        </figcaption>
+      </figure>
+      <figure>
+        <img src="PLC%20project/12_SCADA_CX_Supervisor/extracted/images/การประยุกต์ใช้โปรแกรม_SCADA_ในงานอุตสาหกรรม_2559_1/img-013-012.png" alt="Point Editor with system points">
+        <figcaption>
+          <span class="cx-tag">Step 2</span> <strong>Point Editor</strong> — กดที่ไอคอนสีเหลือง (วงกลมแดงในภาพ) เพื่อ <em>Add Point</em>
+          <br>$Hour, $Date, $AMPM ที่เห็นคือ System Points สำเร็จรูป — Point ของเราจะเพิ่มต่อจากนี้
+          <span class="cx-book">เล่ม 1</span>
+        </figcaption>
+      </figure>
+      <figure>
+        <img src="PLC%20project/12_SCADA_CX_Supervisor/extracted/images/การประยุกต์ใช้โปรแกรม_SCADA_ในงานอุตสาหกรรม_2559_1/img-017-019.png" alt="Blink animation dialog with Digital Expression state == 1">
+        <figcaption>
+          <span class="cx-tag">Step 4</span> <strong>Blink Animation dialog</strong> — Digital Expression: <code>state == 1</code> · เลือกสี Blink Colour (ในภาพคือสีแดง)
+          <br>นี่คือทางลัด: ไม่ต้องเขียน Script เลย — แค่ใส่ Animation "Blink" บน Shape แล้ว Run
+          <span class="cx-book">เล่ม 1 · Exam 1</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <ol class="steps">
+      <li>
+        <strong>เปิด Developer และสร้าง Project</strong>
+        <code>Start → CX-Supervisor → CX-Supervisor Developer Lite</code>
+        <br><code>File → New Project</code> → ชื่อ <code>LAB1_Blink</code> → OK
+        <br><em>ดูภาพข้างบน — เลือก CX-Supervisor Plus Project (หรือ Machine Edition ถ้าเป็น Lite)</em>
+      </li>
+      <li>
+        <strong>เพิ่ม Point</strong>
+        <code>Project workspace → Points → Right-click → Add Point</code>
+        <ul>
+          <li>Name: <code>Lamp_Run</code></li>
+          <li>Type: <strong>Boolean</strong></li>
+          <li>I/O Source: <em>Internal</em> (ยังไม่ต่อ PLC จริง — ทดสอบใน PC ก่อน)</li>
+        </ul>
+      </li>
+      <li>
+        <strong>วาง Shape</strong>
+        เปิด Page <code>Main</code> → ลากวงกลม/สี่เหลี่ยมจาก Toolbox → ตั้งสีตามใจ
+      </li>
+      <li>
+        <strong>ใส่ Animation</strong>
+        คลิกขวาที่ Shape → <code>Animations</code> tab → เลือก
+        <ul>
+          <li><strong>Visibility</strong>: Expression = <code>Lamp_Run.Value = 1</code> · Show When True</li>
+          <li>หรือ <strong>Color</strong>: Expression = <code>Lamp_Run.Value</code> · เลือกสีเมื่อ 0 และเมื่อ 1</li>
+        </ul>
+      </li>
+      <li>
+        <strong>(Optional) สร้าง Auto-blink Script</strong>
+        <code>Project → Scripts → Add → Page_OnTimer</code> (interval = 500 ms)
+        <div class="callout tip">
+          <strong>⚠️ CX-Supervisor มี Script 2 ภาษาให้เลือก — ต้องเลือกให้ถูก</strong>
+          <br>ตอนสร้าง Script ใหม่ CX-Supervisor จะถาม Language:
+          <br>· <strong>VBScript</strong> — Syntax แบบ Microsoft · ใช้ <code>'</code> comment · <code>If ... Then ... End If</code> · <code>Point.Value</code> · <code>Application.LogEvent</code>
+          <br>· <strong>CX-Supervisor Script</strong> — Syntax เฉพาะของ Omron · ใช้ <code>(* ... *)</code> comment · <code>IF ... THEN ... ENDIF</code> · <code>Point := value</code>
+          <br><strong>Lab นี้ทุก Snippet เขียนด้วย VBScript</strong> — ตอนสร้าง Script ให้เลือก <em>VBScript</em> จาก dropdown ทุกครั้ง · ถ้าเลือกผิดภาษา Build จะ Error ทันที
+        </div>
+        <p class="script-lang"><span class="cx-tag">ภาษา: VBScript</span></p>
+<pre><code>Lamp_Run.Value = Not Lamp_Run.Value</code></pre>
+      </li>
+      <li>
+        <strong>Build &amp; Run</strong>
+        <code>Project → Build</code> → <code>Run</code> · กด Toggle Switch บน Mimic หรือดู Auto-blink
+      </li>
+    </ol>
+
+    <div class="callout note">
+      <strong>เช็คก่อนข้ามไป Step 2</strong>
+      <br>☐ สร้าง Point ได้ครบ ทั้งใน Sim และ CX-Supervisor
+      <br>☐ ใส่ Animation อย่างน้อย 1 ตัวบน Shape
+      <br>☐ กด Run แล้วเห็นการเปลี่ยนแปลง (กะพริบหรือเปลี่ยนสี)
+      <br>☐ <strong>อธิบายได้</strong> ว่า Point/Animation/Runtime ต่างกันยังไง
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- STEP 2 · WATER FLOW                                     -->
+    <!-- ====================================================== -->
+
+    <h2 id="step-2">💧 Step 2 · Water Flow Tank — เติมน้ำอัตโนมัติ</h2>
+
+    <h3>Objective</h3>
+    <p>ขยายจาก 1 Point เป็น <strong>6 Points</strong> ครอบคลุม 4 พื้นที่ Address (CIO Input/Output, DM Word, Work Bit)
+      · ใช้ Animation <strong>Percentage Fill</strong> + <strong>Color</strong> · เริ่มเขียน Script ที่มี Logic
+      <em>ดับ Pump เองเมื่อเต็มถัง</em> — เข้าใจ "Closed-loop Level Control"</p>
+
+    <h3>Process Diagram</h3>
+    <div class="flowdiagram">
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node input" style="flex:1 1 200px">
+          <h4>Operator</h4>
+          <ul>
+            <li><code>Start</code> · 0.00</li>
+            <li><code>Stop</code> · 0.01</li>
+            <li><code>Drain</code> · 0.02</li>
+          </ul>
+        </div>
+        <div class="flowdiagram-arrow">→</div>
+        <div class="flowdiagram-node cpu" style="flex:1 1 260px">
+          <h4>Page_OnTick (VBScript)</h4>
+          <p class="fd-sub">If Pump=1 → WaterLV++ · ถ้า ≥ 90 → Pump=0, Level_High=1</p>
+        </div>
+        <div class="flowdiagram-arrow">→</div>
+        <div class="flowdiagram-node output" style="flex:1 1 200px">
+          <h4>Field</h4>
+          <ul>
+            <li><code>Pump</code> · 100.00</li>
+            <li>Tank · <code>WaterLV</code> D100</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <h3>🖥️ Browser Sim — ลองสร้างก่อน</h3>
+    <p>สร้าง 6 Points (ดู cheat sheet ในช่องซ้าย) → ใส่ Animations 2 ตัว → ▶ Run → Start → ดู Pump auto-stop ที่ 90%</p>
+    <div class="scada-ws-waterflow"></div>
+
+    <h3>📘 Lab Handout — ลงมือใน CX-Supervisor Developer</h3>
+
+    <div class="cx-screens">
+      <figure>
+        <img src="PLC%20project/12_SCADA_CX_Supervisor/extracted/images/การประยุกต์ใช้โปรแกรม_SCADA_ในงานอุตสาหกรรม_2559_1/img-029-036.png" alt="Water Tank mimic — empty state with OFF/ON switches">
+        <figcaption>
+          <span class="cx-tag">Editor</span> <strong>WATER TANK — Mimic (ตอนยังไม่รัน)</strong>
+          <br>มี INLET pipe · OUTLET pipe · Tank rectangle (กรอบฟ้า) · Gauge แสดง 0–100 · ปุ่ม OFF/ON ทั้ง 2 ตัว
+          <br>นี่คือ Stage Editor — ยังไม่ Run จึงไม่มีสีน้ำในถัง
+          <span class="cx-book">เล่ม 1 · Exam 4</span>
+        </figcaption>
+      </figure>
+      <figure>
+        <img src="PLC%20project/12_SCADA_CX_Supervisor/extracted/images/การประยุกต์ใช้โปรแกรม_SCADA_ในงานอุตสาหกรรม_2559_1/img-026-033.png" alt="Water Tank mimic — running with water filling">
+        <figcaption>
+          <span class="cx-tag">Runtime</span> <strong>WATER TANK — กำลังรัน</strong>
+          <br>Percentage Fill animation เติมสีน้ำเงินจากล่างขึ้นบน · Gauge เลื่อนขึ้นพร้อมกัน · ปุ่ม IN/OUT ใช้ควบคุม Pump
+          <br>เป้าหมายของ Step 2 คือทำหน้าจอแบบนี้ให้ใช้งานได้
+          <span class="cx-book">เล่ม 1 · Exam 4</span>
+        </figcaption>
+      </figure>
+      <figure>
+        <img src="PLC%20project/12_SCADA_CX_Supervisor/extracted/images/การประยุกต์ใช้โปรแกรม_SCADA_ในงานอุตสาหกรรม_2559_1/img-021-026.png" alt="Animation Editor showing all animation types">
+        <figcaption>
+          <span class="cx-tag">Animation</span> <strong>Animation Editor — Object Actions</strong>
+          <br>ทุก Animation ที่ใช้ได้: Blink, Close Page, Colour Change (Analogue/Digital), Display Page, <strong>Display Value</strong>, <strong>Move</strong>, <strong>Resize</strong>, Execute Script
+          <br>Step 2 จะใช้: <em>Display Value</em> (Gauge) + Move/Resize (ระดับน้ำ) + Colour Change (Pump)
+          <span class="cx-book">เล่ม 1</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <ol class="steps">
+      <li>
+        <strong>สร้าง Project ใหม่ + เพิ่ม PLC Connection (ถ้ามี CP1L)</strong>
+        <code>File → New Project</code> → <code>LAB2_WaterFlow</code>
+        <br><code>Project → Add PLC → CP1L · FinsEthernet · IP ของ PLC · Node 1</code> · Test Connection
+        <br><em>ถ้ายังไม่มี PLC จริง — ใช้ I/O Source = Internal ทุก Point</em>
+      </li>
+      <li>
+        <strong>เพิ่ม Points ครบ 6 ตัว</strong> ตามตาราง:
+        <table>
+          <thead><tr><th>ชื่อ</th><th>Type</th><th>Address</th><th>หน้าที่</th></tr></thead>
+          <tbody>
+            <tr><td><code>Start</code></td><td>Boolean</td><td><code>0.00</code> (CIO Input)</td><td>ปุ่ม Start หน้าตู้</td></tr>
+            <tr><td><code>Stop</code></td><td>Boolean</td><td><code>0.01</code></td><td>ปุ่ม Stop</td></tr>
+            <tr><td><code>Drain</code></td><td>Boolean</td><td><code>0.02</code></td><td>เปิดวาล์วระบาย</td></tr>
+            <tr><td><code>Pump</code></td><td>Boolean</td><td><code>100.00</code> (CIO Output)</td><td>คำสั่ง Pump motor</td></tr>
+            <tr><td><code>WaterLV</code></td><td>Integer</td><td><code>D100</code> (DM)</td><td>ระดับน้ำ 0–100%</td></tr>
+            <tr><td><code>Level_High</code></td><td>Boolean</td><td><code>W0.00</code> (Work)</td><td>Flag เต็มถัง</td></tr>
+          </tbody>
+        </table>
+      </li>
+      <li>
+        <strong>วาด Mimic — ถัง + ท่อ + Pump</strong>
+        <ul>
+          <li>วาดถัง: Rectangle สูง · กรอบสีส้ม</li>
+          <li>วาด Pump: ใช้ Library Symbol → Pumps</li>
+          <li>วาง Numeric Display แสดง <code>WaterLV</code></li>
+          <li>วาง 3 ปุ่ม (Start/Stop/Drain) ผูกกับ Points</li>
+        </ul>
+      </li>
+      <li>
+        <strong>ใส่ Animation</strong>
+        <ul>
+          <li><strong>Tank · Percentage Fill</strong> — คลิก Tank → Animations → Percentage Fill
+              <br>Expression: <code>WaterLV.Value</code> · Min 0 / Max 100 · Direction: Bottom to Top
+          </li>
+          <li><strong>Pump · Color</strong> — Expression: <code>Pump.Value</code> · 0=Gray, 1=Green</li>
+        </ul>
+      </li>
+      <li>
+        <strong>เขียน Script Logic</strong>
+        <code>Scripts → Page_OnTick</code> (interval = 500 ms) · ตอนสร้าง Script เลือก <strong>VBScript</strong> เหมือน Step 1
+        <p class="script-lang"><span class="cx-tag">ภาษา: VBScript</span></p>
+<pre><code>' Start button — start pump
+If Start.Value = 1 Then
+    Pump.Value = 1
+    Level_High.Value = 0
+End If
+
+' Stop button
+If Stop.Value = 1 Then
+    Pump.Value = 0
+End If
+
+' Pump fills tank
+If Pump.Value = 1 Then
+    WaterLV.Value = WaterLV.Value + 1
+    If WaterLV.Value &gt;= 90 Then
+        Pump.Value = 0
+        Level_High.Value = 1
+        Application.LogEvent "Tank full — pump auto-stopped"
+    End If
+End If
+
+' Drain valve removes water
+If Drain.Value = 1 And WaterLV.Value &gt; 0 Then
+    WaterLV.Value = WaterLV.Value - 1
+End If</code></pre>
+      </li>
+      <li>
+        <strong>(ทางเลือก) เพิ่ม Trend + Alarm</strong>
+        <ul>
+          <li>วาง Trend Object → Pens → <code>WaterLV</code> 0–100, Sample 1 s</li>
+          <li>Point <code>WaterLV</code> → Alarms tab → Add: <em>High</em> 90 · Message "Tank full"</li>
+        </ul>
+      </li>
+      <li>
+        <strong>Build &amp; Run · ทดสอบ Auto-stop</strong>
+        กด Start → ดูถังเติม → ถึง 90% → Pump ปิดเอง → Level_High = 1 → Alarm "Tank full" ขึ้น
+      </li>
+    </ol>
+
+    <div class="callout note">
+      <strong>เช็คก่อนข้ามไป Step 3</strong>
+      <br>☐ Points 6 ตัวสร้างครบ — ตรง Area ถูกต้อง (Input/Output/DM/Work)
+      <br>☐ Percentage Fill ทำงานถูกทิศ — เติมจากล่างขึ้นบน
+      <br>☐ Script auto-stop ที่ 90% ได้
+      <br>☐ <strong>เข้าใจหลัก "Self-holding"</strong> — แม้ปล่อยปุ่ม Start แล้ว Pump ยังทำงานต่อจนถึงเงื่อนไขหยุด
+    </div>
+
+    <!-- ====================================================== -->
+    <!-- STEP 3 · CHOCOLATE FACTORY (CAPSTONE)                  -->
+    <!-- ====================================================== -->
+
+    <h2 id="step-3">🍫 Step 3 · Chocolate Factory — Capstone</h2>
+
+    <h3>Objective</h3>
+    <p>โปรเจค <strong>รวมทุกอย่าง</strong>: Multi-pump (2 ปั๊ม), Mixing tank, Outlet valve, <strong>Recipe</strong>
+      สำหรับเปลี่ยนสูตร, Alarm log, Multi-stage sequence — เหมือนระบบ Batch จริงในอุตสาหกรรม
+      <br>อิงตำรา <em>การประยุกต์ใช้โปรแกรม SCADA ในงานอุตสาหกรรม เล่ม 2</em> · Exam 5 (Milk + Chocolate blending)</p>
+
+    <h3>Process Diagram</h3>
+    <div class="cx-screens">
+      <figure>
+        <img src="PLC%20project/12_SCADA_CX_Supervisor/extracted/images/การประยุกต์ใช้โปรแกรม_SCADA_ในงานอุตสาหกรรม_2559_2/img-001-000.png" alt="Chocolate Factory SCADA mimic — Mix tank with PUMP_CHO, PUMP_MILK and OUTLET valve">
+        <figcaption>
+          <span class="cx-tag">Plant Mimic</span> <strong>Chocolate Factory — CX-Supervisor Mimic</strong>
+          <br>Mix tank ตรงกลาง (มี Gauge 0–100) · <code>PUMP_CHO</code> + <code>PUMP_MILK</code> ฝั่งซ้ายป้อนเข้า · <code>OUTLET</code> valve ฝั่งขวาถ่ายลงขวด · Toggle Switch + START/STOP บนแผง
+          <span class="cx-book">เล่ม 2 · Exam 5 · Plant Overview</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <h3>Recipes (3 สูตร)</h3>
+    <table>
+      <thead><tr><th>Recipe</th><th>MilkPct</th><th>CocoaPct</th><th>ผลลัพธ์</th></tr></thead>
+      <tbody>
+        <tr><td>🥛 Classic Milk Choc</td><td>50%</td><td>20%</td><td>นม·ครีมมี่</td></tr>
+        <tr><td>🌑 Dark Chocolate</td><td>30%</td><td>40%</td><td>โกโก้สูง·เข้ม</td></tr>
+        <tr><td>🤍 White Chocolate</td><td>70%</td><td>10%</td><td>นมสูง·สีอ่อน</td></tr>
+      </tbody>
+    </table>
+
+    <h3>📘 Lab Handout — ลงมือใน CX-Supervisor Developer</h3>
+
+    <div class="callout note">
+      <strong>📌 ที่มา — Vol 2 Exam 5 ของจริง</strong>
+      ภาพข้างล่างมาจาก <em>การประยุกต์ใช้โปรแกรม SCADA ในงานอุตสาหกรรม เล่ม 2 · Exam 5</em> โดยตรง — ใช้เป็นแม่แบบได้เลย
+      ทั้ง Tag names · Address · Ladder logic ในตำราจริงตรงกับ Sim ทุกอย่าง
+    </div>
+
+    <div class="cx-screens">
+      <figure>
+        <img src="PLC%20project/12_SCADA_CX_Supervisor/extracted/images/การประยุกต์ใช้โปรแกรม_SCADA_ในงานอุตสาหกรรม_2559_2/img-002-002.png" alt="Ladder logic — PUMP_MILK self-holding rung">
+        <figcaption>
+          <span class="cx-tag">Ladder</span> <strong>Rung 1 — PUMP_MILK</strong> (CX-Programmer)
+          <br>Self-hold: <code>START_PUMP_MILK (I:0.00) + Q:100.00</code> hold · Stop: <code>STOP_PUMP_MILK (I:0.03) + Stop_PumpMilkScada (200.03)</code>
+          <br><em>200.00 / 200.03 = Internal Work Bits ที่ SCADA เขียนแทนปุ่มจริง</em>
+          <span class="cx-book">เล่ม 2 · Exam 5 · Rung 1</span>
+        </figcaption>
+      </figure>
+      <figure>
+        <img src="PLC%20project/12_SCADA_CX_Supervisor/extracted/images/การประยุกต์ใช้โปรแกรม_SCADA_ในงานอุตสาหกรรม_2559_2/img-008-012.png" alt="Ladder logic — OUTLET valve rung">
+        <figcaption>
+          <span class="cx-tag">Ladder</span> <strong>Rung 2 — OUTLET valve</strong>
+          <br>โครงเดียวกับ PUMP_MILK · I:0.02 Start, I:0.05 Stop · Q:100.02 → OUTLET
+          <br>เพิ่ม Rung 3 สำหรับ PUMP_CHO เหมือนกัน (I:0.01 / I:0.04 / Q:100.01)
+          <span class="cx-book">เล่ม 2 · Exam 5 · Rung 2</span>
+        </figcaption>
+      </figure>
+      <figure>
+        <img src="PLC%20project/12_SCADA_CX_Supervisor/extracted/images/การประยุกต์ใช้โปรแกรม_SCADA_ในงานอุตสาหกรรม_2559_2/img-010-013.png" alt="Reversible counter — PUMP_MILK / PUMP_CHO / OUTLET">
+        <figcaption>
+          <span class="cx-tag">Counter</span> <strong>Reversible Counter CNT(012)</strong>
+          <br>นับว่ามี Output ตัวไหนทำงาน · CF103 = clock 0.02s · Counter เพิ่มเมื่อ Q:100.00, Q:100.01, Q:100.02 ทำงาน
+          <br>ใช้เป็น <em>Production Counter</em> — นับจำนวน Batch ที่ผลิตเสร็จ
+          <span class="cx-book">เล่ม 2 · Exam 5 · Rung 3</span>
+        </figcaption>
+      </figure>
+      <figure>
+        <img src="PLC%20project/12_SCADA_CX_Supervisor/extracted/images/การประยุกต์ใช้โปรแกรม_SCADA_ในงานอุตสาหกรรม_2559_2/img-005-008.png" alt="Toggle Button Wizard binding StartPumpMilkScada">
+        <figcaption>
+          <span class="cx-tag">SCADA</span> <strong>Toggle Button Wizard — Boolean Point: <code>StartPumpMilkScada</code></strong>
+          <br>State 0 = "Off" สีแดง · State 1 = "On" สีเขียว · Style: Toggle Switch
+          <br>ปุ่ม Start แต่ละตัวในตำราใช้ pattern นี้: 1 ปุ่ม → เขียนค่าลง <em>1 Work Bit</em> (200.xx) → Ladder อ่านไปกระตุ้น Pump
+          <span class="cx-book">เล่ม 2 · Exam 5</span>
+        </figcaption>
+      </figure>
+    </div>
+
+    <ol class="steps">
+      <li>
+        <strong>Project ใหม่ + I/O Mapping</strong>
+        <code>File → New Project → LAB3_ChocFactory</code>
+        <br>Points ตามตำราเล่ม 2:
+        <table>
+          <thead><tr><th>ชื่อ Point</th><th>Type</th><th>Address</th><th>หมายเหตุ</th></tr></thead>
+          <tbody>
+            <tr><td><code>Start_PumpMilk</code></td><td>Boolean</td><td><code>0.00</code></td><td>ปุ่ม Start ปั๊มนม</td></tr>
+            <tr><td><code>Stop_PumpMilk</code></td><td>Boolean</td><td><code>0.03</code></td><td>ปุ่ม Stop ปั๊มนม</td></tr>
+            <tr><td><code>Start_PumpCho</code></td><td>Boolean</td><td><code>0.01</code></td><td>ปุ่ม Start ปั๊มโกโก้</td></tr>
+            <tr><td><code>Stop_PumpCho</code></td><td>Boolean</td><td><code>0.04</code></td><td>ปุ่ม Stop ปั๊มโกโก้</td></tr>
+            <tr><td><code>Start_Outlet</code></td><td>Boolean</td><td><code>0.02</code></td><td>ปุ่มเปิด Outlet</td></tr>
+            <tr><td><code>Stop_Outlet</code></td><td>Boolean</td><td><code>0.05</code></td><td>ปุ่มปิด Outlet</td></tr>
+            <tr><td><code>PumpMilk</code></td><td>Boolean</td><td><code>100.00</code></td><td>Output ปั๊มนม</td></tr>
+            <tr><td><code>PumpCho</code></td><td>Boolean</td><td><code>100.01</code></td><td>Output ปั๊มโกโก้</td></tr>
+            <tr><td><code>Outlet</code></td><td>Boolean</td><td><code>100.02</code></td><td>Output Outlet valve</td></tr>
+            <tr><td><code>MilkPct</code></td><td>Integer</td><td><code>D100</code></td><td>ระดับนมใน Mix tank</td></tr>
+            <tr><td><code>CocoaPct</code></td><td>Integer</td><td><code>D102</code></td><td>ระดับโกโก้ใน Mix tank</td></tr>
+            <tr><td><code>Stage</code></td><td>Integer</td><td><code>D104</code></td><td>State machine 0–4</td></tr>
+          </tbody>
+        </table>
+      </li>
+      <li>
+        <strong>วาด Plant Mimic</strong>
+        <ul>
+          <li>3 ถัง: Milk (ซ้าย) · Mix (กลาง·ใหญ่) · Cocoa (ขวา)</li>
+          <li>2 ปั๊ม + 1 Outlet valve · ใช้ Library Symbol</li>
+          <li>Bottle ใต้ Outlet (ปลายทาง)</li>
+          <li>Mixer ในถัง Mix — Static image, ใช้ Animation <em>Rotate</em> ขณะปั่น</li>
+          <li>Numeric Display: <code>MilkPct</code> · <code>CocoaPct</code> · จำนวนขวดที่ผลิต</li>
+        </ul>
+      </li>
+      <li>
+        <strong>Animations ที่ใช้</strong>
+        <ul>
+          <li>Mix tank → <strong>Percentage Fill</strong> ← <code>MilkPct + CocoaPct</code></li>
+          <li>Mix tank → <strong>Color</strong> เปลี่ยนตาม Recipe (ขาว→น้ำตาล→ดำ)</li>
+          <li>PumpMilk/PumpCho → <strong>Color</strong> เมื่อ Output = 1 (สีเขียว)</li>
+          <li>Mixer → <strong>Rotate</strong> Continuous เมื่อ Stage = 2 (Mixing)</li>
+          <li>Bottle → <strong>Percentage Fill</strong> เมื่อ Outlet เปิด</li>
+        </ul>
+      </li>
+      <li>
+        <strong>สร้าง Recipe Group</strong>
+        <code>Project → Add → Recipe → ChocRecipes</code>
+        <br>Fields: <code>MilkTarget</code> · <code>CocoaTarget</code>
+        <br>Recipes 3 รายการ:
+        <ul>
+          <li><strong>Milk</strong>: Milk=50 · Cocoa=20</li>
+          <li><strong>Dark</strong>: Milk=30 · Cocoa=40</li>
+          <li><strong>White</strong>: Milk=70 · Cocoa=10</li>
+        </ul>
+      </li>
+      <li>
+        <strong>เพิ่ม Recipe Buttons</strong>
+        วาง 3 ปุ่มบน Mimic · OnClick Script (เลือก <strong>VBScript</strong> เป็น Language):
+        <p class="script-lang"><span class="cx-tag">ภาษา: VBScript</span></p>
+<pre><code>' Button: Milk recipe
+RecipeLoad "ChocRecipes", "Milk"
+Stage.Value = 1   ' เริ่ม Stage 1</code></pre>
+      </li>
+      <li>
+        <strong>State Machine Script</strong>
+        <code>Page_OnTick</code> (interval = 200 ms) · เลือก <strong>VBScript</strong> เป็น Language
+        <p class="script-lang"><span class="cx-tag">ภาษา: VBScript</span></p>
+<pre><code>Select Case Stage.Value
+  Case 1  ' Pump Milk จนถึง target
+    PumpMilk.Value = 1 : PumpCho.Value = 0 : Outlet.Value = 0
+    If MilkPct.Value &lt; MilkTarget.Value Then
+        MilkPct.Value = MilkPct.Value + 1
+    Else
+        PumpMilk.Value = 0 : Stage.Value = 2
+    End If
+  Case 2  ' Pump Cocoa จนถึง target
+    PumpMilk.Value = 0 : PumpCho.Value = 1
+    If CocoaPct.Value &lt; CocoaTarget.Value Then
+        CocoaPct.Value = CocoaPct.Value + 1
+    Else
+        PumpCho.Value = 0 : Stage.Value = 3 : MixTimer = 0
+    End If
+  Case 3  ' Mixing 2 วินาที
+    MixTimer = MixTimer + 1
+    If MixTimer &gt;= 10 Then Stage.Value = 4
+  Case 4  ' Outlet ถ่ายลงขวด
+    Outlet.Value = 1
+    MilkPct.Value = MilkPct.Value - 1
+    CocoaPct.Value = CocoaPct.Value - 1
+    If MilkPct.Value &lt;= 0 And CocoaPct.Value &lt;= 0 Then
+        Outlet.Value = 0
+        BottleCount.Value = BottleCount.Value + 1
+        Stage.Value = 0
+        Application.LogEvent "Bottle produced"
+    End If
+End Select</code></pre>
+      </li>
+      <li>
+        <strong>เพิ่ม Alarms</strong>
+        <ul>
+          <li><code>MilkPct</code> · High = 95 · Message "Mix tank near full"</li>
+          <li><code>Stage</code> · Equal = 4 · Message "Dispensing to bottle"</li>
+          <li>วาง Alarm Summary บน Page ให้ Operator เห็น log</li>
+        </ul>
+      </li>
+      <li>
+        <strong>(ขั้นสูง) Trend + Data Log</strong>
+        <ul>
+          <li>Trend: <code>MilkPct</code> + <code>CocoaPct</code> เส้นต่างสี — Sample 200 ms</li>
+          <li>Data Logging → เก็บ BottleCount + RecipeName + เวลาทุก batch ลง CSV หรือ SQL</li>
+        </ul>
+      </li>
+      <li>
+        <strong>Build &amp; Run · ทดสอบ 3 Recipes</strong>
+        เลือก Milk → ผลิต 1 ขวด → เลือก Dark → ดูสีเข้มขึ้น → ลอง White → ตรวจ Alarm log + Trend
+      </li>
+    </ol>
+
+    <div class="callout warn">
+      <strong>Pitfalls ที่พบบ่อย</strong>
+      <br>· <em>Stage</em> Variable หาย — ใช้ Holding (H) แทน DM ถ้าไม่อยาก reset ทุกครั้งที่ Build
+      <br>· <em>Percentage Fill</em> เติมจากบน — ตรวจ Fill Direction ใน Animation dialog (เลือก Bottom to Top)
+      <br>· <em>Mixer หมุนตลอด</em> — Rotate animation ต้องผูก Expression <code>Stage.Value = 2</code> ไม่ใช่ค่าคงที่
+      <br>· <em>Recipe ไม่โหลด</em> — ตรวจชื่อ Recipe Group ใน RecipeLoad ให้ตรงตัวพิมพ์
+    </div>
+
+    <h3>🎯 Capstone Checklist</h3>
+
+    <div class="callout note">
+      <strong>ตรวจสอบความเข้าใจ</strong>
+      <br>☐ 12 Points สร้างครบ · address ตรงตาม spec
+      <br>☐ Mimic แสดงภาพทั้ง Plant — ไม่ใช่แค่ตัวเลข
+      <br>☐ Animations อย่างน้อย 4 ประเภท (Fill · Color · Rotate · Visibility)
+      <br>☐ Recipe Switch ทำงานได้ทั้ง 3 สูตร
+      <br>☐ State Machine ทำ Sequence จบครบ (Stage 1→2→3→4→0)
+      <br>☐ Alarm log + Trend chart ทำงาน
+      <br>☐ <strong>นำเสนอ Plant ของตัวเองได้</strong> — บอก Concept SCADA ครบ 3 ส่วน (Point/Page/Script)
+    </div>
+
+    <h2>🎉 จบ Omron Track — ครบ Toolchain Automation</h2>
+
+    <p>ขอแสดงความยินดี — ถ้าทำมาถึงตรงนี้ได้ คุณมีทักษะครบเซตของ Omron Automation:</p>
+    <ul>
+      <li>✓ เขียน Ladder + FBD + ST บน CX-Programmer (O02·O03)</li>
+      <li>✓ ต่อ Sensor / Output / Inverter / Temperature Controller (O04·O05)</li>
+      <li>✓ สื่อสาร Modbus RTU + FINS (O04·O06)</li>
+      <li>✓ เข้าใจ Concept SCADA + เปรียบเทียบทางเลือกในตลาด (O06)</li>
+      <li>✓ <strong>สร้าง SCADA จริงด้วย CX-Supervisor</strong> — Blink → Tank → Chocolate Factory (O07)</li>
+    </ul>
+
+    <p>ขั้นต่อไป — ลอง <strong>Mitsubishi Track</strong> เพื่อเทียบ Syntax/Toolchain ที่ต่างกัน
+      หรือไปทำ <em>โปรเจคจริง</em> ที่นำ Plant ของตัวเองมาเขียน · ใช้บทนี้เป็น Template ได้ทันที</p>
+
+    <h2>เอกสารอ้างอิงสำหรับบทนี้</h2>
+    <ul class="doc-list">
+      <li><a href="PLC%20project/12_SCADA_CX_Supervisor/docs/การประยุกต์ใช้โปรแกรม%20SCADA%20ในงานอุตสาหกรรม_2559_1.pdf">เล่ม 1 — Blink + Slider + Multi-page + Script</a> <span class="meta">PDF · Exam 1–4 อ้างอิง Step 1–2</span></li>
+      <li><a href="PLC%20project/12_SCADA_CX_Supervisor/docs/การประยุกต์ใช้โปรแกรม%20SCADA%20ในงานอุตสาหกรรม_2559_2.pdf">เล่ม 2 — Chocolate Factory (Exam 5)</a> <span class="meta">PDF · อ้างอิงโดยตรงสำหรับ Step 3</span></li>
+      <li><a href="PLC%20project/12_SCADA_CX_Supervisor/docs/การประยุกต์ใช้โปรแกรม%20SCADA%20ในงานอุตสาหกรรม_2559_3.pdf">เล่ม 3 — Multi-tank Monitoring</a> <span class="meta">PDF · ตัวอย่างขยาย</span></li>
+      <li><a href="PLC%20project/12_SCADA_CX_Supervisor/docs/SCADA_Trainnig_2559_Padung.pdf">SCADA Training 2559 (อ. ผดุง)</a> <span class="meta">PDF · ครอบคลุม Alarm + Data Log</span></li>
+      <li><a href="PLC%20project/12_SCADA_CX_Supervisor/docs/หนังสือ%20CX-SUPERVISOR.pdf">หนังสือ CX-SUPERVISOR (Omron Thailand)</a> <span class="meta">PDF · Reference Manual</span></li>
+    </ul>
+
+    <div class="pager">
+      <a href="omron-06-scada.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">O06 — SCADA Concept</div>
+      </a>
+      <a href="index.html" class="next">
+        <div class="label">กลับ →</div>
+        <div class="title">หน้าแรก / เลือก Track ใหม่</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  PLC Automation Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){var lb=document.getElementById('lightbox');if(!lb)return;var img=lb.querySelector('img');
+document.querySelectorAll('.content img').forEach(function(im){im.style.cursor='zoom-in';im.addEventListener('click',function(){img.src=im.src;lb.classList.add('open');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.classList.remove('open');});})();
+</script>
+<script src="js/progress.js" defer></script>
+<script src="js/activities/scada-ws-blink.js" defer></script>
+<script src="js/activities/scada-ws-waterflow.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,14 @@
+/* Computer Programming tutorial theme — Python "light green" identity,
+   distinct from PLC's industrial orange and OPC UA's softer orange.
+   Loaded after style.css; overrides only the accent colors. */
+:root {
+  --accent:      #16a34a;             /* green-600 — vibrant leaf green */
+  --accent-2:    #86efac;             /* green-300 — light highlight */
+  --accent-soft: rgba(22, 163, 74, 0.12);
+}
+
+/* The base style.css hardcodes the logo gradient in orange. Override it. */
+.sidebar .brand .logo:not(.logo-img) {
+  background: linear-gradient(135deg, var(--accent), var(--accent-2));
+  box-shadow: 0 6px 20px rgba(22, 163, 74, 0.35);
+}

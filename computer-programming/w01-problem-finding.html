@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W01 — หาปัญหา + Flowchart | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>🚀 เริ่มต้น (Setup)</h4>
+      <a href="setup-python.html"><span class="num">🐍</span> ติดตั้ง Python</a>
+      <a href="setup-vscode.html"><span class="num">💻</span> VS Code / Cursor</a>
+      <a href="setup-terminal.html"><span class="num">🖥️</span> Terminal พื้นฐาน</a>
+      <a href="setup-pip.html"><span class="num">📦</span> pip + Packages</a>
+      <a href="setup-git.html"><span class="num">🌿</span> Git + GitHub</a>
+      <a href="setup-colab.html"><span class="num">☁️</span> Google Colab</a>
+      <a href="setup-ai.html"><span class="num">🤖</span> AI Accounts</a>
+      <a href="python-basics.html"><span class="num">📖</span> Python Cheat-sheet</a>
+
+      <h4>🧭 พื้นฐานก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html" class="active"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์ระบบ</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">สัปดาห์ที่ 01 · Foundation · Pre-code</span>
+    <h1>หาปัญหาให้เจอ + เขียน Flowchart</h1>
+    <p class="lede">
+      ก่อน AI — นักศึกษาวิศวะเรียน <em>"แก้โจทย์ที่อาจารย์ให้"</em> · หลัง AI —
+      นักศึกษาต้องเรียน <strong>"หาโจทย์เองให้เป็น"</strong> · สัปดาห์นี้ไม่มีการเขียนโค้ดเลย
+      แต่เป็นทักษะที่ขาดไม่ได้สำหรับยุคที่ AI เขียนโค้ดให้
+    </p>
+
+    <h2>เป้าหมายสัปดาห์นี้</h2>
+    <ul>
+      <li>มองเห็น <strong>"ปัญหาจริง"</strong> รอบตัวได้อย่างน้อย 3 ปัญหา (lab, ภาควิชา, บ้าน)</li>
+      <li>แยก <strong>symptom</strong> (อาการ) ออกจาก <strong>root problem</strong> (รากเหง้า)</li>
+      <li><strong>สัมภาษณ์ user จริง</strong> 1 คน แบบไม่ชี้นำ</li>
+      <li>เขียน <strong>Flowchart</strong> ของ workflow ปัจจุบัน + ที่อยากให้เป็น</li>
+      <li>เขียน <strong>Problem Statement</strong> 1 ย่อหน้าที่สรุปทุกอย่างไว้</li>
+    </ul>
+
+    <div class="callout warn" style="border-left-width:5px">
+      <strong>🔒 สัปดาห์นี้คือสิ่งที่ AI ทำให้คุณไม่ได้</strong>
+      AI ไม่ได้นั่งอยู่ในห้อง lab ของคุณ · ไม่รู้ว่าพี่ TA เครียดเรื่องอะไร · ไม่รู้ว่าอาจารย์เสียเวลากับงานไหน
+      · ไม่เคยคุยกับเพื่อน 30 นาทีในโรงอาหาร · <strong>สิ่งที่ AI ไม่มีคือ "อยู่ตรงนั้น"</strong>
+      ทักษะของสัปดาห์นี้ทำให้คุณ <em>"มีค่ามากกว่า AI"</em> เพราะคุณเอาข้อมูลที่ AI ไม่มี มาแปลงเป็นงานให้ AI ทำต่อ
+    </div>
+
+    <h2>ทำไมต้องเริ่มที่ "หาปัญหา"</h2>
+    <p>
+      AI ในปี 2026 เขียน Python ได้ดีกว่านักศึกษาปี 1 อยู่แล้ว · งานของคุณจึง <em>ไม่ใช่</em> "เก่ง syntax"
+      — แต่คือ <strong>"ตัดสินใจว่าจะให้ AI สร้างอะไร"</strong>
+    </p>
+    <ul>
+      <li>ถ้าคุณไม่เห็นปัญหา → AI จะสร้าง <em>"toy app"</em> ที่สวยแต่ไม่มีใครใช้</li>
+      <li>ถ้าคุณเห็นปัญหาชัด → แม้ AI เขียนโค้ด 99% คุณยังเป็นคนกำกับว่าจะสร้างอะไร</li>
+      <li>นักศึกษาวิศวะที่หา "ปัญหาจริงในโรงงาน/ภาคสนาม" เจอ — ทำงานได้ทันที วันแรกที่จบ</li>
+    </ul>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🎯 Running Case — พี่นัท TA วิชา Engineering Drawing</h2>
+    <p>
+      เราจะใช้ <em>1 case ตัวอย่าง</em> ลากผ่านทั้งสัปดาห์ — เพื่อให้เห็นว่า observe → 5 Whys →
+      interview → flowchart → Problem Statement <em>เชื่อมกันยังไง</em>
+    </p>
+
+    <div class="callout info">
+      <strong>สถานการณ์</strong>
+      <em>"พี่นัท"</em> เป็น TA วิชา Engineering Drawing ของคณะวิศวกรรมศาสตร์ · ทุกศุกร์
+      ต้องตรวจ drawing assignment 50 ชิ้นจากนักศึกษาชั้นปี 1 · ใช้เวลา <strong>8 ชั่วโมงต่อสัปดาห์</strong>
+      ส่ง feedback กลับช้าทุกครั้ง · ภาควิชาเริ่มได้รับ complaint จากนักศึกษา
+    </div>
+
+    <p>เราจะตามพี่นัทไป — สังเกต, สัมภาษณ์, วาด flowchart, แล้วเขียน Problem Statement</p>
+
+    <h2>Symptom vs Root Problem</h2>
+    <p>นี่คือ skill แรกที่ต้องฝึก — ปัญหาที่เห็นบ่อยที่สุดมัก <em>ไม่ใช่</em> ปัญหาจริง แต่เป็นแค่อาการ</p>
+
+    <table>
+      <thead>
+        <tr><th>Symptom (สิ่งที่เห็น)</th><th>Root Problem (สิ่งที่จริง ๆ ผิด)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>นักศึกษาส่ง lab ช้า</td><td>ใบงานเขียนไม่ชัด หรือไม่มีตัวอย่าง output</td></tr>
+        <tr><td>อาจารย์ตรวจงานนาน</td><td>นักศึกษาส่งหลายช่องทาง (LINE/email/print) ไม่รวมศูนย์</td></tr>
+        <tr><td>เครื่อง lab พัง</td><td>ไม่มีระบบจองล่วงหน้า · ใช้ทับกัน · ไม่มี maintenance log</td></tr>
+        <tr><td>นักศึกษาสอบตก</td><td>ไม่รู้ว่าตัวเองเข้าใจอะไรไม่ครบ · ไม่มี feedback ระหว่างทาง</td></tr>
+        <tr style="background:rgba(55,118,171,0.08)">
+          <td><strong>พี่นัทตรวจ drawing 8 ชม./ศุกร์</strong></td>
+          <td><em>(เรายังไม่รู้ — ต้องทำ 5 Whys + interview)</em></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>🤔 5 Whys — กับ Case ของพี่นัท</h2>
+    <p>เทคนิค <em>5 Whys</em> ของ Toyota — ถาม "ทำไม" 5 ครั้งจนเจอ root ที่ <strong>เปลี่ยนได้</strong></p>
+
+    <pre><code>Symptom: พี่นัทตรวจ drawing 50 ชิ้นใช้เวลา 8 ชม. ทุกศุกร์ feedback ช้า
+
+ทำไม 1? → เพราะต้องเปิดดูแต่ละ pdf ทีละไฟล์ แล้วเทียบ rubric ด้วยตา
+ทำไม 2? → เพราะนักศึกษาส่งใน Classroom เป็น pdf รายคน · ไม่มี checklist ในตัว
+ทำไม 3? → เพราะ rubric อยู่ใน Word แยก · พี่นัทต้องจำหรือเปิดดูทุกครั้ง
+ทำไม 4? → เพราะไม่เคยมีเครื่องมือที่รวม rubric + checklist + feedback ในที่เดียว
+ทำไม 5? → ✅ Root: ขาด tool ที่ tick checklist แล้วสร้าง feedback ลง Classroom comment อัตโนมัติ</code></pre>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับ — Root ที่ "ใช่"</strong>
+      Root ที่ดีจะรู้สึก <em>"นี่แหละ ถ้าแก้ตรงนี้ symptom หายแน่นอน"</em> · ถ้ายังคลุมเครือ
+      หรือดูแก้ไม่ได้ — แสดงว่ายังไม่ลึกพอ หรือลึกเกินจนเปลี่ยนไม่ได้
+    </div>
+
+    <h2>✅ Rubric — ทำ 5 Whys ถูกต้องมั้ย?</h2>
+    <p>ดู Root ของคุณ — ตอบ ✓ ทุกข้อมั้ย?</p>
+
+    <table>
+      <thead><tr><th>เกณฑ์</th><th>ตัวอย่าง ✅</th><th>ตัวอย่าง ❌</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>เปลี่ยนได้จริง</strong> (มีคนสร้าง/แก้ได้)</td>
+          <td>"ขาด tool tick checklist"</td>
+          <td>"มนุษย์ขี้เกียจโดยธรรมชาติ"</td>
+        </tr>
+        <tr>
+          <td><strong>อยู่ระดับ process / system</strong> ไม่ใช่บุคคล</td>
+          <td>"workflow ส่งกระจาย 3 ช่องทาง"</td>
+          <td>"นักศึกษาคนนี้ไม่รับผิดชอบ"</td>
+        </tr>
+        <tr>
+          <td><strong>ถ้าแก้ symptom หายแน่นอน</strong></td>
+          <td>มี checklist → ตรวจเร็วขึ้น → feedback ทัน</td>
+          <td>"นักศึกษาไม่อ่าน announcement" (แก้แล้วยังตรวจช้าอยู่)</td>
+        </tr>
+        <tr>
+          <td><strong>ไม่ตื้นเกิน</strong> (ไม่ใช่แค่ Why 1-2)</td>
+          <td>ถาม "ทำไม" ลึก 4-5 ชั้น</td>
+          <td>หยุดที่ "ไม่มีเวลา"</td>
+        </tr>
+        <tr>
+          <td><strong>ไม่ลึกเกินจนเปลี่ยนไม่ได้</strong></td>
+          <td>"ขาด tool รวม rubric+feedback"</td>
+          <td>"ระบบการศึกษาไทยไม่ดี"</td>
+        </tr>
+        <tr>
+          <td><strong>เป็น "สิ่งที่ขาด"</strong> ไม่ใช่ "คนที่ผิด"</td>
+          <td>"ขาดระบบ X"</td>
+          <td>"อาจารย์ Y ไม่ใส่ใจ"</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>🎤 คุยกับ user ของคุณยังไง</h2>
+    <p>
+      <em>สมมติฐาน</em> เรื่องพี่นัทอาจถูก ก็อาจผิด · วิธีเดียวที่จะรู้คือ <strong>"ไปคุยกับพี่นัทจริง"</strong>
+      แต่ถ้าคุยไม่เป็น คำตอบที่ได้จะ <em>"ตามใจที่ฉันอยากได้ยิน"</em> — ไม่ใช่ความจริง
+    </p>
+
+    <h3>กฎ 8 ข้อสำหรับการสัมภาษณ์</h3>
+
+    <table>
+      <thead><tr><th>กฎ</th><th>คำพูดที่ดี ✅</th><th>คำพูดที่ไม่ดี ❌</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>1. ขอเวลาก่อน</strong></td>
+          <td>"พี่นัทมีเวลา 20 นาทีคุยกันได้มั้ย?"</td>
+          <td>เดินเข้าไปถามทันที</td>
+        </tr>
+        <tr>
+          <td><strong>2. เริ่มจากเล่า ไม่ใช่ถาม</strong></td>
+          <td>"เล่าวันศุกร์ทั่วไปของพี่ให้ฟังหน่อย"</td>
+          <td>"พี่มีปัญหากับงานตรวจมั้ย?"</td>
+        </tr>
+        <tr>
+          <td><strong>3. ถามเหตุการณ์ล่าสุด ไม่ใช่ค่าเฉลี่ย</strong></td>
+          <td>"ศุกร์ที่แล้วใช้เวลาเท่าไหร่?"</td>
+          <td>"โดยปกติพี่ใช้เวลานานมั้ย?"</td>
+        </tr>
+        <tr>
+          <td><strong>4. Show me, don't tell me</strong></td>
+          <td>"ขอดูตอนพี่ตรวจชิ้นนึงได้มั้ย?"</td>
+          <td>"พี่ตรวจยังไง?"</td>
+        </tr>
+        <tr>
+          <td><strong>5. ถามตัวเลข</strong></td>
+          <td>"ตรวจกี่ชิ้น? ใช้เวลาเท่าไหร่? ทำสัปดาห์ละกี่ครั้ง?"</td>
+          <td>ปล่อยให้คำตอบกำกวม</td>
+        </tr>
+        <tr>
+          <td><strong>6. ไม่ชี้นำ (no leading)</strong></td>
+          <td>"พี่รู้สึกยังไงกับงานนี้?"</td>
+          <td>"คงเหนื่อยมากเลยใช่มั้ย?"</td>
+        </tr>
+        <tr>
+          <td><strong>7. ขอ artifacts</strong></td>
+          <td>"ขอดู rubric ที่ใช้ได้มั้ย? ขอดูตัวอย่าง feedback ที่เคยส่ง?"</td>
+          <td>เชื่อคำพูดอย่างเดียว</td>
+        </tr>
+        <tr>
+          <td><strong>8. จดคำต่อคำ ไม่ตีความ</strong></td>
+          <td>"…แล้วพี่ก็เปิด Word ก็อปคำเดิม…" (จดตามที่พูด)</td>
+          <td>"พี่ใช้ template ในการให้ feedback" (ตีความเอง)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>คำถามมาตรฐาน 5 ข้อ ที่ใช้กับทุก user</h3>
+    <ol class="steps">
+      <li><strong>"เล่าวันทั่วไปให้ฟัง"</strong> — เปิดประตูแบบไม่กดดัน</li>
+      <li><strong>"ครั้งล่าสุดที่ทำงานนี้คือเมื่อไหร่? ใช้เวลาเท่าไหร่?"</strong> — ดึงตัวเลขจริง</li>
+      <li><strong>"ขั้นไหนที่รู้สึกเสียเวลาที่สุด?"</strong> — ระบุ pain point</li>
+      <li><strong>"ขอดูตอนทำจริงได้มั้ย?"</strong> — observe</li>
+      <li><strong>"ถ้ามีเครื่องช่วย — อยากให้มันทำอะไรให้?"</strong> — รับ wishlist (แต่อย่าเชื่อทันที — user มักไม่รู้ว่าตัวเองต้องการอะไร)</li>
+    </ol>
+
+    <div class="callout warn">
+      <strong>คำเตือน — user มักไม่รู้ว่าตัวเองต้องการอะไร</strong>
+      ถ้าถามตรง ๆ <em>"อยากได้อะไร?"</em> — คำตอบมักจะเป็น <em>"ม้าเร็วกว่าเดิม"</em>
+      (ไม่ใช่ "รถยนต์") · งานของคุณคือฟัง pain point จริง แล้วคิดทางแก้ที่เขาคิดไม่ถึง
+    </div>
+
+    <h2>Workshop 1 — สังเกตปัญหารอบตัว</h2>
+    <p>เลือก <strong>1 สถานที่</strong> ที่คุณใช้เวลาเยอะที่สุด (ห้อง lab, ภาควิชา, หอพัก, ห้องเขียนแบบ) แล้ว:</p>
+
+    <ol class="steps">
+      <li>
+        <strong>นั่งสังเกต 30 นาที</strong>
+        ไปในเวลาที่มีคนใช้งาน · เงียบ ๆ ไม่คุย ดูว่ามีงานอะไรเกิดบ้าง
+        — จดทุกอย่างที่เห็นในสมุด (ไม่เลือกก่อน)
+      </li>
+      <li>
+        <strong>ระบุงานที่ทำซ้ำ</strong>
+        งานไหน <em>"ทำเหมือนเดิมทุกครั้ง"</em>? — วงกลม
+        (เซ็นชื่อเข้าห้อง · ตอบ LINE คำถามเดิม · เปิด-ปิดเครื่องตามลำดับเดิม · กรอก lab report header เดิม)
+      </li>
+      <li>
+        <strong>ระบุข้อมูลที่หายไป</strong>
+        งานไหนใช้ข้อมูลที่ <em>"ไม่มีใครจดไว้"</em>? (ใครยืมอุปกรณ์ · เครื่องไหนพังเมื่อไหร่ · นักศึกษาคนไหนติดขัดตรงไหน · ค่าวัดที่ลืมบันทึก)
+      </li>
+      <li>
+        <strong>ระบุ "ใครเดือดร้อน"</strong>
+        ในแต่ละปัญหา ใครคือคนที่ <em>เสียเวลา / เครียด / ทำงานซ้ำ</em>? — เขียนเป็น <em>role</em>
+        (TA, อาจารย์, นักศึกษาปี 3, เจ้าหน้าที่ภาควิชา, แม่บ้าน)
+      </li>
+      <li>
+        <strong>เลือก 3 ปัญหา</strong>
+        ที่ <em>"ถ้าแก้ได้ จะมีคน 5 คนขึ้นไปได้ประโยชน์"</em> — เขียนเป็น Symptom สั้น
+      </li>
+      <li>
+        <strong>ทำ 5 Whys + ตรวจ Rubric</strong>
+        กับทั้ง 3 ปัญหา — เช็คทุกข้อใน rubric ด้านบน
+      </li>
+      <li>
+        <strong>เลือก 1 ปัญหาไปต่อ</strong>
+        — อันที่ user (1 คน) <em>"ระบุได้"</em> และคุณ <em>"คุยได้"</em>
+      </li>
+      <li>
+        <strong>นัด user สัมภาษณ์ 20-30 นาที</strong>
+        ใช้กฎ 8 ข้อ + คำถามมาตรฐาน 5 ข้อ · จดคำต่อคำ
+      </li>
+    </ol>
+
+    <h2>Flowchart — สัญลักษณ์พื้นฐาน</h2>
+    <p>
+      Flowchart คือภาษากลางที่ทั้งมนุษย์ <em>และ AI</em> อ่านเข้าใจ — ก่อนสั่ง AI ให้สร้างอะไร
+      ลองเขียน flowchart ของสิ่งที่อยากให้มันทำก่อน · AI จะเข้าใจคุณแม่นขึ้นมาก
+    </p>
+
+    <div class="flowdiagram">
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node" style="background:rgba(52,211,153,0.10);border-color:rgba(52,211,153,0.5)">
+          <h4 style="color:#34d399">⬭ Start / End</h4>
+          <p class="fd-sub">วงรี · จุดเริ่ม-จุดจบ</p>
+          <p>ทุก flowchart ต้องมี start และ end — ห้ามมี process ที่ลอย</p>
+        </div>
+        <div class="flowdiagram-node" style="background:rgba(255,212,59,0.10);border-color:rgba(255,212,59,0.5)">
+          <h4 style="color:#ffd43b">▭ Process</h4>
+          <p class="fd-sub">สี่เหลี่ยม · การทำงาน 1 ขั้น</p>
+          <p>เช่น "คำนวณคะแนน", "บันทึกลงไฟล์" — เป็น <em>verb + noun</em></p>
+        </div>
+        <div class="flowdiagram-node" style="background:rgba(139,92,246,0.10);border-color:rgba(139,92,246,0.5)">
+          <h4 style="color:#8b5cf6">◇ Decision</h4>
+          <p class="fd-sub">สี่เหลี่ยมข้าวหลามตัด · ตัดสินใจ</p>
+          <p>คำถาม yes/no เช่น "ผ่าน rubric?" — มีลูกศรออก 2 ทาง</p>
+        </div>
+      </div>
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node" style="background:rgba(45,212,191,0.10);border-color:rgba(45,212,191,0.5)">
+          <h4 style="color:#2dd4bf">▱ Input / Output</h4>
+          <p class="fd-sub">สี่เหลี่ยมขนาน · รับ-ส่งข้อมูล</p>
+          <p>เช่น "อ่านไฟล์", "พิมพ์ผล" — ทุก program ต้องมีอย่างน้อย I และ O</p>
+        </div>
+        <div class="flowdiagram-node" style="background:rgba(55,118,171,0.10);border-color:rgba(55,118,171,0.5)">
+          <h4 style="color:#3776ab">→ Arrow</h4>
+          <p class="fd-sub">ลูกศร · ทิศทางการไหล</p>
+          <p>เชื่อมระหว่างกล่อง — ห้ามมีลูกศรชนกันโดยไม่มี junction</p>
+        </div>
+        <div class="flowdiagram-node" style="background:rgba(236,72,153,0.10);border-color:rgba(236,72,153,0.5)">
+          <h4 style="color:#ec4899">○ Connector</h4>
+          <p class="fd-sub">วงกลม · จุดเชื่อม</p>
+          <p>ใช้เมื่อ flowchart ยาวจนต้องข้ามหน้า · ใส่ตัวอักษรเหมือนกัน</p>
+        </div>
+      </div>
+    </div>
+
+    <h3>🎯 Flowchart "Current" — พี่นัทตรวจ drawing (ก่อนแก้)</h3>
+    <p>เวลารวม ~8 ชั่วโมง · pain point อยู่ที่ <em>"loop 50 ครั้ง"</em> ที่ต้องสลับ Word + PDF + Classroom</p>
+
+    <div class="mermaid">flowchart TD
+    A([ศุกร์ 9:00 น.]) --> B[/เปิด Classroom + ดาวน์โหลด 50 pdf/]
+    B --> C[เปิด rubric ใน Word แยก tab]
+    C --> D[เปิด pdf 1 ไฟล์ · zoom ดู drawing]
+    D --> E{ผ่านแต่ละ criteria?}
+    E -->|Yes| F[พิมพ์ feedback positive ใน Classroom]
+    E -->|No| G[พิมพ์ feedback แก้ไข ใน Classroom]
+    F --> H{ตรวจครบ 50 ชิ้น?}
+    G --> H
+    H -->|No · ~10 นาที/ชิ้น| D
+    H -->|Yes| I([เที่ยงคืน · เสร็จ])
+
+    classDef pain fill:#7f1d1d,stroke:#ef4444,stroke-width:2px,color:#fff
+    class D,E,F,G pain</div>
+
+    <p style="text-align:center;color:var(--danger);font-family:'JetBrains Mono',monospace;font-size:13px">
+      ⚠️ Pain: ขั้นในกรอบแดง ทำซ้ำ 50 ครั้ง · ~10 นาที/ชิ้น × 50 = 8 ชม.
+    </p>
+
+    <h3>🎯 Flowchart "Improved" — หลังมีระบบช่วย</h3>
+    <p>เวลารวม ~3.5 ชั่วโมง · loop ยังอยู่ แต่ลดเหลือ ~4 นาที/ชิ้น เพราะ tools รวมในจอเดียว</p>
+
+    <div class="mermaid">flowchart TD
+    A([ศุกร์ 9:00 น.]) --> B[/เปิด Grading App · ระบบโหลด pdf ให้/]
+    B --> C[คลิก pdf รายคน · เห็น drawing + checklist พร้อมกัน]
+    C --> D[tick checkbox criteria + พิมพ์ note สั้น]
+    D --> E[ระบบสร้าง feedback text + คะแนน อัตโนมัติ]
+    E --> F[/ส่งกลับ Classroom comment + gradebook/]
+    F --> G{ตรวจครบ 50 ชิ้น?}
+    G -->|No · ~4 นาที/ชิ้น| C
+    G -->|Yes| H([บ่าย · เสร็จ])
+
+    classDef win fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#fff
+    class C,D,E,F win</div>
+
+    <p style="text-align:center;color:var(--ok);font-family:'JetBrains Mono',monospace;font-size:13px">
+      ✅ Win: ขั้นในกรอบเขียวเป็นกล่องเดียว · ประหยัด 4.5 ชม./สัปดาห์ × 16 สัปดาห์ = <strong>72 ชม./เทอม</strong>
+    </p>
+
+    <div class="callout tip">
+      <strong>เทคนิคเขียน Flowchart</strong>
+      เริ่มจากเขียนด้วย <em>ปากกาบนกระดาษ</em> ก่อนเสมอ · อย่ารีบเปิด draw.io/Mermaid
+      เพราะจะติดอยู่กับการจัด layout · เขียนเสร็จและคุยจนแน่ใจกับเพื่อนก่อน
+      ค่อยพิมพ์ลง diagram tool (W03 จะลงลึก)
+    </div>
+
+    <h2>🎨 ลองเขียน Mermaid Flowchart เลย</h2>
+    <p>
+      หลังวาดมือเสร็จ ลองพิมพ์ <strong>Mermaid syntax</strong> ของ flowchart พี่นัทดู
+      — แก้ syntax ทางซ้าย จะเห็น diagram render ทางขวาทันที ·
+      เครื่องมือเต็ม + เทมเพลตอื่น ๆ ดูที่ <a href="tools.html">🎨 เครื่องมือสร้าง Diagram</a>
+    </p>
+
+    <div class="mermaid-editor" data-template="flowchart">flowchart TD
+    A([ศุกร์ 9:00]) --> B[/เปิด Classroom + ดาวน์โหลด 50 pdf/]
+    B --> C[เปิด rubric ใน Word]
+    C --> D[เปิด pdf ทีละไฟล์]
+    D --> E{ผ่านแต่ละ criteria?}
+    E -->|Yes| F[พิมพ์ feedback positive]
+    E -->|No| G[พิมพ์ feedback แก้ไข]
+    F --> H[ส่ง comment ใน Classroom]
+    G --> H
+    H --> I{ตรวจครบ 50?}
+    I -->|No| D
+    I -->|Yes| J([เที่ยงคืน · เสร็จ])</div>
+
+    <h2>Workshop 2 — เขียน Flowchart 2 แบบ ของ user คุณ</h2>
+    <p>ใช้ปัญหา + interview note จาก Workshop 1 — ทำตามขั้นตอน:</p>
+
+    <ol class="steps">
+      <li>
+        <strong>Flowchart "Current Workflow"</strong>
+        — วาดสิ่งที่ user ทำ <em>ตอนนี้</em> ทุกขั้น · ห้ามข้ามขั้น
+        (ขั้นที่ดูไม่สำคัญ มักเป็นจุดที่ปัญหาเกิด)
+      </li>
+      <li>
+        <strong>วงสี "Pain Point"</strong>
+        — ขั้นไหนที่ <em>"ช้า/ใช้เวลาเยอะ/ผิดบ่อย/ต้องทำซ้ำ"</em> · วงด้วยปากกาแดง
+      </li>
+      <li>
+        <strong>Flowchart "Improved Workflow"</strong>
+        — ถ้าแก้ pain point จะหน้าตายังไง? · เปลี่ยน "ใช้เครื่องช่วย", "auto-fill", "ระบบกรอกครั้งเดียว"
+      </li>
+      <li>
+        <strong>ระบุข้อมูลที่ระบบใหม่ต้องมี</strong>
+        — Improved version ต้องการข้อมูลอะไร? เก็บที่ไหน? ใครเป็นคนกรอก?
+      </li>
+      <li>
+        <strong>ส่ง flowchart ให้ user ดู — ขอ feedback</strong>
+        — "พี่ดูถูกต้องตามที่ทำจริงมั้ย?" · ส่วนใหญ่จะมี 2-3 ขั้นที่คุณวาดผิด — แก้ตาม
+      </li>
+      <li>
+        <strong>เขียน Problem Statement</strong>
+        ใช้ template ด้านล่าง (มีตัวอย่างเต็มของพี่นัทให้ดู)
+      </li>
+    </ol>
+
+    <h2>📝 Problem Statement — Template + ตัวอย่างเต็ม</h2>
+
+    <h3>Template</h3>
+    <pre><code>ปัญหา: [อะไรเกิดขึ้น]
+ใครเดือดร้อน: [role + จำนวนคน]
+ความถี่: [ทุกวัน / ทุกสัปดาห์ / ทุกเทอม]
+ผลกระทบถ้าไม่แก้: [เสียเวลา / เสียงาน / เสียความน่าเชื่อถือ]
+ทางออกที่อยากเห็น: [คนคนนั้นจะทำอะไรได้แทน]
+สิ่งที่ <em>ไม่</em> ทำ (Non-goals): [ตัดออกอะไรบ้าง]
+จะรู้ว่าสำเร็จเมื่อ: [success metric เป็นตัวเลข]</code></pre>
+
+    <h3>📋 ตัวอย่างเต็ม — Problem Statement ของพี่นัท</h3>
+    <pre><code>**ปัญหา:**
+TA ของวิชา Engineering Drawing ใช้เวลา 8 ชั่วโมงทุกวันศุกร์ในการตรวจ drawing
+assignment 50 ชิ้น เนื่องจากต้องเปิด pdf ทีละไฟล์ เทียบ rubric ใน Word
+แยกกัน แล้วพิมพ์ feedback ลง Classroom comment ทีละข้อ ทำให้ส่ง
+feedback กลับล่าช้า 1 สัปดาห์เสมอ
+
+**ใครเดือดร้อน:**
+- TA (พี่นัท · 1 คน) — เสียคืนวันศุกร์ทุกสัปดาห์
+- นักศึกษาปี 1 (50 คน) — ได้ feedback ช้า ทำผิดเดิมในงานถัดไป
+
+**ความถี่:**
+ทุกสัปดาห์ × 16 สัปดาห์ของเทอม = 128 ชม./เทอม
+
+**ผลกระทบถ้าไม่แก้:**
+- TA หมดไฟ · ภาควิชาหา TA ใหม่ทุกเทอม
+- นักศึกษาไม่ปรับปรุงเพราะ feedback ไม่ทัน งานชิ้นต่อไป
+- มี complaint จากผู้ปกครอง 2 ครั้งเทอมที่แล้ว
+
+**ทางออกที่อยากเห็น:**
+TA เปิด web app ขึ้นมา → เห็น drawing แต่ละชิ้นพร้อม rubric checklist
+ในจอเดียว → tick checkbox + พิมพ์ note สั้น → ระบบสร้าง feedback
++ คะแนน → ส่งกลับ Classroom อัตโนมัติ
+
+**สิ่งที่ไม่ทำ (Non-goals):**
+- ไม่ตรวจคุณภาพ drawing อัตโนมัติด้วย AI
+- ไม่แทน TA ในการตัดสินใจ
+- ยังไม่รองรับ Auto-CAD/SolidWorks file (เฉพาะ pdf)
+- ยังไม่ทำ mobile app
+
+**จะรู้ว่าสำเร็จเมื่อ:**
+- TA ตรวจ 50 ชิ้นได้ใน &lt; 4 ชม. (จาก 8 ชม.)
+- นักศึกษาได้ feedback ใน 24 ชม.หลังส่ง (จาก 1 สัปดาห์)
+- TA บอกว่า "ใช้แล้วชีวิตดีขึ้น" หลังใช้ 3 สัปดาห์</code></pre>
+
+    <div class="callout info">
+      <strong>สังเกต — Non-goals สำคัญพอ ๆ กับ Goals</strong>
+      ตัวอย่างของพี่นัทตัด <em>"AI grading"</em> ออก · ไม่ใช่เพราะทำไม่ได้ — แต่เพราะ
+      <em>"ครั้งแรก ต้องเล็กพอที่ทำได้"</em> · ใส่ Non-goals ทุกครั้ง · AI จะไม่ไปทำเกินขอบเขต
+    </div>
+
+    <h2>ข้อผิดที่พบบ่อย</h2>
+
+    <div class="callout warn">
+      <strong>เขียน flowchart จากสิ่งที่ "อยากให้เป็น" ทันที</strong>
+      — ผิด! ต้องเขียน current workflow ก่อนเสมอ ถึงจะเห็น pain point จริง
+      ถ้าข้ามขั้นนี้จะทำได้แค่ "วาดฝัน" ไม่ใช่ engineering
+    </div>
+
+    <div class="callout warn">
+      <strong>หลงทำ "App ของฉัน" แทน "ปัญหาของคนอื่น"</strong>
+      — นักศึกษามักรีบเสนอ "อยากสร้างแอปสั่งอาหาร" · ลองถามตัวเองก่อน
+      "ตอนนี้ใครสั่งอาหารแล้วเดือดร้อน?" — ถ้าตอบไม่ได้ แสดงว่ายังไม่มีปัญหาจริง
+    </div>
+
+    <div class="callout warn">
+      <strong>สัมภาษณ์โดยถามชี้นำ</strong>
+      "พี่คงเหนื่อยกับการตรวจมากเลยใช่มั้ย?" — user จะตอบเออเอออย่างเดียวเพื่อจบบทสนทนา
+      · ถาม open question เสมอ
+    </div>
+
+    <div class="callout warn">
+      <strong>ทำ flowchart ละเอียดเกินจนวาดไม่จบ</strong>
+      — เริ่มที่ <em>ระดับสูง 7-10 ขั้น</em> ก่อน ห้ามเกิน 15
+      ถ้าจำเป็นต้องลึกค่อยแยกเป็น sub-flowchart
+    </div>
+
+    <h2>ส่งงานสัปดาห์นี้</h2>
+    <ul>
+      <li>📷 รูปถ่าย <strong>flowchart 2 อัน</strong> (current + improved) — วาดมือ</li>
+      <li>🗒️ <strong>5 Whys</strong> ของปัญหา · ตรวจตาม rubric แล้ว</li>
+      <li>🎤 <strong>Interview note</strong> 1-2 หน้า — คำต่อคำ ไม่ตีความ</li>
+      <li>📝 <strong>Problem Statement</strong> ตาม template (มี Non-goals ครบ)</li>
+      <li>📩 <strong>ส่ง user</strong> ดู flowchart + Problem Statement · บันทึก feedback ของเขา</li>
+    </ul>
+
+    <h3>Reference จาก slide เดิม</h3>
+    <p>เนื้อหานี้เชื่อมโยงกับ <a href="references.html#topic-1">Topic 1 — IntroFlowchart</a> ของเอกสารประกอบการสอนเดิม + ขยายด้วย Mainidea Foundation 1 (Problem-finding) + 22 (Communication)</p>
+
+    <div class="pager">
+      <a href="index.html">
+        <div class="label">← กลับ</div>
+        <div class="title">หน้าแรก</div>
+      </a>
+      <a href="w02-tools-vocab.html" class="next">
+        <div class="label">สัปดาห์ถัดไป →</div>
+        <div class="title">W02 — เครื่องมือ + คำศัพท์</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+<script src="js/diagram-tools/mermaid-editor.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,24 @@
+---
+title: Grade Decision Tree (Boundary-Explicit)
+---
+flowchart TD
+    Start([Start]) --> V{Is score in<br/>range 0–100?}
+    V -->|No| Err[Raise ValueError]
+    V -->|Yes| B1{score >= 80?}
+    B1 -->|Yes| A[Return 'A']
+    B1 -->|No| B2{score >= 70?}
+    B2 -->|Yes| GB[Return 'B']
+    B2 -->|No| B3{score >= 60?}
+    B3 -->|Yes| GC[Return 'C']
+    B3 -->|No| B4{score >= 50?}
+    B4 -->|Yes| GD[Return 'D']
+    B4 -->|No| GF[Return 'F']
+
+    classDef startEnd fill:#3776ab,stroke:#1e4870,color:#ffffff,stroke-width:2px
+    classDef cond fill:#fff3cd,stroke:#f59e0b,color:#1a1410
+    classDef result fill:#d1fae5,stroke:#10b981,color:#064e3b
+    classDef error fill:#fee2e2,stroke:#ef4444,color:#7f1d1d
+    class Start startEnd
+    class V,B1,B2,B3,B4 cond
+    class A,GB,GC,GD,GF result
+    class Err error

@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>คู่มือ Computer Programming — ยุค AI · 15 สัปดาห์</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html" class="active"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>🚀 เริ่มต้น (Setup)</h4>
+      <a href="setup-python.html"><span class="num">🐍</span> ติดตั้ง Python</a>
+      <a href="setup-vscode.html"><span class="num">💻</span> VS Code / Cursor</a>
+      <a href="setup-terminal.html"><span class="num">🖥️</span> Terminal พื้นฐาน</a>
+      <a href="setup-pip.html"><span class="num">📦</span> pip + Packages</a>
+      <a href="setup-git.html"><span class="num">🌿</span> Git + GitHub</a>
+      <a href="setup-colab.html"><span class="num">☁️</span> Google Colab</a>
+      <a href="setup-ai.html"><span class="num">🤖</span> AI Accounts</a>
+      <a href="python-basics.html"><span class="num">📖</span> Python Cheat-sheet</a>
+
+      <h4>🧭 พื้นฐานก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์ระบบ</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+      <a href="principles-uxui.html"><span class="num">📐</span> UX/UI Principles</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <section class="hero">
+      <span class="eyebrow">Year 1 · ENG · Computer Programming · 15 weeks</span>
+      <h1>เรียนเขียนโปรแกรม<br>ยุค AI — ตั้งแต่ปัญหาจริง</h1>
+      <p class="lede">
+        คู่มือฉบับภาษาไทย ครอบคลุม <strong>15 สัปดาห์</strong> สำหรับนักศึกษาปี 1 วิศวกรรมศาสตร์
+        — เริ่มจาก <strong>"การมองเห็นปัญหาจริง"</strong> ก่อนเขียนโค้ดสักบรรทัด แล้วใช้ Python
+        + AI เป็นเครื่องมือสร้างของจริงที่ใช้งานได้ — ไม่ใช่แค่ทำการบ้าน
+      </p>
+      <div class="hero-meta">
+        <span>📦 <b>15</b> สัปดาห์ · 3 เฟส</span>
+        <span>🐍 <b>Python 3</b> เป็นภาษาหลัก</span>
+        <span>🤖 ทำงานคู่ <b>AI Agent</b></span>
+        <span>🎓 จบด้วย <b>Project จริง</b></span>
+      </div>
+    </section>
+
+    <figure class="hero-poster zoomable" data-src="images/poster.jpg" style="cursor:zoom-in">
+      <img src="images/poster.jpg" alt="Computer Programming — สรุปภาพรวมหลักสูตร 15 สัปดาห์">
+    </figure>
+    <p class="muted" style="text-align:center;margin-top:-12px;margin-bottom:32px;font-size:13px">
+      📋 ภาพสรุปหลักสูตร 15 สัปดาห์ในรูปเดียว — คลิกเพื่อดูขนาดใหญ่
+    </p>
+
+    <h2>หลักคิดของคู่มือนี้</h2>
+    <p>
+      ก่อน AI — เรียนเขียนโปรแกรม คือเรียน <em>"แก้โจทย์ที่อาจารย์ให้"</em>
+      หลัง AI — เรียนเขียนโปรแกรม คือเรียน <em>"หาโจทย์เอง แล้วสั่งให้ AI ช่วยทำ"</em>
+    </p>
+    <p>
+      คู่มือนี้ไม่ได้สอน Python syntax ตามตำราเดิม แล้วค่อยพูดถึง AI ตอนท้าย
+      — แต่ <strong>เริ่มจากพื้นฐานยุค AI ก่อน</strong> (สังเกตปัญหา · เขียน Diagram · เลือกเครื่องมือ)
+      แล้วจึงเรียน Python เป็นเครื่องมือสำหรับทำสิ่งที่อยากทำให้สำเร็จ
+    </p>
+
+    <div class="callout info">
+      <strong>เป้าหมายเมื่อจบ 15 สัปดาห์</strong>
+      นักศึกษาต้องสามารถ — มองเห็นปัญหา → อธิบายเป็น workflow → เขียน spec → สั่ง AI ช่วยสร้างต้นแบบ
+      → ทดสอบของจริง → ปรับแก้ → ส่งมอบใช้งานได้กับเพื่อน 1 คน
+    </div>
+
+    <h2>เฟส 1 · พื้นฐานก่อนเขียนโค้ด (W01–W03)</h2>
+    <p>3 สัปดาห์แรกไม่มีการเขียน Python — เป็นพื้นฐานที่ยุค AI ขาดไม่ได้</p>
+
+    <div class="lesson-grid" style="margin-bottom:32px">
+      <a class="lesson" href="w01-problem-finding.html" style="border-left:5px solid #3776ab">
+        <span class="badge">W01 · Foundations</span>
+        <div class="title">หาปัญหา + Flowchart</div>
+        <div class="desc">
+          แยก <strong>symptom vs root problem</strong>, สังเกตงานในห้อง lab/บ้าน,
+          เขียน <strong>Flowchart</strong> ของ process จริง — เริ่ม <em>"ก่อนที่จะคิดถึงโค้ด"</em>
+        </div>
+        <div class="tags">
+          <span class="tag">Problem-finding</span>
+          <span class="tag cyan">Flowchart</span>
+          <span class="tag violet">Spec</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="w02-tools-vocab.html" style="border-left:5px solid #3776ab">
+        <span class="badge">W02 · Foundations</span>
+        <div class="title">เครื่องมือ + คำศัพท์ระบบ</div>
+        <div class="desc">
+          รู้จัก <strong>เครื่องมือยุค AI</strong> (Cursor, Claude, GitHub, Cloud Run, …)
+          และ <strong>คำศัพท์ระบบ</strong> (User, API, Server, Database, …) — เพื่อสั่ง AI ให้แม่นยำ
+        </div>
+        <div class="tags">
+          <span class="tag">Tool literacy</span>
+          <span class="tag cyan">Vocabulary</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="w03-diagrams.html" style="border-left:5px solid #3776ab">
+        <span class="badge">W03 · Foundations</span>
+        <div class="title">Diagram 6 แบบ</div>
+        <div class="desc">
+          Flowchart, Sequence, C4, State machine, ER, Block — <strong>AI อ่าน diagram ได้ดีกว่าคำพูดคลุมเครือ</strong>
+          มาก เรียนเขียน 6 แบบให้ใช้งานได้จริง
+        </div>
+        <div class="tags">
+          <span class="tag violet">C4</span>
+          <span class="tag cyan">Sequence</span>
+          <span class="tag">State</span>
+          <span class="tag">ER</span>
+        </div>
+      </a>
+    </div>
+
+    <h2>เฟส 2 · Code Literacy with AI (W04–W07)</h2>
+    <p>
+      ไม่สอน Python syntax ทีละหัวข้อแบบเดิม — แต่ใช้ AI เป็น <em>คู่หูฝึก</em>
+      เริ่มจาก <strong>อ่านโค้ดที่ AI เขียน</strong> ให้เข้าใจ → <strong>แก้ไข</strong> →
+      <strong>สั่งงาน AI</strong> ครอบคลุม print/input/if/for/def ในเฟสเดียว
+    </p>
+
+    <div class="lesson-grid" style="margin-bottom:32px">
+      <a class="lesson" href="w04-read-ai-code.html" style="border-left:5px solid #ffd43b">
+        <span class="badge" style="background:linear-gradient(135deg,#ffd43b,#3776ab);color:#1a1410">W04 · Literacy</span>
+        <div class="title">อ่านโค้ดที่ AI เขียน</div>
+        <div class="desc">
+          ติดตั้ง Python/Cursor · ขอ AI สร้างโปรแกรมเล็ก ๆ 3-4 ตัว แล้ว <em>"อ่านให้เข้าใจ"</em> ทั้ง
+          <code>print/input/if/for/def</code> ในงานเดียว — ไม่ต้องท่อง syntax ก่อน
+        </div>
+        <div class="tags">
+          <span class="tag orange">read</span>
+          <span class="tag">Cursor</span>
+          <span class="tag">trace</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="w05-modify-ai-code.html" style="border-left:5px solid #ffd43b">
+        <span class="badge" style="background:linear-gradient(135deg,#ffd43b,#3776ab);color:#1a1410">W05 · Literacy</span>
+        <div class="title">แก้ไข + ต่อยอดโค้ด AI</div>
+        <div class="desc">
+          แก้ AI's code ทีละนิด — เปลี่ยน condition, เพิ่ม field, ต่อ loop — เรียน syntax โดยลงมือ
+          <em>"แก้แล้วรัน"</em> แทนการเรียนตามตำรา
+        </div>
+        <div class="tags">
+          <span class="tag orange">edit</span>
+          <span class="tag">syntax</span>
+          <span class="tag violet">small steps</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="w06-direct-from-spec.html" style="border-left:5px solid #ffd43b">
+        <span class="badge" style="background:linear-gradient(135deg,#ffd43b,#3776ab);color:#1a1410">W06 · Literacy</span>
+        <div class="title">สั่ง AI จาก Spec</div>
+        <div class="desc">
+          เริ่มจาก <em>spec ที่นักศึกษาเขียนเอง</em> → AI สร้าง → นักศึกษาทดสอบ + แก้ — ฝึก
+          <strong>"prompt อย่างชัดเจน"</strong> และ <strong>"ตรวจสอบงาน AI"</strong>
+        </div>
+        <div class="tags">
+          <span class="tag orange">spec</span>
+          <span class="tag violet">verify</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="w07-cli-workshop.html" style="border-left:5px solid #ffd43b">
+        <span class="badge" style="background:linear-gradient(135deg,#ffd43b,#3776ab);color:#1a1410">W07 · Workshop</span>
+        <div class="title">Workshop — 3 CLI Tools</div>
+        <div class="desc">
+          สร้าง 3 เครื่องมือเล็ก ๆ ใน 1 สัปดาห์ — เครื่องคิดเลขเกรด · นับคำในไฟล์ ·
+          ตัวจัดการ TODO — ทำงานร่วมกับ AI ทุกขั้น
+        </div>
+        <div class="tags">
+          <span class="tag orange">CLI</span>
+          <span class="tag">end-to-end</span>
+        </div>
+      </a>
+    </div>
+
+    <h2>เฟส 3 · Data with AI (W08–W10)</h2>
+    <p>3 สัปดาห์ทำงานกับ <em>ข้อมูลจริง</em> — รวม list/dict/CSV/pandas เป็นเรื่องเดียว, NumPy + plot, แล้วทำ Data Project</p>
+
+    <div class="lesson-grid" style="margin-bottom:32px">
+      <a class="lesson" href="w08-tables.html" style="border-left:5px solid #2dd4bf">
+        <span class="badge" style="background:linear-gradient(135deg,#2dd4bf,#3776ab);color:#0b1020">W08 · Data</span>
+        <div class="title">ตาราง: list / dict / CSV</div>
+        <div class="desc">
+          เรียน <code>list</code>, <code>dict</code>, <code>tuple</code>, JSON, CSV, และ
+          <code>pandas.DataFrame</code> เป็น <em>"เรื่องเดียวกัน"</em> — ทุกอันคือ "ตาราง"
+        </div>
+        <div class="tags">
+          <span class="tag cyan">list</span>
+          <span class="tag cyan">dict</span>
+          <span class="tag">CSV</span>
+          <span class="tag">pandas</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="w09-numpy-plot.html" style="border-left:5px solid #2dd4bf">
+        <span class="badge" style="background:linear-gradient(135deg,#2dd4bf,#3776ab);color:#0b1020">W09 · Data</span>
+        <div class="title">NumPy + Matplotlib</div>
+        <div class="desc">
+          <code>ndarray</code> + การคำนวณ vectorize + <code>plt.plot/scatter/bar</code>
+          — เพื่อ <em>"เห็นข้อมูลด้วยตา"</em>
+        </div>
+        <div class="tags">
+          <span class="tag cyan">numpy</span>
+          <span class="tag">plot</span>
+          <span class="tag">visualize</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="w10-data-project.html" style="border-left:5px solid #2dd4bf">
+        <span class="badge" style="background:linear-gradient(135deg,#2dd4bf,#3776ab);color:#0b1020">W10 · Data</span>
+        <div class="title">Data Project ปลายทาง</div>
+        <div class="desc">
+          เก็บข้อมูลจริง (Google Forms / CSV จาก lab) → ทำความสะอาด → วิเคราะห์ →
+          ทำกราฟ → เล่าเรื่องด้วย <em>insight</em>
+        </div>
+        <div class="tags">
+          <span class="tag cyan">end-to-end</span>
+          <span class="tag">real data</span>
+        </div>
+      </a>
+    </div>
+
+    <h2>เฟส 4 · Advanced (W11–W14)</h2>
+    <p>4 สัปดาห์ก้าวข้าม "scripts" — สู่ <em>"ระบบจริง"</em> ที่มีโครงสร้าง, ติดต่อโลกภายนอก, ทดสอบได้, และ deploy ได้</p>
+
+    <div class="lesson-grid" style="margin-bottom:32px">
+      <a class="lesson" href="w11-oop-structure.html" style="border-left:5px solid #8b5cf6">
+        <span class="badge" style="background:linear-gradient(135deg,#8b5cf6,#3776ab);color:#fff">W11 · Advanced</span>
+        <div class="title">OOP + จัดระเบียบโค้ด</div>
+        <div class="desc">
+          <code>class</code>, method, module — และที่สำคัญกว่า <em>"เมื่อไหร่ใช้ / เมื่อไหร่ไม่ใช้"</em>
+          OOP เพราะ AI ชอบ over-engineer
+        </div>
+        <div class="tags">
+          <span class="tag violet">class</span>
+          <span class="tag">modules</span>
+          <span class="tag">when-not-to</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="w12-apis.html" style="border-left:5px solid #8b5cf6">
+        <span class="badge" style="background:linear-gradient(135deg,#8b5cf6,#3776ab);color:#fff">W12 · Advanced</span>
+        <div class="title">APIs + Integration</div>
+        <div class="desc">
+          <code>requests</code>, Google Sheets API, LINE Messaging API, Flask/Streamlit
+          เล็ก ๆ — ทำให้ Python <em>"คุยกับโลกภายนอก"</em>
+        </div>
+        <div class="tags">
+          <span class="tag violet">requests</span>
+          <span class="tag">Sheets</span>
+          <span class="tag">LINE</span>
+          <span class="tag">Flask</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="w13-debug-test.html" style="border-left:5px solid #8b5cf6">
+        <span class="badge" style="background:linear-gradient(135deg,#8b5cf6,#3776ab);color:#fff">W13 · Advanced</span>
+        <div class="title">Debug + Test + Reality</div>
+        <div class="desc">
+          อ่าน stack trace, เขียน <code>assert</code> + <code>pytest</code>,
+          จับ <em>"AI hallucination"</em>, และเหตุผลว่า <em>"works on my machine ≠ ใช้งานได้"</em>
+        </div>
+        <div class="tags">
+          <span class="tag violet">debug</span>
+          <span class="tag">pytest</span>
+          <span class="tag">hallucination</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="w14-deploy.html" style="border-left:5px solid #8b5cf6">
+        <span class="badge" style="background:linear-gradient(135deg,#8b5cf6,#3776ab);color:#fff">W14 · Advanced</span>
+        <div class="title">Deploy + Maintain</div>
+        <div class="desc">
+          Git/GitHub พื้นฐาน, deploy แอป Streamlit/Flask ขึ้น Cloud,
+          <em>version, rollback, change-log</em> — ของจริงต้องบำรุงรักษาได้
+        </div>
+        <div class="tags">
+          <span class="tag violet">git</span>
+          <span class="tag">cloud</span>
+          <span class="tag">maintain</span>
+        </div>
+      </a>
+    </div>
+
+    <h2>เฟส 5 · Capstone (W15)</h2>
+    <p>1 สัปดาห์ส่งมอบ <em>ของจริง</em> ให้ user จริง 1 คน — รวมทุกทักษะตั้งแต่ W01</p>
+
+    <div class="lesson-grid" style="margin-bottom:32px">
+      <a class="lesson" href="w15-final-project.html" style="border-left:5px solid #ec4899">
+        <span class="badge" style="background:linear-gradient(135deg,#ec4899,#8b5cf6);color:#fff">W15 · 🎓 Capstone</span>
+        <div class="title">Final Project — ทำของให้ user จริง</div>
+        <div class="desc">
+          Problem → Workflow → Spec → AI Build → Test → Deploy → Docs → Demo
+          — ประเมินจาก <em>"ใช้งานได้กับเพื่อน 1 คน"</em> ไม่ใช่ "ดูเท่"
+        </div>
+        <div class="tags">
+          <span class="tag">spec</span>
+          <span class="tag">build</span>
+          <span class="tag">test</span>
+          <span class="tag">deploy</span>
+        </div>
+      </a>
+    </div>
+
+    <h2>ทักษะ 12 อย่างที่จะได้ (ตาม Mainidea)</h2>
+    <p>The new foundation stack — สิ่งที่ <em>"coding ยังอยู่ข้างใน แต่ไม่ใช่ศูนย์กลางอีกต่อไป"</em></p>
+
+    <div class="card-grid">
+      <div class="card"><div class="num">FDN 1</div><div class="name">เห็นปัญหาจริง</div><div class="desc">แยก symptom vs root, สังเกตงานซ้ำ, ใครเดือดร้อน, ถ้าไม่แก้จะเป็นอะไร</div></div>
+      <div class="card"><div class="num">FDN 2</div><div class="name">อธิบาย Workflow</div><div class="desc">เขียน flowchart ของ process ปัจจุบัน vs ที่อยากให้เป็น</div></div>
+      <div class="card"><div class="num">FDN 3</div><div class="name">เข้าใจข้อมูล</div><div class="desc">record, field, key, ความสัมพันธ์ — ก่อนเขียน database</div></div>
+      <div class="card"><div class="num">FDN 4</div><div class="name">เข้าใจระบบ</div><div class="desc">user, server, API, frontend, backend, queue — คำศัพท์ที่ AI ใช้ได้</div></div>
+      <div class="card"><div class="num">FDN 5</div><div class="name">ใช้ Diagram</div><div class="desc">Flowchart · Sequence · C4 · State · ER · Block</div></div>
+      <div class="card"><div class="num">FDN 6</div><div class="name">รู้จักเครื่องมือ</div><div class="desc">รู้ว่ามีอะไรให้ใช้ได้บ้าง และที่สำคัญ — <em>"อะไรที่เราไม่มี"</em></div></div>
+      <div class="card"><div class="num">FDN 7</div><div class="name">สั่ง AI ให้ชัด</div><div class="desc">ขอแผนก่อน · บอกข้อจำกัด · ขอให้วิจารณ์งานตัวเอง · จับ hallucination</div></div>
+      <div class="card"><div class="num">FDN 8</div><div class="name">ทดสอบของจริง</div><div class="desc">manual + automated, edge case, failure path — <em>"ทดสอบก่อนเชื่อ AI"</em></div></div>
+      <div class="card"><div class="num">FDN 9</div><div class="name">Debug พฤติกรรม</div><div class="desc">ไม่ใช่แค่ syntax — debug ระดับระบบและข้อมูล</div></div>
+      <div class="card"><div class="num">FDN 10</div><div class="name">คุม Scope</div><div class="desc">MVP, non-goals, "ยังไม่ต้องทำ", "ใช้ spreadsheet ก่อนพอ"</div></div>
+      <div class="card"><div class="num">FDN 11</div><div class="name">เขียนเอกสาร</div><div class="desc">README, spec, test plan, changelog — เป็น control layer ของ AI</div></div>
+      <div class="card"><div class="num">FDN 12</div><div class="name">บำรุงรักษา</div><div class="desc">version, rollback, ไม่เปลี่ยนหลายอย่างพร้อมกัน</div></div>
+    </div>
+
+    <h2>ก่อนเริ่ม — สิ่งที่ต้องเตรียม</h2>
+
+    <h3>🚀 Setup — ทำครั้งเดียว ใช้ทั้งคอร์ส</h3>
+    <p>กดเข้าแต่ละหน้าเพื่อทำตามขั้นตอน · เริ่มจาก <em>"ต้องมี"</em> (สีน้ำเงิน) ก่อนไปต่อ · "เสริม" (สีเหลือง/เขียว) ทำตามจำเป็น</p>
+
+    <div class="lesson-grid" style="margin-bottom:24px">
+      <a class="lesson" href="setup-python.html" style="border-left:5px solid #3776ab">
+        <span class="badge">Core · 10 นาที</span>
+        <div class="title">🐍 ติดตั้ง Python</div>
+        <div class="desc">
+          ดาวน์โหลดจาก python.org · ติด <span class="pill warn">Add to PATH</span> · verify ด้วย
+          <code>python --version</code> · troubleshoot ครบทุกปัญหาที่เจอบ่อย
+        </div>
+        <div class="tags">
+          <span class="tag">Windows</span>
+          <span class="tag">Mac</span>
+          <span class="tag">step-by-step</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="setup-vscode.html" style="border-left:5px solid #3776ab">
+        <span class="badge">Core · 10 นาที</span>
+        <div class="title">💻 VS Code / Cursor</div>
+        <div class="desc">
+          เลือก editor — VS Code (ฟรี) หรือ Cursor (มี AI ในตัว) · ลง Python extension ·
+          shortcut cheat-sheet · ปัญหาที่พบบ่อย
+        </div>
+        <div class="tags">
+          <span class="tag cyan">VS Code</span>
+          <span class="tag cyan">Cursor</span>
+          <span class="tag">shortcuts</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="setup-terminal.html" style="border-left:5px solid #3776ab">
+        <span class="badge">Core · 10 นาที</span>
+        <div class="title">🖥️ Terminal พื้นฐาน</div>
+        <div class="desc">
+          PowerShell / Terminal — <code>cd</code>, <code>ls</code>/<code>dir</code>, <code>pwd</code>,
+          run <code>python file.py</code> · shortcut + troubleshoot
+        </div>
+        <div class="tags">
+          <span class="tag">PowerShell</span>
+          <span class="tag">cd / ls</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="setup-pip.html" style="border-left:5px solid #3776ab">
+        <span class="badge">Core · 10 นาที</span>
+        <div class="title">📦 pip + Packages</div>
+        <div class="desc">
+          ลง package เสริม (pandas, numpy, flask) · <code>requirements.txt</code> ·
+          virtual environment (venv) · troubleshoot
+        </div>
+        <div class="tags">
+          <span class="tag">pip install</span>
+          <span class="tag">venv</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="setup-git.html" style="border-left:5px solid #3776ab">
+        <span class="badge">Core · 15 นาที</span>
+        <div class="title">🌿 Git + GitHub</div>
+        <div class="desc">
+          ลง Git · สร้าง GitHub account · workflow แรก (init/add/commit/push) ·
+          .gitignore · ใช้ตั้งแต่ W04 จนถึง Final Project
+        </div>
+        <div class="tags">
+          <span class="tag violet">git</span>
+          <span class="tag">GitHub</span>
+          <span class="tag">version</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="setup-ai.html" style="border-left:5px solid #3776ab">
+        <span class="badge">Core · 10 นาที</span>
+        <div class="title">🤖 AI Accounts</div>
+        <div class="desc">
+          Claude / ChatGPT / Cursor / Gemini · เปรียบเทียบ · เลือกอันที่เหมาะ ·
+          5 prompt templates · GitHub Copilot ฟรีสำหรับนักศึกษา
+        </div>
+        <div class="tags">
+          <span class="tag">Claude</span>
+          <span class="tag">ChatGPT</span>
+          <span class="tag orange">prompts</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="setup-colab.html" style="border-left:5px solid #2dd4bf">
+        <span class="badge">เสริม · ทางเลือก</span>
+        <div class="title">☁️ Google Colab</div>
+        <div class="desc">
+          ทางเลือกถ้าลง Python ไม่ได้ (Chromebook / iPad / ไม่มี admin) · เปิดเบราว์เซอร์รัน Python ได้เลย ·
+          เหมาะกับ W08–W10 (ทำ data + plot)
+        </div>
+        <div class="tags">
+          <span class="tag cyan">no-install</span>
+          <span class="tag">Jupyter</span>
+          <span class="tag">data</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="python-basics.html" style="border-left:5px solid #ffd43b">
+        <span class="badge" style="background:linear-gradient(135deg,#ffd43b,#3776ab);color:#1a1410">Reference · เปิดทิ้งไว้</span>
+        <div class="title">📖 Python Cheat-sheet</div>
+        <div class="desc">
+          syntax พื้นฐานทั้งหมด · variables, operators, list, dict, def, try/except ·
+          <em>ทุก example รันได้ในเบราว์เซอร์</em> · ลืม syntax ไหน → ค้นที่นี่
+        </div>
+        <div class="tags">
+          <span class="tag orange">runnable</span>
+          <span class="tag">quick-ref</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="principles-uxui.html" style="border-left:5px solid #ffd43b">
+        <span class="badge" style="background:linear-gradient(135deg,#ffd43b,#3776ab);color:#1a1410">Reference · ใช้ตอน W12+</span>
+        <div class="title">📐 UX/UI Principles</div>
+        <div class="desc">
+          เลือก UI tech ให้ตรงงาน (Tkinter / Streamlit / Flask / Bot) · 5 states ที่ AI ลืม · forms · tables ·
+          mobile · AI-era traps · checklist ก่อนส่งงาน
+        </div>
+        <div class="tags">
+          <span class="tag orange">judge AI UI</span>
+          <span class="tag">W12 / W14 / W15</span>
+        </div>
+      </a>
+    </div>
+
+    <h3>อื่น ๆ ที่ใช้ตอนหลัง</h3>
+    <ul>
+      <li><strong>เครื่องคำนวณ + ปากกา + กระดาษ</strong> — ใช้สำหรับ W01–W03 (Flowchart + Diagram ด้วยมือก่อน)</li>
+      <li><strong>Google Drive</strong> — เก็บไฟล์ + ใช้กับ Colab (W08–W10)</li>
+      <li><strong>(W14+)</strong> Cloud Run / Streamlit Cloud account สำหรับ deploy (จะแนะนำตอนนั้น)</li>
+    </ul>
+
+    <h3>ความรู้พื้นฐานที่ต้องมี</h3>
+    <table>
+      <thead>
+        <tr><th>ระดับ</th><th>รายการ</th><th>ทำไมต้องมี</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>ต้องมี</td><td>ใช้ Windows / Mac ได้คล่อง</td><td>เปิด terminal, จัดการไฟล์, แตก zip</td></tr>
+        <tr><td>ต้องมี</td><td>พิมพ์ภาษาอังกฤษได้</td><td>code + error message + prompt ส่วนใหญ่เป็นอังกฤษ</td></tr>
+        <tr><td>ดี</td><td>เคยใช้ Google Sheets / Excel</td><td>W09 / W12 ใช้แนวคิดตารางเหมือนกัน</td></tr>
+        <tr><td>ดี</td><td>เคยใช้ ChatGPT / Gemini มาก่อน</td><td>W14 จะลงลึก แต่เริ่มเร็วขึ้นถ้าคุ้นเคย</td></tr>
+        <tr><td>ไม่จำเป็น</td><td>เคยเขียนโปรแกรมมาก่อน</td><td>คู่มือเริ่มจากศูนย์</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับสำหรับผู้เริ่มต้น</strong>
+      อย่ารีบกระโดดเข้า W04 (Python) ถ้ายังไม่ทำ W01–W03 — <em>การไม่มีพื้นฐานยุค AI จะทำให้เขียนได้แค่
+      "toy app"</em> ตามคำสั่ง AI ที่ไม่ชัดเจน · ลงทุน 3 สัปดาห์แรกอย่างเต็มที่
+    </div>
+
+    <div class="callout note">
+      <strong>คู่มือนี้สร้างมาจาก</strong>
+      <em>Mainidea</em> ของผู้สอน + เอกสารประกอบการสอนเดิม <strong>วิชา Computer Programming</strong>
+      (Topic 1–11: Flowchart, Python, Output, Input, Conditions, Repetition, Functions, NumPy, OOP/Matplotlib, Pandas, GenAI)
+      ของภาควิชาวิศวกรรมเครื่องกลและเมคาทรอนิกส์ คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+      <br>ดู Slide เดิมทั้งหมดได้ที่ <a href="references.html">หน้าเอกสารอ้างอิง</a>
+    </div>
+
+    <h2>การใช้คู่มือนี้</h2>
+    <p>คู่มือเป็นเว็บไซต์ static — ไม่ต้องติดตั้งอะไร เพียงเปิด <code>index.html</code>
+       ด้วยเบราว์เซอร์ใดก็ได้ ทุกหน้ามี <strong>checklist</strong> ที่บันทึก progress ใน localStorage
+       ของเบราว์เซอร์ (เห็นแถบล่างขวา) — เคลียร์ได้ที่ปุ่ม "รีเซ็ต"</p>
+
+    <div class="pager">
+      <div class="spacer"></div>
+      <a href="w01-problem-finding.html" class="next">
+        <div class="label">เริ่มสัปดาห์แรก →</div>
+        <div class="title">W01 — หาปัญหา + Flowchart</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · ภาควิชาวิศวกรรมเครื่องกลและเมคาทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+  <br>เรียบเรียงจาก <em>Mainidea</em> (พื้นฐานเขียนโปรแกรมยุค AI) + เอกสารประกอบการสอนเดิม Computer Programming
+</footer>
+
+<script src="js/progress.js" defer></script>
+</body>
+</html>

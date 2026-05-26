@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แท็บ I/O — คู่มือ Ripes</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="images/logo.png" alt="Ripes logo">
+      <div>
+        <div class="title">Ripes Tutorial</div>
+        <div class="subtitle">คู่มือการใช้งานฉบับภาษาไทย</div>
+      </div>
+    </div>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html">หน้าแรก &amp; ติดตั้ง</a>
+      <h4>แท็บการใช้งาน</h4>
+      <a href="editor.html">1. แท็บ Editor</a>
+      <a href="processor.html">2. แท็บ Processor</a>
+      <a href="memory.html">3. แท็บ Memory</a>
+      <a href="cache.html">4. แท็บ Cache</a>
+      <a href="io.html" class="active">5. แท็บ I/O</a>
+      <h4>อ้างอิง</h4>
+      <a href="ecalls.html">System Calls (ecall)</a>
+      <h4>ตัวอย่างประกอบ</h4>
+      <a href="examples/factorial.html">Factorial (Assembly)</a>
+      <a href="examples/leds.html">LEDs (I/O)</a>
+      <a href="examples/matrixmul.html">Matrix Multiply (C)</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <h1>แท็บ I/O — Memory-mapped I/O</h1>
+    <p class="lede">เพิ่มอุปกรณ์จำลอง เช่น LED matrix, switches, ปุ่มกด เข้าสู่ระบบ แล้วเชื่อมต่อกับโปรแกรมผ่าน memory-mapped I/O — สร้างระบบ embedded ขนาดเล็กได้ภายในไม่กี่นาที</p>
+
+    <figure>
+      <img src="images/iotab.png" alt="หน้าจอแท็บ I/O">
+      <figcaption>หน้าจอ I/O tab — ซ้าย: รายการอุปกรณ์, กลาง: อุปกรณ์ที่ใช้งานอยู่, ขวา: รายละเอียดและ register map</figcaption>
+    </figure>
+
+    <h2>โครงสร้างหน้าจอ</h2>
+    <table>
+      <thead><tr><th>หมายเลข</th><th>ส่วน</th><th>คำอธิบาย</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Device list</td><td>รายการอุปกรณ์ที่มีให้เลือก — Double-click เพื่อสร้าง instance</td></tr>
+        <tr><td>2</td><td>Active devices</td><td>พื้นที่แสดงอุปกรณ์ที่กำลังใช้งาน</td></tr>
+        <tr><td>3</td><td>Pop-out button</td><td>ดึงอุปกรณ์ออกเป็นหน้าต่างลอย เพื่อดูพร้อมกับแท็บอื่นได้</td></tr>
+        <tr><td>4</td><td>Device details</td><td>รายละเอียดของอุปกรณ์ที่เลือก</td></tr>
+        <tr><td>5</td><td>Register map</td><td>รายชื่อ register, address offset, สิทธิ์อ่าน/เขียน, bit-width</td></tr>
+        <tr><td>6</td><td>Exported symbols</td><td>ชื่อตัวแปรที่ใช้ใน assembly/C ได้ (เช่น <code>LED_MATRIX_0_BASE</code>)</td></tr>
+        <tr><td>7</td><td>All exported definitions</td><td>รวม define ทั้งหมดของอุปกรณ์ที่สร้างไว้</td></tr>
+      </tbody>
+    </table>
+
+    <h2>วิธีใช้อุปกรณ์ในโปรแกรม</h2>
+
+    <h3>ในภาษา Assembly</h3>
+    <p>ใช้ชื่อ symbol ของอุปกรณ์ที่ปรากฏใน Exported symbols ได้ทันทีในที่ที่รับ immediate value ได้:</p>
+<pre><code>li a0 LED_MATRIX_0_BASE   # โหลด base address ของ LED matrix
+li a1 LED_MATRIX_0_WIDTH  # โหลดความกว้าง</code></pre>
+
+    <h3>ในภาษา C</h3>
+    <p>เพิ่ม include header แล้วใช้ <code>#define</code> ได้เลย:</p>
+<pre><code>#include "ripes_system.h"
+
+int main() {
+    volatile unsigned* leds = (unsigned*) LED_MATRIX_0_BASE;
+    volatile unsigned* switches = (unsigned*) SWITCHES_0_BASE;
+    // ...
+}</code></pre>
+
+    <h2>ตัวอย่าง: Switches + LEDs</h2>
+    <p>ตัวอย่างนี้แสดงการเขียนโปรแกรมให้สวิตช์ควบคุม LED แต่ละดวง</p>
+
+    <h3>ขั้นที่ 1 — สร้างอุปกรณ์</h3>
+    <ol class="steps">
+      <li>ไปที่แท็บ I/O</li>
+      <li>Double-click <strong>LED Matrix</strong> ที่ device list</li>
+      <li>เลือก LED Matrix ที่เพิ่งสร้าง ไปที่ Parameters: ตั้ง <code>Height = 1</code>, <code>Width = 8</code>, เพิ่ม LED size ให้ใหญ่ขึ้น</li>
+      <li>Double-click <strong>Switches</strong> เพื่อสร้าง switch panel</li>
+    </ol>
+
+    <h3>ขั้นที่ 2 — โหลดโปรแกรม</h3>
+    <p>เลือก <code>File → Load Example → C → switchesAndLeds.c</code></p>
+    <p>หลักการของโปรแกรม: โหลด base address ของ LED matrix และ switches แล้ววนตรวจสอบ bitmask ของ switches ทีละ bit — ถ้า bit ใดเปิดอยู่ ก็ทำให้ LED ที่ตำแหน่งนั้นสว่าง</p>
+
+    <h3>ขั้นที่ 3 — รันและทดสอบ</h3>
+    <ol class="steps">
+      <li>กดปุ่ม <strong>Build</strong> (Ctrl+B) เพื่อ compile</li>
+      <li>กลับมาที่แท็บ I/O</li>
+      <li>กด <strong>Run</strong> เพื่อรันโปรแกรม</li>
+      <li>คลิกสลับ switch ดู — LED ตำแหน่งนั้นควรสว่างขึ้น</li>
+    </ol>
+
+    <div class="callout tip">
+      <strong>ความเร็วในการ Simulate</strong>
+      เมื่อทำงานกับ I/O อยากให้ตอบสนองเร็ว ให้:
+      <ul style="margin: 6px 0 0;">
+        <li>สลับมาใช้ <strong>Single Cycle processor</strong></li>
+        <li>ลดค่า "Max. cache plot cycles" ในหน้า Settings</li>
+      </ul>
+    </div>
+
+    <h2>เปรียบเทียบ Run กับ Step</h2>
+    <p>ลองทดลองเอง:</p>
+    <ul>
+      <li>กด <strong>Run</strong> — การตอบสนองจาก switch ไปสว่างที่ LED แทบจะทันที</li>
+      <li>กด <strong>F6 (Step)</strong> — สลับสวิตช์แล้วต้องกด step หลายครั้งกว่า LED จะเปลี่ยน เพราะ clock cycle ต่ำมาก</li>
+    </ul>
+
+    <p>นี่คือการจำลองความรู้สึกของการรัน firmware ใน CPU ความเร็วต่ำ</p>
+
+    <h2>อุปกรณ์ที่มีให้เลือก</h2>
+    <ul>
+      <li><strong>Switches</strong> — แผงสวิตช์ที่กำหนดจำนวนได้ อ่านสถานะเป็น register หนึ่งตัว</li>
+      <li><strong>LED Matrix</strong> — กริด LED ที่กำหนดขนาดและสีได้ เขียนค่าผ่าน register ตามตำแหน่ง</li>
+      <li><strong>Button</strong> — ปุ่มกดที่ส่ง interrupt ได้</li>
+      <li><strong>D-pad</strong> — ปุ่ม 4 ทิศทาง</li>
+    </ul>
+
+    <p>รายการอุปกรณ์อาจเปลี่ยนแปลงตามเวอร์ชันของ Ripes — ตรวจสอบในหน้า device list ของเครื่องคุณ</p>
+
+    <div class="pager">
+      <a href="cache.html">
+        <div class="label">← บทก่อนหน้า</div>
+        <div class="title">4. แท็บ Cache</div>
+      </a>
+      <a class="next" href="ecalls.html">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">System Calls (ecall)</div>
+      </a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

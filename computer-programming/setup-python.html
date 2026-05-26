@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ติดตั้ง Python — Step by Step | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>🚀 เริ่มต้น (Setup)</h4>
+      <a href="setup-python.html" class="active"><span class="num">🐍</span> ติดตั้ง Python</a>
+      <a href="setup-vscode.html"><span class="num">💻</span> VS Code / Cursor</a>
+      <a href="setup-terminal.html"><span class="num">🖥️</span> Terminal พื้นฐาน</a>
+      <a href="setup-pip.html"><span class="num">📦</span> pip + Packages</a>
+      <a href="setup-git.html"><span class="num">🌿</span> Git + GitHub</a>
+      <a href="setup-colab.html"><span class="num">☁️</span> Google Colab</a>
+      <a href="setup-ai.html"><span class="num">🤖</span> AI Accounts</a>
+      <a href="python-basics.html"><span class="num">📖</span> Python Cheat-sheet</a>
+
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">Setup · ทำครั้งเดียว ใช้ทั้งคอร์ส</span>
+    <h1>🐍 ติดตั้ง Python — Step by Step</h1>
+    <p class="lede">
+      ก่อนเริ่ม W04 ต้องมี Python บนเครื่อง · ใช้เวลาประมาณ <strong>10–15 นาที</strong> ·
+      ทำตามทีละขั้น <em>"อย่าข้าม Add to PATH"</em> — ขั้นนั้นพังบ่อยที่สุด
+    </p>
+
+    <div class="callout info">
+      <strong>ติดตั้งไม่ได้? ใช้ Colab แทน</strong>
+      ถ้าเครื่องเป็น Chromebook / iPad / ติดสิทธิ์ admin → ข้ามไปหน้า
+      <a href="setup-colab.html">Google Colab</a> ใช้ Python บน cloud ได้เลย (ไม่ต้องลง)
+    </div>
+
+    <h2>📋 เลือกระบบของคุณ</h2>
+    <ul>
+      <li><a href="#windows">Windows 10 / 11</a></li>
+      <li><a href="#macos">macOS</a></li>
+      <li><a href="#verify">ตรวจสอบหลังติดตั้ง (ทุกระบบ)</a></li>
+      <li><a href="#troubleshoot">ปัญหาที่พบบ่อย</a></li>
+    </ul>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2 id="windows">🪟 Windows 10 / 11</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>เปิดเบราว์เซอร์ไปที่ python.org</strong>
+        — ไปที่ <a href="https://www.python.org/downloads/" target="_blank" rel="noopener">python.org/downloads</a>
+        · ปุ่มเหลือง <em>"Download Python 3.x.x"</em> จะตรวจระบบให้อัตโนมัติ
+      </li>
+      <li>
+        <strong>เลือก Python 3.11 หรือใหม่กว่า</strong>
+        — ปกติเว็บเสนอเวอร์ชันล่าสุด · ถ้ามี 3.12 / 3.13 ใช้ได้เลย
+        · <span class="pill warn">ห้ามใช้ Python 2</span> เลิกสนับสนุนแล้ว
+      </li>
+      <li>
+        <strong>เปิดไฟล์ .exe ที่ดาวน์โหลด</strong>
+        — หน้าจอแรกของ installer มี checkbox 2 ตัวล่าง · <strong>ติ๊กทั้งคู่</strong>:
+        <ul style="margin-top:8px">
+          <li>☑ <span class="pill warn">Add python.exe to PATH</span> ← <strong>สำคัญที่สุด</strong></li>
+          <li>☑ Use admin privileges when installing py.exe</li>
+        </ul>
+      </li>
+      <li>
+        <strong>กด "Install Now"</strong>
+        — ใช้ค่า default ทุกอย่าง · ติดตั้งประมาณ 1–2 นาที
+      </li>
+      <li>
+        <strong>หน้าจอ "Setup was successful"</strong>
+        — ถ้าเห็นปุ่ม <em>"Disable path length limit"</em> ให้กดด้วย (Windows มีข้อจำกัดชื่อ path ยาว 260 ตัวอักษร · ปุ่มนี้ยกเลิก)
+      </li>
+      <li>
+        <strong>ปิด installer + ปิด PowerShell ที่เปิดอยู่ทั้งหมด</strong>
+        — PATH ใหม่จะมีผลกับ terminal ที่เปิดใหม่หลังติดตั้งเท่านั้น
+      </li>
+    </ol>
+
+    <div class="callout warn">
+      <strong>ลืมติ๊ก "Add to PATH"?</strong>
+      ไม่ต้อง uninstall · แค่รัน installer อีกครั้ง · เลือก <em>"Modify"</em> → next →
+      ติ๊ก <em>"Add Python to environment variables"</em> → Install
+    </div>
+
+    <h2 id="macos">🍎 macOS</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>เปิด python.org/downloads</strong>
+        — เว็บจะตรวจว่าใช้ Mac · ปุ่มเหลืองจะให้ <em>"Download Python 3.x.x"</em> เป็นไฟล์ <code>.pkg</code>
+      </li>
+      <li>
+        <strong>เปิดไฟล์ .pkg ที่ดาวน์โหลด</strong>
+        — กด Continue ทุกหน้า · ยอมรับ license · กด Install
+      </li>
+      <li>
+        <strong>ใส่รหัส Mac ตอน installer ขอ</strong>
+        — ติดตั้งใน <code>/Library/Frameworks/Python.framework/</code>
+      </li>
+      <li>
+        <strong>เปิด Terminal (กด Cmd + Space → พิมพ์ "Terminal")</strong>
+        — Mac มี Python 2 ติดมาด้วย · ของจริงที่เพิ่งลงเรียก <code>python3</code> ไม่ใช่ <code>python</code>
+      </li>
+    </ol>
+
+    <div class="callout tip">
+      <strong>Mac users — ใช้ python3 เสมอ</strong>
+      ทุกคำสั่งในคู่มือนี้ที่เขียน <code>python file.py</code> — บน Mac ใช้ <code>python3 file.py</code> ·
+      หรือสร้าง alias: เพิ่ม <code>alias python=python3</code> ในไฟล์ <code>~/.zshrc</code>
+    </div>
+
+    <h3>ทางเลือก: Homebrew (สำหรับคนที่ใช้ Mac คล่อง)</h3>
+    <pre><code>brew install python@3.12</code></pre>
+    <p style="color:var(--text-muted);font-size:13.5px">
+      ถ้ายังไม่มี Homebrew — installer จาก python.org เป็นทางง่ายกว่า · ไม่ต้องลง brew ก่อน
+    </p>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2 id="verify">✅ ตรวจสอบหลังติดตั้ง (ทุกระบบ)</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>เปิด Terminal</strong>
+        <ul style="margin-top:6px">
+          <li><strong>Windows:</strong> กด <kbd>Win + R</kbd> → พิมพ์ <code>powershell</code> → Enter</li>
+          <li><strong>Mac:</strong> Cmd + Space → พิมพ์ <em>Terminal</em> → Enter</li>
+        </ul>
+      </li>
+      <li>
+        <strong>พิมพ์คำสั่งตรวจเวอร์ชัน</strong>
+        <pre><code># Windows
+python --version
+
+# Mac
+python3 --version</code></pre>
+        ต้องเห็นข้อความเช่น <code>Python 3.12.1</code> · ถ้าเห็น 3.11 ขึ้นไป — ผ่าน ✅
+      </li>
+      <li>
+        <strong>ทดลอง REPL (interactive mode)</strong>
+        <pre><code>python    # Windows
+python3   # Mac</code></pre>
+        จะเห็น prompt <code>&gt;&gt;&gt;</code> · พิมพ์:
+        <pre><code>&gt;&gt;&gt; print("สวัสดี Python")
+สวัสดี Python
+&gt;&gt;&gt; 2 + 3
+5
+&gt;&gt;&gt; exit()</code></pre>
+        <code>exit()</code> เพื่อออกจาก REPL กลับสู่ terminal ปกติ
+      </li>
+      <li>
+        <strong>ตรวจ pip (ตัวจัดการ package)</strong>
+        <pre><code>pip --version
+# หรือบน Mac:
+pip3 --version</code></pre>
+        ต้องเห็นเวอร์ชัน pip + ที่อยู่ของ Python ที่ผูกอยู่ · pip มาคู่กับ Python อยู่แล้ว
+      </li>
+    </ol>
+
+    <div class="callout note">
+      <strong>เสร็จแล้ว — ขั้นถัดไป</strong>
+      ติดตั้ง editor เพื่อเขียน + รันโปรแกรม → <a href="setup-vscode.html">VS Code / Cursor →</a>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2 id="troubleshoot">🔧 ปัญหาที่พบบ่อย</h2>
+
+    <h3>1. <code>python: command not found</code> หรือ <code>'python' is not recognized</code></h3>
+    <ul>
+      <li><strong>Windows:</strong> ลืมติ๊ก <em>"Add Python to PATH"</em> ตอนติดตั้ง · ลอง <code>py --version</code> แทน · ถ้าได้ผล → ใช้ <code>py</code> แทน <code>python</code> หรือลง installer ใหม่ + ติ๊ก PATH</li>
+      <li><strong>Mac:</strong> ลองใช้ <code>python3</code> แทน <code>python</code> (Mac เก็บ python = Python 2 ของระบบ)</li>
+      <li><strong>ทั้งคู่:</strong> ปิด terminal เก่าทั้งหมด · เปิดใหม่ · PATH จะ refresh</li>
+    </ul>
+
+    <h3>2. มี Python หลายเวอร์ชันบนเครื่อง</h3>
+    <ul>
+      <li><strong>Windows:</strong> ใช้ <code>py -3.12</code> เพื่อระบุเวอร์ชัน · <code>py --list</code> ดูที่ลงไว้ทั้งหมด</li>
+      <li><strong>Mac:</strong> <code>which python3</code> ดูว่าใช้ตัวไหน · <code>ls /Library/Frameworks/Python.framework/Versions/</code> ดูที่ลงไว้</li>
+      <li>ถ้าสับสน → uninstall เก่าทั้งหมด แล้วลงใหม่ตัวเดียว</li>
+    </ul>
+
+    <h3>3. <code>pip install xxx</code> ขึ้น <code>SSL: CERTIFICATE_VERIFY_FAILED</code></h3>
+    <ul>
+      <li>ปกติเกิดบน Mac เพราะลืมรัน <em>"Install Certificates.command"</em> หลัง install</li>
+      <li>เปิด Finder → Applications → Python 3.x → double-click <code>Install Certificates.command</code></li>
+    </ul>
+
+    <h3>4. ใช้ Windows ที่โรงเรียน/มหาวิทยาลัย แต่ไม่มีสิทธิ์ admin</h3>
+    <ul>
+      <li>ใน installer เลือก <em>"Customize installation"</em> → uncheck <em>"Install for all users"</em></li>
+      <li>หรือใช้ <strong><a href="setup-colab.html">Google Colab</a></strong> ไม่ต้องลงเลย</li>
+    </ul>
+
+    <h3>5. ลงผ่าน Microsoft Store?</h3>
+    <p>
+      Windows 10/11 มี Python ใน Microsoft Store · ใช้ได้แต่ <em>"path บางอย่างจะแปลก"</em> ·
+      สำหรับการเรียนคู่มือนี้ <strong>แนะนำลงจาก python.org โดยตรง</strong> เพราะคำสั่งทุกอย่างจะตรงตามที่สอน
+    </p>
+
+    <h3>6. Anaconda / Miniconda?</h3>
+    <p>
+      เป็นทางเลือกของนักศึกษาสาย data science · มีของแถมเยอะ (Jupyter, pandas, numpy ลงไว้ให้แล้ว) ·
+      ถ้าเครื่องมี Anaconda อยู่แล้ว — <em>ใช้ได้</em> · ถ้ายังไม่มี — <strong>ลง python.org ก่อน</strong> ง่ายและตรงกับคู่มือมากกว่า ·
+      เริ่ม pandas ใน W08 ค่อยตัดสินใจอีกที
+    </p>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🎯 Checklist ก่อนไปต่อ</h2>
+    <ul>
+      <li>☐ <code>python --version</code> (หรือ <code>python3</code>) แสดงเลข ≥ 3.11</li>
+      <li>☐ <code>pip --version</code> ทำงาน</li>
+      <li>☐ <code>print("hello")</code> ใน REPL ใช้ได้</li>
+      <li>☐ <code>exit()</code> ออกจาก REPL ได้</li>
+    </ul>
+
+    <div class="callout tip">
+      <strong>ผ่านทั้ง 4 ข้อแล้ว?</strong>
+      ไปต่อ → <a href="setup-vscode.html">ติดตั้ง VS Code / Cursor →</a>
+    </div>
+
+    <div class="pager">
+      <a href="index.html"><div class="label">← กลับหน้าแรก</div><div class="title">หน้าแรก &amp; ภาพรวม</div></a>
+      <a href="setup-vscode.html" class="next"><div class="label">ขั้นถัดไป →</div><div class="title">VS Code / Cursor</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+</body>
+</html>

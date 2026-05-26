@@ -1,0 +1,19 @@
+---
+title: Three Levels of Output
+---
+flowchart TB
+    P["🐍 Python Program"]
+    P --> D["💬 Display<br/>print() · f-strings"]
+    P --> S["📦 Structured<br/>json · csv"]
+    P --> L["📋 Log<br/>logging.info()"]
+
+    D --> Dh["👤 Human reader<br/>terminal · stdout"]
+    S --> St["🤖 Other programs<br/>API · file · pipeline"]
+    L --> Lo["🔧 Operator<br/>file · log aggregator"]
+
+    classDef prog fill:#3776ab,stroke:#1e4870,color:#ffffff,stroke-width:2px
+    classDef out fill:#ffd43b,stroke:#cc9c00,color:#1a1410,stroke-width:2px
+    classDef aud fill:#e8f0f8,stroke:#3776ab,color:#0b1020
+    class P prog
+    class D,S,L out
+    class Dh,St,Lo aud

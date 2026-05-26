@@ -1,0 +1,24 @@
+---
+title: Prompt-Verify-Refine Loop
+---
+flowchart TD
+    S["1️⃣ Specify<br/>task · context · constraints<br/>format · scope"] --> P["2️⃣ Prompt<br/>submit to AI assistant"]
+    P --> R["📨 AI Response<br/>code · text · analysis"]
+    R --> V["3️⃣ Verify<br/>execute · test · evaluate<br/>against specification"]
+    V --> D{"Acceptable?"}
+    D -->|Yes| I["5️⃣ Integrate<br/>commit to codebase"]
+    D -->|No| F["4️⃣ Refine<br/>identify gap<br/>compose follow-up"]
+    F --> P
+
+    classDef step fill:#3776ab,stroke:#1e4870,color:#ffffff,stroke-width:2px
+    classDef ai fill:#fff3cd,stroke:#f59e0b,color:#1a1410
+    classDef verify fill:#e8f0f8,stroke:#3776ab,color:#0b1020
+    classDef decision fill:#fff8e1,stroke:#f59e0b,color:#1a1410
+    classDef accept fill:#d1fae5,stroke:#10b981,color:#064e3b,stroke-width:2px
+    classDef refine fill:#fee2e2,stroke:#ef4444,color:#7f1d1d
+    class S,P step
+    class R ai
+    class V verify
+    class D decision
+    class I accept
+    class F refine

@@ -1,0 +1,31 @@
+---
+title: Four Loop Patterns in Python
+---
+flowchart TB
+    subgraph p1["1. for over collection"]
+        direction TB
+        a1["for item in collection:"] --> a2["process(item)"]
+    end
+
+    subgraph p2["2. for with range"]
+        direction TB
+        b1["for i in range(n):"] --> b2["process(i)"]
+    end
+
+    subgraph p3["3. while with condition"]
+        direction TB
+        c1{"condition?"} -->|True| c2["do work"]
+        c2 --> c3["update state"]
+        c3 --> c1
+        c1 -->|False| c4["exit loop"]
+    end
+
+    subgraph p4["4. Comprehension"]
+        direction TB
+        d1["result = [f(x) for x in items if cond(x)]"]
+    end
+
+    classDef pat1 fill:#3776ab,stroke:#1e4870,color:#fff
+    classDef pat2 fill:#2dd4bf,stroke:#0b8a7a,color:#0b1020
+    classDef pat3 fill:#8b5cf6,stroke:#5b3a9e,color:#fff
+    classDef pat4 fill:#ffd43b,stroke:#cc9c00,color:#1a1410

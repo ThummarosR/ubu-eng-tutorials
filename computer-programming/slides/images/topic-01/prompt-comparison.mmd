@@ -1,0 +1,20 @@
+---
+title: Unstructured Prompt vs Flowchart-Based Prompt
+---
+flowchart TB
+    subgraph bad["❌ Unstructured prompt"]
+        direction TB
+        x1["'Please write Python<br/>to check student scores'"] --> x2["🤖 AI must infer intent"]
+        x2 --> x3["Result: 200 lines of code<br/>contains unrequested features<br/>diverges from objective"]
+    end
+
+    subgraph good["✅ Prompt with flowchart"]
+        direction TB
+        y1["'Here is my flowchart:'<br/>[paste mermaid]"] --> y2["🤖 AI understands clearly"]
+        y2 --> y3["Result: 20 lines of code<br/>follows every flowchart step<br/>immediately usable"]
+    end
+
+    classDef badStyle fill:#fee2e2,stroke:#ef4444,color:#7f1d1d
+    classDef goodStyle fill:#d1fae5,stroke:#10b981,color:#064e3b
+    class x1,x2,x3 badStyle
+    class y1,y2,y3 goodStyle

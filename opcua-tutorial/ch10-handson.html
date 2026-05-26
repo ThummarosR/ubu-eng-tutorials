@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>10 — Hands-on (UaExpert) | OPC UA Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="OPC UA Tutorial"></div>
+      <div>
+        <div class="title">OPC UA</div>
+        <div class="subtitle">สะพานสู่ Industrie 4.0</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>แนวคิดหลัก</h4>
+      <a href="ch01-why-opcua.html"><span class="num">01</span> ทำไมต้อง OPC UA?</a>
+      <a href="ch02-architecture.html"><span class="num">02</span> สถาปัตยกรรมพื้นฐาน</a>
+      <a href="ch03-information-model.html"><span class="num">03</span> Information Model</a>
+      <a href="ch04-services.html"><span class="num">04</span> Services</a>
+      <a href="ch05-pubsub.html"><span class="num">05</span> PubSub &amp; MQTT</a>
+      <a href="ch06-security.html"><span class="num">06</span> Security</a>
+
+      <h4>ระบบนิเวศ</h4>
+      <a href="ch07-companion-specs.html"><span class="num">07</span> Companion Specifications</a>
+      <a href="ch08-field-level.html"><span class="num">08</span> OPC UA FX (Field Level)</a>
+      <a href="ch09-cloud.html"><span class="num">09</span> Cloud Integration</a>
+
+      <h4>ลงมือทำ</h4>
+      <a href="ch10-handson.html" class="active"><span class="num">10</span> 🧪 Hands-on (UaExpert)</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ 10 · ลงมือทำ · UaExpert · Prosys Sim · ฟรี</span>
+    <h1>🧪 Hands-on กับ UaExpert</h1>
+    <p class="lede">
+      เวลาที่ใช้ใน Lab นี้ประมาณ <strong>30 นาที</strong> — ติดตั้ง <strong>UaExpert</strong> (Client ฟรี)
+      + <strong>Prosys OPC UA Simulation Server</strong> (Server จำลอง ฟรี) — Browse, Read, Subscribe, Call Method
+      เห็นทุกอย่างที่อ่านมา 9 บท ทำงานจริง
+    </p>
+
+    <div class="callout note">
+      <strong>หมายเหตุ</strong> — คู่มือนี้ <em>ไม่มีภาพหน้าจอ</em> เพราะ Software เปลี่ยน UI ตามรุ่น —
+      ทำตามขั้นตอนข้างล่างได้เลย ถ้าหายเจอเมนูไหน ดูใน Search Box ของแต่ละ Application ได้
+    </div>
+
+    <h2>ก่อนเริ่ม — สิ่งที่ต้องมี</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>คอมพิวเตอร์</strong> — Windows / Mac / Linux ก็ได้
+      </li>
+      <li>
+        <strong>Java Runtime Environment (JRE)</strong> สำหรับ Prosys — ดาวน์โหลด JRE 11 หรือใหม่กว่า
+        ที่ <a href="https://adoptium.net" target="_blank">adoptium.net</a> (ฟรี, Open Source)
+      </li>
+      <li>
+        <strong>Internet Connection</strong> — สำหรับโหลด Software
+      </li>
+      <li>
+        <strong>เวลาประมาณ 30 นาที</strong>
+      </li>
+    </ol>
+
+    <h2>ขั้นที่ 1 — ติดตั้ง Prosys OPC UA Simulation Server</h2>
+
+    <p>
+      Prosys เป็นบริษัทจากฟินแลนด์ที่ทำ OPC UA SDK — Simulation Server ของเขาเปิดให้ใช้ฟรี
+      สำหรับทดสอบและการเรียน:
+    </p>
+
+    <ol class="steps">
+      <li>
+        ไปที่ <a href="https://prosysopc.com/products/opc-ua-simulation-server/" target="_blank">prosysopc.com/products/opc-ua-simulation-server/</a>
+      </li>
+      <li>
+        กด <strong>Download</strong> — กรอกอีเมล (Free Edition จะส่งลิงก์ดาวน์โหลดให้)
+      </li>
+      <li>
+        ติดตั้งตาม Installer — Default options พอ
+      </li>
+      <li>
+        เปิด <strong>Prosys OPC UA Simulation Server</strong> หลังติดตั้ง
+      </li>
+      <li>
+        Server จะเริ่มทำงานทันที — มอง <strong>"Endpoints"</strong> tab เห็น URL ประมาณ:
+        <pre><code>opc.tcp://&lt;your-computer&gt;:53530/OPCUA/SimulationServer</code></pre>
+        <strong>จดเก็บ URL นี้ไว้ใช้ในขั้นต่อไป</strong>
+      </li>
+    </ol>
+
+    <div class="callout tip">
+      <strong>Server มีอะไรให้ Browse?</strong> — Prosys Sim ให้ Data Tree ที่จำลอง:
+      <ul style="margin:8px 0 0">
+        <li>Sinusoid, Counter, Random — Variables ที่ค่าเปลี่ยนตลอดเวลา (ใช้ทดสอบ Subscribe)</li>
+        <li>StaticData — ตัวอย่าง Variable ที่เขียน/อ่านได้</li>
+        <li>Methods — สำหรับทดสอบ Method Call</li>
+        <li>Events &amp; Alarms — สำหรับทดสอบ Event Subscription</li>
+      </ul>
+    </div>
+
+    <h2>ขั้นที่ 2 — ติดตั้ง UaExpert</h2>
+
+    <p>
+      UaExpert ทำโดย <strong>Unified Automation</strong> — Engineering Tool สำหรับ OPC UA
+      ที่นิยมที่สุดในวงการ — ใช้สำหรับ Browse, Read, Write, Debug Server
+    </p>
+
+    <ol class="steps">
+      <li>
+        ไปที่ <a href="https://www.unified-automation.com/products/development-tools/uaexpert.html" target="_blank">unified-automation.com</a> →
+        <strong>Products → Development Tools → UaExpert</strong>
+      </li>
+      <li>
+        สมัครบัญชี (ฟรี) เพื่อโหลด
+      </li>
+      <li>
+        ดาวน์โหลด UaExpert สำหรับ OS ของคุณ
+      </li>
+      <li>
+        ติดตั้งตาม Installer
+      </li>
+      <li>
+        เปิด <strong>UaExpert</strong>
+      </li>
+    </ol>
+
+    <h2>ขั้นที่ 3 — เชื่อมต่อ Server</h2>
+
+    <ol class="steps">
+      <li>
+        ใน UaExpert ไปที่เมนู <strong>Server → Add</strong>
+      </li>
+      <li>
+        ในกล่อง <strong>Custom Discovery</strong> ใส่ URL ที่ได้จากขั้นที่ 1:
+        <pre><code>opc.tcp://&lt;your-computer&gt;:53530/OPCUA/SimulationServer</code></pre>
+      </li>
+      <li>
+        UaExpert จะ Discovery เห็น Endpoints ที่ Server มี — เลือก:
+        <ul>
+          <li><strong>Security Policy:</strong> None (สำหรับ Lab — ของจริงเลือก Basic256Sha256)</li>
+          <li><strong>Message Security Mode:</strong> None</li>
+        </ul>
+      </li>
+      <li>
+        คลิก <strong>OK</strong>
+      </li>
+      <li>
+        ทาง Server side อาจถามให้ <strong>Trust Certificate</strong> ของ UaExpert — กด Trust (เพราะเรา Self-sign)
+      </li>
+      <li>
+        ขั้นตอน <strong>Authentication</strong> — เลือก <em>Anonymous</em> (Default)
+      </li>
+      <li>
+        คลิก <strong>Finish</strong>
+      </li>
+    </ol>
+
+    <p>
+      ถ้าเชื่อมต่อสำเร็จ — Server จะปรากฏใน <strong>Project Tree</strong> ทางซ้าย — สถานะเป็นสีเขียว
+    </p>
+
+    <h2>ขั้นที่ 4 — Browse Address Space</h2>
+
+    <p>
+      ใน Tab <strong>Address Space</strong> (ทางซ้าย) คลิกที่ Server ที่เชื่อมต่อ แล้วขยาย:
+    </p>
+
+    <pre><code>Root
+  └─ Objects
+       ├─ Server                    ← Built-in (server info)
+       ├─ Simulation
+       │    ├─ Counter             ← Int32 (เพิ่มขึ้นตลอด)
+       │    ├─ Random              ← Double (ค่าสุ่ม)
+       │    ├─ Sawtooth            ← Double (Sawtooth wave)
+       │    ├─ Sinusoid            ← Double (Sine wave)
+       │    ├─ Square              ← Double (Square wave)
+       │    ├─ Triangle            ← Double (Triangle wave)
+       │    └─ ...
+       ├─ MyObjects
+       │    ├─ MyDevice
+       │    │    ├─ MyLevel        ← Variable
+       │    │    ├─ MyMethod()     ← Method
+       │    │    └─ ...
+       └─ StaticData
+            └─ AnalogItems
+                 ├─ Int32AnalogItem
+                 ├─ DoubleAnalogItem
+                 └─ ...</code></pre>
+
+    <p>
+      <strong>สังเกต:</strong> นี่คือ Address Space แบบที่บทที่ 03 อธิบาย — ทุก Variable มี Type, Unit, AccessLevel
+      ที่อ่านได้จากแผง <strong>Attributes</strong> ทางขวา
+    </p>
+
+    <h2>ขั้นที่ 5 — Read ค่า</h2>
+
+    <ol class="steps">
+      <li>
+        คลิกที่ <strong>Simulation → Counter</strong>
+      </li>
+      <li>
+        ดูแผง <strong>Attributes</strong> ทางขวา — จะเห็น:
+        <ul>
+          <li><strong>NodeId:</strong> ns=3;s=Counter</li>
+          <li><strong>BrowseName:</strong> Counter</li>
+          <li><strong>DisplayName:</strong> Counter</li>
+          <li><strong>DataType:</strong> Int32</li>
+          <li><strong>Value:</strong> (ค่าปัจจุบัน)</li>
+        </ul>
+      </li>
+      <li>
+        กดปุ่ม <strong>Refresh</strong> ที่แผง Attributes — ค่าจะอัพเดท
+      </li>
+    </ol>
+
+    <div class="callout info">
+      <strong>นี่คือ Read Service ตัวจริง</strong> — UaExpert ส่ง <code>Read</code> request ไปที่ Server,
+      Server ส่งค่าปัจจุบันกลับมา — แบบเดียวกับที่บทที่ 04 อธิบาย
+    </div>
+
+    <h2>ขั้นที่ 6 — Subscribe (เห็นค่าเปลี่ยนตลอดเวลา)</h2>
+
+    <p>นี่คือฟีเจอร์ที่ <em>Modbus ทำไม่ได้</em>:</p>
+
+    <ol class="steps">
+      <li>
+        ไปที่ <strong>Document → Add → Data Access View</strong> (สร้าง Subscription View)
+      </li>
+      <li>
+        ลาก <strong>Simulation → Counter</strong>, <strong>Sinusoid</strong>, <strong>Random</strong>
+        จาก Address Space ไปวางใน Data Access View
+      </li>
+      <li>
+        <strong>สังเกต</strong> — ค่าทั้ง 3 จะอัพเดทอัตโนมัติ! UaExpert ไม่ได้ Poll —
+        Server <em>Push</em> ค่าใหม่มาเองทุกครั้งที่เปลี่ยน
+      </li>
+    </ol>
+
+    <p>
+      ลองเปลี่ยน <strong>Sampling Interval</strong> ในแถวของแต่ละ Item — เช่นจาก 1000ms เป็น 100ms —
+      จะเห็นค่าอัพเดทบ่อยขึ้น
+    </p>
+
+    <h2>ขั้นที่ 7 — Write ค่า</h2>
+
+    <p>ลองหา Variable ที่ <em>เขียนได้</em>:</p>
+
+    <ol class="steps">
+      <li>
+        ไปที่ <strong>MyObjects → MyDevice → MyLevel</strong>
+      </li>
+      <li>
+        ดู Attribute <strong>AccessLevel</strong> — ถ้ามี "CurrentWrite" แสดงว่าเขียนได้
+      </li>
+      <li>
+        คลิกขวาที่ Variable → <strong>Write</strong>
+      </li>
+      <li>
+        ใส่ค่าใหม่ (เช่น 50.0) → กด <strong>Write</strong>
+      </li>
+      <li>
+        Refresh — เห็นค่าใหม่ที่เขียนลงไป
+      </li>
+    </ol>
+
+    <h2>ขั้นที่ 8 — Call Method</h2>
+
+    <p>Method คือฟังก์ชันที่ Server ทำงานให้ Client:</p>
+
+    <ol class="steps">
+      <li>
+        หา Method ใน Address Space — เช่น <strong>MyObjects → MyDevice → MyMethod</strong>
+      </li>
+      <li>
+        คลิกขวา → <strong>Call</strong>
+      </li>
+      <li>
+        ใส่ Input Arguments ตามที่ Method ต้องการ — กด <strong>Call</strong>
+      </li>
+      <li>
+        ดู Output Arguments ที่ Method ส่งกลับมา
+      </li>
+    </ol>
+
+    <p>เปรียบเทียบ — ใน Modbus คุณต้อง <em>เขียน Magic Value ลง Register</em> แล้ว <em>Poll Bit Status</em> เพื่อรอผล —
+    ใน OPC UA มันคือฟังก์ชันปกติเลย</p>
+
+    <h2>ขั้นที่ 9 — Events &amp; Alarms</h2>
+
+    <ol class="steps">
+      <li>
+        Prosys Server มี Tab <strong>Events</strong> ที่ส่ง Event ทุกๆ 2-3 วินาที (ปรับใน Server UI ได้)
+      </li>
+      <li>
+        ใน UaExpert ไปที่ <strong>Document → Add → Event View</strong>
+      </li>
+      <li>
+        เลือก Server Node (Objects → Server) เป็น Source ของ Event
+      </li>
+      <li>
+        Event จะปรากฏใน Event View แบบ Real-time พร้อม:
+        <ul>
+          <li>SourceName</li>
+          <li>Time</li>
+          <li>Severity (1-1000)</li>
+          <li>Message</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h2>ขั้นที่ 10 — ตรวจสอบ Performance</h2>
+
+    <p>UaExpert มี Tab <strong>Performance View</strong> ที่ใช้ดู:</p>
+
+    <ul>
+      <li>Round-trip time ของแต่ละ Service Call</li>
+      <li>จำนวน Subscription Notification ที่รับเข้ามา</li>
+      <li>Throughput</li>
+    </ul>
+
+    <p>เปิด Window นี้ขณะ Subscribe — จะเห็นว่า OPC UA Performance ดีกว่าที่คิด</p>
+
+    <h2>โปรเจ็คเล็กๆ — ลองทำเอง</h2>
+
+    <p>หลังจากทำตามขั้นตอนข้างบนแล้ว ลอง challenge ตัวเอง:</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="num">CHALLENGE 1</div>
+        <div class="name">Subscribe ด้วย Deadband</div>
+        <div class="desc">Subscribe ที่ Sinusoid โดยตั้ง Deadband Absolute = 0.5 — สังเกตว่าค่าอัพเดทเฉพาะตอนเปลี่ยนเกิน 0.5</div>
+      </div>
+      <div class="card">
+        <div class="num">CHALLENGE 2</div>
+        <div class="name">Historical Access</div>
+        <div class="desc">Prosys Server บันทึก History ของ Variable บางตัว — หาวิธีอ่านย้อนหลัง 1 นาที</div>
+      </div>
+      <div class="card">
+        <div class="num">CHALLENGE 3</div>
+        <div class="name">Python Client</div>
+        <div class="desc">ใช้ <code>asyncua</code> หรือ <code>opcua-asyncio</code> เขียน Script Python อ่าน Counter ทุก 1 วินาที — Print ออก Console</div>
+      </div>
+      <div class="card">
+        <div class="num">CHALLENGE 4</div>
+        <div class="name">Security ระดับ Sign+Encrypt</div>
+        <div class="desc">ลองเปลี่ยน Endpoint จาก None → Basic256Sha256 SignAndEncrypt — ดูว่า Certificate Exchange ทำงานยังไง</div>
+      </div>
+    </div>
+
+    <h2>เครื่องมืออื่นๆ ที่ควรรู้</h2>
+
+    <table>
+      <thead>
+        <tr><th>Tool</th><th>ใช้ทำอะไร</th><th>License</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>UaModeler</strong> (Unified Automation)</td>
+          <td>ออกแบบ Information Model + Generate UaNodeSet XML</td>
+          <td>Commercial · Trial 30 วัน</td>
+        </tr>
+        <tr>
+          <td><strong>open62541</strong></td>
+          <td>OPC UA SDK ในภาษา C — เขียน Server/Client เอง</td>
+          <td>Open Source (MPLv2)</td>
+        </tr>
+        <tr>
+          <td><strong>asyncua / opcua-asyncio</strong></td>
+          <td>OPC UA SDK สำหรับ Python</td>
+          <td>Open Source (LGPL)</td>
+        </tr>
+        <tr>
+          <td><strong>node-opcua</strong></td>
+          <td>OPC UA SDK สำหรับ Node.js / TypeScript</td>
+          <td>Open Source (MIT)</td>
+        </tr>
+        <tr>
+          <td><strong>UA-.NETStandard</strong></td>
+          <td>OPC UA SDK สำหรับ .NET (Official ของ OPC Foundation)</td>
+          <td>Open Source (GPLv2 / Commercial)</td>
+        </tr>
+        <tr>
+          <td><strong>UA Cloud Library</strong></td>
+          <td>Repository ของ Information Models — ดู Models จริงๆ ของอุตสาหกรรม</td>
+          <td>Free</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>สรุป Lab</h2>
+
+    <p>ผ่าน Lab นี้คุณได้ทำจริง:</p>
+
+    <ul>
+      <li>เชื่อมต่อ OPC UA Client (UaExpert) เข้ากับ Server (Prosys Sim)</li>
+      <li>Browse Address Space — เห็น Object, Variable, Method, Event แบบที่บทที่ 03 อธิบาย</li>
+      <li>Read / Write Attributes</li>
+      <li>Subscribe ค่า Real-time — แบบที่ Modbus ทำไม่ได้</li>
+      <li>Call Method — ฟังก์ชันจริง รับ Argument ส่งคืน Return</li>
+      <li>รับ Events</li>
+      <li>เห็น Information Model + Type Hierarchy แบบ OOP จริงๆ</li>
+    </ul>
+
+    <p>
+      สิ่งที่คุณทำใน Lab นี้ <em>คือสิ่งเดียวกัน</em> ที่ Engineer ของ Renault, Bühler, Equinor ทำในโรงงานจริง —
+      เพียงแต่ Server ของพวกเขาเป็น PLC จริง และ Address Space มีหลายพัน Node แต่หลักการเหมือนกัน
+    </p>
+
+    <h2>ขั้นต่อไป — ถ้าอยากเรียนต่อ</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>เขียน Python Client จริง</strong> — Tutorial ดี: <a href="https://github.com/FreeOpcUa/opcua-asyncio" target="_blank">FreeOpcUa/opcua-asyncio</a>
+      </li>
+      <li>
+        <strong>โหลด UaNodeSet จากอุตสาหกรรมจริง</strong> — ที่ <a href="https://uacloudlibrary.opcfoundation.org" target="_blank">UA Cloud Library</a>
+        เห็นว่า OPC UA for Robotics, Machinery, IO-Link ใน Production มีโครงสร้างยังไง
+      </li>
+      <li>
+        <strong>ลองเขียน OPC UA Server ของตัวเอง</strong> — ใช้ <code>asyncua</code> หรือ <code>open62541</code>
+        ทำเซ็นเซอร์จำลองที่ Publish ค่า Real-time
+      </li>
+      <li>
+        <strong>ลอง OPC UA over MQTT</strong> — เชื่อม Local Mosquitto Broker
+        + Publisher/Subscriber Sample จาก <a href="https://github.com/OPCFoundation/UA-IIoT-StarterKit" target="_blank">UA-IIoT-StarterKit</a>
+      </li>
+      <li>
+        <strong>ถ้าทำงานในโรงงาน Mitsubishi</strong> — ศึกษา <code>FX5-OPC</code> Module + <code>OPC UA Module Configuration Tool</code>
+        บน GX Works3 — หรือ MELSEC iQ-R Series ที่มี OPC UA ในตัว
+      </li>
+    </ol>
+
+    <div class="callout note">
+      <strong>จบคู่มือแล้ว!</strong> หวังว่าคุณเห็นภาพว่า OPC UA ไม่ใช่แค่ "Modbus ที่ใหม่กว่า" —
+      แต่เป็น <em>ภาษากลาง</em> ที่ทำให้อุตสาหกรรมยุค Industrie 4.0 ทำงานร่วมกันได้
+      <br>มีคำถาม? เปิด <a href="references.html">หน้าเอกสารอ้างอิง</a> หรือไปต่อที่
+      <a href="https://opcfoundation.org" target="_blank">opcfoundation.org</a> ที่มีเอกสารฟรีครบทุก Part
+    </div>
+
+    <div class="pager">
+      <a href="ch09-cloud.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">09 — Cloud Integration</div>
+      </a>
+      <a href="references.html" class="next">
+        <div class="label">ถัดไป →</div>
+        <div class="title">📚 เอกสารอ้างอิง</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  OPC UA &amp; Industrie 4.0 Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){
+  var lb = document.getElementById('lightbox');
+  if(!lb) return;
+  var img = lb.querySelector('img');
+  document.querySelectorAll('.gallery a, .zoomable').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      img.src = a.getAttribute('href') || a.getAttribute('data-src');
+      lb.classList.add('open');
+    });
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') lb.classList.remove('open');
+  });
+})();
+</script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

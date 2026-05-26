@@ -1,0 +1,333 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M05 — HMI Samkoon SK-070FS | PLC Automation Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="PLC Automation"></div>
+      <div>
+        <div class="title">PLC Automation</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย — 2 Tracks</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; เลือก Track</a>
+
+      <h4>🟥 Mitsubishi Track</h4>
+      <a href="mit-01-intro.html"><span class="num">M01</span> รู้จัก FX5U</a>
+      <a href="mit-02-ladder.html"><span class="num">M02</span> Ladder Logic</a>
+      <a href="mit-03-sensors.html"><span class="num">M03</span> เซ็นเซอร์ &amp; I/O</a>
+      <a href="mit-04-simulation.html"><span class="num">M04</span> GX Simulator</a>
+      <a href="mit-05-hmi.html" class="active"><span class="num">M05</span> HMI Samkoon</a>
+      <a href="mit-06-pid.html"><span class="num">M06</span> PID &amp; Auto-Tuning</a>
+      <a href="mit-07-modbus.html"><span class="num">M07</span> Modbus + PM2230</a>
+
+      <h4>🟦 Omron Track</h4>
+      <a href="omron-01-intro.html"><span class="num">O01</span> รู้จัก CP1L/CPM2A</a>
+      <a href="omron-02-ladder.html"><span class="num">O02</span> CX-Programmer Ladder</a>
+      <a href="omron-03-fbd.html"><span class="num">O03</span> Function Block (FBD)</a>
+      <a href="omron-04-modbus.html"><span class="num">O04</span> Modbus + Inverter</a>
+      <a href="omron-05-e5cc.html"><span class="num">O05</span> E5CC Temp Control</a>
+      <a href="omron-06-scada.html"><span class="num">O06</span> SCADA (CX-Supervisor)</a>
+      <a href="omron-07-scada-workshop.html"><span class="num">O07</span> 🏭 SCADA Workshop</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="videos.html"><span class="num">▶</span> วิดีโอเลคเชอร์</a>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ M05 · HMI · TCP/IP</span>
+    <h1>HMI Samkoon SK-070FS + FX5U</h1>
+    <p class="lede">
+      Operator ไม่ควรเดินไปกดปุ่มที่ตู้ PLC — HMI (Human-Machine Interface) คือจอสัมผัสที่ทำให้คนคุยกับเครื่องได้ผ่าน
+      Graphical interface บทนี้พาทำ HMI ตั้งแต่ออกแบบหน้าจอ Samkoon SK-070FS เชื่อมกับ FX5U ผ่าน Ethernet
+    </p>
+
+    <h2>HMI ทำอะไรได้บ้าง</h2>
+
+    <figure>
+      <img src="images/samkoon-hmi-product.jpg" alt="Samkoon SK-070FS HMI showing temperature setting screen">
+      <figcaption>Samkoon SK-070FS — จอสัมผัส 7 นิ้ว (ตัวอย่างหน้าตั้งอุณหภูมิ 25°C) สำหรับเชื่อมกับ PLC ผ่าน Ethernet หรือ RS-485</figcaption>
+    </figure>
+
+    <div class="lesson-grid">
+      <div class="lesson">
+        <span class="badge">USE 01</span>
+        <div class="title">ปุ่ม Start/Stop เสมือน</div>
+        <div class="desc">แตะที่หน้าจอเพื่อสั่งให้ <code>M0</code> ใน PLC เป็น ON — ไม่ต้องมี Push Button จริง</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">USE 02</span>
+        <div class="title">แสดงค่า Real-time</div>
+        <div class="desc">โชว์ Temperature, Pressure, Speed จาก D-register ของ PLC แบบ Live</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">USE 03</span>
+        <div class="title">Set Point Input</div>
+        <div class="desc">Operator พิมพ์ค่า Set Point ใหม่บนหน้าจอ — ค่าไปเขียนใน D ของ PLC ทันที</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">USE 04</span>
+        <div class="title">Alarm / History</div>
+        <div class="desc">แจ้งเตือนเมื่อค่าเกินขีด, บันทึก Event ลง SD card ของ HMI</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">USE 05</span>
+        <div class="title">Trend Graph</div>
+        <div class="desc">วาดกราฟค่าตามเวลา — เห็นว่า PID stable หรือยัง</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">USE 06</span>
+        <div class="title">Multi-language</div>
+        <div class="desc">สลับ TH/EN ได้ในจอเดียว — เหมาะกับโรงงานที่มีคนหลายชาติ</div>
+      </div>
+    </div>
+
+    <h2>เตรียม Hardware</h2>
+
+    <table>
+      <thead><tr><th>อุปกรณ์</th><th>รายละเอียด</th></tr></thead>
+      <tbody>
+        <tr><td>HMI</td><td>Samkoon SK-070FS (7" Touch, Ethernet + RS-232/485)</td></tr>
+        <tr><td>PLC</td><td>Mitsubishi FX5U-32MT/ES</td></tr>
+        <tr><td>สายเชื่อมต่อ</td><td>Cat-5e/6 Straight cable (ผ่าน Switch) <em>หรือ</em> Crossover ตรง</td></tr>
+        <tr><td>ไฟเลี้ยง HMI</td><td>DC 24V (อย่าใช้ AC!)</td></tr>
+      </tbody>
+    </table>
+
+    <h2>การเชื่อมต่อ TCP/IP</h2>
+
+    <figure>
+      <img src="images/gxworks3-ethernet-config.png" alt="GX Works3 Ethernet Port configuration">
+      <figcaption>หน้า <code>Module Parameter → Ethernet Port → Basic Settings</code> ใน GX Works3 — ตั้ง IP, Subnet Mask, Default Gateway ที่นี่</figcaption>
+    </figure>
+
+    <ol class="steps">
+      <li>
+        <strong>ตั้ง IP ของ PLC FX5U</strong>
+        ใน GX Works3 → <code>Parameter → Module Parameter → Ethernet Port</code> →
+        ตั้ง IP เช่น <code>192.168.3.250</code> · Subnet <code>255.255.255.0</code> · Default Gateway ปล่อยว่าง
+      </li>
+      <li>
+        <strong>เปิด MC Protocol ที่ PLC</strong>
+        ในหน้า Ethernet Port → <code>External Device Configuration</code> →
+        เพิ่ม Connection ชนิด <strong>MELSOFT Connection</strong> (สำหรับโปรแกรม PLC) และ
+        <strong>SLMP Connection</strong> หนึ่งตัว — Port: <code>4096</code>, Protocol: <strong>TCP</strong>
+        <figure style="margin-top:10px">
+          <img src="images/gxworks3-external-device.png" alt="External Device Configuration in GX Works3">
+          <figcaption>หน้า <code>External Device Configuration</code> — กดปุ่ม <em>Detailed Setting</em> เพื่อเพิ่ม HMI เป็น External Device</figcaption>
+        </figure>
+      </li>
+      <li>
+        <strong>Download Parameter</strong>
+        <code>Online → Write to PLC</code> → ติ๊ก Parameter + Program → กด Execute
+      </li>
+      <li>
+        <strong>ตั้ง IP ของ HMI</strong>
+        ในโปรแกรม Samkoon HMI Editor → <code>Setting → Communication Setting</code> →
+        ตั้ง HMI IP <code>192.168.3.100</code> · Subnet ตรงกับ PLC
+        <figure style="margin-top:10px">
+          <img src="images/samkoon-comm-port-properties.png" alt="Samkoon Communication Port Properties">
+          <figcaption>Tab <strong>Parameter</strong> ของ Communication Port — ตั้ง Connected equipment IP, Communication time, Overtime, Retries, Address mode</figcaption>
+        </figure>
+      </li>
+      <li>
+        <strong>เพิ่ม PLC Device ใน HMI Project</strong>
+        คลิกขวาที่ <code>Connection</code> → Add → เลือก <strong>Mitsubishi FX5U Ethernet</strong> →
+        ใส่ IP ของ PLC ที่ตั้งไว้ (<code>192.168.3.250</code>) · Port <code>4096</code>
+        <figure style="margin-top:10px">
+          <img src="images/samkoon-project-tree.png" alt="Samkoon HMI Editor project tree">
+          <figcaption>โครงสร้าง Samkoon Project — Multi-language, Link (COM1/COM2/COM3 + Ethernet/Melsec-FX5U), System Setting, Screen, Historical data, Alarm, Recipe, Script</figcaption>
+        </figure>
+      </li>
+      <li>
+        <strong>ตั้ง IP ของ PC (สำหรับ Debug)</strong>
+        ที่ Windows → Settings → Network → Ethernet → Properties — ตั้งให้อยู่ subnet เดียวกัน
+        <div class="fig-side" style="margin-top:10px">
+          <figure>
+            <img src="images/windows-ethernet-properties.png" alt="Windows Ethernet Properties">
+            <figcaption>เลือก <strong>Internet Protocol Version 4 (TCP/IPv4)</strong> → <strong>Properties</strong></figcaption>
+          </figure>
+          <figure>
+            <img src="images/windows-tcpip-properties.png" alt="Windows TCP/IPv4 Properties">
+            <figcaption>ตั้ง <strong>Use the following IP address</strong> → <code>192.168.250.15</code> Subnet <code>255.255.255.0</code></figcaption>
+          </figure>
+        </div>
+      </li>
+    </ol>
+
+    <div class="callout warn">
+      <strong>IP ต้องอยู่ subnet เดียวกัน</strong>
+      PLC <code>192.168.3.250</code> และ HMI <code>192.168.3.100</code> ต้อง <strong>3 ตัวแรกตรงกัน</strong>
+      ถ้าโน้ตบุ๊คจะต่อด้วย ต้องตั้ง IP เครื่องคุณเป็น <code>192.168.3.10</code> ก็ได้
+    </div>
+
+    <h2>ออกแบบหน้าจอ — Tag Mapping</h2>
+
+    <p>หัวใจของ HMI คือ <strong>Tag</strong> — เป็น "ตัวเชื่อม" ระหว่าง Element บน HMI กับ Device ของ PLC</p>
+
+    <table>
+      <thead><tr><th>HMI Element</th><th>เชื่อมกับ Device PLC</th><th>Behavior</th></tr></thead>
+      <tbody>
+        <tr><td>Bit Button (Start)</td><td><code>M0</code></td><td>กด → M0 = ON (Momentary หรือ Latch ก็ได้)</td></tr>
+        <tr><td>Bit Lamp (Running)</td><td><code>Y0</code></td><td>Y0 = ON → ไฟเขียวสว่างที่จอ</td></tr>
+        <tr><td>Numeric Display</td><td><code>D100</code></td><td>โชว์ค่า D100 (เช่น Temperature × 10)</td></tr>
+        <tr><td>Numeric Input</td><td><code>D102</code></td><td>Operator พิมพ์ Set Point → ส่งเข้า D102</td></tr>
+        <tr><td>Trend Curve</td><td><code>D100</code></td><td>กราฟตามเวลา</td></tr>
+        <tr><td>Alarm</td><td><code>M10</code></td><td>M10 ON → ขึ้น popup สีแดง</td></tr>
+      </tbody>
+    </table>
+
+    <h2>สร้างหน้าจอแรก — Step by Step</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>สร้าง Project ใหม่ใน Samkoon Editor</strong>
+        <code>File → New Project</code> → เลือก Model: <strong>SK-070FS</strong> → กำหนดความละเอียดเป็น 800×480
+      </li>
+      <li>
+        <strong>วาง Bit Button "Start"</strong>
+        ลาก <strong>Bit Button</strong> จาก Toolbox → คลิกขวา → Properties →
+        <ul>
+          <li>Address: <code>M0</code> (Internal Relay ของ PLC)</li>
+          <li>Action: <strong>Momentary On</strong> (กดค้างให้ ON, ปล่อยให้ OFF)</li>
+          <li>Label: "เริ่มทำงาน" / "Start"</li>
+          <li>สี: เขียว (กำลังกด) / เทา (ปกติ)</li>
+        </ul>
+        <figure style="margin-top:10px">
+          <img src="images/samkoon-bit-button-props.png" alt="Samkoon Bit Button properties dialog">
+          <figcaption>หน้าตั้งค่า Bit Button — State 1/0, Function = <strong>Invert</strong> (toggle), Mode = Press execute, Write Address = M100, ติ๊ก <strong>Monitor</strong> ให้แสดงสถานะปุ่มตามค่าจริง</figcaption>
+        </figure>
+      </li>
+      <li>
+        <strong>วาง Bit Lamp "Running"</strong>
+        Toolbox → <strong>Bit Lamp</strong> → Address: <code>Y0</code> → เลือกรูป LED Green
+      </li>
+      <li>
+        <strong>วาง Numeric Display "Temperature"</strong>
+        Toolbox → <strong>Numeric Display</strong> →
+        <ul>
+          <li>Address: <code>D100</code></li>
+          <li>Data Type: <strong>Word (16-bit Signed)</strong></li>
+          <li>Decimal: <strong>1 ตำแหน่ง</strong> (เพราะค่าจาก E5EC × 10)</li>
+          <li>Unit: <code>°C</code></li>
+        </ul>
+        <figure style="margin-top:10px">
+          <img src="images/samkoon-numeric-display-props.png" alt="Samkoon Numeric Display properties dialog">
+          <figcaption>หน้า Numeric Display Properties — Data Type = <strong>32-Bit Floating Point</strong> สำหรับ PM2230, Monitor Address = D210, Total Digits = 5, Fractional Digits = 2</figcaption>
+        </figure>
+      </li>
+      <li>
+        <strong>วาง Numeric Input "Set Point"</strong>
+        Toolbox → <strong>Numeric Input</strong> → Address: <code>D102</code> →
+        Limits: Min 0, Max 1000 (= 100.0 °C) → ติ๊ก <strong>Keyboard popup on touch</strong>
+      </li>
+      <li>
+        <strong>Compile + Download</strong>
+        <code>Tools → Compile</code> → ถ้าผ่าน → <code>Tools → Download via Ethernet</code> →
+        ใส่ IP ของ HMI → Execute
+      </li>
+    </ol>
+
+    <h2>ฝั่ง PLC — เพิ่ม Ladder รับคำสั่งจาก HMI</h2>
+
+    <pre><code>; เมื่อ HMI กด Start (M0) ให้ PLC ตั้ง flag M10 เก็บไว้
+LD    M0
+SET   M10        ; flag "ทำงาน"
+
+; Run motor ตาม M10 + ไม่มี Stop + ไม่มี Alarm
+LD    M10
+ANI   M11        ; Stop จาก HMI (อีกปุ่ม)
+ANI   M20        ; Alarm
+OUT   Y0         ; Motor Contactor
+
+; ทุก 1 วินาที อ่านค่า E5EC ผ่าน Modbus → D100
+; (logic Modbus เห็นใน M07)</code></pre>
+
+    <h2>การทดสอบ End-to-End</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>ต่อสาย Ethernet</strong>
+        PLC ↔ Switch ↔ HMI (และโน้ตบุ๊คเพื่อ Debug) — เช็คไฟ LED Link ที่พอร์ตทั้ง 2 ฝั่ง
+      </li>
+      <li>
+        <strong>เปิด HMI</strong>
+        รอ ~10 วินาทีหลังจ่ายไฟให้ HMI Boot — ถ้าหน้าจอขึ้น "Connect timeout" แปลว่า PLC IP ไม่ถูก
+      </li>
+      <li>
+        <strong>กดปุ่ม Start บน HMI</strong>
+        ดูที่ GX Works3 (Online) — <code>M0</code> ใน Device Monitor ต้องเป็น ON ขณะกด
+      </li>
+      <li>
+        <strong>ดู Lamp ที่จอ</strong>
+        ที่ Ladder เมื่อ Y0 = ON → Bit Lamp ที่ HMI ต้องสว่างเขียวด้วย
+      </li>
+      <li>
+        <strong>เปลี่ยน Set Point</strong>
+        แตะที่ Numeric Input → พิมพ์ <code>30.5</code> → Enter → ดูใน Device Monitor — D102 ต้อง = 305
+      </li>
+    </ol>
+
+    <div class="callout tip">
+      <strong>ดู Animation การกดที่หน้า HMI</strong>
+      Samkoon Editor มี <strong>Off-line Simulator</strong> ที่ <code>Tools → Simulator</code>
+      — ทดลองหน้าจอบน PC ก่อนส่งเข้า HMI จริงได้
+    </div>
+
+    <h2>เอกสารและรูปประกอบ</h2>
+    <ul class="doc-list">
+      <li><a href="PLC%20project/04_HMI_SK070FS/docs/SK070FS_HMI_with_FX5U.pdf">คู่มือ Samkoon SK-070FS กับ FX5U</a> <span class="meta">PDF</span></li>
+    </ul>
+
+    <p>ตัวอย่างหน้าจอจริงที่นิสิตจะสร้างได้ในบทเรียนนี้:</p>
+
+    <div class="fig-side">
+      <figure>
+        <img src="images/samkoon-demo-lamps.jpg" alt="Samkoon HMI demo screen with lamps">
+        <figcaption>หน้า <strong>"Welcome to Screen 1"</strong> — Open/Close Lamp Buttons + Lamp Status indicator + ปุ่มข้ามไป Screen 2</figcaption>
+      </figure>
+      <figure>
+        <img src="images/samkoon-boiler-screen.jpg" alt="Samkoon HMI Boiler Controller screen mockup">
+        <figcaption>ตัวอย่างจริงจาก Final Project — หน้า "Boiler Controller" รวมรูปอุปกรณ์, เวลา-วันที่, และปุ่ม Next Page</figcaption>
+      </figure>
+    </div>
+
+    <div class="pager">
+      <a href="mit-04-simulation.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">M04 — GX Simulator</div>
+      </a>
+      <a href="mit-06-pid.html" class="next">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">M06 — PID &amp; Auto-Tuning</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  PLC Automation Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){var lb=document.getElementById('lightbox');if(!lb)return;var img=lb.querySelector('img');
+document.querySelectorAll('.content img').forEach(function(im){im.style.cursor='zoom-in';im.addEventListener('click',function(){img.src=im.src;lb.classList.add('open');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.classList.remove('open');});})();
+</script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

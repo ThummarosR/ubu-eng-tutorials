@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W02 — เครื่องมือ + คำศัพท์ระบบ | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>🚀 เริ่มต้น (Setup)</h4>
+      <a href="setup-python.html"><span class="num">🐍</span> ติดตั้ง Python</a>
+      <a href="setup-vscode.html"><span class="num">💻</span> VS Code / Cursor</a>
+      <a href="setup-terminal.html"><span class="num">🖥️</span> Terminal พื้นฐาน</a>
+      <a href="setup-pip.html"><span class="num">📦</span> pip + Packages</a>
+      <a href="setup-git.html"><span class="num">🌿</span> Git + GitHub</a>
+      <a href="setup-colab.html"><span class="num">☁️</span> Google Colab</a>
+      <a href="setup-ai.html"><span class="num">🤖</span> AI Accounts</a>
+      <a href="python-basics.html"><span class="num">📖</span> Python Cheat-sheet</a>
+
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html" class="active"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">สัปดาห์ที่ 02 · Foundation · Pre-code</span>
+    <h1>เครื่องมือยุค AI + คำศัพท์ระบบ</h1>
+    <p class="lede">
+      AI <em>ไม่สามารถ</em> ใช้เครื่องมือที่เราไม่รู้ว่ามี และ <em>ไม่สามารถ</em> ฟังเรา
+      ถ้าเราไม่มีคำศัพท์ที่ตรง · สัปดาห์นี้สร้าง <strong>"แผนที่เครื่องมือ"</strong> และ
+      <strong>"พจนานุกรมระบบ"</strong> ให้ติดตัวไปทั้งหลักสูตร
+    </p>
+
+    <h2>เป้าหมายสัปดาห์นี้</h2>
+    <ul>
+      <li>เห็น <strong>ภาพรวมว่าระบบหนึ่งประกอบด้วยอะไรบ้าง</strong> (mental map)</li>
+      <li>รู้จัก <strong>เครื่องมือยุค AI</strong> ≥ 20 ตัว และเข้าใจว่าตัวไหนเหมาะกับงานชั้นไหน</li>
+      <li>เข้าใจ <strong>คำศัพท์ระบบ 40 คำ</strong> จัดกลุ่มตามสถานการณ์ที่จะเจอจริง</li>
+      <li>เลือก <strong>"ต้องเรียนตัวไหนตอนไหน"</strong> ของ 13 สัปดาห์ข้างหน้าได้</li>
+      <li>ตอบคำถาม <em>"ถ้าจะทำ X ฉันต้องการอะไรบ้าง?"</em> ด้วย vocab ที่แม่นยำ</li>
+    </ul>
+
+    <div class="callout warn" style="border-left-width:5px">
+      <strong>🔒 ทำไม "เครื่องมือ + คำศัพท์" ไม่ใช่งานของ AI</strong>
+      AI <em>เขียนโค้ดให้</em> ได้ · แต่ <strong>"ตัดสินใจว่าจะใช้เครื่องมือไหน"</strong> เป็นงานของคุณ
+      เพราะ AI <em>ไม่รู้</em> ว่างบของภาควิชาเท่าไหร่ · เพื่อนคุณมี GPU มั้ย · โน้ตบุ๊กรันไหวมั้ย
+      · ที่สำคัญ — AI ฟัง <strong>คำศัพท์ที่คุณใช้</strong> · ถ้าคุณบอก "ทำระบบ" AI เดามั่ว · ถ้าคุณบอก
+      "ทำ Streamlit frontend เรียก Flask backend เก็บใน SQLite" — AI เข้าใจทันที
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🎯 Running Case — พี่นัท Grading App (ต่อจาก W01)</h2>
+    <p>
+      ใน W01 เราได้ <em>"Improved Workflow"</em> ของพี่นัทแล้ว — มีระบบที่ tick checkbox + auto-feedback
+      · สัปดาห์นี้เราจะตอบ <strong>"ระบบนั้นต้องใช้เครื่องมืออะไร + คำศัพท์อะไรในการสื่อสารกับ AI"</strong>
+    </p>
+
+    <div class="callout info">
+      <strong>โจทย์ที่ต้องตอบสัปดาห์นี้</strong>
+      ถ้าจะสร้าง <em>"Grading App"</em> ของพี่นัท — เป็นนักศึกษาปี 1 ที่ใช้ AI ทำได้แค่ไหน?
+      ต้องการอะไรบ้าง? เรียกแต่ละชิ้นว่าอะไร? · พอจบ W02 คุณจะตอบได้ทุกข้อ
+    </div>
+
+    <h2>🗺 Mental Map — ระบบ Grading App ประกอบด้วยอะไร</h2>
+    <p>
+      ก่อนจะรู้จักเครื่องมือเป็นรายตัว — ต้องเห็น <strong>"ภาพรวม"</strong> ก่อนว่าระบบหนึ่ง
+      ประกอบด้วยอะไรบ้าง · ทุกระบบในชีวิตวิศวะ (web app, IoT, automation) มีโครงสร้างคล้ายกันแบบนี้
+    </p>
+
+    <div class="mermaid">flowchart TB
+    user(["👤 พี่นัท<br/><i>(user)</i>"])
+
+    subgraph app ["🖥 Grading App (ของเรา)"]
+        direction TB
+        fe["<b>Frontend</b><br/>หน้าจอที่พี่นัทเห็น<br/><i>Streamlit / HTML</i>"]
+        be["<b>Backend</b><br/>logic การคำนวณ<br/><i>Python / Flask</i>"]
+        db[("<b>Database</b><br/>เก็บคะแนน<br/><i>JSON / SQLite</i>")]
+
+        fe <-->|REST| be
+        be <-->|SQL| db
+    end
+
+    classroom[["🌐 Google Classroom<br/><i>External API</i>"]]
+    ai[["🤖 Claude / GPT<br/><i>AI API</i>"]]
+    git[["💾 GitHub<br/><i>เก็บ code</i>"]]
+    cloud[["☁️ Streamlit Cloud<br/><i>Hosting</i>"]]
+
+    user -->|browser| fe
+    be -->|fetch pdfs / post comments| classroom
+    be -->|generate feedback text| ai
+    app -.->|deploy| cloud
+    app -.->|version control| git
+
+    classDef person fill:#0d3f3a,stroke:#2dd4bf,color:#fff
+    classDef internal fill:#1e3a5f,stroke:#3776ab,color:#fff
+    classDef external fill:#3b2962,stroke:#8b5cf6,color:#fff
+    classDef infra fill:#3d2c1a,stroke:#ffd43b,color:#fff
+    class user person
+    class fe,be,db internal
+    class classroom,ai external
+    class git,cloud infra</div>
+
+    <p style="text-align:center;color:var(--text-muted);font-size:13.5px">
+      🟢 user · 🔵 ระบบของเรา (frontend + backend + database) · 🟣 external services · 🟡 infrastructure
+    </p>
+
+    <div class="callout tip">
+      <strong>ใช้แผนที่นี้เป็น "checklist"</strong>
+      สำหรับทุกโปรเจกต์ใหม่ ถามตัวเอง — มี frontend มั้ย? backend ทำอะไร? เก็บข้อมูลที่ไหน?
+      เรียก external อะไร? ใช้ AI ตรงไหน? deploy ที่ไหน? — ถ้าตอบครบ = แผนชัด
+    </div>
+
+    <h2>🛠 เครื่องมือ จัดตามชั้นในแผนที่</h2>
+    <p>
+      ทีนี้แต่ละชั้นในแผนที่ <em>มีเครื่องมือให้เลือก</em> · เลือกตามขนาดของปัญหา ·
+      ไม่ต้องเก่งทุกตัว — ขอแค่ <em>"รู้จัก"</em>
+    </p>
+
+    <h3>🤖 AI Tools</h3>
+    <table>
+      <thead><tr><th>ชื่อ</th><th>ทำอะไรได้ดี</th><th>ใช้เมื่อไหร่</th></tr></thead>
+      <tbody>
+        <tr><td><code>Claude (web/desktop)</code></td><td>สนทนายาว, อ่านเอกสาร, อธิบาย code</td><td>เริ่ม brainstorm, debug ที่ยาว ๆ</td></tr>
+        <tr><td><code>ChatGPT</code></td><td>คำตอบไว, ใช้กับ image</td><td>คำถามสั้น ๆ, สรุปบทความ</td></tr>
+        <tr><td><code>Gemini</code></td><td>เชื่อมกับ Google Workspace</td><td>ทำ slide / sheet / mail</td></tr>
+        <tr><td><code>Cursor</code></td><td>AI ในตัว IDE (พิมพ์โค้ดให้ทันที)</td><td>เขียน Python project</td></tr>
+        <tr><td><code>Claude Code</code></td><td>AI ใน terminal — แก้หลายไฟล์พร้อมกัน</td><td>โปรเจกต์ใหญ่ที่มีหลายไฟล์</td></tr>
+        <tr><td><code>GitHub Copilot</code></td><td>autocomplete ใน VS Code</td><td>พิมพ์ code วันละหลายชั่วโมง</td></tr>
+      </tbody>
+    </table>
+
+    <h3>📝 Code Editors &amp; Runtime</h3>
+    <table>
+      <thead><tr><th>ชื่อ</th><th>ทำอะไรได้ดี</th><th>ใช้เมื่อไหร่</th></tr></thead>
+      <tbody>
+        <tr><td><code>VS Code</code></td><td>editor มาตรฐาน, มี extension เยอะ</td><td>ใช้ตลอด 15 สัปดาห์</td></tr>
+        <tr><td><code>Cursor</code></td><td>fork ของ VS Code + AI ในตัว</td><td>ถ้าอยากให้ AI ช่วยตลอด</td></tr>
+        <tr><td><code>Jupyter Notebook</code></td><td>รัน code ทีละ cell + เห็นผลทันที</td><td>data analysis, plot, ทดลอง</td></tr>
+        <tr><td><code>Google Colab</code></td><td>Jupyter บน cloud — ไม่ต้องติดตั้ง</td><td>นักศึกษาใช้ Chromebook / iPad</td></tr>
+        <tr><td><code>Python REPL</code></td><td>พิมพ์ <code>python</code> ใน terminal</td><td>ทดสอบคำสั่งสั้น ๆ</td></tr>
+        <tr><td><code>Replit</code></td><td>IDE บน browser พร้อม share link</td><td>แชร์ code กับเพื่อนเร็ว ๆ</td></tr>
+      </tbody>
+    </table>
+
+    <h3>💾 Version Control</h3>
+    <table>
+      <thead><tr><th>ชื่อ</th><th>ทำอะไรได้ดี</th><th>ใช้เมื่อไหร่</th></tr></thead>
+      <tbody>
+        <tr><td><code>Git</code></td><td>track ทุกการเปลี่ยน, rollback ได้</td><td>โปรเจกต์ที่ใหญ่กว่า 1 ไฟล์</td></tr>
+        <tr><td><code>GitHub</code></td><td>เก็บ Git บน cloud + ทำ portfolio</td><td>W14 ขึ้นไป (หรือเร็วกว่าก็ดี)</td></tr>
+        <tr><td><code>GitHub Desktop</code></td><td>GUI ของ Git — ไม่ต้องพิมพ์ command</td><td>ผู้เริ่มต้น</td></tr>
+      </tbody>
+    </table>
+
+    <h3>🌐 Hosting / Deployment</h3>
+    <table>
+      <thead><tr><th>ชื่อ</th><th>ทำอะไรได้ดี</th><th>ใช้เมื่อไหร่</th></tr></thead>
+      <tbody>
+        <tr><td><code>Streamlit Cloud</code></td><td>deploy แอป Streamlit ฟรี + เร็ว</td><td>Data dashboard, demo</td></tr>
+        <tr><td><code>Cloud Run (Google)</code></td><td>deploy Flask/FastAPI ได้</td><td>API จริง, W14-W15</td></tr>
+        <tr><td><code>Vercel / Netlify</code></td><td>deploy static website ฟรี</td><td>เว็บนิทรรศการ, portfolio</td></tr>
+        <tr><td><code>Render</code></td><td>deploy Flask แบบง่าย</td><td>นักศึกษายังไม่กล้าใช้ Cloud Run</td></tr>
+      </tbody>
+    </table>
+
+    <h3>📊 Spreadsheets / Forms / Database</h3>
+    <table>
+      <thead><tr><th>ชื่อ</th><th>ทำอะไรได้ดี</th><th>ใช้เมื่อไหร่</th></tr></thead>
+      <tbody>
+        <tr><td><code>Google Sheets</code></td><td>"ฐานข้อมูล" สำหรับนักศึกษา</td><td>เริ่มทุก project ที่นี่ก่อน</td></tr>
+        <tr><td><code>Google Forms</code></td><td>สร้าง form → เก็บลง Sheet</td><td>เก็บข้อมูล user, survey</td></tr>
+        <tr><td><code>Google Apps Script</code></td><td>JavaScript ที่ทำ automation ใน Sheets/Forms</td><td>auto-email, validation</td></tr>
+        <tr><td><code>SQLite</code></td><td>database 1 ไฟล์ ใช้ใน Python ได้ทันที</td><td>app เล็ก ๆ ที่อยากเก็บข้อมูลถาวร</td></tr>
+        <tr><td><code>Postgres</code></td><td>database จริงจัง</td><td>เมื่อมี user หลายคนพร้อมกัน</td></tr>
+      </tbody>
+    </table>
+
+    <h3>🔌 Integration / Communication</h3>
+    <table>
+      <thead><tr><th>ชื่อ</th><th>ทำอะไรได้ดี</th><th>ใช้เมื่อไหร่</th></tr></thead>
+      <tbody>
+        <tr><td><code>LINE Messaging API</code></td><td>ส่งข้อความ LINE ผ่าน code</td><td>แจ้งเตือน, mini bot</td></tr>
+        <tr><td><code>Discord Webhook</code></td><td>โพสต์ลง channel</td><td>แจ้งเตือน CI, log</td></tr>
+        <tr><td><code>Google Drive API</code></td><td>อ่าน/เขียนไฟล์ใน Drive</td><td>เชื่อมกับ Classroom</td></tr>
+        <tr><td><code>Gmail API</code></td><td>ส่งเมลผ่าน code</td><td>แจ้งผลคะแนน, รายงาน</td></tr>
+      </tbody>
+    </table>
+
+    <h3>📐 Diagram / Documentation</h3>
+    <table>
+      <thead><tr><th>ชื่อ</th><th>ทำอะไรได้ดี</th><th>ใช้เมื่อไหร่</th></tr></thead>
+      <tbody>
+        <tr><td><code>Mermaid</code></td><td>เขียน flowchart/sequence ด้วย text</td><td>W03, ทำ diagram คู่กับ AI</td></tr>
+        <tr><td><code>Excalidraw</code></td><td>วาดมือบน browser</td><td>brainstorm, อธิบายให้เพื่อน</td></tr>
+        <tr><td><code>draw.io</code></td><td>diagram จริงจัง (C4, ER, …)</td><td>spec ที่ต้องส่งให้คนอื่น</td></tr>
+        <tr><td><code>Notion / Google Docs</code></td><td>เขียน spec / README</td><td>ก่อน build ทุกโปรเจกต์</td></tr>
+      </tbody>
+    </table>
+
+    <h2>🔑 เปรียบเทียบ — สภาพแวดล้อมพัฒนา 2 แบบหลัก</h2>
+    <p>
+      สิ่งที่นักศึกษาปี 1 ต้องเข้าใจให้ชัด — คุณจะเขียนโค้ดในสภาพแวดล้อมแบบไหน
+      มีผลกับ <em>"AI ช่วยได้แค่ไหน"</em> และ <em>"ขนาดโปรเจกต์ที่ทำได้"</em> ต่างกันมาก
+    </p>
+
+    <div class="flowdiagram">
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node" style="background:rgba(55,118,171,0.10);border-color:rgba(55,118,171,0.6);flex:1 1 320px">
+          <h4 style="color:#3776ab">🅐 VS Code / Cursor + Agent</h4>
+          <p class="fd-sub">"แบบโครงการ"</p>
+          <ul>
+            <li>เปิดเป็น <strong>folder</strong> ทั้งโปรเจกต์</li>
+            <li>AI เห็นไฟล์ทุกไฟล์, แก้หลายไฟล์พร้อมกัน</li>
+            <li>มี <code>git</code> ในตัว → version control</li>
+            <li>เก็บ secrets ใน <code>.env</code></li>
+            <li>terminal + debugger ครบ</li>
+            <li>เหมาะกับ: app, CLI tool, web app, Final Project</li>
+          </ul>
+          <p style="margin-top:10px;font-size:13.5px">
+            ▶ <a href="setup-python.html">ลง Python</a> · <a href="setup-vscode.html">ลง VS Code / Cursor</a>
+          </p>
+        </div>
+        <div class="flowdiagram-node" style="background:rgba(255,212,59,0.10);border-color:rgba(255,212,59,0.6);flex:1 1 320px">
+          <h4 style="color:#ffd43b">🅑 Colab / Jupyter + Chat LLM</h4>
+          <p class="fd-sub">"แบบสมุดทดลอง"</p>
+          <ul>
+            <li>1 ไฟล์ <code>.ipynb</code> = หลาย cell</li>
+            <li>เห็นผลคำนวณ <em>cell ต่อ cell</em></li>
+            <li>plot กราฟ inline ทันที</li>
+            <li>copy-paste code ↔ Claude/ChatGPT</li>
+            <li>ไม่ต้องติดตั้งอะไร (Colab)</li>
+            <li>เหมาะกับ: data analysis, การทดลอง, การเรียน NumPy/Pandas, รายงาน</li>
+          </ul>
+          <p style="margin-top:10px;font-size:13.5px">
+            ▶ <a href="setup-colab.html">ลงมือ — Colab Quickstart</a>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <h3>เลือกแบบไหน?</h3>
+    <table>
+      <thead><tr><th>สถานการณ์</th><th>เลือก</th><th>เพราะ</th></tr></thead>
+      <tbody>
+        <tr><td>กำลังเรียน Python ใหม่ ๆ</td><td>🅑 Colab/Jupyter</td><td>เห็นผลทันที, เรียนทีละ cell</td></tr>
+        <tr><td>ทำ data analysis (ลาย groupby, plot)</td><td>🅑 Colab/Jupyter</td><td>output อยู่ติดกับ code, ทำรายงานง่าย</td></tr>
+        <tr><td>สร้าง CLI tool / web app / project ใหญ่</td><td>🅐 VS Code/Cursor</td><td>หลายไฟล์, มี git, deploy ได้</td></tr>
+        <tr><td>ต้อง deploy / share กับคนอื่น</td><td>🅐 VS Code/Cursor</td><td>git + GitHub + cloud deploy</td></tr>
+        <tr><td>อยากให้ AI แก้หลายไฟล์พร้อมกัน</td><td>🅐 Cursor</td><td>Agent mode เห็นทั้ง codebase</td></tr>
+        <tr><td>โน้ตบุ๊กกระจอก / Chromebook</td><td>🅑 Colab</td><td>รันบน cloud ของ Google ฟรี</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <strong>คู่มือนี้ใช้ทั้งสองแบบ</strong>
+      W04-W07 (Code Literacy) ใช้ <strong>Cursor</strong> เป็นหลัก ·
+      W08-W10 (Data with AI) ใช้ <strong>Colab/Jupyter</strong> เป็นหลัก ·
+      W11-W15 กลับมาที่ <strong>Cursor + git + GitHub</strong> เพราะต้อง deploy
+    </div>
+
+    <h2>🗄️ ภาพรวม Database — JSON → SQLite → PostgreSQL</h2>
+    <p>
+      ก่อนเรียน database อย่างจริงจัง (W08, W12) ให้รู้จัก <em>"บันได 4 ขั้น"</em> ของการเก็บข้อมูลก่อน
+      — แต่ละขั้นแก้ปัญหาที่ขั้นก่อนทำไม่ได้
+    </p>
+
+    <table>
+      <thead>
+        <tr><th>ระดับ</th><th>เครื่องมือ</th><th>เหมาะกับ</th><th>ข้อจำกัด</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>1</strong> ตัวแปรใน RAM</td>
+          <td><code>list</code>, <code>dict</code></td>
+          <td>ทดลอง · code ตัวอย่าง · ระหว่างรัน</td>
+          <td>ปิดโปรแกรม = ข้อมูลหาย</td>
+        </tr>
+        <tr>
+          <td><strong>2</strong> ไฟล์ในเครื่อง</td>
+          <td><code>.json</code>, <code>.csv</code>, <code>.txt</code></td>
+          <td>script ส่วนตัว · config · ข้อมูลไม่กี่ร้อย row</td>
+          <td>2 คนเขียนพร้อมกัน = data ชนกัน · search ช้า</td>
+        </tr>
+        <tr>
+          <td><strong>3</strong> Database 1 ไฟล์</td>
+          <td><code>SQLite</code></td>
+          <td>app เล็ก · 1 user · prototype · embedded</td>
+          <td>หลายคนพร้อมกันยังลำบาก · ไม่มี user/permission ในตัว</td>
+        </tr>
+        <tr>
+          <td><strong>4</strong> Database จริงจัง</td>
+          <td><code>PostgreSQL</code> / <code>MySQL</code></td>
+          <td>หลาย user · production · ระบบจริง</td>
+          <td>ต้อง host server · ต้องดูแล backup</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับ — เริ่มต่ำเสมอ</strong>
+      ทุกโปรเจกต์ใหม่ <em>ให้เริ่มที่ขั้น 1 หรือ 2 ก่อน</em> ใช้ Sheet ก็ได้ ใช้ JSON ก็ได้
+      — เมื่อ <em>"จริง ๆ มีปัญหา"</em> (เช่น ข้อมูลเริ่มเยอะ, ต้อง search, มี user เพิ่ม)
+      ค่อยขยับขึ้นขั้น · 90% ของ project นักศึกษาปี 1 ไม่ต้องเกิน SQLite
+    </div>
+
+    <h3>ตัวอย่าง: ปัญหา "จองเครื่อง CNC" — แต่ละขั้นจะใช้ database แบบไหน?</h3>
+
+    <pre><code>เริ่ม:        Google Sheet                      (no code)
+หลัง W04-W07: JSON file ใน CLI tool               (พอใช้คนเดียวพอ)
+หลัง W08:    SQLite ใน Streamlit app             (เริ่มมีหลายคนใช้)
+หลัง W12:    PostgreSQL บน Cloud Run             (เพื่อนทั้งห้องเห็นเลย)
+W14:         + auth, + backup, + version log     (production จริง)</code></pre>
+
+    <div class="callout tip">
+      <strong>สำคัญที่สุด — รู้ว่า "เราไม่มีอะไร"</strong>
+      ทุกครั้งที่อยากทำของ ถามตัวเอง: <em>"ฉันมีอะไรอยู่แล้ว / ขาดอะไร / สร้างได้เองหรือต้องหาเครื่องมือ?"</em>
+      <br>เช่น "อยากตรวจ lab อัตโนมัติ" → มี student login มั้ย? มี rubric มั้ย? มีไฟล์ใหญ่หรือเล็ก?
+      มีสิทธิ์ใช้ Classroom API ของภาคมั้ย? — ถ้าไม่รู้ <em>"ฉันไม่มีอะไร"</em> AI ก็ช่วยไม่ได้
+    </div>
+
+    <h2>📚 คำศัพท์ระบบ 40 คำ — จัดตามสถานการณ์</h2>
+    <p>
+      แทนที่จะท่องเป็นแถว — จัดกลุ่ม <em>"คำที่จะเจอพร้อมกัน"</em> เวลาทำงานจริง ·
+      เมื่อเข้าสถานการณ์ไหน คำในกลุ่มนั้นจะมาเป็นพวง · จะจำง่ายขึ้น 10 เท่า
+    </p>
+
+    <h3>1️⃣ เมื่อสร้าง Web App (Grading App ของพี่นัท)</h3>
+    <table>
+      <tbody>
+        <tr><td><code>User</code></td><td>ผู้ใช้งาน (พี่นัท)</td></tr>
+        <tr><td><code>Client</code></td><td>ฝั่ง user — browser ของพี่นัท</td></tr>
+        <tr><td><code>Frontend</code></td><td>หน้าจอที่พี่นัทเห็น (Streamlit page)</td></tr>
+        <tr><td><code>Backend</code></td><td>โค้ด Python ที่ทำ logic</td></tr>
+        <tr><td><code>Server</code></td><td>เครื่องที่รัน backend (Streamlit Cloud)</td></tr>
+        <tr><td><code>API</code></td><td>"ประตู" ที่ frontend ใช้คุยกับ backend</td></tr>
+        <tr><td><code>Endpoint</code></td><td>URL ของ API แต่ละจุด เช่น <code>/api/grades</code></td></tr>
+        <tr><td><code>Request / Response</code></td><td>คำขอ / คำตอบ ที่วิ่งผ่าน API</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <strong>📢 Prompt ที่ใช้คำในกลุ่มนี้</strong>
+      <em>"เขียน Streamlit <strong>frontend</strong> ที่แสดงรายการ pdf · กดแต่ละ pdf ส่ง <strong>request</strong>
+      ไปยัง Flask <strong>backend</strong> ผ่าน <strong>endpoint</strong> <code>/api/grade</code>
+      · <strong>response</strong> คืนเป็น JSON ของคะแนน + feedback"</em>
+    </div>
+
+    <h3>2️⃣ เมื่อ user ต้อง login</h3>
+    <table>
+      <tbody>
+        <tr><td><code>Admin</code></td><td>ผู้ดูแลระบบ (อาจารย์ที่ดูทุกอันได้)</td></tr>
+        <tr><td><code>Role</code></td><td>บทบาท (TA, อาจารย์, นักศึกษา)</td></tr>
+        <tr><td><code>Permission</code></td><td>สิทธิ์ที่แต่ละ role ทำได้</td></tr>
+        <tr><td><code>Authentication</code> (Auth)</td><td>ยืนยันตัวตน (login ด้วย Google)</td></tr>
+        <tr><td><code>Authorization</code></td><td>ตรวจว่ามีสิทธิ์ทำมั้ย (หลัง login)</td></tr>
+        <tr><td><code>Session</code></td><td>ช่วงเวลาที่ login อยู่</td></tr>
+        <tr><td><code>Token</code></td><td>กุญแจที่ระบบใช้รู้จักว่าใคร (เช่น JWT)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <strong>📢 Prompt ที่ใช้คำในกลุ่มนี้</strong>
+      <em>"ใช้ Google Sign-In ทำ <strong>authentication</strong> · เก็บ <strong>session</strong> ใน cookie
+      · เช็ค <strong>role</strong> จาก email ถ้าลงท้าย @ubu.ac.th = TA · มี <strong>authorization</strong>
+      ที่จำกัดว่า TA เห็น drawing ของวิชาตัวเองเท่านั้น"</em>
+    </div>
+
+    <h3>3️⃣ เมื่อเก็บข้อมูล (Database)</h3>
+    <table>
+      <tbody>
+        <tr><td><code>Database</code></td><td>ที่เก็บข้อมูลถาวร</td></tr>
+        <tr><td><code>Schema</code></td><td>"พิมพ์เขียว" — ตารางอะไร, field อะไร</td></tr>
+        <tr><td><code>Cache</code></td><td>เก็บผลที่คำนวณแล้วไว้ใช้ซ้ำ (เร็วขึ้น)</td></tr>
+        <tr><td><code>Backup</code></td><td>copy ของข้อมูล เก็บไว้กรณีพัง</td></tr>
+      </tbody>
+    </table>
+
+    <p style="color:var(--text-muted);font-size:13.5px">
+      💡 <strong>ระดับของ database:</strong> ตัวแปร RAM → JSON file → SQLite → PostgreSQL — ดูตาราง "บันได 4 ขั้น" ด้านบน
+    </p>
+
+    <h3>4️⃣ เมื่อเรียก External Service (Classroom API, LINE, Claude)</h3>
+    <table>
+      <tbody>
+        <tr><td><code>Webhook</code></td><td>"กดกริ่ง" — external ส่งข้อมูลมาให้เรา (เช่น LINE bot รับข้อความ)</td></tr>
+        <tr><td><code>Polling</code></td><td>"เคาะถามทุก X วินาที" — opposite ของ webhook</td></tr>
+        <tr><td><code>Rate limit</code></td><td>จำกัดจำนวนเรียก API ต่อนาที/วัน</td></tr>
+        <tr><td><code>Timeout</code></td><td>รอนานเกินจนยอมแพ้</td></tr>
+        <tr><td><code>Retry</code></td><td>ลองใหม่อีกครั้งเมื่อล้มเหลว</td></tr>
+        <tr><td><code>API Key</code></td><td>รหัสที่ external service ให้มา ห้ามเปิดเผย</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <strong>📢 Prompt ที่ใช้คำในกลุ่มนี้</strong>
+      <em>"เรียก Classroom API ดึง pdf ของ assignment · ใส่ <strong>timeout</strong> 10 วินาที
+      · ถ้า fail ให้ <strong>retry</strong> 3 ครั้ง · เก็บ <strong>API key</strong> ใน <code>.env</code>
+      ไม่ commit · ระวัง <strong>rate limit</strong> 100 req/นาที — ใช้ <strong>cache</strong>
+      ถ้าเรียกซ้ำ"</em>
+    </div>
+
+    <h3>5️⃣ เมื่องานต้องรัน background (ไม่ใช่ real-time)</h3>
+    <table>
+      <tbody>
+        <tr><td><code>Job / Worker</code></td><td>งานที่รันใน background (เช่น สร้าง feedback batch)</td></tr>
+        <tr><td><code>Queue</code></td><td>คิวงานที่รอ worker ดึงไปทำ</td></tr>
+        <tr><td><code>Cron job</code></td><td>งานที่รันตามเวลา (เช่น สรุปคะแนนทุกวันศุกร์ 5 โมง)</td></tr>
+        <tr><td><code>Async / Await</code></td><td>"ทำงานไปก่อน รอผลทีหลัง" — ไม่ block UI</td></tr>
+      </tbody>
+    </table>
+
+    <h3>6️⃣ เมื่อ deploy + ดูแลระบบ</h3>
+    <table>
+      <tbody>
+        <tr><td><code>Build</code></td><td>การประกอบ code เป็นรูปที่รันได้</td></tr>
+        <tr><td><code>Deployment</code></td><td>การเอา code ขึ้น production</td></tr>
+        <tr><td><code>Runtime</code></td><td>ตอน code กำลังรันอยู่บน server</td></tr>
+        <tr><td><code>Environment variable</code></td><td>ค่าที่เปลี่ยนได้ระหว่าง dev/prod (DB url, API key)</td></tr>
+        <tr><td><code>Secret</code></td><td>env variable ที่ <em>ห้าม</em> เปิดเผย</td></tr>
+        <tr><td><code>Log</code></td><td>ข้อความที่ระบบบันทึกไว้ (debug)</td></tr>
+        <tr><td><code>Error / Exception</code></td><td>code เจอปัญหาแล้วหยุด</td></tr>
+        <tr><td><code>Rollback</code></td><td>ย้อนกลับไป version ก่อนหน้า เมื่อ deploy พัง</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <strong>📢 Prompt ที่ใช้คำในกลุ่มนี้</strong>
+      <em>"<strong>Build</strong> Docker image · <strong>deploy</strong> ขึ้น Cloud Run · เก็บ
+      <strong>secrets</strong> ใน Secret Manager ไม่ใช่ <strong>environment variable</strong>
+      · เขียน <strong>log</strong> ทุก request เพื่อ debug · ถ้า version ใหม่พัง ให้ <strong>rollback</strong>
+      ได้ใน 1 command"</em>
+    </div>
+
+    <h3>7️⃣ เมื่อทำงานกับ hardware (IoT / Sensor / Mechatronics)</h3>
+    <p>กลุ่มนี้สำคัญสำหรับนักศึกษา <em>Mechatronics, ไฟฟ้า, IE, Civil (smart building)</em></p>
+    <table>
+      <tbody>
+        <tr><td><code>Sensor</code></td><td>อุปกรณ์ตรวจวัด (อุณหภูมิ, แสง, ระยะ, vibration)</td></tr>
+        <tr><td><code>Actuator</code></td><td>อุปกรณ์ทำงาน (มอเตอร์, รีเลย์, valve)</td></tr>
+        <tr><td><code>Gateway</code></td><td>ตัวกลาง (Raspberry Pi) ระหว่าง sensor กับ cloud</td></tr>
+        <tr><td><code>Edge device</code></td><td>อุปกรณ์ใกล้สนาม ทำงานในที่</td></tr>
+        <tr><td><code>Protocol</code></td><td>ภาษาที่อุปกรณ์ใช้คุยกัน (Modbus, MQTT, OPC-UA)</td></tr>
+        <tr><td><code>Real-time update</code></td><td>เห็นค่าใหม่ทันทีที่เปลี่ยน</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับ — Glossary ของคุณคือ "อาวุธลับ" สั่ง AI</strong>
+      เปลี่ยน prompt <em>"ทำระบบ"</em> เป็น <em>"frontend Streamlit เรียก backend Flask
+      ผ่าน REST endpoint /api/grade · auth ด้วย Google Sign-In · เก็บใน SQLite · deploy บน Streamlit Cloud"</em>
+      — <strong>code ที่ได้ดีขึ้น 10 เท่า</strong> เพียงเพราะคำศัพท์แม่นขึ้น
+    </div>
+
+    <h2>📅 Tools Timeline — แต่ละเครื่องมือจะใช้สัปดาห์ไหน</h2>
+    <p>
+      ไม่ต้องเรียนทุกตัวพร้อมกัน · นี่คือลำดับที่แต่ละ tool จะ "เข้าฉาก"
+      — เรียนตอนนั้นพอ · ตัวอื่นแค่รู้จักก่อน
+    </p>
+
+    <div class="mermaid">gantt
+    title 13 สัปดาห์ข้างหน้า — เมื่อไหร่จะใช้แต่ละเครื่องมือ
+    dateFormat X
+    axisFormat W%d
+
+    section Editor / AI
+    Cursor / VS Code           :crit, 3, 13
+    Claude (web/chat)          :crit, 3, 13
+    Google Colab               :active, 8, 11
+    GitHub Copilot             :11, 13
+
+    section Source Control
+    Git (basic)                :crit, 4, 13
+    GitHub (commit/push)       :7, 13
+    GitHub Pull Requests       :14, 15
+
+    section Data Storage
+    JSON file                  :7, 9
+    CSV / pandas               :active, 8, 11
+    SQLite                     :active, 11, 13
+    PostgreSQL                 :12, 13
+    Google Sheets              :10, 13
+
+    section Web / API
+    Flask (Backend)            :12, 13
+    Streamlit (Frontend)       :14, 15
+    requests (call APIs)       :12, 13
+    LINE Messaging API         :12, 13
+
+    section Deploy
+    Streamlit Cloud            :14, 15
+    Cloud Run                  :14, 15
+    PyInstaller (.exe)         :14, 15
+
+    section AI in Code
+    Anthropic SDK (Claude API) :14, 15
+    Ollama (Local LLM)         :14, 15</div>
+
+    <p style="text-align:center;color:var(--text-muted);font-size:13.5px">
+      🟥 <strong>critical</strong> = ใช้ตลอด · 🟦 active = ใช้หนักในช่วงนั้น · ปกติ = แตะแค่บางสัปดาห์
+    </p>
+
+    <h2>Workshop — Setup + Prompt Rewrite</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>ลงทะเบียนอย่างน้อย 3 บัญชี</strong>
+        — GitHub, Claude (claude.ai), และ Cursor (cursor.com) — บันทึก email/password ให้ปลอดภัย
+      </li>
+      <li>
+        <strong>ติดตั้ง Python 3.11+ และ VS Code (หรือ Cursor)</strong>
+        — เปิด terminal พิมพ์ <code>python --version</code> ต้องเห็นเลข version
+      </li>
+      <li>
+        <strong>ลองทำ "Hello World" ใน 3 ที่</strong> —
+        Python REPL, Jupyter (Colab ก็ได้), และ Cursor — เพื่อรู้ว่าแต่ละที่หน้าตาเป็นยังไง
+      </li>
+      <li>
+        <strong>📝 เปิด <code>glossary.md</code> ของตัวเอง</strong>
+        — สร้างใน Notion/Google Docs · เอาคำศัพท์ 40 คำมาใส่
+        และเขียนคำอธิบาย <em>"ในแบบของคุณเอง"</em> (ไม่ copy จากเว็บ)
+      </li>
+      <li>
+        <strong>🎯 วาด Mental Map ของ 1 ปัญหาจาก W01</strong>
+        — copy template Mermaid ของ Grading App ด้านบน · แก้ให้เป็นปัญหาของคุณ ·
+        ใช้ <a href="tools.html#mermaid-editor">🎨 Mermaid Editor</a>
+      </li>
+      <li>
+        <strong>📋 ระบุ "ฉันต้องมีอะไรบ้าง"</strong>
+        — ตอบรายชั้นในแผนที่: frontend? backend? database? external? AI? deploy?
+        — เลือก tool 1 ตัวต่อชั้น (ดูจากตาราง 8 หมวด)
+      </li>
+      <li>
+        <strong>✍️ Prompt Rewrite Exercise</strong>
+        — เอา prompt "วาก" 3 อันด้านล่าง → เขียนใหม่โดยใส่คำศัพท์จากกลุ่ม 1-6
+        ให้ <em>"ละเอียดและตรง"</em> มากขึ้น
+      </li>
+      <li>
+        <strong>🧪 ส่ง Prompt ให้ Claude ทั้ง 2 version</strong>
+        — เปรียบเทียบคำตอบ · จดต่างกันยังไง · นี่คือ <em>"ค่าของคำศัพท์"</em>
+      </li>
+    </ol>
+
+    <h3>✍️ Prompt Rewrite Exercise — Before / After</h3>
+    <p>เอา prompt วาก ๆ ทางซ้าย → เขียนใหม่ใส่คำศัพท์เป็น prompt ที่ดี (ตัวอย่างใน 1) ทำต่อใน 2-3)</p>
+
+    <table>
+      <thead>
+        <tr><th>❌ Before — "วาก"</th><th>✅ After — ใช้คำศัพท์</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><em>"ทำระบบจอง CNC"</em></td>
+          <td><strong>ตัวอย่าง:</strong> "ทำ Streamlit <strong>frontend</strong> สำหรับ student
+              <strong>role</strong> · กดจองได้ผ่าน form · ส่ง <strong>request</strong> ไปยัง
+              Flask <strong>backend</strong> ที่ <strong>endpoint</strong> <code>/api/book</code>
+              · เก็บใน <strong>SQLite database</strong> · มี <strong>authentication</strong>
+              ผ่าน Google Sign-In · <strong>deploy</strong> บน Streamlit Cloud"</td>
+        </tr>
+        <tr>
+          <td><em>"ทำ bot LINE แจ้งเตือน"</em></td>
+          <td><em>(ลองเขียนเอง — ใช้คำจากกลุ่ม 4 และ 5)</em></td>
+        </tr>
+        <tr>
+          <td><em>"เก็บข้อมูล sensor"</em></td>
+          <td><em>(ลองเขียนเอง — ใช้คำจากกลุ่ม 7 และ 3)</em></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>ตัวอย่าง — ตอบ "ฉันต้องมีอะไรบ้าง?"</h2>
+
+    <p><strong>โจทย์:</strong> อยากให้นักศึกษาจองเครื่อง CNC ออนไลน์</p>
+
+    <pre><code>มีอะไรอยู่แล้ว:
+  ✓ Google Account ของภาควิชา
+  ✓ รายชื่อนักศึกษาปี 3-4 (Excel)
+  ✓ ตารางสอน / ตารางว่างของเครื่อง CNC
+
+ขาดอะไร:
+  ✗ ระบบ login (ใช้ Google Sign-In ได้?)
+  ✗ ที่เก็บ booking (Sheet ก็พอ?)
+  ✗ ตัวเช็คว่าจองซ้ำหรือไม่
+  ✗ แจ้งเตือนคืนก่อนวันจอง (LINE bot?)
+  ✗ ระบบยกเลิก
+
+อะไรที่ "ยังไม่ต้องทำ" (non-goals):
+  - ไม่ต้องสร้าง mobile app
+  - ไม่ต้องมี payment
+  - ไม่ต้องมี admin panel ทันที (ใช้ Sheet ดูตรง ๆ ก่อน)
+
+เครื่องมือที่จะใช้:
+  - Google Forms (รับการจอง)
+  - Google Sheets (เก็บ booking)
+  - Google Apps Script (validation)
+  - LINE Messaging API (แจ้งเตือน) — ระยะ 2
+</code></pre>
+
+    <h2>ข้อผิดที่พบบ่อย</h2>
+
+    <div class="callout warn">
+      <strong>เลือกเครื่องมือเท่ ๆ ก่อนหาปัญหา</strong>
+      — "อยากใช้ Docker", "อยาก deploy ขึ้น Kubernetes" — ผิด · เริ่มจากปัญหาเสมอ
+      เครื่องมือเลือกตามปัญหา ไม่ใช่กลับกัน
+    </div>
+
+    <div class="callout warn">
+      <strong>คิดว่ารู้คำศัพท์แล้วเพราะเคยได้ยิน</strong>
+      — "API คืออะไร?" — ถ้าตอบไม่ได้ใน 1 ประโยคของตัวเอง = ยังไม่รู้
+      ฝึกอธิบายคำพวกนี้ให้เพื่อนที่ไม่เคยเรียน
+    </div>
+
+    <div class="callout warn">
+      <strong>ขอ AI ทำของโดยไม่บอกบริบท</strong>
+      — "ทำระบบจองเครื่อง" — กว้างเกิน · ต้องบอก role, สถานที่, จำนวน user, ข้อมูลที่มี
+      สัปดาห์ที่ 14 จะลงลึกเรื่องนี้ แต่เริ่มฝึกได้ตั้งแต่ตอนนี้
+    </div>
+
+    <h2>ส่งงานสัปดาห์นี้</h2>
+    <ul>
+      <li>📷 screenshot <strong>Python --version</strong> + <strong>"Hello World"</strong> ใน VS Code/Cursor</li>
+      <li>📄 <strong>glossary.md</strong> ของตัวเอง (40 คำ คำอธิบายของคุณ จัดตาม 7 กลุ่ม)</li>
+      <li>🗺 <strong>Mental Map</strong> ของ 1 ปัญหาจาก W01 (Mermaid · diagram-style เหมือนของพี่นัท)</li>
+      <li>📋 รายการ <strong>"ฉันต้องมีอะไรบ้าง"</strong> ระบุ tool 1 ตัวต่อชั้น</li>
+      <li>✍️ <strong>Prompt Rewrite</strong> 3 คู่ (before/after) + Claude responses ของทั้ง 2 version</li>
+    </ul>
+
+    <h3>Reference จาก slide เดิม</h3>
+    <p>สัปดาห์นี้ไม่ตรงกับ slide เดิมโดยตรง — เป็น <em>foundation ใหม่ของยุค AI</em> ที่ Mainidea เน้น</p>
+
+    <div class="pager">
+      <a href="w01-problem-finding.html">
+        <div class="label">← สัปดาห์ที่แล้ว</div>
+        <div class="title">W01 — หาปัญหา + Flowchart</div>
+      </a>
+      <a href="w03-diagrams.html" class="next">
+        <div class="label">สัปดาห์ถัดไป →</div>
+        <div class="title">W03 — Diagram 6 แบบ</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+<script src="js/diagram-tools/mermaid-editor.js" defer></script>
+</body>
+</html>

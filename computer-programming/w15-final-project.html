@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W15 — Final Project | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html" class="active"><span class="num">W15</span> Final Project</a>
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+      <a href="principles-uxui.html"><span class="num">📐</span> UX/UI Principles</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <section class="hero">
+      <span class="eyebrow">สัปดาห์ที่ 15 · 🎓 Capstone Project</span>
+      <h1>Final Project<br>ทำของจริงให้ user จริง</h1>
+      <p class="lede">
+        ไม่ใช่ "แอปเดโม่" · ไม่ใช่ "ทำส่งครู" · นี่คือ <strong>"ของที่จะใช้จริงกับเพื่อน 1 คน"</strong>
+        — รวมทุกทักษะจาก W01-W14 และเป็นชิ้นที่ใส่ใน portfolio ได้
+      </p>
+    </section>
+
+    <h2>🎯 เป้าหมาย Final Project</h2>
+    <p>
+      สิ่งที่ทำให้ Final Project ของคู่มือนี้ <em>ต่างจาก</em> Final Project ทั่วไป — เกณฑ์ประเมินคือ:
+    </p>
+    <ul>
+      <li>✅ มี <strong>"real user"</strong> 1 คน ที่ <em>"ขอใช้ด้วยตัวเอง"</em></li>
+      <li>✅ ของถูก <strong>ใช้จริงอย่างน้อย 3 ครั้ง</strong> ในชีวิตจริง</li>
+      <li>✅ User <em>"พอใจ"</em> และ <em>"แนะนำให้คนอื่นใช้"</em></li>
+      <li>❌ ไม่นับ — "ทำสวย", "ใช้เทคโนโลยีใหม่", "code เยอะ"</li>
+    </ul>
+
+    <div class="callout info">
+      <strong>หลักคิด — "Useful &gt; Impressive"</strong>
+      ระบบเล็กที่ใช้ได้จริง = 90/100 · ระบบใหญ่ที่ไม่มีใครใช้ = 50/100
+    </div>
+
+    <div class="callout warn">
+      <strong>📐 ก่อนเลือก tech — เปิด UX/UI Principles</strong>
+      Final Project = user จริง · ถ้าเลือก tech ผิดตั้งแต่แรก (เช่น Tkinter เพราะคิดว่า "ง่าย" แล้วอยาก deploy)
+      → จบไม่ได้ · เปิด
+      <a href="principles-uxui.html#tech-choice"><strong>UX/UI Section 0 — เลือก UI Technology</strong></a>
+      ก่อนคุย AI · และ
+      <a href="principles-uxui.html#checklist">UX/UI Checklist</a>
+      ก่อนส่งงาน
+    </div>
+
+    <div class="callout warn" style="border-left-width:5px">
+      <strong>🔒 ทำไม Final Project = บททดสอบยุค AI</strong>
+      AI ช่วยคุณ <em>"เขียน code"</em> · แต่ Final Project ทดสอบสิ่งที่ <strong>AI ทำไม่ได้</strong>:
+      หา real user · ตัดสินใจ scope · ออกแบบ schema · เลือก deployment · จัดการ cost · ทดสอบกับคนจริง ·
+      ส่งมอบให้ใช้ได้ · เมื่อคุณกด deploy = <em>"คุณรับผิดชอบทุกบรรทัด"</em> · ไม่ใช่ AI
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>📋 Spec — Final Project Requirements</h2>
+
+    <table>
+      <thead><tr><th>ข้อกำหนด</th><th>รายละเอียด</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Real user</strong></td><td>1 คน · ไม่ใช่คุณเอง · ไม่ใช่อาจารย์</td></tr>
+        <tr><td><strong>Real problem</strong></td><td>ปัญหาที่ user มีจริง · ไม่ใช่ที่คุณคิดเอง</td></tr>
+        <tr><td><strong>Pipeline ครบ</strong></td><td>Problem → Workflow → Spec → Build → Test → Deploy → Demo → Maintain</td></tr>
+        <tr><td><strong>Tech</strong></td><td>Python · อย่างน้อย 1 ใน: web app / API / data dashboard / desktop app / bot</td></tr>
+        <tr><td><strong>Persistence</strong></td><td>เก็บข้อมูลถาวร (JSON / SQLite / Sheet / Postgres)</td></tr>
+        <tr><td><strong>Test</strong></td><td>≥ 10 unit tests · pass ทั้งหมด · AI test review checklist (W13)</td></tr>
+        <tr><td><strong>Deploy</strong></td><td>คนอื่นใช้ได้โดยไม่ลง Python · <strong>มี mobile-accessible channel</strong> (PWA/LINE/responsive web)</td></tr>
+        <tr><td><strong>Monitoring</strong></td><td>UptimeRobot ping <code>/health</code> + Sentry crash report (W14)</td></tr>
+        <tr><td><strong>Cost ceiling</strong></td><td>Budget alert ทุก service ที่ใช้ · &lt; $5/เดือน</td></tr>
+        <tr><td><strong>Privacy</strong></td><td>ถ้าเก็บข้อมูล user — consent + anonymize + .gitignore raw data (W10)</td></tr>
+        <tr><td><strong>Docs</strong></td><td>README · spec.md · architecture diagram (C4 + sequence) · CHANGELOG · ADR</td></tr>
+        <tr><td><strong>AI Disclosure</strong></td><td><code>AI_USAGE.md</code> — อะไรที่ AI ช่วย · อะไรที่คุณเขียนเอง</td></tr>
+        <tr><td><strong>Demo</strong></td><td>5 นาที · user ใช้จริงต่อหน้าคน · บน mobile (ถ้าทำได้)</td></tr>
+      </tbody>
+    </table>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🗺 Traceability — Final Project ใช้ทักษะจาก W01-W14</h2>
+    <p>
+      Final Project = บทรวม · ทุก week ที่เรียนมา <strong>ต้องเห็นใน project</strong> · นี่คือ checklist
+      ที่ขาดอะไรไม่ได้
+    </p>
+
+    <div class="mermaid">flowchart LR
+    W01[W01<br/>Problem-finding] --> P[Final<br/>Project]
+    W02[W02<br/>Tools+Vocab] --> P
+    W03[W03<br/>Diagrams] --> P
+    W04W05[W04-W05<br/>Read+Modify code] --> P
+    W06[W06<br/>Spec → AI] --> P
+    W07[W07<br/>CLI workflow] --> P
+    W08[W08<br/>Data + Schema] --> P
+    W09W10[W09-W10<br/>Data Project] --> P
+    W11[W11<br/>OOP] --> P
+    W12[W12<br/>APIs + LLM] --> P
+    W13[W13<br/>Test + Debug] --> P
+    W14[W14<br/>Deploy + Cost] --> P
+
+    P --> Demo[🎓 Demo<br/>+ Maintain]
+
+    classDef foundation fill:#1e3a5f,stroke:#3776ab,color:#fff
+    classDef literacy fill:#3d2c1a,stroke:#ffd43b,color:#fff
+    classDef data fill:#0d3f3a,stroke:#2dd4bf,color:#fff
+    classDef advanced fill:#3b2962,stroke:#8b5cf6,color:#fff
+    classDef capstone fill:#5c2618,stroke:#ec4899,stroke-width:3px,color:#fff
+    class W01,W02,W03 foundation
+    class W04W05,W06,W07 literacy
+    class W08,W09W10 data
+    class W11,W12,W13,W14 advanced
+    class P,Demo capstone</div>
+
+    <h3>📝 Self-check: Project ของฉันใช้ทุก week มั้ย?</h3>
+    <table>
+      <thead><tr><th>Week</th><th>ใน Final Project เห็นที่ไหน?</th><th>เช็ค</th></tr></thead>
+      <tbody>
+        <tr><td>W01 Problem-finding</td><td>มี real user · interview notes · problem statement</td><td>☐</td></tr>
+        <tr><td>W02 Tools+Vocab</td><td>เลือก tool stack + วาด architecture mental map</td><td>☐</td></tr>
+        <tr><td>W03 Diagrams</td><td>≥ 3 Mermaid diagrams (C4 + sequence + ER)</td><td>☐</td></tr>
+        <tr><td>W04-W05 Read/Modify</td><td>อ่าน + แก้ code ที่ AI สร้าง · มี diff/PR ใน git</td><td>☐</td></tr>
+        <tr><td>W06 Spec → AI</td><td>spec.md ที่ Scorecard ≥ 75%</td><td>☐</td></tr>
+        <tr><td>W07 CLI workflow</td><td>Spec → Plan → Code → Test ครบ cycle</td><td>☐</td></tr>
+        <tr><td>W08 Data+Schema</td><td>Schema ที่ออกแบบเอง · ใช้ JSON/CSV/SQLite/Postgres</td><td>☐</td></tr>
+        <tr><td>W09-W10 Data</td><td>(ถ้ามี analyze) — privacy + AI verification ทำตามเกณฑ์</td><td>☐</td></tr>
+        <tr><td>W11 OOP</td><td>ใช้ class เมื่อจำเป็น · ไม่ over-engineer · type hints</td><td>☐</td></tr>
+        <tr><td>W12 APIs+LLM</td><td>(ถ้ามี) API key ใน .env · LLM ใช้ Haiku ตอนเรียน · cache</td><td>☐</td></tr>
+        <tr><td>W13 Test</td><td>≥ 10 pytest · CI/CD pass · AI test review</td><td>☐</td></tr>
+        <tr><td>W14 Deploy</td><td>Cloud + Mobile access · monitoring + budget alert</td><td>☐</td></tr>
+      </tbody>
+    </table>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🚦 Day 0 — Pre-flight Checklist (ก่อนเริ่ม)</h2>
+    <p>
+      <em>"ก่อนวันที่ 1"</em> — ตอบ 8 ข้อนี้ก่อน · ถ้าตอบไม่ได้ → กลับไปคิด · เริ่มก่อนพร้อม = เสียเวลาทีหลัง
+    </p>
+
+    <table>
+      <thead><tr><th>#</th><th>คำถาม</th><th>ตอบใน 1 ประโยค</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>User คือใคร? (ชื่อจริง · role)</td><td>______________________</td></tr>
+        <tr><td>2</td><td>Pain point เฉพาะที่จะแก้?</td><td>______________________</td></tr>
+        <tr><td>3</td><td>User บอก "อยากใช้" แล้วหรือยัง?</td><td>☐ ใช่ &nbsp; ☐ ยัง — กลับไปสัมภาษณ์</td></tr>
+        <tr><td>4</td><td>Deployment target?</td><td>☐ Cloud Web &nbsp; ☐ Mobile &nbsp; ☐ Desktop &nbsp; ☐ IoT</td></tr>
+        <tr><td>5</td><td>เก็บข้อมูลส่วนตัวมั้ย?</td><td>ถ้าใช่ → ต้องทำ consent + anon (W10)</td></tr>
+        <tr><td>6</td><td>ใช้ external API / LLM มั้ย?</td><td>ถ้าใช่ → ต้องตั้ง budget alert</td></tr>
+        <tr><td>7</td><td>Scope ทำใน 7 วันได้แน่?</td><td>ถ้าไม่แน่ → ตัด feature ครึ่งหนึ่ง</td></tr>
+        <tr><td>8</td><td>Plan B ถ้า user ไม่ใช้?</td><td>______________________</td></tr>
+      </tbody>
+    </table>
+
+    <h3>📜 Proposal Approval Gate</h3>
+    <p>
+      ส่ง <strong>proposal สั้น ๆ 1 หน้า</strong> ให้อาจารย์ <em>"ก่อนเริ่ม"</em> · ได้ approve ก่อน Day 1 ·
+      ป้องกัน scope ใหญ่เกิน
+    </p>
+
+    <pre><code># Final Project Proposal — [ชื่อ project]
+
+**User:** [ชื่อจริง · role · ทำไมเลือกคนนี้]
+**Problem:** [1-2 ประโยค]
+**Solution:** [1 ประโยค]
+**Tech stack:** [Streamlit / Flask / LINE bot / ...]
+**Deployment target:** [Cloud / Mobile / Desktop / IoT]
+**Privacy:** [เก็บข้อมูลส่วนตัวมั้ย · จัดการยังไง]
+**External services:** [API ที่ใช้ · cost estimate]
+**Risk + Plan B:** [ความเสี่ยง 2 อย่าง + plan B แต่ละอัน]
+**Why it's "right size":** [ทำไมไม่ใหญ่/เล็กเกิน]</code></pre>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🔐 Privacy + Ethics Review</h2>
+    <p>
+      ถ้า project เกี่ยวข้องกับ <strong>ข้อมูลของคนอื่น</strong> → ต้องผ่าน review นี้ก่อน deploy
+    </p>
+
+    <h3>✅ Privacy Checklist (จาก W10)</h3>
+    <ul>
+      <li>☐ User <strong>ยินยอม</strong> ให้ใช้ข้อมูล (consent ในรูปแบบที่บันทึกได้)</li>
+      <li>☐ ระบุชัด <strong>"ข้อมูลใช้ทำอะไร"</strong> ใน description</li>
+      <li>☐ ระบุชัด <strong>"ใครเห็น raw data ได้"</strong></li>
+      <li>☐ ระบุชัด <strong>"ลบเมื่อไหร่"</strong> หลังคอร์สจบ</li>
+      <li>☐ Raw data <strong>ไม่</strong> ใน public repo (gitignore <code>private/</code>)</li>
+      <li>☐ Anonymize ID/email ก่อน analyze · ก่อน publish dashboard</li>
+      <li>☐ ถ้าเก็บ password → hash ด้วย bcrypt · ไม่เก็บ plaintext</li>
+      <li>☐ ถ้าเก็บ API key → ใน <code>.env</code> · ไม่ใน code</li>
+    </ul>
+
+    <h3>⚖️ Ethics Checklist</h3>
+    <ul>
+      <li>☐ Project ไม่ <strong>harm</strong> ใคร (รวมทาง emotional / financial / reputational)</li>
+      <li>☐ AI ที่ใช้ <strong>ไม่ bias</strong> ในทาง gender/race/socioeconomic ที่ damage user</li>
+      <li>☐ Automation ไม่ <strong>replace human judgment</strong> ในเรื่องสำคัญ (ตัดสินใจทางการแพทย์/กฎหมาย)</li>
+      <li>☐ User <strong>เลือกออก</strong> ได้ตลอดเวลา</li>
+      <li>☐ ไม่ <strong>scrape</strong> ข้อมูลที่ไม่ได้รับอนุญาต (social media posts, web data)</li>
+      <li>☐ ไม่ใช้ <strong>copyrighted content</strong> เป็น training data</li>
+      <li>☐ ถ้า project เกี่ยวกับ hardware/IoT — มี <strong>fail-safe</strong> (W13: safety test)</li>
+    </ul>
+
+    <div class="callout warn">
+      <strong>⛔ Projects ที่ "เกินเกณฑ์ ethics" ของคอร์ส</strong>
+      <ul style="margin-top:8px">
+        <li>❌ ระบบ surveillance / monitor คนโดยไม่บอก</li>
+        <li>❌ AI ตัดสินใจอัตโนมัติเรื่อง health/legal/financial โดยไม่มี human review</li>
+        <li>❌ Scrape ข้อมูล Facebook/IG/TikTok ที่ไม่ใช่ของตัวเอง</li>
+        <li>❌ "Predict student performance" จาก demographic — bias risk สูง</li>
+        <li>❌ Deepfake / voice clone ของคน real โดยไม่ได้รับอนุญาต</li>
+      </ul>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🤖 AI Usage Disclosure — Academic Honesty</h2>
+    <p>
+      AI ช่วยเขียน code คือเรื่องปกติในยุคนี้ · แต่ <strong>"การไม่บอก"</strong> = academic dishonesty ·
+      ทุก Final Project ต้องมี <code>AI_USAGE.md</code> บอกตรง ๆ
+    </p>
+
+    <h3>📄 Template — <code>AI_USAGE.md</code></h3>
+    <pre><code># AI Usage Disclosure
+
+## Tools ที่ใช้
+- Cursor (Claude Sonnet 4.6) — main pair-programming
+- ChatGPT (gpt-4o) — debug ครั้งคราว
+- Claude API (Haiku) — ใน production สำหรับ summary feature
+
+## AI ทำอะไรให้บ้าง
+- [✅] เขียน boilerplate (`Flask app`, route definitions)
+- [✅] สร้าง test cases หลังจากเขียน function เอง
+- [✅] อธิบาย error message ที่ไม่เข้าใจ
+- [✅] Generate Mermaid diagrams จาก spec
+- [⚠️] เขียน function `calculate_grade()` ครั้งแรก · ผมแก้ logic เอง
+- [❌] **ไม่ได้** ใช้ AI สำหรับ: spec writing · user interview · ตัดสินใจ scope
+
+## สิ่งที่ผมเขียนเองล้วน ๆ
+- spec.md
+- user interview notes
+- architecture decision records
+- regression tests สำหรับ bug ที่เจอ
+- README
+
+## สิ่งที่ AI พลาด · ผมต้องแก้
+1. AI ใช้ `df.dropna()` ทำลายข้อมูล 30% — แก้เป็น `dropna(subset=["x"])`
+2. AI สร้าง class hierarchy 5 ชั้น สำหรับ "add 2 numbers" — refactor เป็น function
+3. AI mock function ผิด level — แก้ patch ที่ถูกต้อง</code></pre>
+
+    <div class="callout tip">
+      <strong>📌 ทำไมการ disclose ดีต่อคุณ</strong>
+      <ul style="margin-top:8px">
+        <li><strong>ป้องกัน trouble</strong> — บอกตอนต้นปลอดภัยกว่าโดน catch ตอนหลัง</li>
+        <li><strong>แสดง maturity</strong> — บอกได้ละเอียดว่าจัดการ AI ยังไง = mark of senior engineer</li>
+        <li><strong>เรียนรู้</strong> — เห็นชัดว่าตัวเองยังต้องเก่งตรงไหน</li>
+        <li><strong>Industry standard</strong> — บริษัทใหญ่ ๆ ต้องการ disclosure แบบนี้</li>
+      </ul>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🛡 Risk Register — รู้ว่าอะไรจะพัง ก่อนพัง</h2>
+    <p>
+      เขียน <strong>3-5 ความเสี่ยง</strong> ที่ project อาจเจอ + <strong>plan B</strong> ของแต่ละอัน ·
+      ทำใน Day 0 · ทบทวนทุกวัน
+    </p>
+
+    <h3>📋 Risk Register Template</h3>
+    <table>
+      <thead><tr><th>Risk</th><th>Likelihood</th><th>Impact</th><th>Plan B</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>API ของ vendor ล่ม (LINE, IQAir)</td>
+          <td>Medium</td>
+          <td>High</td>
+          <td>cache last value + retry · ถ้าล่ม &gt; 1 ชม. → manual mode</td>
+        </tr>
+        <tr>
+          <td>User เลิกใช้กลางคัน (Day 4)</td>
+          <td>Medium</td>
+          <td>High</td>
+          <td>มี user ที่ 2 (เพื่อนคนที่สนใจ) เป็น backup</td>
+        </tr>
+        <tr>
+          <td>Cost ทะลุ free tier</td>
+          <td>Low</td>
+          <td>High</td>
+          <td>budget alert at $1 · kill switch พร้อม</td>
+        </tr>
+        <tr>
+          <td>เครื่อง dev พัง / WiFi ตก</td>
+          <td>Medium</td>
+          <td>Medium</td>
+          <td>code ใน GitHub + Codespaces backup · phone hotspot</td>
+        </tr>
+        <tr>
+          <td>Demo day app crash</td>
+          <td>Low</td>
+          <td>Very High</td>
+          <td>Local backup version · video screenshot ของการใช้จริง</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>📝 ADR — Architecture Decision Records</h2>
+    <p>
+      ทุกครั้งที่ตัดสินใจใหญ่ (เลือก SQLite vs Postgres · เลือก Streamlit vs Flask · เลือก LLM ตัวไหน) →
+      เขียน 1 ADR · ในงานจริง = standard practice
+    </p>
+
+    <h3>📄 Template — <code>docs/adr/0001-choose-streamlit.md</code></h3>
+    <pre><code># ADR-0001: เลือก Streamlit Cloud แทน Cloud Run
+
+## Status
+Accepted (2026-05-15)
+
+## Context
+- User เป็น TA ของอาจารย์ · เปิด URL บน laptop ในห้อง lab
+- ต้องการ data dashboard ที่อัพเดตทุก 30 นาที
+- มีเวลา 7 วัน · ทำคนเดียว
+
+## Decision
+ใช้ Streamlit Cloud (free tier) แทน Cloud Run
+
+## Reasons
+- ✅ Streamlit = Python ทั้งหมด · ไม่ต้องเขียน HTML/CSS
+- ✅ Streamlit Cloud free · ไม่ต้องตั้ง Docker
+- ✅ Deploy ใน 2 นาทีจาก git push
+- ❌ Streamlit Cloud bandwidth limit · แต่ user 1 คน · พอ
+- ❌ ไม่มี SLA — ถ้าพัง รอ 10 นาที · OK สำหรับ demo
+
+## Consequences
+- ถ้า user หลายคนใช้ → ย้ายเป็น Cloud Run
+- ถ้าต้องการ custom domain → ต้อง upgrade ($20/เดือน) หรือใช้ Render</code></pre>
+
+    <p>ทุก ADR 1 หน้า · 4-5 ADR ใน Final Project ก็พอ · ใส่ใน <code>docs/adr/</code></p>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>♿ Accessibility — User บางคนต้องการความช่วยเหลือ</h2>
+    <p>
+      ถ้า user คือ <strong>พ่อ-แม่</strong> (ตามตัวอย่างใน table) → accessibility สำคัญมาก ·
+      ถ้า user คือ <strong>เพื่อน Gen Z</strong> → ยังสำคัญ (50% ใช้บนมือถือ outdoor · จอเล็ก)
+    </p>
+
+    <h3>✅ Accessibility Checklist (เริ่มต้น)</h3>
+    <ul>
+      <li>☐ <strong>Font size</strong> ≥ 16px บน mobile · ≥ 14px บน desktop</li>
+      <li>☐ <strong>Color contrast</strong> ratio ≥ 4.5:1 (ใช้ <a href="https://webaim.org/resources/contrastchecker/" target="_blank">WebAIM Contrast Checker</a>)</li>
+      <li>☐ <strong>ไม่ใช้สีอย่างเดียว</strong> สื่อความหมาย (เพิ่ม emoji / text label) · เผื่อ colorblind</li>
+      <li>☐ <strong>Button area</strong> ≥ 44×44 px บนมือถือ (Apple guideline)</li>
+      <li>☐ <strong>Error message ภาษาไทย</strong> ที่อ่านเข้าใจ · ไม่ใช่ stack trace</li>
+      <li>☐ <strong>Loading indicator</strong> ทุกที่ที่ใช้เวลา &gt; 1 วินาที</li>
+      <li>☐ <strong>ไม่ require</strong> account ถ้าไม่จำเป็น (พ่อแม่ลืม password)</li>
+      <li>☐ <strong>Test กับ user จริง</strong> ไม่ใช่แค่ตัวเอง — ทักษะ tech ของแต่ละคนต่างกัน</li>
+    </ul>
+
+    <div class="callout info">
+      <strong>📱 Mobile-first by default</strong>
+      90% ของ user ในปี 2026 เปิด app ครั้งแรกบนมือถือ · ออกแบบ mobile ก่อน · desktop เป็น bonus
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>⏱ Estimation — ทำไม "7 วัน" จะกลายเป็น "14 วัน"</h2>
+    <p>
+      <strong>ความจริงของนักศึกษาทุกคน:</strong> ประเมินงานต่ำกว่าจริง 2-3 เท่า · "ผมว่าใช้ 2 ชั่วโมง" → 6 ชั่วโมง ·
+      "เสร็จคืนนี้" → 3 วัน · นี่ไม่ใช่ความขี้เกียจ — มัน <strong>"Planning Fallacy"</strong> ที่นักจิตวิทยายืนยันมา 30 ปี
+    </p>
+
+    <h3>📊 ทำไมประเมินผิด</h3>
+    <table>
+      <thead><tr><th>เหตุผล</th><th>ตัวอย่าง</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1. จำแค่ happy path</strong></td><td>"แค่เขียน Flask app" — ลืม env setup, debug, deploy, test</td></tr>
+        <tr><td><strong>2. ไม่นับ "ของที่ไม่รู้"</strong></td><td>API doc อ่านยาก · auth พัง · cost limit · time zone bug</td></tr>
+        <tr><td><strong>3. ไม่นับ context switch</strong></td><td>กิน · นอน · เรียนวิชาอื่น · ตอบ LINE · กลับมา = 30 นาทีหาที่</td></tr>
+        <tr><td><strong>4. ไม่นับ "ของที่พัง"</strong></td><td>Mac update ลบ Python · WiFi ตก · เครื่อง crash</td></tr>
+        <tr><td><strong>5. Optimism bias</strong></td><td>"ครั้งนี้จะดี" — ทุกครั้งก็คิดอย่างนี้</td></tr>
+      </tbody>
+    </table>
+
+    <h3>📐 วิธีประเมินที่แม่นยำขึ้น — 3-Point Estimate</h3>
+    <p>
+      แทนที่จะให้ตัวเลขเดียว → ให้ 3 ตัว: best / likely / worst · เฉลี่ยน้ำหนัก
+    </p>
+
+    <pre><code># Pessimistic-weighted average (PERT formula)
+estimate = (best + 4 × likely + worst) / 6
+
+ตัวอย่าง:
+"Deploy ขึ้น Cloud Run"
+- best:   30 นาที (ทำมาแล้ว · ทุกอย่างพร้อม)
+- likely: 2 ชั่วโมง (ปกติ)
+- worst:  6 ชั่วโมง (ติด billing · ติด IAM · ติด Docker)
+
+→ (0.5 + 4×2 + 6) / 6 = 2.4 ชั่วโมง</code></pre>
+
+    <h3>🪜 Task Breakdown — เล็กไปเรื่อย ๆ จนเห็นชัด</h3>
+    <p>ถ้าประเมินยาก = task ใหญ่เกิน · แตกเป็น sub-task &lt; 2 ชั่วโมงต่ออัน</p>
+
+    <div class="diff-viewer" data-title="Bad estimate vs Good breakdown">
+      <div class="diff-before"># ❌ Task ใหญ่ — ประเมินไม่แม่น
+"ทำ Grading App" — 3 วัน
+
+# ปัญหา: "3 วัน" คืออะไร?
+# - 3 × 24 = 72 ชม.?
+# - 3 × 8 = 24 ชม. ทำงาน?
+# - 3 × 4 = 12 ชม. หลังเรียน?
+# ไม่ชัด · จะ slip แน่นอน</div>
+      <div class="diff-after"># ✅ แตกเป็น sub-task &lt; 2 ชม.
+
+D1: Setup project              (1.5h)
+    - venv + git init + .env     (30m)
+    - install packages + check   (30m)
+    - hello world ใน Streamlit   (30m)
+
+D2: DB schema                   (2h)
+    - design ER diagram         (45m)
+    - create_table.py            (45m)
+    - seed data + verify         (30m)
+
+D3: Core logic                  (3h)
+    - calc_grade function        (45m)
+    - tests (5 cases)            (45m)
+    - integrate with DB          (1h)
+    - manual test                (30m)
+
+D4: UI                          (2h)
+    ...
+
+ทั้งหมด = 18 ชม. · ถ้ามี 4 ชม./วัน → 4.5 วัน
++ buffer 30% = 6 วัน</code></pre>
+      </div>
+    </div>
+
+    <h3>📈 กฎ "2x + 30% Buffer"</h3>
+
+    <div class="callout tip">
+      <strong>🔮 สูตรที่ใช้จริงในวงการ</strong>
+      <ol style="margin-top:8px">
+        <li>ประเมินอย่างซื่อสัตย์ → ได้ <strong>X ชั่วโมง</strong></li>
+        <li>คูณ <strong>×2</strong> สำหรับสิ่งที่ลืม</li>
+        <li>เพิ่ม <strong>30% buffer</strong> สำหรับ "ของที่ไม่รู้ว่าไม่รู้"</li>
+        <li>= <strong>(X × 2) × 1.3 = X × 2.6</strong></li>
+      </ol>
+      ฟังดูเกินจริง · แต่ <em>"ส่งทันเวลา"</em> มีค่ามากกว่า <em>"ประเมินได้ใกล้"</em>
+    </div>
+
+    <h3>📋 Time-boxing — กฎเหล็กของ 7-day project</h3>
+    <table>
+      <thead><tr><th>กฎ</th><th>ทำยังไง</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>Hard time box ทุก task</strong></td>
+          <td>ตั้ง timer · task X = 2 ชม. · เกินแล้วหยุด · review</td>
+        </tr>
+        <tr>
+          <td><strong>"Done is better than perfect"</strong></td>
+          <td>ทำให้ครบ MVP ก่อน · polish หลัง</td>
+        </tr>
+        <tr>
+          <td><strong>End-of-day check-in</strong></td>
+          <td>15 นาทีท้าย — เช็คว่าตามแผน? · ต้อง descope มั้ย?</td>
+        </tr>
+        <tr>
+          <td><strong>Buffer day = Day 7</strong></td>
+          <td>Day 1-6 = build · Day 7 = test + demo · ห้าม build ใหม่ใน Day 7</td>
+        </tr>
+        <tr>
+          <td><strong>Descope ไม่ใช่ความล้มเหลว</strong></td>
+          <td>"ตัด feature 1 → ส่งทัน" &gt; "ทำครบ → ส่งช้า"</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>⚡ ถ้าใช้ AI — เพิ่มความเร็วไม่ใช่ครึ่ง</h3>
+    <p>
+      AI <em>"ลดเวลาเขียน code"</em> 50-80% · แต่ <em>"เวลา debug + verify"</em> <strong>เพิ่มขึ้น</strong> ·
+      เพราะต้อง review สิ่งที่ AI สร้าง · net = <em>"ประหยัด ~30%"</em> ถ้าใช้เป็น
+    </p>
+
+    <table>
+      <thead><tr><th>Phase</th><th>เวลาไม่มี AI</th><th>เวลาใช้ AI</th></tr></thead>
+      <tbody>
+        <tr><td>Write boilerplate</td><td>4 ชม.</td><td><strong>30 นาที</strong> ⚡</td></tr>
+        <tr><td>Debug</td><td>2 ชม.</td><td>1.5 ชม. (AI ช่วยอ่าน error)</td></tr>
+        <tr><td>Test writing</td><td>2 ชม.</td><td>1 ชม. (แต่ + 30 นาที review test)</td></tr>
+        <tr><td>Review AI output</td><td>0</td><td><strong>+1.5 ชม.</strong> ⚠️</td></tr>
+        <tr><td>Doc writing</td><td>2 ชม.</td><td>45 นาที</td></tr>
+        <tr><td><strong>Total</strong></td><td><strong>10 ชม.</strong></td><td><strong>~5.5 ชม.</strong></td></tr>
+      </tbody>
+    </table>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>📅 Timeline 7 วัน</h2>
+
+    <table>
+      <thead><tr><th>วัน</th><th>งาน</th><th>Deliverable</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>วันที่ 1</strong></td>
+          <td>หา user + เข้าใจปัญหา</td>
+          <td>Interview note + Problem statement</td>
+        </tr>
+        <tr>
+          <td><strong>วันที่ 2</strong></td>
+          <td>เขียน Spec + Diagram</td>
+          <td>spec.md + diagrams.md</td>
+        </tr>
+        <tr>
+          <td><strong>วันที่ 3-4</strong></td>
+          <td>Build MVP (Minimum Viable Product)</td>
+          <td>Code ทำงานได้ในเครื่อง</td>
+        </tr>
+        <tr>
+          <td><strong>วันที่ 5</strong></td>
+          <td>Test + Bug fix + Polish</td>
+          <td>tests pass · ใช้ได้แบบไม่พัง</td>
+        </tr>
+        <tr>
+          <td><strong>วันที่ 6</strong></td>
+          <td>Deploy + Docs</td>
+          <td>URL หรือ .exe + README + changelog</td>
+        </tr>
+        <tr>
+          <td><strong>วันที่ 7</strong></td>
+          <td>User test + Iterate + Demo</td>
+          <td>User feedback + final version</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>🎨 ตัวอย่าง Project ที่ "ใช่"</h2>
+
+    <table>
+      <thead><tr><th>Project</th><th>User</th><th>Tech</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>ตัวคำนวณค่าน้ำมัน + แบ่งเงินกลุ่ม</td>
+          <td>เพื่อนที่ขับรถไปกินข้าวกัน</td>
+          <td>Streamlit + SQLite</td>
+        </tr>
+        <tr>
+          <td>ระบบจัดตาราง lab CNC ของห้อง</td>
+          <td>TA ของอาจารย์</td>
+          <td>Flask + Google Sheets</td>
+        </tr>
+        <tr>
+          <td>Bot ส่งเตือน LINE เมื่อ PM2.5 สูง</td>
+          <td>เพื่อนที่เป็นหอบหืด</td>
+          <td>Python loop + IQAir API + LINE</td>
+        </tr>
+        <tr>
+          <td>Dashboard ค่าใช้จ่ายรายเดือน</td>
+          <td>น้อง / แม่</td>
+          <td>Streamlit + Google Forms</td>
+        </tr>
+        <tr>
+          <td>เครื่องช่วยจดสมุดงานของพ่อ</td>
+          <td>พ่อที่ทำธุรกิจเล็ก</td>
+          <td>Desktop tkinter app + .exe</td>
+        </tr>
+        <tr>
+          <td>Auto-grader Lab พื้นฐาน</td>
+          <td>TA</td>
+          <td>Python + pytest + Local LLM (Ollama)</td>
+        </tr>
+        <tr>
+          <td>เครื่องสรุปบทเรียนจาก YouTube</td>
+          <td>เพื่อนที่ไม่ทันเข้าฟัง</td>
+          <td>Whisper + Claude API</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>🚫 ตัวอย่าง Project ที่ "ไม่ใช่"</h2>
+    <ul>
+      <li>❌ "Tetris" — ไม่มี user จริงเดือดร้อนกับเกม</li>
+      <li>❌ "Chatbot ตอบทุกคำถาม" — ไม่มี user เฉพาะ</li>
+      <li>❌ "AI Trading Bot" — เกินขอบเขต · เสี่ยง · ไม่มี user จริง</li>
+      <li>❌ "ระบบของมหา’ลัย" — ใหญ่เกิน · ไม่มี authority</li>
+      <li>❌ Copy tutorial มาเปลี่ยนชื่อ — ไม่มีคุณค่าใหม่</li>
+    </ul>
+
+    <h2>📋 Process — Spec ก่อน Code</h2>
+
+    <h3>วันที่ 1: หา User</h3>
+    <ol class="steps">
+      <li>คิดถึงคนรอบตัวที่ <em>"บ่นเรื่องเดิม"</em> บ่อย — เพื่อน, ครอบครัว, TA</li>
+      <li>นัดคุย 30 นาที — ฟังว่าเขาเสียเวลากับอะไร</li>
+      <li>ถาม: "ถ้ามีเครื่องช่วยทำ X ให้ คุณจะใช้บ่อยแค่ไหน?"</li>
+      <li>เลือก 1 ปัญหา → จด <strong>Problem Statement</strong></li>
+    </ol>
+
+    <h3>วันที่ 2: Spec + Diagram</h3>
+    <p>ใช้ template จาก W06:</p>
+    <pre><code>## Spec: [ชื่อ project]
+
+**User:** [ใคร · role · skill level]
+**Problem:** [1 ย่อหน้า]
+**Success criteria:** [user ทำอะไรได้ที่ทำไม่ได้ก่อน]
+
+**Workflows:**
+1. [Use case 1 · step-by-step]
+2. ...
+
+**Data:**
+- [schema · primary keys]
+
+**Constraints:**
+- [tech limitation · time · cost]
+
+**Non-goals:**
+- [สิ่งที่ "ยังไม่ทำ"]
+
+**Acceptance test:**
+- [test scenario ที่ user ลงมือทำได้]</code></pre>
+
+    <p>+ Diagrams (W03):</p>
+    <ul>
+      <li>C4 Container — ระบบมีอะไรบ้าง</li>
+      <li>Sequence — flow หลัก</li>
+      <li>ER — data schema</li>
+    </ul>
+
+    <h3>วันที่ 3-4: Build MVP</h3>
+    <p><strong>MVP = "ทำให้ user ทำสิ่งที่ตั้งใจให้ทำได้ ก่อน"</strong> · ไม่สวย ไม่ครบ · แต่ <em>"ผ่านจุด pain"</em> ของเขา</p>
+
+    <ol class="steps">
+      <li>เริ่ม database schema (JSON/SQLite ก่อน)</li>
+      <li>เขียน function ที่ใช้บ่อยที่สุดก่อน — happy path</li>
+      <li>สร้าง UI (CLI / Streamlit / Flask) ที่ใช้ function นั้น</li>
+      <li>commit หลังทุก feature ที่ทำงานได้</li>
+      <li>หยุดเมื่อ <em>"ครบ user story หลัก"</em> · อย่าเพิ่ม feature ขณะ build</li>
+    </ol>
+
+    <h3>วันที่ 5: Test + Polish</h3>
+    <ol class="steps">
+      <li>เขียน pytest ≥ 10 cases</li>
+      <li>ลอง edge cases (W13)</li>
+      <li>เพิ่ม error message ที่ user อ่านเข้าใจ</li>
+      <li>ทำ UI ให้พอใช้ — ไม่ต้องสวย แต่อย่าทำ user สับสน</li>
+      <li>เซฟ <code>regressions.md</code> เผื่อ AI ทำพัง</li>
+    </ol>
+
+    <h3>วันที่ 6: Deploy + Docs</h3>
+    <ol class="steps">
+      <li>เลือก deploy method ตาม W14</li>
+      <li>ทดสอบ "fresh clone" — เพื่อนคนที่ไม่ใช่ user ลอง install</li>
+      <li>เขียน README ครบ — install + usage + screenshot</li>
+      <li>changelog.md + version 1.0.0</li>
+    </ol>
+
+    <h3>วันที่ 7: User Test + Demo</h3>
+    <ol class="steps">
+      <li>นัด user ใช้จริง 30 นาที</li>
+      <li>นั่งดูเขาใช้ <em>"ไม่ช่วย"</em> — สังเกตจุดที่งง</li>
+      <li>ถามคำถาม 3 ข้อ: <em>"ใช้ง่ายมั้ย", "มีอะไรหายไป", "จะใช้อีกมั้ย"</em></li>
+      <li>แก้ของที่ user บ่นภายใน 2 ชั่วโมง</li>
+      <li>Demo 5 นาที — user ใช้จริงต่อหน้าคน</li>
+    </ol>
+
+    <h2>📊 Rubric (100 คะแนน)</h2>
+
+    <table>
+      <thead><tr><th>เกณฑ์</th><th>คะแนน</th><th>วัดจาก</th></tr></thead>
+      <tbody>
+        <tr><td>Problem-finding + User research</td><td>10</td><td>real user · interview note · proposal approved</td></tr>
+        <tr><td>Spec + Diagrams + ADR</td><td>12</td><td>spec.md ผ่าน Scorecard ≥ 75% · ≥ 3 diagrams · ≥ 3 ADR</td></tr>
+        <tr><td>Build quality</td><td>15</td><td>working MVP · code อ่านง่าย · structure ตาม W11 · ไม่ over-engineer</td></tr>
+        <tr><td>Test + CI/CD</td><td>10</td><td>≥ 10 pytest · pass · AI test review checklist · GitHub Actions green</td></tr>
+        <tr><td>Deployment (multi-channel)</td><td>12</td><td>Cloud + mobile-accessible (PWA/LINE/responsive) — ดูใน mobile ได้</td></tr>
+        <tr><td>Monitoring + Cost</td><td>8</td><td>Sentry/UptimeRobot setup · budget alert ทุก service · &lt; $5/เดือน</td></tr>
+        <tr><td>🔐 Privacy + Ethics</td><td>8</td><td>Privacy checklist ผ่าน · ไม่มี PII ใน repo · consent ถ้าต้องการ</td></tr>
+        <tr><td>♿ Accessibility</td><td>5</td><td>Accessibility checklist ≥ 6/8 · test กับ user จริง</td></tr>
+        <tr><td>🤖 AI Disclosure</td><td>5</td><td><code>AI_USAGE.md</code> ครบ · honest disclosure</td></tr>
+        <tr><td>Documentation</td><td>5</td><td>README · CHANGELOG · screenshot · "fresh clone" works</td></tr>
+        <tr><td>User test + Iterate</td><td>5</td><td>หลักฐานว่า user ใช้จริง ≥ 3 ครั้ง + feedback</td></tr>
+        <tr><td>Demo</td><td>5</td><td>เล่าได้ใน 5 นาที · user ใช้สำเร็จต่อหน้า</td></tr>
+        <tr><td>Reflection</td><td>5</td><td>เขียน "เรียนรู้อะไร" 1 หน้า · honest</td></tr>
+      </tbody>
+    </table>
+
+    <h2>🎤 Format ของ Demo</h2>
+
+    <pre><code>1. Hook (30 sec)
+   "[User] เคยเสียเวลา X ทุกวัน · ผมสร้าง [Y] ให้เขา"
+
+2. Problem (1 min)
+   - แสดง workflow เดิม (flowchart)
+   - บอกว่าเสียเวลา / ผิดบ่อยตรงไหน
+
+3. Solution (1.5 min)
+   - แสดง architecture (C4)
+   - explain spec กับ non-goals
+
+4. Live demo (1.5 min)
+   - User ใช้จริงต่อหน้า
+   - ใส่ข้อมูลจริง · เห็นผลลัพธ์จริง
+
+5. Outcome (30 sec)
+   - User ใช้ไปกี่ครั้งแล้ว
+   - เปลี่ยน workflow เขายังไง
+
+6. Reflection (30 sec)
+   - "ถ้าได้ทำใหม่ จะเปลี่ยน X"</code></pre>
+
+    <h2>🧠 Reflection — สิ่งที่ต้องเขียน</h2>
+
+    <pre><code># Reflection: [ชื่อ Project]
+
+## ที่ทำสำเร็จ
+- [3-5 ข้อ]
+
+## ที่ไม่สำเร็จ / ยังขาด
+- [3-5 ข้อ]
+
+## AI ช่วยอะไรเป็นพิเศษ
+- [อะไรที่ AI ทำได้ดีกว่าที่คาด]
+
+## AI พลาดอะไรเป็นพิเศษ
+- [อะไรที่ AI ทำผิด · ฉันต้องแก้]
+
+## ที่เรียนรู้
+- [3 ข้อหลัก]
+
+## ถ้าทำใหม่ จะเปลี่ยน
+- [3 ข้อ]
+
+## Project นี้ใช้ทักษะอะไรจาก W01-W14 บ้าง
+- [list]</code></pre>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🎓 Portfolio Path — Final Project → Resume / LinkedIn / สัมภาษณ์</h2>
+    <p>
+      Final Project ที่ดี ≠ คะแนน 100 · Final Project ที่ดี = <strong>"ของที่ใส่ resume ได้"</strong> ·
+      ผู้รับสมัครงานจะดูสิ่งที่คุณ <em>"ทำได้"</em> มากกว่าเกรด
+    </p>
+
+    <h3>📄 4 Assets ที่ต้องทำหลัง Final Project</h3>
+    <table>
+      <thead><tr><th>Asset</th><th>เพื่อ</th><th>วิธีทำ</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>1. README ใน GitHub</strong></td>
+          <td>recruiter อ่านก่อนสัมภาษณ์</td>
+          <td>ใส่ <em>"What I learned"</em> · screenshot · live URL · 1 GIF demo</td>
+        </tr>
+        <tr>
+          <td><strong>2. LinkedIn Post</strong></td>
+          <td>showcase · networking</td>
+          <td>1 ภาพ + 200 คำ + link repo · ใส่ #BuildInPublic #Python #AIEngineer</td>
+        </tr>
+        <tr>
+          <td><strong>3. Blog post / Medium</strong></td>
+          <td>เล่า "process" — ไม่ใช่แค่ "ผลลัพธ์"</td>
+          <td>เล่า problem → user → mistakes → fix → result · 800-1500 คำ</td>
+        </tr>
+        <tr>
+          <td><strong>4. Resume bullet</strong></td>
+          <td>ใส่ CV/resume</td>
+          <td>1-2 บรรทัด · มี metric (e.g. "ลด TA work time จาก 8 ชม. → 3.5 ชม./สัปดาห์")</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>📝 Resume Bullet Template — STAR Format</h3>
+    <pre><code>**Smart Lab Monitor** — Python · Flask · Streamlit · LINE bot
+- (S) Situation: TA spent 8 hrs/week manually checking lab equipment
+- (T) Task: Built automated PM2.5/temperature monitor with LINE alerts
+- (A) Action: Designed REST API, integrated 3 external services (IQAir, LINE, Claude),
+       deployed to Cloud Run with monitoring + budget alerts
+- (R) Result: Reduced manual check time to &lt; 1 hr/week · used daily by 5 TAs
+
+[GitHub link] · [Live demo URL] · [Architecture diagram link]</code></pre>
+
+    <h3>🎤 สัมภาษณ์ — เล่ายังไง</h3>
+    <p>เมื่อ interviewer ถาม <em>"เล่า project ที่ภาคภูมิใจ"</em> — ใช้ STAR:</p>
+    <ol>
+      <li><strong>Situation</strong> (15 sec) — user/problem · ไม่เริ่มที่ tech</li>
+      <li><strong>Task</strong> (15 sec) — สิ่งที่คุณรับมาทำ</li>
+      <li><strong>Action</strong> (60 sec) — สิ่งที่คุณ <em>ตัดสินใจ</em> · 2-3 key decisions</li>
+      <li><strong>Result</strong> (30 sec) — metric ที่วัดได้ · feedback ของ user</li>
+    </ol>
+
+    <div class="callout tip">
+      <strong>📌 ที่ interviewer สนใจที่สุด — "ตัดสินใจอะไรบ้าง"</strong>
+      ไม่ใช่ "ใช้ tech อะไร" · พูดถึง <em>ทำไม</em> เลือก SQLite ไม่ใช่ Postgres · <em>ทำไม</em> LINE bot
+      ไม่ใช่ web · <em>ทำไม</em> ตัด feature X ออก · <strong>ADR ของคุณคือ goldmine</strong>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🎁 Bonus Path — สำหรับคนที่อยากไปต่อ</h2>
+    <ul>
+      <li><strong>Maintain mode</strong> — ใช้ project นี้ต่อ 1 เทอม · เพิ่ม feature ตาม user request · เขียน CHANGELOG จริง</li>
+      <li><strong>Open source</strong> — public repo + MIT license · รับ PR จากเพื่อน</li>
+      <li><strong>ขยาย user base</strong> — จาก 1 คน → 5 คน · ดูว่า scale แบบไหนจะแตก</li>
+      <li><strong>Add 2nd deployment target</strong> — ถ้าทำ Cloud แล้ว · เพิ่ม PWA หรือ desktop .exe</li>
+      <li><strong>Compete</strong> — ส่งเข้า hackathon (Microsoft Imagine Cup · NSC Thailand · Showcase Day ของคณะ)</li>
+      <li><strong>Internship pitch</strong> — บริษัทเทคโนโลยีรับ portfolio · ใช้ Final Project เป็นข้อพิสูจน์</li>
+    </ul>
+
+    <h2>ข้อผิดที่พบบ่อย</h2>
+
+    <div class="callout warn">
+      <strong>เริ่มจาก tech ไม่ใช่ user</strong>
+      "อยากใช้ Llama 3" → ไม่มี user · กลับไป W01 หา user ก่อน
+    </div>
+
+    <div class="callout warn">
+      <strong>Scope creep ในวันที่ 3-4</strong>
+      "อยากเพิ่ม feature นี้ด้วย" — เขียนใน <code>backlog.md</code> · อย่าทำตอน build · ทำหลัง MVP ผ่าน
+    </div>
+
+    <div class="callout warn">
+      <strong>ไม่ทดสอบกับ user จริง</strong>
+      Demo อาจารย์ ≠ user test · user คือคนที่จะใช้ ไม่ใช่คนตรวจ
+    </div>
+
+    <div class="callout warn">
+      <strong>"AI ทำเสร็จแล้ว" — push ทันที</strong>
+      W06/W13: verify ก่อน push · เพราะ user จะเห็น · disclose ใน <code>AI_USAGE.md</code>
+    </div>
+
+    <div class="callout warn">
+      <strong>ไม่ disclose AI usage</strong>
+      academic dishonesty · ทำให้ลำบากตอน thesis defense ตอนปี 4 · บอกตั้งแต่ปี 1 ปลอดภัยกว่า
+    </div>
+
+    <div class="callout warn">
+      <strong>ลืม set budget alert</strong>
+      LLM API + infinite loop = bill 5000 บาทใน 1 คืน · ตั้ง $5 alert ก่อน deploy ทุกครั้ง
+    </div>
+
+    <h2>ส่งงาน Final Project</h2>
+
+    <h3>📦 Repository ครบ checklist</h3>
+    <ul>
+      <li>📁 <strong>GitHub repo</strong> public · live URL · "fresh clone" test ผ่าน</li>
+      <li>📄 <strong>spec.md</strong> + Spec Scorecard score ≥ 75%</li>
+      <li>📄 <strong>diagrams.md</strong> — C4 + sequence + ER (Mermaid)</li>
+      <li>📄 <strong>docs/adr/*.md</strong> — ≥ 3 Architecture Decision Records</li>
+      <li>📄 <strong>AI_USAGE.md</strong> — disclosure ตาม template</li>
+      <li>📄 <strong>CHANGELOG.md</strong> — v1.0.0 + ทุกการแก้</li>
+      <li>📄 <strong>reflection.md</strong> — สิ่งที่เรียนรู้</li>
+      <li>📄 <strong>RISKS.md</strong> — risk register + plan B</li>
+      <li>📄 <strong>PRIVACY.md</strong> — ถ้ามีข้อมูล user</li>
+    </ul>
+
+    <h3>📊 Evidence ครบ checklist</h3>
+    <ul>
+      <li>📷 Screenshot user ใช้ <em>"จริง"</em> 3 ครั้ง (ไม่ใช่ตัวเอง)</li>
+      <li>📷 Screenshot Sentry dashboard + UptimeRobot uptime</li>
+      <li>📷 Screenshot budget alert ของทุก service</li>
+      <li>📷 Screenshot mobile view (test บนมือถือจริง)</li>
+      <li>📷 Screenshot CI/CD passing (GitHub Actions green badge)</li>
+      <li>🎤 5-min demo video หรือ live · user ใช้สำเร็จต่อหน้า</li>
+      <li>📊 User feedback log — 3 คนทดสอบ + comments</li>
+    </ul>
+
+    <h3>🎓 Portfolio (Bonus +5 pts)</h3>
+    <ul>
+      <li>📝 LinkedIn post · blog post · resume bullet</li>
+      <li>🌟 GitHub repo มี ≥ 5 stars (ขอเพื่อนช่วย)</li>
+      <li>📺 Demo video บน YouTube · เปิด public</li>
+    </ul>
+
+    <h2>🌟 หลังจาก W15</h2>
+    <p>
+      จบคู่มือนี้ — คุณ <em>ไม่ใช่</em> programmer มืออาชีพ · แต่คุณมี <strong>"workflow"</strong>
+      ที่ programmer มืออาชีพใช้: <em>เห็นปัญหา → spec → AI build → test → deploy → maintain</em>
+    </p>
+    <p>
+      ปีต่อไปเรียนวิชาอื่น — เอา workflow นี้ไปใช้ · ค่าของคุณ <strong>ไม่ใช่</strong> "เขียน Python ได้"
+      · ค่าของคุณคือ <strong>"นำ AI ไปทำของจริงที่ใช้ได้"</strong>
+    </p>
+
+    <div class="callout info">
+      <strong>คำสุดท้าย</strong>
+      "If I had eight hours to chop down a tree, I'd spend the first six sharpening the axe." — Lincoln
+      <br>15 สัปดาห์นี้คือการ <em>"ลับขวาน"</em> · ทั้งชีวิตวิศวกรของคุณคือการ <em>"ตัดต้นไม้"</em>
+    </div>
+
+    <div class="pager">
+      <a href="w14-deploy.html"><div class="label">← สัปดาห์ที่แล้ว</div><div class="title">W14 — Deploy + Maintain</div></a>
+      <a href="index.html" class="next"><div class="label">เริ่มใหม่ →</div><div class="title">หน้าแรก</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+<script src="js/diagram-tools/mermaid-editor.js" defer></script>
+<script src="js/code-tools/spec-scorecard.js" defer></script>
+<script src="js/code-tools/diff-viewer.js" defer></script>
+</body>
+</html>

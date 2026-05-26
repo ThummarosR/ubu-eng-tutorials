@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>คู่มือการใช้งาน Ripes — โปรแกรมจำลองสถาปัตยกรรม RISC-V</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="images/logo.png" alt="Ripes logo">
+      <div>
+        <div class="title">Ripes Tutorial</div>
+        <div class="subtitle">คู่มือการใช้งานฉบับภาษาไทย</div>
+      </div>
+    </div>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html" class="active">หน้าแรก &amp; ติดตั้ง</a>
+      <h4>แท็บการใช้งาน</h4>
+      <a href="editor.html">1. แท็บ Editor</a>
+      <a href="processor.html">2. แท็บ Processor</a>
+      <a href="memory.html">3. แท็บ Memory</a>
+      <a href="cache.html">4. แท็บ Cache</a>
+      <a href="io.html">5. แท็บ I/O</a>
+      <h4>อ้างอิง</h4>
+      <a href="ecalls.html">System Calls (ecall)</a>
+      <h4>ตัวอย่างประกอบ</h4>
+      <a href="examples/factorial.html">Factorial (Assembly)</a>
+      <a href="examples/leds.html">LEDs (I/O)</a>
+      <a href="examples/matrixmul.html">Matrix Multiply (C)</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <h1>คู่มือการใช้งาน Ripes</h1>
+    <p class="lede">Ripes คือโปรแกรมจำลองการทำงานของหน่วยประมวลผล (CPU) แบบ RISC-V พร้อมตัวแก้ไขโค้ดภาษาแอสเซมบลีและภาษา C — เหมาะสำหรับการเรียนการสอนวิชาสถาปัตยกรรมคอมพิวเตอร์</p>
+
+    <figure>
+      <img src="images/animation.gif" alt="Ripes ในการทำงาน">
+      <figcaption>ภาพเคลื่อนไหวแสดงการทำงานของ Ripes</figcaption>
+    </figure>
+
+    <h2>Ripes คืออะไร?</h2>
+    <p>Ripes (อ่านว่า "ไรพ์ส") เป็นโปรแกรมโอเพนซอร์สที่ออกแบบมาเพื่อให้นิสิตเห็นการทำงานภายในของหน่วยประมวลผลแบบ <strong>RISC-V</strong> ได้อย่างเป็นภาพ ทั้งในระดับสัญญาณดิจิทัล วงจร datapath การทำงานของ pipeline และระบบหน่วยความจำแคช</p>
+    <p>สิ่งที่ใช้เรียนรู้ผ่าน Ripes ได้:</p>
+    <ul>
+      <li>วิธีที่โค้ดภาษาเครื่องถูกประมวลผลในสถาปัตยกรรมต่าง ๆ (RV32IMC/RV64IMC)</li>
+      <li>การออกแบบแคช (cache) มีผลต่อประสิทธิภาพอย่างไร</li>
+      <li>โค้ดภาษา C และ Assembly ถูกแปลเป็น machine code อย่างไร</li>
+      <li>การติดต่อกับอุปกรณ์ภายนอกผ่าน memory-mapped I/O</li>
+    </ul>
+
+    <h2>วิธีติดตั้งและใช้งาน</h2>
+
+    <div class="callout tip" style="font-size: 18px;">
+      <strong>วิธีที่ง่ายที่สุด — สำหรับโฟลเดอร์ Bundle นี้</strong>
+      ดับเบิลคลิกที่ไฟล์ <code>เริ่ม.bat</code> (หรือ <code>START.bat</code>) ในโฟลเดอร์เดียวกันกับเว็บนี้ จะเปิดทั้งคู่มือและโปรแกรม Ripes ให้พร้อมกัน — <strong>ไม่ต้องติดตั้งอะไรเพิ่ม</strong>
+    </div>
+
+    <p>หรือถ้าต้องการใช้งานแบบอื่น:</p>
+
+    <div class="card-grid">
+      <a class="card" href="ripes/Ripes.exe">
+        <div class="num">วิธีที่ 1 — ในชุดนี้</div>
+        <div class="name">เปิด Ripes.exe โดยตรง</div>
+        <div class="desc">โปรแกรม Ripes v2.2.6 ถูก bundle มาในโฟลเดอร์ <code>ripes/</code> แล้ว — คลิกเพื่อเปิดได้ทันที</div>
+      </a>
+      <a class="card" href="https://ripes.me/" target="_blank" rel="noopener">
+        <div class="num">วิธีที่ 2 — ไม่ใช้ bundle</div>
+        <div class="name">ใช้งานผ่านเว็บเบราว์เซอร์</div>
+        <div class="desc">เปิดเว็บ <code>ripes.me</code> ได้จากเครื่องใดก็ได้ที่มีอินเทอร์เน็ต เหมาะสำหรับเครื่องที่ไม่ใช่ Windows</div>
+      </a>
+      <a class="card" href="https://github.com/mortbopet/Ripes/releases" target="_blank" rel="noopener">
+        <div class="num">วิธีที่ 3 — เวอร์ชันล่าสุด</div>
+        <div class="name">ดาวน์โหลดเวอร์ชันใหม่</div>
+        <div class="desc">หากต้องการอัปเดต Ripes ในอนาคต ดาวน์โหลดได้จากหน้า Releases บน GitHub (รองรับ Windows, macOS, Linux)</div>
+      </a>
+    </div>
+
+    <div class="callout note">
+      <strong>หาก Ripes เปิดไม่ขึ้น</strong>
+      บน Windows หากขึ้น error <code>msvcp140.dll</code> ให้ติดตั้ง Microsoft Visual C++ Redistributable ก่อน ดาวน์โหลดได้ฟรีจากเว็บไซต์ Microsoft
+    </div>
+
+    <h2>การตั้งค่า C Compiler (ทำครั้งแรกครั้งเดียว)</h2>
+
+    <p>หลังเปิด Ripes ผ่าน <code>เริ่ม.bat</code> ครั้งแรก หากกดเลือก Input type เป็น <strong>C</strong> แล้วขึ้นข้อความว่า <em>"set a valid compiler"</em> หรือ <em>"compiler path is invalid"</em> ให้ทำตามขั้นตอนนี้:</p>
+
+    <ol class="steps">
+      <li>ใน Ripes ไปที่เมนู <strong>Edit → Settings</strong></li>
+      <li>เลือกแท็บ <strong>Editor</strong> (หรือ Compiler)</li>
+      <li>กดปุ่ม <strong>Browse</strong> ตรงช่อง <em>Compiler path</em></li>
+      <li>เลือกไฟล์นี้ในโฟลเดอร์ bundle:
+        <pre style="margin-top: 8px;"><code>toolchain\bin\riscv64-unknown-elf-gcc.exe</code></pre>
+        ตัวอย่าง path เต็ม:
+        <pre><code>...\ripes-tutorial\toolchain\bin\riscv64-unknown-elf-gcc.exe</code></pre>
+      </li>
+      <li>เมื่อเลือกถูก ช่อง path จะเปลี่ยนเป็น <strong style="color:#2a9d4a;">สีเขียว</strong></li>
+      <li>กด <strong>OK</strong> ปิดหน้า Settings</li>
+      <li>กลับไป Editor tab สลับ Input type เป็น <strong>C</strong> อีกครั้ง → เขียนโค้ดได้แล้ว</li>
+    </ol>
+
+    <div class="callout tip">
+      <strong>ต้องทำแค่ครั้งเดียว</strong>
+      Ripes จะจำการตั้งค่านี้ไว้ ครั้งต่อ ๆ ไปจะใช้ C ได้ทันทีโดยไม่ต้องตั้งใหม่ — เว้นแต่ย้ายโฟลเดอร์ bundle ไปที่อื่น (path เปลี่ยน) ก็ต้อง Browse ใหม่อีกครั้ง
+    </div>
+
+    <div class="callout warn">
+      <strong>ทำไม Auto-detect ไม่ทำงาน?</strong>
+      Ripes จะ scan PATH หา compiler เฉพาะตอนเปิด <em>ครั้งแรกสุด</em> (สถานะ settings ว่างเปล่า) เท่านั้น หากเคยเปิด Ripes แล้วและสลับไปแท็บ C สักครั้ง Ripes จะบันทึก path ว่าง ๆ ไว้และไม่ scan ใหม่อีก — จึงต้อง Browse เลือกเอง
+    </div>
+
+    <h2>โครงสร้างของโปรแกรม</h2>
+    <p>หน้าจอ Ripes แบ่งเป็น 5 แท็บหลักที่ใช้งานบ่อย:</p>
+
+    <div class="card-grid">
+      <a class="card" href="editor.html">
+        <div class="num">แท็บที่ 1</div>
+        <div class="name">Editor</div>
+        <div class="desc">เขียนและแก้ไขโค้ด Assembly หรือ C พร้อมดู machine code ที่ถูก assemble แล้ว</div>
+      </a>
+      <a class="card" href="processor.html">
+        <div class="num">แท็บที่ 2</div>
+        <div class="name">Processor</div>
+        <div class="desc">ดูวงจร datapath ของ CPU พร้อมค่าใน register และสถานะของแต่ละ pipeline stage</div>
+      </a>
+      <a class="card" href="memory.html">
+        <div class="num">แท็บที่ 3</div>
+        <div class="name">Memory</div>
+        <div class="desc">สำรวจค่าในหน่วยความจำ ทั้งส่วน .text, .data และส่วนอื่น ๆ</div>
+      </a>
+      <a class="card" href="cache.html">
+        <div class="num">แท็บที่ 4</div>
+        <div class="name">Cache</div>
+        <div class="desc">ตั้งค่า cache ทดลองรูปแบบต่าง ๆ และดูสถิติ hit/miss</div>
+      </a>
+      <a class="card" href="io.html">
+        <div class="num">แท็บที่ 5</div>
+        <div class="name">I/O</div>
+        <div class="desc">เชื่อมต่อกับอุปกรณ์จำลอง เช่น LED matrix, switches, ปุ่มกด, ผ่าน memory-mapped I/O</div>
+      </a>
+    </div>
+
+    <h2>โปรเจกต์แรกของคุณ</h2>
+    <p>หากเป็นครั้งแรกที่ใช้งาน Ripes แนะนำให้ทำตามขั้นตอนนี้:</p>
+
+    <ol class="steps">
+      <li>เปิด Ripes (เว็บหรือโปรแกรมที่ติดตั้งไว้)</li>
+      <li>เลือกเมนู <code>File → Load Example → Assembly → Factorial</code></li>
+      <li>กดปุ่ม <strong>Reset</strong> เพื่อรีเซตสถานะของ CPU</li>
+      <li>กดปุ่ม <strong>Auto-clock</strong> เพื่อให้ Ripes ประมวลผลทีละรอบสัญญาณนาฬิกา</li>
+      <li>สังเกตการทำงานของสัญญาณในแท็บ Processor ค่าที่เปลี่ยนใน Registers และผลลัพธ์ในช่อง Output</li>
+    </ol>
+
+    <div class="callout note">
+      <strong>ลำดับการเรียนรู้ที่แนะนำ</strong>
+      เริ่มจาก <a href="editor.html">แท็บ Editor</a> → <a href="processor.html">Processor</a> → <a href="memory.html">Memory</a> → <a href="ecalls.html">System Calls</a> → <a href="examples/factorial.html">ตัวอย่าง Factorial</a> → จากนั้นค่อยลงลึกเรื่อง <a href="cache.html">Cache</a> และ <a href="io.html">I/O</a>
+    </div>
+
+    <h2>ข้อจำกัดที่ควรรู้</h2>
+    <ul>
+      <li>Ripes รองรับเฉพาะ RV32/RV64 ส่วน I (integer), M (multiply), C (compressed) — <strong>ไม่</strong> รองรับ floating-point hardware (F/D) หรือ vector (V)</li>
+      <li>ไม่ใช่ simulator ที่ accurate ระดับ silicon — มีไว้เพื่อการเรียนการสอนเท่านั้น</li>
+      <li>ไม่มี OS หรือ privileged mode — ไม่รองรับ system call แบบ Linux/Unix แต่มี <code>ecall</code> แบบง่ายเพื่อพิมพ์ออกหน้าจอ</li>
+    </ul>
+
+    <div class="pager">
+      <div class="spacer"></div>
+      <a class="next" href="editor.html">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">1. แท็บ Editor</div>
+      </a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>03 — Information Model | OPC UA Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="OPC UA Tutorial"></div>
+      <div>
+        <div class="title">OPC UA</div>
+        <div class="subtitle">สะพานสู่ Industrie 4.0</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>แนวคิดหลัก</h4>
+      <a href="ch01-why-opcua.html"><span class="num">01</span> ทำไมต้อง OPC UA?</a>
+      <a href="ch02-architecture.html"><span class="num">02</span> สถาปัตยกรรมพื้นฐาน</a>
+      <a href="ch03-information-model.html" class="active"><span class="num">03</span> Information Model</a>
+      <a href="ch04-services.html"><span class="num">04</span> Services</a>
+      <a href="ch05-pubsub.html"><span class="num">05</span> PubSub &amp; MQTT</a>
+      <a href="ch06-security.html"><span class="num">06</span> Security</a>
+
+      <h4>ระบบนิเวศ</h4>
+      <a href="ch07-companion-specs.html"><span class="num">07</span> Companion Specifications</a>
+      <a href="ch08-field-level.html"><span class="num">08</span> OPC UA FX (Field Level)</a>
+      <a href="ch09-cloud.html"><span class="num">09</span> Cloud Integration</a>
+
+      <h4>ลงมือทำ</h4>
+      <a href="ch10-handson.html"><span class="num">10</span> 🧪 Hands-on (UaExpert)</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ 03 · Address Space · Nodes · Semantic Data</span>
+    <h1>Information Model</h1>
+    <p class="lede">
+      สิ่งที่ทำให้ OPC UA <strong>ต่างจาก Modbus มากที่สุด</strong> คือข้อมูลไม่ใช่แค่ตัวเลขดิบ
+      แต่เป็น <em>Object ที่มีชื่อ ประเภท หน่วย ความสัมพันธ์</em> — เหมือนกับมองโลกผ่านสายตา OOP
+      บทนี้พาทำความรู้จัก Address Space และวิธีที่ Client ค้นเจอข้อมูลได้เอง
+    </p>
+
+    <h2>เปรียบเทียบกับ Modbus ก่อน</h2>
+
+    <p>
+      ลองจินตนาการเซ็นเซอร์อุณหภูมิตัวหนึ่ง ที่อยู่บน Field Bus ของโรงงาน ค่าปัจจุบันคือ 23.5°C
+      มี Hi Limit ที่ 80°C และ Lo Limit ที่ -10°C
+    </p>
+
+    <h3>ใน Modbus</h3>
+
+    <pre><code>// คุณต้องเปิด Manual ของเซ็นเซอร์อ่านก่อนว่า:
+// Register 40001 = Current Temperature × 10  (signed int16)
+// Register 40002 = Hi Limit × 10
+// Register 40003 = Lo Limit × 10
+// Register 40004 = Status Bits
+
+// แล้วเขียน Code อ่านเอง:
+int raw = readRegister(slaveId=5, addr=40001);
+float temperature = raw / 10.0;  // หน่วยอะไร? °C? °F? — ก็ต้องดู Manual</code></pre>
+
+    <p>
+      ปัญหา: <em>ความรู้</em> เกี่ยวกับเซ็นเซอร์อยู่ใน <strong>Manual กระดาษ</strong> ของเซ็นเซอร์
+      ถ้าคุณเปลี่ยนยี่ห้อ — Register Map เปลี่ยน, Scaling เปลี่ยน, ต้องเปิด Manual ใหม่และเขียน Code ใหม่
+    </p>
+
+    <h3>ใน OPC UA</h3>
+
+    <pre><code>// ทุกอย่างฝังอยู่ใน Server เลย — Client แค่ Browse:
+
+Server: opc.tcp://plant-floor:4840
+  └─ FieldBus
+       └─ TempXmitter
+            ├─ CurrentValue   (Double, EngineeringUnits="°C", Range=-50..150)
+            ├─ HiLimit        (Double, EngineeringUnits="°C")
+            ├─ LoLimit        (Double, EngineeringUnits="°C")
+            ├─ HiAlarm        (Event, AcknowledgementRequired)
+            └─ LoAlarm        (Event, AcknowledgementRequired)</code></pre>
+
+    <p>
+      Client ไม่ต้องรู้อะไรล่วงหน้า — เปิดเข้ามา <strong>Browse</strong> ก็เห็นทุกอย่าง พร้อมประเภท หน่วย และความสัมพันธ์
+    </p>
+
+    <div class="callout tip">
+      <strong>นี่คือพลังของ Semantic Data</strong> — เครื่องอ่านข้อมูลและ <em>เข้าใจ</em> ความหมายได้เอง
+      ไม่ต้องพึ่งคนเปิด Manual
+    </div>
+
+    <h2>Address Space — โลกของ Nodes</h2>
+
+    <p>
+      OPC UA Server เก็บข้อมูลทั้งหมดในรูปของ <strong>Address Space</strong> — ลองนึกภาพต้นไม้หรือ Graph
+      ที่แต่ละจุดเรียกว่า <strong>Node</strong> เชื่อมต่อกันด้วย <strong>Reference</strong>
+    </p>
+
+    <figure>
+      <img src="images/03-address-space-tree.png" alt="OPC UA Address Space tree: Root → Field Bus / Sensor Bus / Areas with TempXmitter → Current Value / Hi Limit / Lo Limit / Hi Alarm / Lo Alarm; with 'Located In' reference between Temp Xmitter and Area 3" style="max-width:780px">
+      <figcaption>
+        Address Space เป็น <em>เครือข่ายของ Node</em> ไม่ใช่แค่ลิสต์ — โครงสร้างหลักเป็น Tree แต่มี Reference ข้าม Branch ได้
+        (เช่น "TempXmitter <em>Located In</em> Area 3") — Client ใช้ Browse ค้นหาเองทั้งหมด (ที่มา: OPC Foundation)
+      </figcaption>
+    </figure>
+
+    <h3>ประเภทของ Node</h3>
+
+    <table>
+      <thead>
+        <tr>
+          <th>NodeClass</th>
+          <th>คืออะไร</th>
+          <th>ตัวอย่าง</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Object</strong></td>
+          <td>สิ่งของในโลกจริง — มีลูกหลานเป็น Variable, Method, Event</td>
+          <td>TempXmitter, Motor, Valve, ProductionLine</td>
+        </tr>
+        <tr>
+          <td><strong>Variable</strong></td>
+          <td>ค่าที่อ่าน/เขียนได้</td>
+          <td>CurrentValue, HiLimit, ProductCount</td>
+        </tr>
+        <tr>
+          <td><strong>Method</strong></td>
+          <td>ฟังก์ชันที่ Client เรียกได้</td>
+          <td>Start(), Stop(), Calibrate(targetTemp)</td>
+        </tr>
+        <tr>
+          <td><strong>Event</strong></td>
+          <td>เหตุการณ์ที่เกิดขึ้น Server แจ้ง</td>
+          <td>HiAlarm, MaintenanceRequired, JobCompleted</td>
+        </tr>
+        <tr>
+          <td><strong>ObjectType / VariableType</strong></td>
+          <td>"แม่แบบ" ของ Object/Variable</td>
+          <td>TemperatureSensorType, AnalogVariableType</td>
+        </tr>
+        <tr>
+          <td><strong>ReferenceType</strong></td>
+          <td>นิยามความสัมพันธ์ระหว่าง Node</td>
+          <td>HasComponent, Organizes, HasTypeDefinition</td>
+        </tr>
+        <tr>
+          <td><strong>View</strong></td>
+          <td>มุมมองส่วนหนึ่งของ Address Space</td>
+          <td>EngineerView, OperatorView</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Attributes — ทุก Node มีคุณสมบัติพื้นฐาน</h2>
+
+    <p>
+      ทุก Node ใน Address Space มี <strong>Attributes</strong> มาตรฐาน (เหมือนกันทุกตัว) — ต่างจากค่า <em>เนื้อหา</em>
+      ที่เก็บอยู่ใน Node ตัวนั้นๆ:
+    </p>
+
+    <pre><code>// Attributes ที่ทุก Node ต้องมี:
+NodeId          → identifier ไม่ซ้ำในทั้ง Server (เช่น "ns=2;s=TempXmitter1")
+NodeClass       → Object / Variable / Method / Event / …
+BrowseName      → ชื่อที่ใช้ Browse (มี Namespace)
+DisplayName     → ชื่อที่ใช้แสดง (มีหลายภาษาได้!)
+Description     → คำอธิบาย (มีหลายภาษาได้!)
+
+// เพิ่มเติมสำหรับ Variable:
+Value           → ค่าปัจจุบัน
+DataType        → Boolean / Int32 / Double / String / DateTime / …
+ValueRank       → Scalar / Array / Matrix
+AccessLevel     → Read / Write / HistoryRead / HistoryWrite
+MinimumSampling → ความถี่ที่ Server อัปเดตค่า
+
+// เพิ่มเติมสำหรับ Method:
+Executable      → true/false
+UserExecutable  → ขึ้นกับสิทธิ์ User</code></pre>
+
+    <h2>Types &amp; Instances — แบบเดียวกับ OOP</h2>
+
+    <p>
+      OPC UA Address Space แยกระหว่าง <strong>Type Space</strong> (แม่แบบ) และ <strong>Instance Space</strong>
+      (ตัวจริง) — เหมือนกับ Class กับ Object ใน Java/C++/Python:
+    </p>
+
+    <pre><code>// Type Space — นิยามว่า "Temperature Sensor หน้าตาแบบไหน"
+TemperatureSensorType
+  ├─ CurrentValue      : Double  (EngineeringUnits = °C)
+  ├─ HiLimit           : Double  (EngineeringUnits = °C)
+  ├─ LoLimit           : Double  (EngineeringUnits = °C)
+  ├─ HiAlarm           : Event
+  ├─ LoAlarm           : Event
+  └─ Calibrate()       : Method  (Input: targetTemp)
+
+// Instance Space — ตัวจริงในโรงงาน
+TempXmitter1 : TemperatureSensorType  ← HasTypeDefinition
+  ├─ CurrentValue = 23.5
+  ├─ HiLimit = 80.0
+  └─ ...
+
+TempXmitter2 : TemperatureSensorType
+  ├─ CurrentValue = 76.2
+  └─ ...</code></pre>
+
+    <p>
+      ทำไมแยก? เพื่อให้ Client <strong>เขียนครั้งเดียว ใช้กับทุกตัว</strong> ที่เป็น Type เดียวกัน —
+      ถ้าคุณเขียน Code อ่าน CurrentValue จาก TemperatureSensorType ได้ ก็จะอ่านได้จากทุก Instance
+      ของ TemperatureSensorType ใน Server ทุกตัวทั่วโลก
+    </p>
+
+    <h3>Inheritance — Type สืบทอดได้</h3>
+
+    <pre><code>BaseObjectType
+  └─ DeviceType
+       └─ TemperatureSensorType
+            └─ HighAccuracyTemperatureSensorType  (เพิ่ม CalibrationDate)</code></pre>
+
+    <p>
+      Client ที่รู้จักแค่ <code>TemperatureSensorType</code> ก็ใช้กับ <code>HighAccuracyTemperatureSensorType</code>
+      ได้ — แค่ไม่เห็น <code>CalibrationDate</code> ฟิลด์ใหม่ (Polymorphism)
+    </p>
+
+    <h2>References — ความสัมพันธ์ระหว่าง Node</h2>
+
+    <p>
+      Node ไม่ใช่แค่อยู่เป็นต้นไม้ — เชื่อมโยงกันด้วย <strong>Reference</strong> ที่มีความหมายต่างๆ:
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Reference</th>
+          <th>ความหมาย</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>HasComponent</code></td>
+          <td>Object มี Variable/Method ลูกอยู่ข้างใน (เช่น TempXmitter มี CurrentValue เป็น Component)</td>
+        </tr>
+        <tr>
+          <td><code>HasTypeDefinition</code></td>
+          <td>Instance เป็น Type นี้ (เช่น TempXmitter1 → TemperatureSensorType)</td>
+        </tr>
+        <tr>
+          <td><code>HasSubtype</code></td>
+          <td>Type สืบทอดจาก Type อื่น</td>
+        </tr>
+        <tr>
+          <td><code>Organizes</code></td>
+          <td>Folder จัดกลุ่ม (โครงสร้างลำดับชั้น ไม่ใช่ Composition)</td>
+        </tr>
+        <tr>
+          <td><code>HasProperty</code></td>
+          <td>Variable มี Metadata เพิ่มเติม (เช่น EngineeringUnits, EURange)</td>
+        </tr>
+        <tr>
+          <td><code>HasEventSource</code></td>
+          <td>Object นี้เป็นแหล่งของ Event</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      ในรูป Address Space ข้างต้น — ลูกศรจาก <strong>TempXmitter</strong> ไปที่ <strong>Area 3</strong>
+      คือ Reference แบบ <code>"Located In"</code> — บอกว่าเซ็นเซอร์ตัวนี้ <em>อยู่ในพื้นที่</em> Area 3 ของโรงงาน
+      (Custom Reference Type ที่ Companion Specification กำหนด)
+    </p>
+
+    <h2>Namespaces — กันชนชื่อ</h2>
+
+    <p>
+      ใน Server หนึ่งอาจมี Node จากหลายที่มา — Core Spec ของ OPC Foundation, Companion Spec ของอุตสาหกรรม,
+      Custom ของผู้ผลิตเครื่อง, Application ของ End User
+    </p>
+
+    <p>
+      เพื่อกัน <em>ชื่อชน</em> OPC UA ใช้ <strong>Namespace</strong>:
+    </p>
+
+    <pre><code>NodeId แบบเต็ม:  ns=2;s=TempXmitter1
+                  ↑    ↑
+                  │    └─ Identifier ภายใน Namespace นี้
+                  └─ Namespace Index
+
+Namespaces ใน Server ปกติ:
+  ns=0  : http://opcfoundation.org/UA/         ← Core
+  ns=1  : urn:plant-floor:opcuaserver           ← Server ของคุณเอง
+  ns=2  : http://opcfoundation.org/UA/DI/       ← Devices Companion Spec
+  ns=3  : http://schneider-electric.com/UA/PM/  ← Vendor-specific
+  ns=4  : urn:my-factory:line-A                  ← Application-specific</code></pre>
+
+    <h2>Browsing — Client ค้นทุกอย่างได้เอง</h2>
+
+    <p>
+      เพราะ Address Space มีโครงสร้างแบบนี้ Client เปิดเข้า Server แล้วเรียก <code>Browse(rootNode)</code>
+      ก็จะได้รายการ Node ลูกทั้งหมด พร้อม Reference ที่เชื่อมต่อ — เดินตามทุก Reference ก็จะได้แผนที่ทั้ง Server
+    </p>
+
+    <p>นี่คือเหตุผลที่ Tool อย่าง <strong>UaExpert</strong> (ในบทที่ 10) แค่ใส่ URL ก็เห็น tree ทั้งหมดทันที — ไม่ต้องเปิด Manual</p>
+
+    <pre><code>// Pseudocode ของ Browse:
+nodes_to_visit = [RootNode]
+while nodes_to_visit:
+    node = nodes_to_visit.pop()
+    references = browse(node)
+    for ref in references:
+        print(f"{ref.type} → {ref.target.browseName}")
+        if ref.type == "HasComponent" or ref.type == "Organizes":
+            nodes_to_visit.append(ref.target)</code></pre>
+
+    <h2>Plug-and-Produce — ทำไมถึงสำคัญ</h2>
+
+    <p>
+      OPC UA Address Space ออกแบบมาเพื่อ <strong>Plug-and-Produce</strong> — เสียบเครื่องใหม่เข้าโรงงาน
+      ก็ใช้งานได้เลยโดย <em>ไม่ต้องตั้งค่าล่วงหน้า</em>
+    </p>
+
+    <p>เพราะ Server แต่ละตัวมาพร้อมกับ:</p>
+
+    <ul>
+      <li>ข้อมูล (Instances)</li>
+      <li>ประเภทของข้อมูล (Types) — แม้แต่ Type ที่ Client ยังไม่เคยรู้จักมาก่อน</li>
+      <li>วิธีค้นหา (Browse Services)</li>
+    </ul>
+
+    <p>
+      Client ที่เปิดเข้ามาใหม่ — ใช้ Browse ค้น, ดู HasTypeDefinition ของแต่ละ Instance, ตามไปดู Type Definition
+      ก็จะรู้ทุกอย่างที่ต้องการเพื่อเริ่มทำงาน
+    </p>
+
+    <div class="callout info">
+      <strong>เทียบกับ Modbus</strong> — ถ้าโรงงานเสียบเซ็นเซอร์ Modbus ตัวใหม่ ต้องตามขั้นตอนนี้:
+      เปิด Manual → จด Register Map → แก้ไข Code ของ Master → Deploy ใหม่ → ทดสอบ —
+      ใน OPC UA: <em>เสียบ → Server เปิดเอง → Client Browse เจอเอง → ใช้งานได้ทันที</em>
+    </div>
+
+    <h2>สรุปบทที่ 03</h2>
+
+    <ul>
+      <li>OPC UA เก็บข้อมูลทั้งหมดในรูปของ <strong>Address Space</strong> ซึ่งเป็น <em>เครือข่ายของ Node</em></li>
+      <li>มี Node 7 ประเภท: <strong>Object, Variable, Method, Event, ObjectType, VariableType, ReferenceType</strong></li>
+      <li>ทุก Node มี <strong>Attributes</strong> มาตรฐาน เช่น NodeId, BrowseName, DisplayName (รองรับหลายภาษา!)</li>
+      <li>มีระบบ <strong>Type / Instance</strong> เหมือน OOP — รวมทั้ง Inheritance</li>
+      <li>มี <strong>Namespace</strong> กันชื่อชน — Core, Companion, Vendor, Application อยู่ใน Server เดียวกันได้</li>
+      <li>Client <strong>Browse</strong> ค้นทุกอย่างได้เอง — รากฐานของ Plug-and-Produce</li>
+    </ul>
+
+    <p>บทต่อไปจะดู <strong>Services</strong> — บริการที่ Client ใช้คุยกับ Server: Read, Write, Subscribe, Call Method, Browse, …</p>
+
+    <div class="pager">
+      <a href="ch02-architecture.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">02 — สถาปัตยกรรมพื้นฐาน</div>
+      </a>
+      <a href="ch04-services.html" class="next">
+        <div class="label">ถัดไป →</div>
+        <div class="title">04 — Services</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  OPC UA &amp; Industrie 4.0 Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){
+  var lb = document.getElementById('lightbox');
+  if(!lb) return;
+  var img = lb.querySelector('img');
+  document.querySelectorAll('.gallery a, .zoomable').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      img.src = a.getAttribute('href') || a.getAttribute('data-src');
+      lb.classList.add('open');
+    });
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') lb.classList.remove('open');
+  });
+})();
+</script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

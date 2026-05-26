@@ -1,0 +1,362 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01 — ทำไมต้อง OPC UA? | OPC UA Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="OPC UA Tutorial"></div>
+      <div>
+        <div class="title">OPC UA</div>
+        <div class="subtitle">สะพานสู่ Industrie 4.0</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>แนวคิดหลัก</h4>
+      <a href="ch01-why-opcua.html" class="active"><span class="num">01</span> ทำไมต้อง OPC UA?</a>
+      <a href="ch02-architecture.html"><span class="num">02</span> สถาปัตยกรรมพื้นฐาน</a>
+      <a href="ch03-information-model.html"><span class="num">03</span> Information Model</a>
+      <a href="ch04-services.html"><span class="num">04</span> Services</a>
+      <a href="ch05-pubsub.html"><span class="num">05</span> PubSub &amp; MQTT</a>
+      <a href="ch06-security.html"><span class="num">06</span> Security</a>
+
+      <h4>ระบบนิเวศ</h4>
+      <a href="ch07-companion-specs.html"><span class="num">07</span> Companion Specifications</a>
+      <a href="ch08-field-level.html"><span class="num">08</span> OPC UA FX (Field Level)</a>
+      <a href="ch09-cloud.html"><span class="num">09</span> Cloud Integration</a>
+
+      <h4>ลงมือทำ</h4>
+      <a href="ch10-handson.html"><span class="num">10</span> 🧪 Hands-on (UaExpert)</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ 01 · บทนำ · Industrie 4.0 · IIoT · M2M</span>
+    <h1>ทำไมต้อง OPC UA?</h1>
+    <p class="lede">
+      ในยุคที่โรงงานคุยกับ Cloud ได้ และเครื่องจักรในยุโรปกับเอเชียต้อง <em>เข้าใจ</em> ข้อมูลของกันและกัน —
+      Modbus ที่เคยพอใช้ในยุค 1979 ทำไม่ได้แล้ว บทนี้อธิบายว่าโลกอุตสาหกรรมเปลี่ยนไปอย่างไร
+      และทำไม <strong>OPC UA</strong> ถึงกลายเป็น "ภาษากลาง" ใหม่
+    </p>
+
+    <h2>ย้อนกลับไปที่ Modbus ก่อน</h2>
+
+    <p>
+      ในบทเรียน PLC ที่ผ่านมา คุณได้ใช้ <a href="../plc/mit-07-modbus.html"><strong>Modbus</strong></a>
+      เป็น <em>ภาษาต่างชาติ</em> ให้ FX5U คุยกับ Power Meter PM2230 ไปลองให้ Inverter หมุนมอเตอร์ผ่านคำสั่ง
+      Function Code 06 — ทุกอย่างใช้ได้ดี <em>ในบริบทของ Lab</em>
+    </p>
+
+    <p>แต่ลองนึกภาพโรงงานจริงที่:</p>
+
+    <ul>
+      <li>มี PLC ทั้ง Mitsubishi, Omron, Siemens, Schneider, Beckhoff อยู่ในโรงงานเดียวกัน</li>
+      <li>มีหุ่นยนต์ ABB, KUKA, Universal Robots และ Yaskawa ในสายการผลิตเดียวกัน</li>
+      <li>มีเซ็นเซอร์เป็นพันชิ้น ส่งข้อมูลขึ้น Cloud ของ Microsoft Azure / AWS / Google Cloud</li>
+      <li>ฝ่าย IT/MES/ERP ของบริษัทต้องดึงข้อมูลการผลิตแบบ Real-time</li>
+    </ul>
+
+    <p>Modbus จะเริ่มเจอปัญหา 3 ข้อใหญ่:</p>
+
+    <div class="card-grid">
+      <div class="card" style="border-left:4px solid #ef4444">
+        <div class="num">❌ ปัญหา 1</div>
+        <div class="name">ข้อมูลเป็นแค่ตัวเลขดิบ</div>
+        <div class="desc">
+          Master อ่าน Register 40001 ได้เลข "2350" — มันคืออะไร? อุณหภูมิเป็น °C?
+          แรงดันเป็น Volt? หรือสถานะ Bit? <strong>ต้องเปิด Manual ของแต่ละอุปกรณ์อ่านเอง</strong>
+          แล้วเขียน Driver แยกของทุกยี่ห้อ
+        </div>
+      </div>
+      <div class="card" style="border-left:4px solid #ef4444">
+        <div class="num">❌ ปัญหา 2</div>
+        <div class="name">ไม่มี Security</div>
+        <div class="desc">
+          ใครก็ตามที่เข้าถึง Network ได้ จะ Read/Write Register ได้ทันที — ไม่ต้อง Login,
+          ไม่มี Encryption ข้อมูลส่งเป็น Plain Text ตามสาย RS-485 หรือ Ethernet
+        </div>
+      </div>
+      <div class="card" style="border-left:4px solid #ef4444">
+        <div class="num">❌ ปัญหา 3</div>
+        <div class="name">Master ต้อง Poll ตลอด</div>
+        <div class="desc">
+          ถ้าอยากรู้ค่าที่เปลี่ยน ต้อง Poll ทุก Slave เป็นรอบ — ไม่ scale สำหรับโรงงานที่มีอุปกรณ์เป็นพันชิ้น
+          และไม่เหมาะกับสถาปัตยกรรมแบบ "หลายคนสนใจค่าเดียวกัน" (Many-to-Many)
+        </div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>Modbus ไม่ได้ผิด</strong> — มันถูกออกแบบมาในปี 1979 สำหรับโลกที่ PLC ตัวเดียวคุยกับอุปกรณ์ภาคสนาม
+      ในตู้ควบคุมเดียวกัน ใช้งานแบบนั้นยังเหมาะอยู่จนถึงทุกวันนี้ <em>แต่</em> โลกอุตสาหกรรมขยายขอบเขตเกินกว่าตู้ควบคุมไปแล้ว
+    </div>
+
+    <h2>โลกใหม่ — 3 พลังที่ขับเคลื่อนการเปลี่ยนแปลง</h2>
+
+    <p>
+      ตั้งแต่ปี 2010 เป็นต้นมา มีศัพท์ 3 คำเกิดขึ้นในวงการอุตสาหกรรมพร้อมๆ กัน — และทั้งสามต้องการ "ภาษากลาง"
+      เพื่อให้สำเร็จ:
+    </p>
+
+    <figure>
+      <img src="images/01-iot-venn.png" alt="IoT + Industrie 4.0 + M2M Venn diagram, OPC UA at center" style="max-width:480px">
+      <figcaption>
+        <strong>OPC UA</strong> คือจุดร่วมของ 3 โลกที่กำลังขับเคลื่อนอุตสาหกรรมยุคใหม่ —
+        ไม่ใช่บังเอิญที่เลือกแบรนด์ OPC UA วางตรงกลางในเอกสารทางการของ OPC Foundation
+        (ที่มา: OPC Foundation Brochure V20/2026)
+      </figcaption>
+    </figure>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="num">🌐 IoT</div>
+        <div class="name">Internet of Things</div>
+        <div class="desc">
+          อุปกรณ์ทุกอย่างเชื่อมต่อ Internet — ตั้งแต่ Smart Watch ถึง Smart Refrigerator
+          ในโรงงาน เซ็นเซอร์ทุกตัวมี IP Address ของตัวเอง ส่งข้อมูลขึ้น Cloud ได้โดยตรง
+        </div>
+      </div>
+      <div class="card">
+        <div class="num">🏭 Industrie 4.0</div>
+        <div class="name">การปฏิวัติอุตสาหกรรมครั้งที่ 4</div>
+        <div class="desc">
+          ศัพท์ที่เริ่มจากเยอรมนีปี 2011 — โรงงานอัจฉริยะที่ใช้ <em>Cyber-Physical Systems</em>
+          ซึ่งแต่ละชิ้นส่วนการผลิตมี "คู่แฝด" ในระบบดิจิทัล (Digital Twin)
+          โรงงานปรับสายการผลิตได้ทันทีตามคำสั่งซื้อ (Mass Customization)
+        </div>
+      </div>
+      <div class="card">
+        <div class="num">🤖 M2M</div>
+        <div class="name">Machine-to-Machine</div>
+        <div class="desc">
+          เครื่องจักรคุยกับเครื่องจักรโดยตรง — ไม่ต้องผ่านคน เช่น Turbine ที่ติดตั้งบนเครื่องบิน
+          ส่งสถานะการสึกหรอกลับสนามบินก่อนเครื่องลง ทำให้ช่างเตรียมอะไหล่รอได้ทันที
+        </div>
+      </div>
+    </div>
+
+    <h2>OPC UA — Industrial Interoperability Standard</h2>
+
+    <p>
+      ทั้งสามโลกต้องการสิ่งเดียวกัน: <strong>Interoperability</strong> หรือ "ความสามารถในการทำงานร่วมกัน"
+      ระหว่างอุปกรณ์ต่างยี่ห้อ ต่าง Platform และต่าง Layer (จากเซ็นเซอร์ → PLC → MES → ERP → Cloud)
+    </p>
+
+    <p>
+      <strong>OPC UA</strong> ย่อมาจาก <strong>OPC Unified Architecture</strong> — เป็นมาตรฐานสากลที่:
+    </p>
+
+    <ul>
+      <li><strong>เป็น IEC 62541</strong> — รับรองโดย International Electrotechnical Commission ใช้กันทั่วโลก</li>
+      <li><strong>ไม่ผูกกับยี่ห้อ</strong> (Vendor-independent) — ดูแลโดย OPC Foundation (องค์กรไม่แสวงหากำไร) มี Members 1,000+ ราย</li>
+      <li><strong>ไม่ผูกกับ Platform</strong> — รัน Windows, Linux, Mac, RTOS หรือแม้แต่ MCU ขนาดเล็กได้</li>
+      <li><strong>ไม่ผูกกับภาษาเขียนโปรแกรม</strong> — มี SDK ทั้ง C, C++, .NET, Java, Python, JavaScript</li>
+      <li><strong>มี Security ในตัว</strong> (built-in by design) — Authentication, Encryption, Authorization ครบตามมาตรฐาน</li>
+      <li><strong>มี Information Model</strong> — ข้อมูลไม่ใช่แค่ตัวเลข แต่มี "ชื่อ, ประเภท, หน่วย, ความหมาย" ติดไปด้วย</li>
+    </ul>
+
+    <div class="callout tip">
+      <strong>คำสำคัญ: "ภาษากลาง"</strong> — OPC UA ไม่ได้แทนที่ Modbus, PROFINET, EtherCAT, หรือ CC-Link
+      แต่เป็น <em>ภาษากลาง</em> ที่นำข้อมูลจากภาษาเหล่านั้นมาแสดงในรูปแบบมาตรฐานเดียวกัน
+      อุปกรณ์ใหม่ๆ มี OPC UA Server ในตัว ส่วนของเก่าต่อผ่าน Gateway/Converter
+    </div>
+
+    <h2>OPC UA แก้ปัญหาของ Modbus ได้ยังไง</h2>
+
+    <table>
+      <thead>
+        <tr>
+          <th>ประเด็น</th>
+          <th>Modbus</th>
+          <th>OPC UA</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>โครงสร้างข้อมูล</td>
+          <td>ตัวเลขดิบใน Register 40001, 40002, …</td>
+          <td>Object ที่มีชื่อ "TempSensor1.CurrentValue" + Type + Unit + Range</td>
+        </tr>
+        <tr>
+          <td>Security</td>
+          <td>ไม่มี</td>
+          <td>X.509 Certificates · TLS/AES · Authentication 3 ระดับ</td>
+        </tr>
+        <tr>
+          <td>การอัปเดตค่า</td>
+          <td>Master Poll Slave ตลอดเวลา</td>
+          <td>Subscribe → ส่งเมื่อค่าเปลี่ยน (หรือ Publisher-Subscriber Pattern)</td>
+        </tr>
+        <tr>
+          <td>การค้นหาว่ามีอะไรอยู่</td>
+          <td>เปิด Manual ดู Register Map</td>
+          <td>Browse Service — Client ค้นหาทุกอย่างได้เอง</td>
+        </tr>
+        <tr>
+          <td>การเชื่อมต่อ Cloud</td>
+          <td>ต้องเขียน Gateway แยก</td>
+          <td>OPC UA over MQTT ส่งตรงไป Azure / AWS / Google Cloud ได้</td>
+        </tr>
+        <tr>
+          <td>ข้อมูลเก่า (Historical)</td>
+          <td>ต้องบันทึกแยก</td>
+          <td>HistoricalAccess Service มีในตัว</td>
+        </tr>
+        <tr>
+          <td>การเรียก Method</td>
+          <td>ใช้ Function Code 16 + ตีความเอง</td>
+          <td>Method Call แบบ Function ปกติ มี Argument + Return Value</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>ใครใช้ OPC UA ในโลกจริง?</h2>
+
+    <p>
+      OPC UA ไม่ใช่ทฤษฎีในห้องเรียน — โรงงานที่คุณรู้จักทุกแบรนด์ใช้งานจริงในปริมาณมหาศาล
+      ข้อมูลด้านล่างมาจากเอกสารทางการของ OPC Foundation ปี 2026:
+    </p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="num">🛢️ Equinor</div>
+        <div class="name">โรงกลั่นน้ำมัน นอร์เวย์</div>
+        <div class="desc">
+          โรงกลั่น <em>Johan Sverdrup</em> (ผลิต 30% ของน้ำมันนอร์เวย์) ใช้ <strong>19 OPC UA Servers</strong>
+          รวมเข้าเป็น Gateway เดียวที่ส่ง <strong>1 ล้าน Tags</strong> ขึ้น Azure Cloud
+          พร้อม Asset Structure 31,000 ชิ้น
+        </div>
+      </div>
+      <div class="card">
+        <div class="num">🚗 Renault</div>
+        <div class="name">โรงงานรถยนต์ 38 แห่ง</div>
+        <div class="desc">
+          ลง <strong>7,000+ OPC UA Devices</strong> ที่ 24 โรงงาน ส่ง <strong>30,000 messages/second</strong>
+          ไป Google Cloud — เพื่อสร้างมาตรฐานข้อมูลระหว่างเครื่อง Mitsubishi, ABB, KUKA, Siemens
+          ที่ปนอยู่ในสายการผลิตเดียวกัน
+        </div>
+      </div>
+      <div class="card">
+        <div class="num">🧺 Miele</div>
+        <div class="name">เครื่องซักผ้า เยอรมัน</div>
+        <div class="desc">
+          ผู้ผลิต Premium Appliances — ใช้ OPC UA ในโรงงานผลิตเครื่องซักผ้า — เปลี่ยน Communication
+          ทั้งสายการผลิตเป็น OPC UA ในช่วงพักโรงงาน <strong>3 สัปดาห์</strong>
+          เพราะตามมาตรฐาน "Secure by Default"
+        </div>
+      </div>
+      <div class="card">
+        <div class="num">🚀 Airbus</div>
+        <div class="name">จรวดวิจัย TEXUS</div>
+        <div class="desc">
+          ระบบ Control บนจรวดวิจัยที่บินถึง 260 km ทุกอุปกรณ์ (Sensors, Actuators, Controllers)
+          ใช้ OPC UA — บีบให้เหลือ <strong>32 Kbit/s ต่อการทดลอง</strong> — และเพิ่ม Data points
+          จาก 5 → หลายพัน
+        </div>
+      </div>
+    </div>
+
+    <h2>มาตรฐานที่เห็นได้ทุกแบรนด์</h2>
+
+    <p>
+      Member ของ OPC Foundation ที่คุณน่าจะรู้จัก — ทั้งหมดนี้สนับสนุน OPC UA อย่างเป็นทางการ:
+    </p>
+
+    <div class="flowdiagram">
+      <div class="flowdiagram-row" style="flex-wrap:wrap;justify-content:center;gap:8px">
+        <span class="tag">Siemens</span>
+        <span class="tag">ABB</span>
+        <span class="tag">Mitsubishi Electric</span>
+        <span class="tag">Rockwell Automation</span>
+        <span class="tag">Schneider Electric</span>
+        <span class="tag">Beckhoff</span>
+        <span class="tag">Bosch Rexroth</span>
+        <span class="tag">Honeywell</span>
+        <span class="tag">Yokogawa</span>
+        <span class="tag">Phoenix Contact</span>
+        <span class="tag">Festo</span>
+        <span class="tag">Omron</span>
+        <span class="tag cyan">Microsoft</span>
+        <span class="tag cyan">AWS</span>
+        <span class="tag cyan">Google Cloud</span>
+        <span class="tag cyan">SAP</span>
+        <span class="tag cyan">Huawei</span>
+        <span class="tag cyan">Samsung</span>
+      </div>
+    </div>
+
+    <p>
+      สังเกตว่ามีทั้ง <strong>ผู้ผลิต Hardware/PLC</strong> และ <strong>ผู้ให้บริการ Cloud/IT</strong>
+      อยู่ในรายชื่อเดียวกัน — นี่คือสิ่งที่ทำให้ OPC UA แตกต่างจาก Modbus, PROFINET, EtherCAT
+      ซึ่งเป็นมาตรฐานของฝั่ง Automation อย่างเดียว
+    </p>
+
+    <h2>สรุปบทที่ 01</h2>
+
+    <ul>
+      <li>Modbus ที่เคยใช้ใน Lab มีข้อจำกัด 3 ข้อ: <strong>ข้อมูลดิบ, ไม่มี Security, ต้อง Poll</strong></li>
+      <li>โลกอุตสาหกรรมเปลี่ยน — IoT + Industrie 4.0 + M2M ทำให้ "ภาษากลาง" จำเป็น</li>
+      <li><strong>OPC UA</strong> (IEC 62541) คือมาตรฐานที่ตอบโจทย์ — Vendor-independent, Platform-independent, Built-in Security, Information Model</li>
+      <li>ใช้งานจริงแล้วที่ Equinor (1 ล้าน tags), Renault (38 โรงงาน), Miele, Airbus และอีกมากมาย</li>
+      <li>OPC UA ไม่ได้แทนที่ Modbus — เป็น <em>ภาษากลาง</em> ที่นำข้อมูลจากภาษาต่างๆ มาแสดงในรูปแบบเดียวกัน</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>คำถามชวนคิด</strong> — ถ้าโรงงานหนึ่งใช้ Mitsubishi FX5U + Modbus เป็นหลัก จะอัพเกรดเข้า OPC UA ได้ไหม?
+      คำตอบสั้นๆ: ได้ ผ่านโมดูล <code>FX5-OPC</code> หรือ Gateway แต่ FX5U <em>ไม่มี</em> OPC UA Server ในตัว
+      (รายละเอียดในบทที่ 08)
+    </div>
+
+    <div class="pager">
+      <a href="index.html">
+        <div class="label">← กลับ</div>
+        <div class="title">หน้าแรก</div>
+      </a>
+      <a href="ch02-architecture.html" class="next">
+        <div class="label">ถัดไป →</div>
+        <div class="title">02 — สถาปัตยกรรมพื้นฐาน</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  OPC UA &amp; Industrie 4.0 Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){
+  var lb = document.getElementById('lightbox');
+  if(!lb) return;
+  var img = lb.querySelector('img');
+  document.querySelectorAll('.gallery a, .zoomable').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      img.src = a.getAttribute('href') || a.getAttribute('data-src');
+      lb.classList.add('open');
+    });
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') lb.classList.remove('open');
+  });
+})();
+</script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

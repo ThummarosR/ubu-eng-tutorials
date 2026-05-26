@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แท็บ Editor — คู่มือ Ripes</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="images/logo.png" alt="Ripes logo">
+      <div>
+        <div class="title">Ripes Tutorial</div>
+        <div class="subtitle">คู่มือการใช้งานฉบับภาษาไทย</div>
+      </div>
+    </div>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html">หน้าแรก &amp; ติดตั้ง</a>
+      <h4>แท็บการใช้งาน</h4>
+      <a href="editor.html" class="active">1. แท็บ Editor</a>
+      <a href="processor.html">2. แท็บ Processor</a>
+      <a href="memory.html">3. แท็บ Memory</a>
+      <a href="cache.html">4. แท็บ Cache</a>
+      <a href="io.html">5. แท็บ I/O</a>
+      <h4>อ้างอิง</h4>
+      <a href="ecalls.html">System Calls (ecall)</a>
+      <h4>ตัวอย่างประกอบ</h4>
+      <a href="examples/factorial.html">Factorial (Assembly)</a>
+      <a href="examples/leds.html">LEDs (I/O)</a>
+      <a href="examples/matrixmul.html">Matrix Multiply (C)</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <h1>แท็บ Editor</h1>
+    <p class="lede">หน้าจอแรกที่ใช้เขียนโค้ด Assembly หรือภาษา C และดู machine code ที่ถูก assemble โดยอัตโนมัติ</p>
+
+    <figure>
+      <img src="images/editortab.png" alt="หน้าจอแท็บ Editor">
+      <figcaption>หน้าจอแท็บ Editor — ซ้าย: source code, ขวา: program viewer</figcaption>
+    </figure>
+
+    <h2>โครงสร้างของหน้าจอ</h2>
+    <p>แท็บ Editor แบ่งหน้าจอออกเป็น 2 ส่วนหลัก:</p>
+
+    <h3>1) ฝั่งซ้าย — Source Code Editor</h3>
+    <p>เป็นพื้นที่ที่คุณเขียนหรือแก้ไขโค้ดได้โดยตรง รองรับ 2 ภาษา:</p>
+    <ul>
+      <li><strong>Assembly</strong> — สำหรับชุดคำสั่ง RISC-V RV32(I/M/C) (เลือกที่ <code>Input type: Assembly</code>)</li>
+      <li><strong>C</strong> — ต้องลงทะเบียน C compiler ไว้ก่อน (เลือกที่ <code>Input type: C</code>)</li>
+    </ul>
+    <p>เมื่อแก้ไขโค้ดและไม่มี syntax error โปรแกรมจะ <strong>assemble โดยอัตโนมัติ</strong> และโหลดผลลัพธ์เข้าสู่ simulator ทันที</p>
+
+    <h3>2) ฝั่งขวา — Program Viewer</h3>
+    <p>แสดงผลโค้ดที่ถูก assemble แล้วในรูปแบบที่อ่านได้ คุณสามารถเลือกแสดงเป็น:</p>
+    <ul>
+      <li><strong>Disassembled RISC-V instructions</strong> — เห็นเป็นคำสั่ง assembly</li>
+      <li><strong>Raw binary code</strong> — เห็นเป็นรหัสเลขฐานสอง/ฐานสิบหก</li>
+    </ul>
+    <p>แถบสีน้ำเงินด้านซ้ายใช้สำหรับ <strong>คลิกตั้ง breakpoint</strong> ที่บรรทัดของคำสั่งใด ๆ ก็ได้</p>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับ</strong>
+      กดปุ่มรูปเข็มทิศ (<em>compass icon</em>) เพื่อเปิดรายการ symbol ทั้งหมดในโปรแกรม ทำให้กระโดดไปยัง label ที่ต้องการได้รวดเร็ว
+    </div>
+
+    <h2>ตัวอย่างโปรแกรม Assembly แรก</h2>
+    <p>ลองเปิดแท็บ Editor และพิมพ์โปรแกรมสั้น ๆ นี้:</p>
+
+<pre><code>.data
+w: .word 0x1234
+
+.text
+lw   a0 w
+addi a0 a0 1</code></pre>
+
+    <p>โปรแกรมนี้:</p>
+    <ul>
+      <li>ประกาศข้อมูลคำว่า <code>w</code> เก็บค่า <code>0x1234</code> ในส่วน <code>.data</code></li>
+      <li>โหลดค่าจาก <code>w</code> เข้าสู่ register <code>a0</code> ด้วยคำสั่ง <code>lw</code> (load word)</li>
+      <li>เพิ่มค่าใน <code>a0</code> ขึ้น 1 ด้วยคำสั่ง <code>addi</code></li>
+    </ul>
+
+    <h2>การโหลดตัวอย่าง</h2>
+    <p>Ripes มาพร้อมกับตัวอย่างหลายโปรแกรม ใช้เมนู <code>File → Load Examples</code> เพื่อเลือกโหลด แบ่งเป็น:</p>
+    <ul>
+      <li><strong>Assembly</strong>: factorial, complexMul, consolePrinting, consoleReading, leds</li>
+      <li><strong>C</strong>: consoleInput, leds, matrixmul, ranpi, switchesAndLeds</li>
+    </ul>
+
+    <h2>การเขียนโปรแกรมภาษา C</h2>
+
+    <div class="callout tip">
+      <strong>ข่าวดี — ในชุด Bundle นี้</strong>
+      RISC-V toolchain (<code>riscv64-unknown-elf-gcc</code>) ถูก bundle มาในโฟลเดอร์ <code>toolchain/</code> แล้ว และ launcher (<code>เริ่ม.bat</code>) จะเพิ่ม path ของ toolchain เข้า PATH โดยอัตโนมัติ — Ripes จะตรวจพบและตั้งค่าให้เองในครั้งแรกที่เปิด
+    </div>
+
+    <p>หากเปิด Ripes ด้วย launcher (<code>เริ่ม.bat</code>) สามารถใช้งาน C ได้ทันที:</p>
+
+    <ol class="steps">
+      <li>ในแท็บ Editor เปลี่ยน Input type เป็น <strong>C</strong></li>
+      <li>เขียนโค้ด C ตามต้องการ</li>
+      <li>กดปุ่ม <strong>Build</strong> (หรือ Ctrl+B) — Ripes จะ compile และโหลด ELF เข้า simulator อัตโนมัติ</li>
+      <li>ไปที่แท็บ Processor เพื่อรันและดู datapath</li>
+    </ol>
+
+    <figure>
+      <img src="images/ccsettings.png" alt="หน้าจอตั้งค่า C compiler">
+      <figcaption>หน้าจอ Edit → Settings → Editor — หาก toolchain ตรวจพบแล้ว ช่อง compiler path จะเป็นสีเขียว</figcaption>
+    </figure>
+
+    <h3>หาก Ripes ไม่พบ Compiler อัตโนมัติ</h3>
+    <ol class="steps">
+      <li>ไปที่เมนู <code>Edit → Settings → Editor</code></li>
+      <li>กด Browse แล้วเลือกไฟล์ <code>toolchain\bin\riscv64-unknown-elf-gcc.exe</code> ในโฟลเดอร์ Bundle</li>
+      <li>หาก path ถูกต้องช่อง compiler path จะเปลี่ยนเป็นสีเขียว</li>
+    </ol>
+
+    <h3>ไม่ได้ใช้ Bundle นี้?</h3>
+    <p>หากใช้ Ripes บนเครื่องอื่นที่ไม่มี toolchain มาด้วย ดาวน์โหลด toolchain ได้จาก <a href="https://github.com/sifive/freedom-tools/releases/tag/v2020.04.0-Toolchain.Only" target="_blank">SiFive Freedom Tools v2020.04.0</a></p>
+
+    <div class="callout note">
+      <strong>ข้อควรรู้</strong>
+      Ripes ไม่รองรับ floating-point hardware ดังนั้นโค้ด C ที่ใช้เลขทศนิยมจะถูก compile ด้วย <em>soft-float routines</em> (จำลองการคำนวณทศนิยมด้วย integer arithmetic) ซึ่งทำให้โปรแกรมยาวขึ้นมาก
+    </div>
+
+    <h2>การคอมไพล์โดยไม่ใช้ Standard Library</h2>
+    <p>หากต้องการให้โปรแกรมสั้นและอ่านง่ายสำหรับการเรียน แนะนำให้ใช้ flag <code>-nostdlib</code>:</p>
+
+<pre><code>void prints(volatile char* ptr);
+
+void hello_world() {
+    char* str = "Hello world";
+    prints(str);
+    return 0;
+}
+
+void prints(volatile char* ptr){ // ptr ถูกส่งผ่าน register a0
+    asm("li a7, 4");
+    asm("ecall");
+}</code></pre>
+
+    <p>เพิ่ม <code>-nostdlib</code> ในช่อง compiler arguments ในหน้า Settings และ <strong>วาง function ที่เป็น entry point ไว้ที่ตำแหน่งแรกของไฟล์</strong> เสมอ</p>
+
+    <div class="pager">
+      <a href="index.html">
+        <div class="label">← บทก่อนหน้า</div>
+        <div class="title">หน้าแรก &amp; ติดตั้ง</div>
+      </a>
+      <a class="next" href="processor.html">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">2. แท็บ Processor</div>
+      </a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

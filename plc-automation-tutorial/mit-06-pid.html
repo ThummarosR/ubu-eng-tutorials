@@ -1,0 +1,385 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M06 — PID &amp; Auto-Tuning | PLC Automation Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="PLC Automation"></div>
+      <div>
+        <div class="title">PLC Automation</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย — 2 Tracks</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; เลือก Track</a>
+
+      <h4>🟥 Mitsubishi Track</h4>
+      <a href="mit-01-intro.html"><span class="num">M01</span> รู้จัก FX5U</a>
+      <a href="mit-02-ladder.html"><span class="num">M02</span> Ladder Logic</a>
+      <a href="mit-03-sensors.html"><span class="num">M03</span> เซ็นเซอร์ &amp; I/O</a>
+      <a href="mit-04-simulation.html"><span class="num">M04</span> GX Simulator</a>
+      <a href="mit-05-hmi.html"><span class="num">M05</span> HMI Samkoon</a>
+      <a href="mit-06-pid.html" class="active"><span class="num">M06</span> PID &amp; Auto-Tuning</a>
+      <a href="mit-07-modbus.html"><span class="num">M07</span> Modbus + PM2230</a>
+
+      <h4>🟦 Omron Track</h4>
+      <a href="omron-01-intro.html"><span class="num">O01</span> รู้จัก CP1L/CPM2A</a>
+      <a href="omron-02-ladder.html"><span class="num">O02</span> CX-Programmer Ladder</a>
+      <a href="omron-03-fbd.html"><span class="num">O03</span> Function Block (FBD)</a>
+      <a href="omron-04-modbus.html"><span class="num">O04</span> Modbus + Inverter</a>
+      <a href="omron-05-e5cc.html"><span class="num">O05</span> E5CC Temp Control</a>
+      <a href="omron-06-scada.html"><span class="num">O06</span> SCADA (CX-Supervisor)</a>
+      <a href="omron-07-scada-workshop.html"><span class="num">O07</span> 🏭 SCADA Workshop</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="videos.html"><span class="num">▶</span> วิดีโอเลคเชอร์</a>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ M06 · PID Control · Ziegler-Nichols</span>
+    <h1>PID &amp; Auto-Tuning อุณหภูมิ</h1>
+    <p class="lede">
+      จะคุมอุณหภูมิให้ "นิ่ง" ตามที่ตั้งไว้ไม่ใช่แค่เปิด-ปิดฮีตเตอร์ — ต้องใช้ <strong>PID</strong>
+      บทนี้พาเข้าใจหลักการ PID, การจูนด้วย <strong>Ziegler–Nichols</strong>, และวิธี Auto-Tune ของ
+      ตัวควบคุม Delta DTK4848 ผ่าน FX5U
+    </p>
+
+    <h2>ทำไมเปิด-ปิด (On/Off) ไม่พอ?</h2>
+
+    <p>ลองคิดดู: ถ้าเราเปิดฮีตเตอร์เมื่ออุณหภูมิ < 60 °C และปิดเมื่อ > 60 °C — อุณหภูมิจะ <strong>แกว่ง</strong>
+       รอบจุด setpoint ตลอด เพราะมีความล่าช้าของระบบ (Thermal lag)</p>
+
+    <figure class="wirediagram">
+      <svg viewBox="0 0 720 320" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <style>
+            .pg-axis    { stroke: var(--text-dim); stroke-width: 1.5; }
+            .pg-grid    { stroke: var(--border); stroke-width: 1; stroke-dasharray: 3 4; }
+            .pg-sp      { stroke: var(--accent-2); stroke-width: 1.5; stroke-dasharray: 4 3; fill: none; }
+            .pg-pv-bad  { stroke: var(--danger); stroke-width: 2.5; fill: none; stroke-linejoin: round; }
+            .pg-pv-good { stroke: var(--ok); stroke-width: 2.5; fill: none; stroke-linejoin: round; }
+            .pg-title   { fill: var(--text); font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; }
+            .pg-tlabel  { fill: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+            .pg-axis-lbl{ fill: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 11px; }
+            .pg-note    { font-family: 'Sarabun', sans-serif; font-size: 12px; font-weight: 600; }
+            .pg-note.bad { fill: var(--danger); }
+            .pg-note.good{ fill: var(--ok); }
+          </style>
+        </defs>
+
+        <!-- Left chart: On/Off control -->
+        <g transform="translate(20,0)">
+          <text x="160" y="22" class="pg-title" text-anchor="middle">On / Off Control (ไม่ใช้ PID)</text>
+          <!-- axes -->
+          <line class="pg-axis" x1="50" y1="40" x2="50" y2="240"/>
+          <line class="pg-axis" x1="50" y1="240" x2="310" y2="240"/>
+          <text x="40" y="60" class="pg-axis-lbl" text-anchor="end">°C</text>
+          <text x="310" y="258" class="pg-axis-lbl" text-anchor="end">t</text>
+          <!-- Setpoint line at y=140 -->
+          <line class="pg-sp" x1="50" y1="140" x2="310" y2="140"/>
+          <text x="316" y="144" class="pg-tlabel">SP 60°C</text>
+          <!-- Oscillating PV: triangular wave around setpoint -->
+          <path class="pg-pv-bad" d="M 50,180 L 80,100 L 110,180 L 140,100 L 170,180 L 200,100 L 230,180 L 260,100 L 290,180"/>
+          <text x="180" y="278" class="pg-note bad" text-anchor="middle">⚠️ Overshoot สูง · แกว่งตลอดไป</text>
+        </g>
+
+        <!-- Right chart: PID control -->
+        <g transform="translate(380,0)">
+          <text x="160" y="22" class="pg-title" text-anchor="middle">PID Control</text>
+          <line class="pg-axis" x1="50" y1="40" x2="50" y2="240"/>
+          <line class="pg-axis" x1="50" y1="240" x2="310" y2="240"/>
+          <text x="40" y="60" class="pg-axis-lbl" text-anchor="end">°C</text>
+          <text x="310" y="258" class="pg-axis-lbl" text-anchor="end">t</text>
+          <line class="pg-sp" x1="50" y1="140" x2="310" y2="140"/>
+          <text x="316" y="144" class="pg-tlabel">SP 60°C</text>
+          <!-- PV: smooth rise with small overshoot then settles to SP -->
+          <path class="pg-pv-good" d="M 50,220 Q 90,200 120,150 Q 140,115 160,128 Q 180,140 200,140 L 300,140"/>
+          <text x="180" y="278" class="pg-note good" text-anchor="middle">✓ เข้าจุดเร็ว · นิ่งสนิท</text>
+        </g>
+      </svg>
+      <figcaption>เทียบ Response — On/Off แกว่งรอบ SP ตลอด · PID เข้าจุดเร็วและคงที่หลังจาก settle</figcaption>
+    </figure>
+
+    <figure>
+      <img src="images/honeywell-onoff-controller.jpg" alt="Honeywell ON-OFF controller display">
+      <figcaption>หน้าจอ Industrial Controller ที่ตั้งโหมด "ON-OFF CONTR ALG" — SP (Set Point) แสดงคู่กับ PV (Process Value)</figcaption>
+    </figure>
+
+    <h2>PID คืออะไร — แบบไม่ต้องคำนวณ</h2>
+
+    <figure>
+      <img src="images/pid-block-diagram.png" alt="PID controller block diagram">
+      <figcaption>Block Diagram ของ PID Controller — Error = Setpoint − Output, ผ่าน P/I/D 3 ทาง รวมกันแล้วส่งเข้า Process</figcaption>
+    </figure>
+
+    <p>PID คือสูตร <strong>3 ส่วน</strong> ที่รวมกันเพื่อตัดสินใจว่า "ตอนนี้ควรเปิดฮีตเตอร์กี่ %":</p>
+
+    <div class="lesson-grid">
+      <div class="lesson">
+        <span class="badge">P · Proportional</span>
+        <div class="title">"ตอนนี้ห่างจาก Setpoint แค่ไหน"</div>
+        <div class="desc">ยิ่งห่าง → ยิ่งสั่งให้ Output มาก. ถ้าตั้ง <strong>Kp สูง</strong> ระบบตอบสนองเร็ว แต่อาจ Overshoot</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">I · Integral</span>
+        <div class="title">"สะสมข้อผิดพลาดที่ผ่านมา"</div>
+        <div class="desc">แก้ <em>Steady-state error</em> ที่ P ทำให้หายไม่ได้. <strong>Ti น้อย</strong> = สะสมเร็ว แต่ระบบอาจไม่นิ่ง</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">D · Derivative</span>
+        <div class="title">"เปลี่ยนเร็วแค่ไหน"</div>
+        <div class="desc">มอง <em>แนวโน้ม</em> — ถ้ากำลังเข้า setpoint เร็วเกิน จะลดกำลังไว้. ลด Overshoot</div>
+      </div>
+    </div>
+
+    <figure>
+      <img src="images/pid-derivative-formula.png" alt="PID derivative term formula">
+      <figcaption>สูตร Derivative term — <code>D_out = K_d · de(t)/dt</code> — K_d คูณกับอัตราการเปลี่ยนแปลงของ error</figcaption>
+    </figure>
+
+    <h3>ผลของพารามิเตอร์แต่ละตัว</h3>
+
+    <table>
+      <thead><tr><th>เพิ่มพารามิเตอร์</th><th>Rise Time</th><th>Overshoot</th><th>Settling Time</th><th>SS Error</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Kp ↑</strong></td><td>↓ เร็วขึ้น</td><td>↑ แย่ลง</td><td>เปลี่ยนแปลงน้อย</td><td>↓ ดีขึ้น</td></tr>
+        <tr><td><strong>Ti ↓</strong> (เพิ่ม I)</td><td>↓ เร็วขึ้น</td><td>↑ แย่ลง</td><td>↑ แย่ลง</td><td><strong>= 0</strong></td></tr>
+        <tr><td><strong>Td ↑</strong></td><td>เปลี่ยนแปลงน้อย</td><td>↓ ดีขึ้น</td><td>↓ ดีขึ้น</td><td>เปลี่ยนแปลงน้อย</td></tr>
+      </tbody>
+    </table>
+
+    <h2>วิธี Ziegler–Nichols (Closed-loop)</h2>
+
+    <p>วิธีคลาสสิกที่ใช้ได้กับระบบจริงโดยไม่ต้องสร้างโมเดลคณิตศาสตร์ — เพียงทดลองหา 2 ค่า:</p>
+
+    <ol class="steps">
+      <li>
+        <strong>ตั้งค่าเริ่ม</strong>
+        <ul>
+          <li><code>Ti = ∞</code> (ปิด I)</li>
+          <li><code>Td = 0</code> (ปิด D)</li>
+          <li><code>Kp = </code> เริ่มจากค่าน้อย ๆ เช่น 0.5</li>
+        </ul>
+      </li>
+      <li>
+        <strong>ค่อย ๆ เพิ่ม Kp ทีละนิด</strong>
+        ทุกครั้งที่เพิ่ม → สังเกตการตอบสนอง — ใน Trend graph อุณหภูมิเริ่มจะ <em>แกว่ง</em> รอบ setpoint
+      </li>
+      <li>
+        <strong>หา Ku (Ultimate Gain)</strong>
+        ค่า Kp ที่ทำให้ระบบแกว่งแบบ <strong>คงที่</strong> (sinusoidal sustained oscillation) — ไม่บานออก ไม่จางหาย
+      </li>
+      <li>
+        <strong>วัด Pu (Ultimate Period)</strong>
+        ระยะเวลาของ 1 รอบการแกว่ง (peak ถึง peak) — ใช้นาฬิกาจับ หรืออ่านจาก Trend graph
+      </li>
+      <li>
+        <strong>คำนวณ Kp, Ti, Td จากตาราง</strong>
+        ใช้ตารางมาตรฐาน Ziegler-Nichols ด้านล่าง
+      </li>
+    </ol>
+
+    <h3>ตาราง Ziegler–Nichols Classic</h3>
+
+    <table>
+      <thead>
+        <tr><th>Controller</th><th>Kp</th><th>Ti</th><th>Td</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>P</td><td>0.50 × Ku</td><td>—</td><td>—</td></tr>
+        <tr><td>PI</td><td>0.45 × Ku</td><td>Pu / 1.2</td><td>—</td></tr>
+        <tr><td><strong>PID (recommended)</strong></td><td><strong>0.60 × Ku</strong></td><td><strong>Pu / 2</strong></td><td><strong>Pu / 8</strong></td></tr>
+        <tr><td>PID (Pessen Integral)</td><td>0.70 × Ku</td><td>Pu / 2.5</td><td>3·Pu / 20</td></tr>
+        <tr><td>PID (Some Overshoot)</td><td>0.33 × Ku</td><td>Pu / 2</td><td>Pu / 3</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <strong>ตัวอย่างคำนวณ</strong>
+      ถ้าเจอ Ku = 4.0, Pu = 30 วินาที → ใช้สูตร PID classic:
+      <br>Kp = 0.60 × 4.0 = <strong>2.4</strong> · Ti = 30 / 2 = <strong>15 s</strong> · Td = 30 / 8 = <strong>3.75 s</strong>
+    </div>
+
+    <h3>เครื่องคำนวณ Ziegler-Nichols</h3>
+    <p>กรอก Ku และ Pu ที่หาได้จากการทดลอง → ระบบคำนวณ Kp/Ti/Td สำหรับ Controller 5 รูปแบบให้ทันที
+       · กดปุ่ม <strong>"ลองค่านี้ →"</strong> เพื่อโยนค่าลง Playground ด้านล่างและดูผล</p>
+
+    <div class="zn-calc"></div>
+
+    <h2>🧪 ลองจูน PID เอง — Live Simulator</h2>
+
+    <p>เลื่อน Kp / Ti / Td แล้วดูกราฟ Response ตอบสนองทันที — Plant model เป็น <strong>First-Order Heater</strong>
+       (K=1, τ=25s, dead-time θ=5s) คล้ายเตาฮีตเตอร์จริง · Setpoint = 60°C, เริ่มจาก Ambient 25°C
+       · กดปุ่ม Preset เพื่อเปรียบเทียบ (Kp ต่ำ-สูง, P only, PI, PID Ziegler-Nichols)</p>
+
+    <div class="pid-tuner"></div>
+
+    <div class="callout tip">
+      <strong>ลองเล่นดูครับ</strong>
+      เริ่มจาก preset <strong>"Kp ต่ำเกิน"</strong> → จะเห็นว่าระบบช้าและถึง SP ไม่ได้ ·
+      เปลี่ยนเป็น <strong>"Kp สูงเกิน"</strong> → ระบบแกว่ง Overshoot สูง ·
+      ลอง <strong>"PI"</strong> → SS error หาย แต่ยังช้า ·
+      สุดท้าย <strong>"PID Ziegler-Nichols"</strong> (Kp=2.4, Ti=15s, Td=3.75s ตรงกับตัวอย่างด้านบน) — เข้าจุดเร็ว, Overshoot น้อย, นิ่ง
+    </div>
+
+    <h2>การใช้ Auto-Tune ที่ตัว Delta DTK4848</h2>
+
+    <p>โชคดี — Delta DTK4848 มี <strong>Auto-Tune ในตัว</strong> ไม่ต้องไปนั่งเพิ่ม Kp ด้วยมือ
+       มันจะทำขั้นตอน Relay Feedback Method (คล้าย ZN) ให้อัตโนมัติ</p>
+
+    <figure>
+      <img src="images/delta-dtk-display.jpg" alt="Delta DTK Temperature Controller showing 120.0°C">
+      <figcaption>Delta DTK4848 — ตัวควบคุมอุณหภูมิแบบ PID มี Auto-Tune ในตัว (แสดง Process Value แดง + Set Point เขียว ที่ 120.0 °C)</figcaption>
+    </figure>
+
+    <ol class="steps">
+      <li>
+        <strong>เตรียมระบบจริง</strong>
+        ต่อ Thermocouple Type-K เข้า DTK4848 → ฮีตเตอร์ + SSR (Solid State Relay) ออก Output 1
+        — ตรวจสายให้แน่นและขั้วบวก-ลบของ Thermocouple ถูก
+      </li>
+      <li>
+        <strong>ตั้ง Set Point ที่ DTK</strong>
+        กดปุ่ม Set → ตั้งอุณหภูมิเป้าหมาย เช่น <strong>60 °C</strong>
+      </li>
+      <li>
+        <strong>เปิด Auto-Tune Mode</strong>
+        เข้า Parameter Menu → หา <code>AT</code> (Auto-Tune) → เปลี่ยนค่าเป็น <strong>ON</strong>
+        — หน้าจอจะเริ่มกระพริบ "AT"
+      </li>
+      <li>
+        <strong>รอ ~5–15 นาที</strong>
+        ระบบจะ <em>ตั้งใจให้ฮีตเตอร์ on/off ค้าง</em> เพื่อวัด Ku และ Pu →
+        เสร็จแล้ว DTK จะ <em>เซฟค่า Kp/Ti/Td อัตโนมัติ</em> และดับสัญลักษณ์ AT
+      </li>
+      <li>
+        <strong>ทดสอบผล</strong>
+        เปลี่ยน Set Point เป็นค่าอื่น (เช่น 70 °C) — ดู Trend Graph ที่ HMI ว่ามาถึงค่าเร็วและนิ่ง
+      </li>
+    </ol>
+
+    <div class="callout warn">
+      <strong>ระวัง — Auto-Tune ระบบต้องเข้า Steady State ก่อน!</strong>
+      ห้ามกด AT ตอนเปิดเครื่องใหม่ที่อุณหภูมิห้อง — ต้องรอให้ระบบนิ่งที่ใกล้ Set Point ก่อน
+      ไม่งั้นค่าที่คำนวณจะเพี้ยน
+    </div>
+
+    <h2>การควบคุมผ่าน FX5U — โดยไม่ใช้ AT ของ DTK</h2>
+
+    <p>ถ้าเราอยาก <em>เขียน PID เอง</em> ใน FX5U (เช่น เพื่อใส่ใน HMI หรือควบคุม fan ร่วม) ใช้คำสั่งในตัว:</p>
+
+    <pre><code>; FX5U มี Instruction PIDRUN — ตัวอย่าง:
+;
+;   PIDRUN s1 s2 s3 d
+;     s1 = Set Point Register (D100)
+;     s2 = Process Value Register (D102) — ค่าวัดจริง
+;     s3 = Parameter Table Start (D200..D224 — 25 word)
+;     d  = Output Register (D104) — ส่งไป SSR / Analog Out
+
+LD    M0                  ; Enable PID
+PIDRUN  D100  D102  D200  D104
+
+; เซฟค่า PID parameter ลงตาราง D200..D224 ตอน Init
+LD    M8002              ; Initial Pulse
+MOV   K2400  D200        ; Kp = 2400 (ตัวคูณ 1000)
+MOV   K15    D204        ; Ti = 15 s
+MOV   K375   D208        ; Td × 100 = 3.75 s × 100
+MOV   K1000  D210        ; Sampling time = 1000 ms
+MOV   K0     D224        ; Output limit min
+MOV   K10000 D226        ; Output limit max (= 100.00%)</code></pre>
+
+    <h2>เอกสารและวิดีโอ</h2>
+
+    <ul class="doc-list">
+      <li><a href="PLC%20project/05_Temperature_PID_Control/docs/Ziegler_Nichols_AutoTuning_TH.pdf">การจูน PID ด้วย Ziegler-Nichols (ภาษาไทย)</a> <span class="meta">PDF</span></li>
+      <li><a href="PLC%20project/05_Temperature_PID_Control/docs/Delta_TC_Manual_EN.pdf">Delta DT Series Manual</a> <span class="meta">PDF · EN</span></li>
+      <li><a href="PLC%20project/05_Temperature_PID_Control/docs/TempControl_PowerMeter.pdf">Temperature + Power Meter Reference</a> <span class="meta">PDF</span></li>
+    </ul>
+
+    <h3>ห้อง Lab Process Control จริง</h3>
+    <p>ห้อง Lab Process Control ของภาควิชา EE ที่ใช้ทำการทดลอง — มีสถานีหลายตัวสำหรับการทดลอง Temperature, Flow, Level, Pressure</p>
+
+    <div class="fig-side">
+      <figure>
+        <img src="images/process-control-lab.jpg" alt="Process Control Lab room">
+        <figcaption>ห้องปฏิบัติการ Process Control — แต่ละสถานีมี Controller, Pump, Tank, Valve ครบสำหรับการ Auto-Tune</figcaption>
+      </figure>
+      <figure>
+        <img src="images/pid-lab-process-diagram.jpg" alt="PID lab process diagram">
+        <figcaption>ผังกระบวนการ — Tank T01–T03, Pump P01–P02, Valves V01–V08, Sensor LT01/FT01/FT02</figcaption>
+      </figure>
+    </div>
+
+    <div class="fig-side">
+      <figure>
+        <img src="images/pressure-transmitters.jpg" alt="Pressure transmitters">
+        <figcaption>Differential Pressure Transmitters ที่ใช้วัด Process Variable แบบ 4–20 mA</figcaption>
+      </figure>
+      <figure>
+        <img src="images/pneumatic-control-valve.jpg" alt="Pneumatic control valve with Honeywell positioner">
+        <figcaption>Pneumatic Control Valve พร้อม Honeywell Positioner — Actuator ที่รับ Output 4–20 mA จาก PID Controller</figcaption>
+      </figure>
+    </div>
+
+    <div class="fig-side">
+      <figure>
+        <img src="images/pneumatic-valve-yt1000.jpg" alt="Pneumatic Globe Valve with YT-1000 positioner">
+        <figcaption>Pneumatic Globe Valve + YT-1000 Positioner — รับสัญญาณควบคุมจาก PID แล้วปรับช่องเปิดวาล์วตามสัดส่วน</figcaption>
+      </figure>
+      <figure>
+        <img src="images/motorized-ball-valve.jpg" alt="Motorized ball valve">
+        <figcaption>Motorized Ball Valve (AKK) — ทางเลือกแบบ Electric Actuator (ไม่ต้องใช้ลมอัด) — เหมาะกับงานเปิด/ปิด ON-OFF</figcaption>
+      </figure>
+    </div>
+
+    <figure>
+      <img src="images/signal-isolator-4-20ma.jpg" alt="4-20 mA Signal Isolator">
+      <figcaption>Signal Isolator 4-20 mA — แยกกราวด์ระหว่าง Sensor และ PLC, ป้องกัน Ground loop ในงานควบคุม</figcaption>
+    </figure>
+
+    <div class="callout tip">
+      <strong>กฏของหัวแม่มือ</strong>
+      ถ้าระบบช้า (Thermal lag สูง) ลด <strong>Kp</strong> ลง · ถ้ามี Steady-state error ลด <strong>Ti</strong> ·
+      ถ้า Overshoot เยอะ เพิ่ม <strong>Td</strong> — ปรับทีละตัว ทีละน้อย
+    </div>
+
+    <div class="pager">
+      <a href="mit-05-hmi.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">M05 — HMI Samkoon</div>
+      </a>
+      <a href="mit-07-modbus.html" class="next">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">M07 — Modbus + Power Meter</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  PLC Automation Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){var lb=document.getElementById('lightbox');if(!lb)return;var img=lb.querySelector('img');
+document.querySelectorAll('.content img').forEach(function(im){im.style.cursor='zoom-in';im.addEventListener('click',function(){img.src=im.src;lb.classList.add('open');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.classList.remove('open');});})();
+</script>
+<script src="js/progress.js" defer></script>
+<script src="js/activities/zn-calc.js" defer></script>
+<script src="js/activities/pid-tuner.js" defer></script>
+</body>
+</html>

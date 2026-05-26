@@ -1,0 +1,331 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M04 — GX Works3 Simulator | PLC Automation Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="PLC Automation"></div>
+      <div>
+        <div class="title">PLC Automation</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย — 2 Tracks</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; เลือก Track</a>
+
+      <h4>🟥 Mitsubishi Track</h4>
+      <a href="mit-01-intro.html"><span class="num">M01</span> รู้จัก FX5U</a>
+      <a href="mit-02-ladder.html"><span class="num">M02</span> Ladder Logic</a>
+      <a href="mit-03-sensors.html"><span class="num">M03</span> เซ็นเซอร์ &amp; I/O</a>
+      <a href="mit-04-simulation.html" class="active"><span class="num">M04</span> GX Simulator</a>
+      <a href="mit-05-hmi.html"><span class="num">M05</span> HMI Samkoon</a>
+      <a href="mit-06-pid.html"><span class="num">M06</span> PID &amp; Auto-Tuning</a>
+      <a href="mit-07-modbus.html"><span class="num">M07</span> Modbus + PM2230</a>
+
+      <h4>🟦 Omron Track</h4>
+      <a href="omron-01-intro.html"><span class="num">O01</span> รู้จัก CP1L/CPM2A</a>
+      <a href="omron-02-ladder.html"><span class="num">O02</span> CX-Programmer Ladder</a>
+      <a href="omron-03-fbd.html"><span class="num">O03</span> Function Block (FBD)</a>
+      <a href="omron-04-modbus.html"><span class="num">O04</span> Modbus + Inverter</a>
+      <a href="omron-05-e5cc.html"><span class="num">O05</span> E5CC Temp Control</a>
+      <a href="omron-06-scada.html"><span class="num">O06</span> SCADA (CX-Supervisor)</a>
+      <a href="omron-07-scada-workshop.html"><span class="num">O07</span> 🏭 SCADA Workshop</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="videos.html"><span class="num">▶</span> วิดีโอเลคเชอร์</a>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ M04 · GX Works3</span>
+    <h1>การจำลองด้วย GX Simulator</h1>
+    <p class="lede">
+      ก่อนยิงโปรแกรมเข้า PLC จริง เราต้องทดสอบใน <strong>GX Simulator</strong> ก่อน — เพื่อจับ Logic ผิดและเซฟทั้ง PLC, ทั้งคน, ทั้งเครื่องจักร
+      บทนี้พาทำตามตั้งแต่สร้าง Project, เขียน Ladder ตัวอย่าง Star–Delta, ไปจนถึง Monitor ค่าจริง ๆ
+    </p>
+
+    <h2>เปิด GX Works3 ครั้งแรก</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>สร้าง Project ใหม่</strong>
+        เมนู <code>Project → New</code> →
+        <ul>
+          <li>Series: <strong>FX5CPU</strong></li>
+          <li>Type: <strong>FX5U</strong></li>
+          <li>Program Language: <strong>Ladder</strong></li>
+        </ul>
+        กด OK → GX Works3 จะสร้าง Project พร้อม Program block ชื่อ <code>MAIN</code> ให้
+      </li>
+
+      <li>
+        <strong>ตั้งค่า PLC Parameter</strong>
+        เปิด <code>Parameter → FX5UCPU → CPU Parameter</code> — สำหรับการจำลอง ค่า default ใช้ได้ทันที
+        แต่จำว่า Project นี้ตั้งเป็น FX5U ไว้แล้ว (สำคัญตอนจะโหลดเข้า PLC จริง)
+      </li>
+
+      <li>
+        <strong>เปิดหน้า Ladder Editor</strong>
+        ดับเบิลคลิกที่ <code>Program → MAIN → ProgPou → ProgramBody</code> ใน Navigation pane ซ้ายมือ
+        — จะเห็นกระดาษเปล่าให้วาด Ladder
+      </li>
+
+      <li>
+        <strong>เขียน Rung แรก</strong>
+        กดปุ่ม <strong>F5</strong> = วาง Contact NO · <strong>F6</strong> = NC · <strong>F7</strong> = Coil · <strong>F8</strong> = Coil/Function
+        <br>หรือใช้ Toolbar รูปสัญลักษณ์ Ladder ด้านบน
+      </li>
+
+      <li>
+        <strong>ใส่ Device Name</strong>
+        คลิกที่ Contact → พิมพ์ <code>X0</code> → Enter — ทำซ้ำสำหรับทุก Contact และ Coil
+      </li>
+
+      <li>
+        <strong>Convert (F4)</strong>
+        ทุกครั้งที่แก้ Ladder ต้องกด <strong>F4</strong> (หรือ <code>Convert → Convert</code>)
+        เพื่อ Compile — ถ้าผิด syntax จะ Error สีเทา ๆ ที่ Rung
+      </li>
+    </ol>
+
+    <div class="callout tip">
+      <strong>Shortcut ที่ใช้บ่อยที่สุด</strong>
+      <code>F4</code> = Convert · <code>F5</code> = Contact NO · <code>F6</code> = Contact NC · <code>F7</code> = Coil ·
+      <code>F8</code> = Application Instruction (MOV, BMOV, ZRST ฯลฯ) ·
+      <code>Shift+F5</code> = แทรก Rung ·
+      <code>Ctrl+S</code> = Save Project
+    </div>
+
+    <figure>
+      <img src="images/simulator-mov-dmov-emov.png" alt="GX Simulator3 running with ladder">
+      <figcaption>GX Simulator3 (มุมขวาล่าง) เลียนแบบเป็น <code>FX5UCPU</code> สถานะ <strong>RUN</strong> — Ladder ฝั่งซ้ายแสดง MOV/DMOV/EMOV ที่ทำงานอยู่จริง, Watch Window แสดงค่าสด</figcaption>
+    </figure>
+
+    <h2>เริ่ม Simulator</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>กด Simulation Start</strong>
+        เมนู <code>Debug → Start/Stop Simulation</code> หรือกดปุ่มรูปจอ Simulator ที่ Toolbar
+        — หน้าต่าง "GX Simulator3" จะเด้งขึ้นมา ตั้งให้อยู่ข้างหน้าจอ Ladder
+      </li>
+
+      <li>
+        <strong>โปรแกรมจะถูก Download อัตโนมัติ</strong>
+        Simulator จะเลียนแบบ FX5U ตัวจริงและรับโปรแกรมที่เพิ่ง Convert
+        — สถานะของ PLC ใน Simulator จะเป็น <strong>RUN</strong> โดยอัตโนมัติ
+      </li>
+
+      <li>
+        <strong>เปิด Device Monitor</strong>
+        เมนู <code>Online → Watch → Register Watch Window 1</code>
+        — พิมพ์ <code>X0</code>, <code>X1</code>, <code>Y0</code>, <code>T0</code>, <code>D10</code> ฯลฯ ลงไป
+        เพื่อดูค่าทั้งหมดในที่เดียว
+      </li>
+
+      <li>
+        <strong>Force ค่า Input</strong>
+        ใน Ladder Editor (ตอน Simulation รันอยู่) ดับเบิลคลิกที่ X0 → จะมี Dialog ให้กด ON/OFF
+        — หรือใช้เมนู <code>Debug → Modify Value</code>
+      </li>
+
+      <li>
+        <strong>ดู Animation บน Ladder</strong>
+        Contact ที่ ON จะ <span style="color:var(--ok)">เขียวสว่าง</span>
+        ส่วน Coil ที่ ON จะ <span style="color:var(--accent)">ส้มสว่าง</span> — เหมาะกับการ debug Logic แบบ visual
+      </li>
+    </ol>
+
+    <h2>ตัวอย่างจริง — Star–Delta Motor Starter ใน Simulator</h2>
+
+    <p>เอาโปรแกรม Star–Delta จาก <a href="mit-02-ladder.html">M02 — Ladder Logic</a> มา Simulate</p>
+
+    <figure>
+      <img src="images/ladder-star-delta-km.png" alt="Star-Delta ladder with KM1/KM2/KM3 labels">
+      <figcaption>Ladder ที่จะ Simulate — X0 = START, X5 = STOP, Y0 = KM1 (Main), Y1 = KM2 (Delta), Y2 = KM3 (Star), T0 = 5 วินาที</figcaption>
+    </figure>
+
+    <h3>Step 1 — เขียน Ladder ทั้งสามรัง</h3>
+
+    <pre><code>; Rung 1 — Main Contactor
+LD   X0    OR   Y0    ANI  X1    AND  X2    OUT  Y0
+
+; Rung 2 — Star (ON ระหว่าง T0 ยังไม่ครบ)
+LD   Y0    ANI  T0    OUT  Y1
+LD   Y0    OUT  T0   K50    ; 5.0 วินาที
+
+; Rung 3 — Delta (ON หลัง T0 ครบ, Interlock กับ Y1)
+LD   T0    ANI  Y1    AND  Y0    OUT  Y2</code></pre>
+
+    <h3>Step 2 — สร้าง Test Sequence</h3>
+
+    <ol class="steps">
+      <li>
+        <strong>ตั้งค่าเริ่มต้น</strong>
+        Force <code>X1 = OFF</code>, <code>X2 = ON</code> (Overload OK), <code>X0 = OFF</code> →
+        ทุก Output ต้อง OFF
+      </li>
+      <li>
+        <strong>กด Start</strong>
+        Force <code>X0 = ON</code> ครู่หนึ่งแล้ว OFF — ดูว่า:
+        <ul>
+          <li><code>Y0</code> (Main) <strong>ON ค้าง</strong> (เพราะ self-hold)</li>
+          <li><code>Y1</code> (Star) <strong>ON</strong> ทันที</li>
+          <li><code>T0</code> เริ่มนับขึ้นเรื่อย ๆ</li>
+        </ul>
+      </li>
+      <li>
+        <strong>รอครบ 5 วินาที</strong>
+        เมื่อ <code>T0</code> ครบ K50:
+        <ul>
+          <li><code>Y1</code> (Star) ต้อง <strong>OFF</strong></li>
+          <li><code>Y2</code> (Delta) ต้อง <strong>ON</strong></li>
+        </ul>
+      </li>
+      <li>
+        <strong>กด Stop</strong>
+        Force <code>X1 = ON</code> → ทุก Output ต้อง OFF
+      </li>
+      <li>
+        <strong>ทดสอบ Overload</strong>
+        ตอนมอเตอร์ติด, Force <code>X2 = OFF</code> (จำลอง Overload trip) → ทุก Output ต้องตัดทันที
+      </li>
+    </ol>
+
+    <div class="callout note">
+      <strong>ทำไม X2 ใช้ AND ไม่ใช่ ANI?</strong>
+      เพราะ Overload Relay เวลาปกติ contact <strong>NC จะเป็น Closed</strong>
+      → PLC อ่านเป็น ON → ใช้ AND กับ X2 → ถ้า Overload trip → X2 OFF → ตัดวงจร
+    </div>
+
+    <h2>จาก Simulator ไป PLC จริง</h2>
+
+    <p>เมื่อโปรแกรม Simulate ผ่านแล้ว ต้องการ Download เข้า PLC จริง:</p>
+
+    <ol class="steps">
+      <li>
+        <strong>เปิด Current Connection Destination</strong>
+        เมนู <code>Online → Current Connection Destination...</code>
+      </li>
+      <li>
+        <strong>เลือกวิธีเชื่อมต่อ</strong>
+        <figure style="margin-top:10px"><img src="images/gxworks3-connection-destination.png" alt="Select connection destination dialog"><figcaption>เลือก <strong>Directly Connect to CPU</strong> ถ้าต่อสาย LAN ตรง หรือ <strong>Other Connection Method</strong> ถ้าผ่าน Switch/Hub</figcaption></figure>
+      </li>
+      <li>
+        <strong>ตั้งค่า Ethernet</strong>
+        <figure style="margin-top:10px"><img src="images/gxworks3-ethernet-hub-direct.png" alt="Ethernet Port Direct vs HUB"><figcaption>เลือก <strong>Connection via HUB</strong> (ใช้ Switch) → ใส่ <code>192.168.250.11</code> → กด <strong>Find(S)</strong> ระบบจะสแกนหา CPU ในเครือข่าย</figcaption></figure>
+      </li>
+      <li>
+        <strong>กด Connection Test</strong>
+        ถ้าทุกอย่างถูก จะได้กล่อง popup "Successfully connected with the FX5UCPU"
+        <figure style="margin-top:10px"><img src="images/gxworks3-successfully-connected.png" alt="Successfully connected dialog"></figure>
+      </li>
+      <li>
+        <strong>เขียนโปรแกรมเข้า PLC</strong>
+        <code>Online → Write to PLC...</code> → เลือก Parameter + Program + Comment → กด <strong>Execute</strong>
+      </li>
+    </ol>
+
+    <h3>🌐 IP &amp; Subnet — เช็คก่อนต่อ</h3>
+
+    <p>ปัญหาที่เจอบ่อยที่สุดเวลาต่อ Ethernet PLC: <strong>PC กับ PLC อยู่คนละ Subnet กัน</strong> →
+       เจอกันไม่เจอ ใส่ IP ผิด Subnet Mask ก็เจอกันไม่ได้ · ลองเช็คก่อน:</p>
+
+    <div class="subnet-check"></div>
+
+    <h2>การ Debug ที่นิยมในห้อง Lab</h2>
+
+    <div class="lesson-grid">
+      <div class="lesson">
+        <span class="badge">DEBUG 01</span>
+        <div class="title">Force I/O</div>
+        <div class="desc">เปิด/ปิด Bit ตัวใดก็ได้ระหว่าง Simulate — ใช้แทน Hardware ที่ยังไม่มี</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">DEBUG 02</span>
+        <div class="title">Step Execution</div>
+        <div class="desc"><code>Debug → Step → Step Execution</code> — รัน 1 Scan ทีละครั้ง ดู State ค่อย ๆ เปลี่ยน</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">DEBUG 03</span>
+        <div class="title">Breakpoint</div>
+        <div class="desc">วาง Breakpoint ใน Rung → Simulator จะ pause เมื่อเงื่อนไขถึง — เหมาะกับโปรแกรมยาว ๆ</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">DEBUG 04</span>
+        <div class="title">Sampling Trace</div>
+        <div class="desc">บันทึกค่าของ device หลายตัวเทียบกับเวลา — เห็น Timing diagram ได้</div>
+      </div>
+    </div>
+
+    <h2>Pitfalls ที่นิสิตชอบเจอ</h2>
+
+    <div class="callout warn">
+      <strong>1. ลืม Convert (F4) แล้ว Simulate</strong>
+      ถ้าแก้ Ladder แต่ไม่ F4 — Simulator จะรัน <em>โปรแกรมเก่า</em> อยู่ ทำให้งงทำไมไม่เปลี่ยนตามที่แก้
+    </div>
+
+    <div class="callout warn">
+      <strong>2. ใช้ Y ซ้ำใน 2 Rung</strong>
+      ใน Ladder ห้ามมี <code>OUT Y0</code> ปรากฏใน 2 Rung — Rung ที่อยู่ล่างจะ override ตัวบนเสมอ
+      ใช้ <code>SET/RST</code> แทน หรือรวม Logic ให้อยู่ในRung เดียว
+    </div>
+
+    <div class="callout warn">
+      <strong>3. Timer Number ชน</strong>
+      ใช้ <code>T0</code> ในหลาย Rung โดยมี <code>OUT T0</code> สองที่ — ผลลัพธ์จะเพี้ยน
+      Timer Number ต้องไม่ซ้ำในทั้งโปรแกรม
+    </div>
+
+    <h2>ก่อนไปต่อ</h2>
+    <ul>
+      <li>F5/F6/F7/F8 + F4 (Convert) — รู้คีย์ลัดพอแล้ว เขียน Ladder จะเร็วมาก</li>
+      <li>Simulate ทุกโปรแกรมก่อนยิงเข้าจริง — เซฟทั้งเงินและตัวคุณเอง</li>
+      <li>Force I/O และ Device Monitor คือเครื่องมือ Debug หลัก</li>
+      <li>Watch out: ลืม Convert, OUT ซ้ำ, Timer ชน</li>
+    </ul>
+
+    <div class="callout tip">
+      <strong>วิดีโอประกอบ</strong>
+      ดูตัวอย่าง Simulate Star–Delta แบบจริง ๆ ได้ใน
+      <a href="videos.html">EP3 — Star/Delta Simulation</a>
+    </div>
+
+    <div class="pager">
+      <a href="mit-03-sensors.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">M03 — เซ็นเซอร์ &amp; I/O</div>
+      </a>
+      <a href="mit-05-hmi.html" class="next">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">M05 — HMI Samkoon</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  PLC Automation Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){ var lb=document.getElementById('lightbox'); if(!lb) return; var img=lb.querySelector('img');
+  document.querySelectorAll('.content img').forEach(function(im){im.style.cursor='zoom-in';im.addEventListener('click',function(){img.src=im.src;lb.classList.add('open');});});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.classList.remove('open');});})();
+</script>
+<script src="js/progress.js" defer></script>
+<script src="js/activities/subnet-check.js" defer></script>
+</body>
+</html>

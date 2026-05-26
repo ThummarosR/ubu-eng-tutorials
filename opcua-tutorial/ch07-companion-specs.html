@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>07 — Companion Specifications | OPC UA Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="OPC UA Tutorial"></div>
+      <div>
+        <div class="title">OPC UA</div>
+        <div class="subtitle">สะพานสู่ Industrie 4.0</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>แนวคิดหลัก</h4>
+      <a href="ch01-why-opcua.html"><span class="num">01</span> ทำไมต้อง OPC UA?</a>
+      <a href="ch02-architecture.html"><span class="num">02</span> สถาปัตยกรรมพื้นฐาน</a>
+      <a href="ch03-information-model.html"><span class="num">03</span> Information Model</a>
+      <a href="ch04-services.html"><span class="num">04</span> Services</a>
+      <a href="ch05-pubsub.html"><span class="num">05</span> PubSub &amp; MQTT</a>
+      <a href="ch06-security.html"><span class="num">06</span> Security</a>
+
+      <h4>ระบบนิเวศ</h4>
+      <a href="ch07-companion-specs.html" class="active"><span class="num">07</span> Companion Specifications</a>
+      <a href="ch08-field-level.html"><span class="num">08</span> OPC UA FX (Field Level)</a>
+      <a href="ch09-cloud.html"><span class="num">09</span> Cloud Integration</a>
+
+      <h4>ลงมือทำ</h4>
+      <a href="ch10-handson.html"><span class="num">10</span> 🧪 Hands-on (UaExpert)</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ 07 · Domain-specific · VDMA · 430+ Models</span>
+    <h1>Companion Specifications</h1>
+    <p class="lede">
+      ทำไม Robot ของ KUKA, ABB, Yaskawa, FANUC ถึงพูดภาษาเดียวกันได้? เพราะมี
+      <strong>OPC UA Companion Specification</strong> ที่นิยามว่า "Robot ในมาตรฐาน OPC UA หน้าตาแบบไหน" —
+      ปัจจุบันมีกว่า 430+ Models ครอบคลุมแทบทุกอุตสาหกรรม
+    </p>
+
+    <h2>ปัญหา — แต่ละโรงงานสร้าง Information Model ของตัวเอง</h2>
+
+    <p>
+      สมมุติว่า Robot 3 ตัวในโรงงานเดียวกัน ผู้ผลิตต่างกัน ทุกตัวเป็น OPC UA Server พร้อม Address Space:
+    </p>
+
+    <pre><code># Robot ของ Vendor A
+RobotA
+  ├─ position_x          : Double
+  ├─ position_y          : Double
+  ├─ joint_angles[6]     : Double[]
+  ├─ gripper_open()      : Method
+  └─ ...
+
+# Robot ของ Vendor B
+KUKARobot1
+  ├─ X                   : Float
+  ├─ Y                   : Float
+  ├─ J1, J2, J3, J4, J5, J6 : Double
+  ├─ OpenTool()          : Method
+  └─ ...
+
+# Robot ของ Vendor C
+RoboT_3
+  ├─ posX                : Real32
+  ├─ ...                 (โครงสร้างต่างไปอีก)</code></pre>
+
+    <p>
+      ผลคือ — MES ของโรงงานต้องเขียน Code <strong>3 ชุด</strong> เพื่ออ่านข้อมูลเดียวกัน
+      ถ้าเปลี่ยน Vendor ก็ต้องเขียนใหม่ — ปัญหาเหมือนกับ Modbus เลย แค่ใน Layer ที่สูงขึ้น
+    </p>
+
+    <h2>คำตอบ — Companion Specifications</h2>
+
+    <p>
+      Companion Specification (CS) คือ <em>มาตรฐานเฉพาะอุตสาหกรรม</em> ที่กำหนดว่า:
+    </p>
+
+    <ul>
+      <li>"Robot ใน OPC UA ต้องมี ObjectType ชื่อ <code>MotionDeviceType</code>"</li>
+      <li>"<code>MotionDeviceType</code> ต้องมี Variable <code>Position</code> (Vector3D) และ <code>JointAngles</code> (Array)"</li>
+      <li>"ต้องมี Method <code>OpenGripper()</code>, <code>CloseGripper()</code>"</li>
+      <li>"ต้องมี Event <code>EmergencyStop</code>"</li>
+      <li>... ฯลฯ</li>
+    </ul>
+
+    <p>
+      ทุก Vendor ที่อ้างว่าสนับสนุน <em>OPC UA for Robotics</em> ต้องทำตาม CS นี้ — ผลคือ Client เขียน Code
+      <strong>ครั้งเดียว ใช้กับ Robot ทุกยี่ห้อ</strong>
+    </p>
+
+    <div class="callout tip">
+      <strong>VDMA เรียก Companion Specs ว่า "The Global Production Language"</strong> — VDMA คือสมาคมผู้ผลิตเครื่องจักรของเยอรมัน
+      เป็นคนเริ่มต้นมาตรฐานเหล่านี้ร่วมกับ OPC Foundation
+    </div>
+
+    <h2>หมวดหมู่ของ Companion Specifications</h2>
+
+    <p>ปัจจุบันมีกว่า 60 Companion Specifications แบ่งเป็นหมวด:</p>
+
+    <h3>🏭 Generic Device Models (พื้นฐานที่ทุกอุปกรณ์ใช้)</h3>
+
+    <ul>
+      <li><strong>OPC 10000-100</strong> — UA for Devices (DI) — พื้นฐานของอุปกรณ์ทุกตัว</li>
+      <li><strong>OPC 10020</strong> — UA for Analyzer Devices</li>
+      <li><strong>OPC 10000-211</strong> — UA for Global Positioning</li>
+      <li><strong>OPC 30000</strong> — UA for PLCs based on IEC 61131-3 (PLCopen) — สำหรับ PLC ทุกแบรนด์</li>
+      <li><strong>OPC 30081</strong> — UA for Process Automation Devices (PA-DIM)</li>
+    </ul>
+
+    <h3>🤖 Manufacturing Devices (เครื่องจักรผลิต)</h3>
+
+    <ul>
+      <li><strong>OPC 40001-1 ถึง -100</strong> — UA for Machinery (Basic Blocks, Process Values, Job Mgmt, Energy, Results)</li>
+      <li><strong>OPC 40010</strong> — UA for Robotics</li>
+      <li><strong>OPC 40100</strong> — UA for Machine Vision</li>
+      <li><strong>OPC 40200</strong> — UA for Weighing Technology</li>
+      <li><strong>OPC 40501</strong> — UA for Machine Tools</li>
+      <li><strong>OPC 40502</strong> — UA for CNC Systems</li>
+      <li><strong>OPC 40450/40451</strong> — UA for Joining Systems / Tightening</li>
+      <li><strong>OPC 40550</strong> — UA for Woodworking</li>
+      <li><strong>OPC 40077-40091</strong> — UA for Plastics &amp; Rubber Machines</li>
+      <li><strong>OPC 30070-1</strong> — UA for MTConnect (CNC ของอเมริกา)</li>
+    </ul>
+
+    <h3>⚡ Energy</h3>
+
+    <ul>
+      <li><strong>OPC 10040</strong> — UA for IEC 61850 (Electrical Substations)</li>
+      <li><strong>OPC 30020</strong> — UA for MDIS (Oil &amp; Gas)</li>
+      <li><strong>OPC UA for Wind Power Plants</strong> (IEC 61400-25)</li>
+      <li><strong>OPC 34100</strong> — UA for Power Consumption Management</li>
+      <li><strong>OPC UA for Carbon Capture, Storage and Reporting</strong></li>
+      <li><strong>OPC UA for Solar PV Operations and Maintenance</strong></li>
+    </ul>
+
+    <h3>📦 Enterprise &amp; Packaging</h3>
+
+    <ul>
+      <li><strong>OPC 10030</strong> — UA for ISA-S95 (MES Integration)</li>
+      <li><strong>OPC 10031-4</strong> — UA for ISA-95 Job Control</li>
+      <li><strong>OPC 30050</strong> — UA for PackML (OMAC) — packaging machines</li>
+      <li><strong>OPC 40600</strong> — UA for Weihenstephan Standards (beverage)</li>
+      <li><strong>OPC UA for Asset Administration Shell (AAS)</strong></li>
+    </ul>
+
+    <h3>🔌 Field Communication (เชื่อม Fieldbus เดิม)</h3>
+
+    <ul>
+      <li><strong>OPC 30120</strong> — UA for IO-Link Devices and Masters</li>
+      <li><strong>OPC 30140 ถึง 30145</strong> — UA for PROFINET (รวมถึง PROFIenergy, Remote IO, Drives)</li>
+      <li><strong>OPC 30100</strong> — UA for SERCOS Devices</li>
+      <li><strong>OPC 30110</strong> — UA for POWERLINK</li>
+      <li><strong>OPC 30130</strong> — UA for CC-Link (Mitsubishi)</li>
+      <li><strong>OPC UA for CIP Devices</strong> (EtherNet/IP)</li>
+      <li><strong>OPC 30080/30090</strong> — UA for Field Device Integration (FDI/FDT)</li>
+    </ul>
+
+    <h3>🏢 Building &amp; Misc</h3>
+
+    <ul>
+      <li><strong>OPC 30030</strong> — UA for BACNET (Building Automation)</li>
+      <li><strong>OPC 30200</strong> — UA for Commercial Kitchen Equipment</li>
+      <li><strong>OPC 30060</strong> — UA for Tobacco Machines</li>
+      <li><strong>OPC 30500</strong> — UA for Laboratory &amp; Analytical Device Standard (LADS)</li>
+      <li><strong>OPC 30010</strong> — UA for AutoID Devices (RFID, Barcode)</li>
+    </ul>
+
+    <div class="callout info">
+      <strong>รายการเต็มอยู่ที่</strong> <a href="https://opcfoundation.org/developer-tools/documents/" target="_blank">opcfoundation.org</a>
+      ทุก Spec <strong>โหลด PDF ฟรี</strong> และมี <strong>UaNodeSet</strong> XML สำหรับโหลดเข้า Server โดยตรง
+    </div>
+
+    <h2>ตัวอย่างจริง — Robotics Companion Spec</h2>
+
+    <p>
+      OPC 40010 (UA for Robotics) นิยาม ObjectType ที่สำคัญ:
+    </p>
+
+    <pre><code>MotionDeviceSystemType
+  ├─ MotionDevices (Folder)
+  │   └─ MotionDevice : MotionDeviceType
+  │        ├─ Manufacturer    : LocalizedText
+  │        ├─ Model           : LocalizedText
+  │        ├─ SerialNumber    : String
+  │        ├─ MotionDeviceCategory : Int32  (Articulated, SCARA, Cartesian, ...)
+  │        ├─ Axes (Folder)
+  │        │    └─ Axis_1 : AxisType
+  │        │         ├─ ActualPosition  : Double
+  │        │         ├─ ActualSpeed     : Double
+  │        │         └─ ...
+  │        ├─ FlangeLoad       : LoadType
+  │        ├─ Power            : Boolean
+  │        └─ ...
+  ├─ Controllers (Folder)
+  │   └─ Controller : ControllerType
+  │        ├─ SoftwareName     : String
+  │        ├─ SoftwareRevision : String
+  │        ├─ ComponentName    : String
+  │        ├─ TaskControls (Folder)
+  │        └─ ...
+  └─ SafetyStates (Folder)
+       └─ EmergencyStop : Boolean</code></pre>
+
+    <p>
+      <strong>ทุก Robot ที่อ้างว่าสนับสนุน OPC UA for Robotics</strong> — Kuka, ABB, FANUC, Universal Robots, Yaskawa, Mitsubishi, …
+      จะมีโครงสร้างนี้ — Client เขียน <code>read_value('Axes/Axis_1/ActualPosition')</code> ครั้งเดียวใช้ได้กับทุกตัว
+    </p>
+
+    <h2>UaNodeSet — แชร์ Information Model</h2>
+
+    <p>
+      แต่ละ Companion Spec มาพร้อมไฟล์ <strong>UaNodeSet.xml</strong> — XML ที่อธิบายโครงสร้าง Address Space ทั้งหมด
+      Server โหลดไฟล์นี้แล้วได้ Type Hierarchy ของ Spec นั้นทันที — ไม่ต้องเขียนเองทุก Node
+    </p>
+
+    <pre><code>&lt;UANodeSet xmlns="..."&gt;
+  &lt;NamespaceUris&gt;
+    &lt;Uri&gt;http://opcfoundation.org/UA/Robotics/&lt;/Uri&gt;
+  &lt;/NamespaceUris&gt;
+  &lt;UAObjectType NodeId="ns=1;i=1002" BrowseName="1:MotionDeviceType"&gt;
+    &lt;DisplayName&gt;MotionDevice&lt;/DisplayName&gt;
+    &lt;References&gt;
+      &lt;Reference ReferenceType="HasSubtype" IsForward="false"&gt;
+        i=58 &lt;!-- BaseObjectType --&gt;
+      &lt;/Reference&gt;
+    &lt;/References&gt;
+  &lt;/UAObjectType&gt;
+  ...
+&lt;/UANodeSet&gt;</code></pre>
+
+    <h2>UA Cloud Library — รวม Models ไว้ที่เดียว</h2>
+
+    <p>
+      OPC Foundation มี <strong>UA Cloud Library</strong> ที่ <a href="https://uacloudlibrary.opcfoundation.org" target="_blank">uacloudlibrary.opcfoundation.org</a>
+      — Repository ออนไลน์ของ UaNodeSet ทุกตัว ทั้งจาก OPC Foundation และจาก Member ทั่วโลก:
+    </p>
+
+    <ul>
+      <li>Browse Models ผ่าน Web Browser</li>
+      <li>โหลด UaNodeSet XML</li>
+      <li>REST API สำหรับโหลดอัตโนมัติ</li>
+      <li><strong>Equinor ก็ใช้ที่นี่</strong> — Open-source Asset Templates ของตัวเองไว้ในนี้ ให้คนอื่นเอาไปใช้ได้</li>
+    </ul>
+
+    <h2>Harmonization — เพื่อไม่ให้ Models ขัดกัน</h2>
+
+    <p>
+      Companion Spec เกิดจากหลายอุตสาหกรรม ที่บางครั้ง <em>แก้ปัญหาเดียวกันคนละแบบ</em> เช่น
+      "หน่วย Engineering Unit" บาง Spec ใช้ EUInformation จาก Core, บางตัวสร้าง Type ของตัวเอง
+    </p>
+
+    <p>
+      OPC Foundation จึงมี <strong>Harmonization Working Group</strong> ที่:
+    </p>
+
+    <ul>
+      <li>Review Companion Spec ใหม่ — เอาแนวคิดที่ใช้ร่วมกันได้ย้ายลงมา Core</li>
+      <li>นิยาม Common Reference Types — เช่น "Located In", "Connected To", "Part Of"</li>
+      <li>Asset Management Basics (OPC 10000-110)</li>
+      <li>Industrial Automation (OPC 10000-200)</li>
+      <li>Best Practices Whitepaper (OPC 11030)</li>
+    </ul>
+
+    <p>เป้าหมาย: "ทำสิ่งที่คล้ายกันให้คล้ายกัน, ทำสิ่งที่เหมือนกันให้เหมือนกันเป๊ะ"</p>
+
+    <h2>สรุปบทที่ 07</h2>
+
+    <ul>
+      <li><strong>Companion Specifications</strong> = มาตรฐานเฉพาะอุตสาหกรรมที่ใช้ OPC UA Information Model</li>
+      <li>มีกว่า <strong>430+ Models</strong> ครอบคลุม Robotics, Machine Tools, CNC, Vision, IO-Link, Energy, Building, Lab, …</li>
+      <li>เกิดจากความร่วมมือของ <strong>OPC Foundation + VDMA + อุตสาหกรรม</strong> — "Global Production Language"</li>
+      <li>ทุก Spec มี <strong>UaNodeSet XML</strong> โหลดเข้า Server ได้เลย — ไม่ต้องเขียน Type ใหม่</li>
+      <li><strong>UA Cloud Library</strong> รวม Models ทั้งหมด + REST API</li>
+      <li><strong>Harmonization Group</strong> ดูแลให้ Models ไม่ขัดกัน — ใช้ Pattern เดียวกันแก้ปัญหาคล้ายกัน</li>
+      <li>นี่คือเหตุผลที่ Renault, Bühler, Miele, Equinor ใช้ OPC UA แทนที่จะสร้าง Standard ของตัวเอง</li>
+    </ul>
+
+    <p>บทต่อไป — <strong>OPC UA FX</strong> — เอา OPC UA ลงไปถึงระดับ Field (เซ็นเซอร์/แอคชูเอเตอร์) แทน Fieldbus เดิม</p>
+
+    <div class="pager">
+      <a href="ch06-security.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">06 — Security</div>
+      </a>
+      <a href="ch08-field-level.html" class="next">
+        <div class="label">ถัดไป →</div>
+        <div class="title">08 — OPC UA FX (Field Level)</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  OPC UA &amp; Industrie 4.0 Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){
+  var lb = document.getElementById('lightbox');
+  if(!lb) return;
+  var img = lb.querySelector('img');
+  document.querySelectorAll('.gallery a, .zoomable').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      img.src = a.getAttribute('href') || a.getAttribute('data-src');
+      lb.classList.add('open');
+    });
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') lb.classList.remove('open');
+  });
+})();
+</script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,325 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>คู่มือ PLC Automation — Mitsubishi + Omron + SCADA</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="PLC Automation"></div>
+      <div>
+        <div class="title">PLC Automation</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย — 2 Tracks</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html" class="active"><span class="num">00</span> หน้าแรก &amp; เลือก Track</a>
+
+      <h4>🟥 Mitsubishi Track</h4>
+      <a href="mit-01-intro.html"><span class="num">M01</span> รู้จัก FX5U</a>
+      <a href="mit-02-ladder.html"><span class="num">M02</span> Ladder Logic</a>
+      <a href="mit-03-sensors.html"><span class="num">M03</span> เซ็นเซอร์ &amp; I/O</a>
+      <a href="mit-04-simulation.html"><span class="num">M04</span> GX Simulator</a>
+      <a href="mit-05-hmi.html"><span class="num">M05</span> HMI Samkoon</a>
+      <a href="mit-06-pid.html"><span class="num">M06</span> PID &amp; Auto-Tuning</a>
+      <a href="mit-07-modbus.html"><span class="num">M07</span> Modbus + PM2230</a>
+
+      <h4>🟦 Omron Track</h4>
+      <a href="omron-01-intro.html"><span class="num">O01</span> รู้จัก CP1L/CPM2A</a>
+      <a href="omron-02-ladder.html"><span class="num">O02</span> CX-Programmer Ladder</a>
+      <a href="omron-03-fbd.html"><span class="num">O03</span> Function Block (FBD)</a>
+      <a href="omron-04-modbus.html"><span class="num">O04</span> Modbus + Inverter</a>
+      <a href="omron-05-e5cc.html"><span class="num">O05</span> E5CC Temp Control</a>
+      <a href="omron-06-scada.html"><span class="num">O06</span> SCADA (CX-Supervisor)</a>
+      <a href="omron-07-scada-workshop.html"><span class="num">O07</span> 🏭 SCADA Workshop</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="videos.html"><span class="num">▶</span> วิดีโอเลคเชอร์</a>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <section class="hero">
+      <span class="eyebrow">Industrial Automation · 2 Tracks · Year 3–4 EE</span>
+      <h1>เรียนรู้ PLC Automation<br>แบบ Step-by-Step</h1>
+      <p class="lede">
+        คู่มือฉบับภาษาไทย ครอบคลุม PLC สอง Brand ที่นิยมมากที่สุดในประเทศไทย —
+        <strong>Mitsubishi FX5U</strong> และ <strong>Omron CP1L/CP2E</strong> พร้อม HMI, PID, Modbus,
+        ตัวควบคุมอุณหภูมิ และ SCADA — สำหรับนิสิตวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ มหาวิทยาลัยอุบลราชธานี
+      </p>
+      <div class="hero-meta">
+        <span>📦 <b>13</b> บทเรียน · 2 Tracks</span>
+        <span>🎥 <b>12+</b> วิดีโอ</span>
+        <span>📄 <b>40+</b> เอกสาร</span>
+        <span>🖼️ <b>96+</b> รูปประกอบ</span>
+      </div>
+    </section>
+
+    <figure class="hero-poster is-portrait zoomable" data-src="images/poster.jpg" style="cursor:zoom-in">
+      <img src="images/poster.jpg" alt="PLC Automation — สรุปภาพรวมบทเรียน 2 แทร็ก">
+    </figure>
+    <p class="muted" style="text-align:center;margin-top:-12px;margin-bottom:32px;font-size:13px">
+      📋 ภาพสรุปบทเรียน 2 แทร็ก (Mitsubishi + Omron) — คลิกเพื่อดูขนาดใหญ่
+    </p>
+
+    <h2>เลือก Track ที่จะเรียน</h2>
+    <p>2 Brand · 2 เส้นทางการเรียน — เลือกที่ตรงกับเครื่องในห้อง Lab ของคุณ หรือเรียนทั้งสอง Brand เพื่อมุมมองที่กว้างขึ้น
+       (Concept พื้นฐานเหมือนกัน เปลี่ยนแค่ Syntax และเครื่องมือ)</p>
+
+    <div class="lesson-grid" style="margin-bottom:32px">
+      <a class="lesson" href="mit-01-intro.html" style="border-left:5px solid #ef4444">
+        <span class="badge" style="background:linear-gradient(135deg,#ef4444,#fb7185);color:#fff">🟥 Track 1 · Mitsubishi</span>
+        <div class="title">Mitsubishi FX5U + GX Works3</div>
+        <div class="desc">
+          PLC <strong>MELSEC iQ-F FX5U-32MT/ES</strong> · GX Works3 · HMI Samkoon · ตัวควบคุม Delta DTK · Power Meter Schneider PM2230 ·
+          PID Auto-Tuning · Modbus RTU/TCP — รวม <strong>7 บทเรียน</strong>
+        </div>
+        <div class="tags">
+          <span class="tag orange">FX5U</span>
+          <span class="tag">GX Works3</span>
+          <span class="tag">Modbus</span>
+          <span class="tag">PID</span>
+        </div>
+      </a>
+
+      <a class="lesson" href="omron-01-intro.html" style="border-left:5px solid #3b82f6">
+        <span class="badge" style="background:linear-gradient(135deg,#3b82f6,#60a5fa);color:#fff">🟦 Track 2 · Omron</span>
+        <div class="title">Omron CP1L/CP2E + CX-Programmer</div>
+        <div class="desc">
+          PLC <strong>CP1L</strong> (และ <strong>CP2E</strong> รุ่นล่าสุด) · CX-Programmer · Function Block Diagram ·
+          Modbus กับ Inverter Omron JX/MX · ตัวควบคุม E5CC · SCADA ด้วย CX-Supervisor — รวม <strong>6 บทเรียน</strong>
+        </div>
+        <div class="tags">
+          <span class="tag cyan">CP1L</span>
+          <span class="tag">CX-Programmer</span>
+          <span class="tag violet">FBD</span>
+          <span class="tag">SCADA</span>
+        </div>
+      </a>
+    </div>
+
+    <div class="callout info">
+      <strong>เลือก Track ยังไงดี?</strong>
+      ถ้าห้อง Lab ของคุณใช้ <strong>FX5U</strong> หรือ <strong>HMI Samkoon</strong> → เริ่ม Track Mitsubishi · ถ้าใช้ <strong>CP1L/CPM2A</strong>
+      หรือ <strong>Omron E5CC</strong> → เริ่ม Track Omron · งานจริงในโรงงานพบทั้งสอง Brand เยอะมาก เรียนทั้งคู่ได้ประโยชน์
+    </div>
+
+    <h2>ทักษะที่จะได้</h2>
+    <p>ทั้งสอง Track ปูพื้นฐานเดียวกัน — Ladder Logic, การต่อ Sensor/Output, Simulation, การสื่อสารกับอุปกรณ์ภาคสนาม
+       — แล้วต่อยอดไปงานเฉพาะของแต่ละ Brand:</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="num">SKILL 1</div>
+        <div class="name">เขียน Ladder + FBD</div>
+        <div class="desc">Contact, Coil, Timer, Counter, MOV/BMOV, Function Block — บนทั้ง GX Works3 และ CX-Programmer</div>
+      </div>
+      <div class="card">
+        <div class="num">SKILL 2</div>
+        <div class="name">ต่อ Hardware ทั้งวงจร</div>
+        <div class="desc">Sink/Source · Sensor · Relay/Transistor Output · 3-phase Motor + Inverter</div>
+      </div>
+      <div class="card">
+        <div class="num">SKILL 3</div>
+        <div class="name">HMI &amp; SCADA</div>
+        <div class="desc">Samkoon SK-070FS (Mitsubishi) + CX-Supervisor (Omron) — Visualization ครบเซต</div>
+      </div>
+      <div class="card">
+        <div class="num">SKILL 4</div>
+        <div class="name">PID Control</div>
+        <div class="desc">Delta DTK4848 (Mitsubishi) + Omron E5CC (Omron) — Auto-Tune ในทั้งสอง Platform</div>
+      </div>
+      <div class="card">
+        <div class="num">SKILL 5</div>
+        <div class="name">Modbus Communication</div>
+        <div class="desc">Master/Slave · RTU/TCP · Function Codes · Inverter + Temp Controller + Power Meter</div>
+      </div>
+      <div class="card">
+        <div class="num">SKILL 6</div>
+        <div class="name">Industrial Practice</div>
+        <div class="desc">การออกแบบตู้ควบคุม · ความปลอดภัยทาง Wiring · Best Practices ของงานควบคุมอุตสาหกรรม</div>
+      </div>
+    </div>
+
+    <h2>ตู้ Lab ของเรา</h2>
+
+    <figure style="margin:8px 0 24px">
+      <img src="images/lab-control-panel.jpg" alt="ตู้ควบคุม PLC ใน lab EN7116">
+      <figcaption>ตู้ควบคุม Lab ห้อง EN7116 — FX5U + Inverter ATV320 + Temperature DTK + ปุ่มกด + รีเลย์ (Track Mitsubishi). Track Omron ใช้ CP1L-E + JX/MX Inverter + E5CC ในตู้ใกล้กัน</figcaption>
+    </figure>
+
+    <h3>อุปกรณ์ฝั่ง Mitsubishi Track</h3>
+    <div class="fig-side">
+      <figure><img src="images/fx5u-front.jpg" alt="Mitsubishi FX5U"><figcaption>FX5U-32MT/ES · PLC</figcaption></figure>
+      <figure><img src="images/samkoon-hmi-product.jpg" alt="Samkoon HMI"><figcaption>Samkoon SK-070FS · HMI</figcaption></figure>
+    </div>
+    <div class="fig-side">
+      <figure><img src="images/delta-dtk-display.jpg" alt="Delta DTK"><figcaption>Delta DTK4848 · Temp Ctrl</figcaption></figure>
+      <figure><img src="images/atv320-closeup.jpg" alt="ATV320"><figcaption>Schneider ATV320 · Inverter</figcaption></figure>
+    </div>
+    <div class="fig-side">
+      <figure><img src="images/pm2200-power-meter.jpg" alt="PM2200"><figcaption>Schneider PM2200 · Power Meter</figcaption></figure>
+      <figure><img src="images/3phase-motor.jpg" alt="3-phase motor"><figcaption>3-phase Induction Motor</figcaption></figure>
+    </div>
+
+    <h3>อุปกรณ์ฝั่ง Omron Track</h3>
+    <div class="fig-side">
+      <figure><img src="images/cp1l-em30dtd.jpg" alt="Omron CP1L"><figcaption>Omron CP1L-EM30DT-D · PLC</figcaption></figure>
+      <figure><img src="images/omron-e5ec-display.jpg" alt="Omron E5EC/E5CC"><figcaption>Omron E5EC/E5CC · Temp Ctrl</figcaption></figure>
+    </div>
+
+    <h2>Master Plan ของระบบ Lab</h2>
+    <p>เป้าหมายปลายทางของทั้ง 2 Tracks คือระบบ Automation ที่ PLC เป็น Master สื่อสารกับ Slave หลายตัวผ่าน Modbus — แตกต่างกันแค่ Brand:</p>
+
+    <div class="flowdiagram">
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node master" style="border-color:#ef4444;background:rgba(239,68,68,0.06)">
+          <h4 style="color:#ef4444">🟥 Mitsubishi Track · Master</h4>
+          <ul>
+            <li><strong>FX5U-32MT/ES</strong></li>
+            <li>+ GX Works3</li>
+            <li>+ Samkoon HMI</li>
+          </ul>
+        </div>
+        <div class="flowdiagram-node master" style="border-color:#3b82f6;background:rgba(59,130,246,0.06)">
+          <h4 style="color:#3b82f6">🟦 Omron Track · Master</h4>
+          <ul>
+            <li><strong>CP1L-EM30DT-D</strong></li>
+            <li>+ CX-Programmer</li>
+            <li>+ CX-Supervisor SCADA</li>
+          </ul>
+        </div>
+      </div>
+      <div style="text-align:center;margin:10px 0;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--accent-2)">
+        ↓ Modbus RTU/TCP ↓
+      </div>
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node slave" style="border-color:rgba(239,68,68,0.4)">
+          <h4 style="color:#ef4444">Mitsubishi Slaves</h4>
+          <ul>
+            <li>Delta DTK4848 — Temp Controller</li>
+            <li>Schneider ATV320 — VFD</li>
+            <li>Schneider PM2230 — Energy Meter</li>
+          </ul>
+        </div>
+        <div class="flowdiagram-node slave" style="border-color:rgba(59,130,246,0.4)">
+          <h4 style="color:#3b82f6">Omron Slaves</h4>
+          <ul>
+            <li>Omron E5CC — Temp Controller</li>
+            <li>Omron 3G3JX / MX — VFD</li>
+            <li>(ขยายเองได้ตามต้องการ)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <h2>ก่อนเริ่ม — สิ่งที่ต้องเตรียม</h2>
+
+    <h3>ซอฟต์แวร์</h3>
+    <ol class="steps">
+      <li>
+        <strong>GX Works3</strong>
+        ดาวน์โหลดจากเว็บไซต์ Mitsubishi Electric — เป็น IDE หลักสำหรับเขียน Ladder/FBD/ST บน FX5U
+        <br><span class="pill warn">ต้องลงทะเบียน MyMitsubishi</span>
+      </li>
+      <li>
+        <strong>GX Simulator (มาพร้อม GX Works3)</strong>
+        ใช้จำลองการทำงานของ PLC โดยไม่ต้องมี Hardware จริง — เหมาะสำหรับการเรียนรู้และทดสอบโปรแกรม
+      </li>
+      <li>
+        <strong>Samkoon HMI Editor</strong> <span class="pill">M05</span>
+        ดาวน์โหลดจาก samkoon.com.cn — ใช้ออกแบบหน้าจอสำหรับ SK-070FS
+      </li>
+      <li>
+        <strong>CX-Programmer (Omron)</strong> <span class="pill">Omron Track</span>
+        จำเป็นถ้าจะเรียน Omron Track (O02–O07) — ดาวน์โหลด CX-One Trial + CX-Supervisor Developer Trial จาก Omron Industrial Automation
+      </li>
+    </ol>
+
+    <h3>ฮาร์ดแวร์ในห้องปฏิบัติการ</h3>
+    <table>
+      <thead>
+        <tr><th>Track</th><th>รายการ</th><th>รุ่น</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>🟥 Mitsubishi</td><td>PLC</td><td><code>Mitsubishi FX5U-32MT/ES</code></td></tr>
+        <tr><td>🟥 Mitsubishi</td><td>HMI Touch Screen</td><td><code>Samkoon SK-070FS</code></td></tr>
+        <tr><td>🟥 Mitsubishi</td><td>Temperature Controller</td><td><code>Delta DTK4848</code></td></tr>
+        <tr><td>🟥 Mitsubishi</td><td>AC Inverter</td><td><code>Schneider Altivar ATV320</code></td></tr>
+        <tr><td>🟥 Mitsubishi</td><td>Power Meter</td><td><code>Schneider PowerLogic PM2230</code></td></tr>
+        <tr><td>🟦 Omron</td><td>PLC</td><td><code>Omron CP1L-EM30DT-D</code> (และ <code>CP2E</code> รุ่นใหม่)</td></tr>
+        <tr><td>🟦 Omron</td><td>Temperature Controller</td><td><code>Omron E5CC / E5EC-QR2ASM</code></td></tr>
+        <tr><td>🟦 Omron</td><td>AC Inverter</td><td><code>Omron 3G3JX / 3G3MX</code></td></tr>
+        <tr><td>ทั่วไป</td><td>Inductive Proximity</td><td><code>LJ18A3-8-Z/BX</code> (NPN, NO 8mm)</td></tr>
+        <tr><td>ทั่วไป</td><td>Photoelectric Sensor</td><td><code>OMRON E3JK-R4M1</code> (Retroreflective)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับสำหรับนิสิตที่เพิ่งเริ่ม</strong>
+      ถ้ายังไม่เคยเขียน PLC มาก่อน เริ่มจาก
+      <a href="mit-01-intro.html">M01 (Mitsubishi)</a> หรือ <a href="omron-01-intro.html">O01 (Omron)</a>
+      แล้วลองจำลองตัวอย่าง <strong>Star–Delta Motor Start</strong> ใน <a href="mit-04-simulation.html">M04 — GX Simulator</a>
+      ก่อนต่อ Hardware จริง — จะช่วยให้เข้าใจ Logic ก่อนที่จะกังวลเรื่องสายไฟ
+    </div>
+
+    <div class="callout note">
+      <strong>คู่มือนี้สร้างมาจาก</strong>
+      เอกสารอบรม FX5U โดย <strong>อ. ผดุง กิจแสวง</strong> · ตำรา PLC โดย <strong>อ. อุทัย</strong> · ใบงาน Workshop PLC + FBD Temperature ของภาควิชา EE/UBU ·
+      คู่มือ Omron CP1L/CP2E/CPM2A · ตำรา CX-Supervisor · และคู่มือผู้ผลิตจาก Mitsubishi, Omron, Schneider, Delta, Samkoon
+      <br>ดูเอกสารต้นฉบับทั้งหมดได้ที่ <a href="references.html">หน้าเอกสารอ้างอิง</a>
+    </div>
+
+    <h2>การใช้คู่มือนี้</h2>
+    <p>คู่มือเป็นเว็บไซต์ static — ไม่ต้องติดตั้งอะไร เพียงเปิด <code>index.html</code>
+       ด้วยเบราว์เซอร์ใดก็ได้ ไฟล์ทั้งหมด (PDF, วิดีโอ, รูปประกอบ) อยู่ในโฟลเดอร์
+       <code>PLC project/</code> และ <code>images/</code> ติดมาเรียบร้อย</p>
+
+    <div class="pager">
+      <a href="mit-01-intro.html">
+        <div class="label">🟥 เริ่ม Track 1 →</div>
+        <div class="title">M01 — Mitsubishi FX5U</div>
+      </a>
+      <a href="omron-01-intro.html" class="next">
+        <div class="label">🟦 เริ่ม Track 2 →</div>
+        <div class="title">O01 — Omron CP1L</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  PLC Automation Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+  <br>เรียบเรียงจากเอกสารอบรม FX5U โดย อ. ผดุง กิจแสวง และคู่มือผู้ผลิต
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){
+  var lb = document.getElementById('lightbox');
+  if(!lb) return;
+  var img = lb.querySelector('img');
+  document.querySelectorAll('.gallery a, .zoomable').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      img.src = a.getAttribute('href') || a.getAttribute('data-src');
+      lb.classList.add('open');
+    });
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') lb.classList.remove('open');
+  });
+})();
+</script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

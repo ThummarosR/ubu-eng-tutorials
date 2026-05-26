@@ -1,0 +1,446 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M07 — Modbus &amp; Power Meter | PLC Automation Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="PLC Automation"></div>
+      <div>
+        <div class="title">PLC Automation</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย — 2 Tracks</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; เลือก Track</a>
+
+      <h4>🟥 Mitsubishi Track</h4>
+      <a href="mit-01-intro.html"><span class="num">M01</span> รู้จัก FX5U</a>
+      <a href="mit-02-ladder.html"><span class="num">M02</span> Ladder Logic</a>
+      <a href="mit-03-sensors.html"><span class="num">M03</span> เซ็นเซอร์ &amp; I/O</a>
+      <a href="mit-04-simulation.html"><span class="num">M04</span> GX Simulator</a>
+      <a href="mit-05-hmi.html"><span class="num">M05</span> HMI Samkoon</a>
+      <a href="mit-06-pid.html"><span class="num">M06</span> PID &amp; Auto-Tuning</a>
+      <a href="mit-07-modbus.html" class="active"><span class="num">M07</span> Modbus + PM2230</a>
+
+      <h4>🟦 Omron Track</h4>
+      <a href="omron-01-intro.html"><span class="num">O01</span> รู้จัก CP1L/CPM2A</a>
+      <a href="omron-02-ladder.html"><span class="num">O02</span> CX-Programmer Ladder</a>
+      <a href="omron-03-fbd.html"><span class="num">O03</span> Function Block (FBD)</a>
+      <a href="omron-04-modbus.html"><span class="num">O04</span> Modbus + Inverter</a>
+      <a href="omron-05-e5cc.html"><span class="num">O05</span> E5CC Temp Control</a>
+      <a href="omron-06-scada.html"><span class="num">O06</span> SCADA (CX-Supervisor)</a>
+      <a href="omron-07-scada-workshop.html"><span class="num">O07</span> 🏭 SCADA Workshop</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="videos.html"><span class="num">▶</span> วิดีโอเลคเชอร์</a>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ M07 · Modbus RTU/TCP · PM2230</span>
+    <h1>Modbus &amp; Power Meter</h1>
+    <p class="lede">
+      Modbus คือ "ภาษาต่างชาติ" ที่อุปกรณ์อุตสาหกรรมทุกยี่ห้อพูดได้ — บทนี้พาเข้าใจ Function Code,
+      Address Map, แล้วลองให้ FX5U <em>คุย</em> กับ <strong>Power Meter Schneider PM2230</strong> เพื่ออ่านค่า kWh, V, A, PF
+    </p>
+
+    <h2>Modbus 101</h2>
+
+    <p><strong>Modbus</strong> คือ Protocol แบบ Master-Slave ที่เกิดจาก Modicon ตั้งแต่ปี 1979 และยังใช้กันถึงทุกวันนี้
+       เพราะมัน <em>เรียบง่ายและเปิด</em></p>
+
+    <figure>
+      <img src="images/modbus-master-slave-flow.png" alt="Modbus Master-Slave Query-Response flow">
+      <figcaption>Master ส่ง Query (Device Address + Function Code + Data + Error Check) → Slave ตอบ Response กลับมาในรูปแบบเดียวกัน — ไม่มีการพูดคุยข้ามกันโดยตรงระหว่าง Slave</figcaption>
+    </figure>
+
+    <figure>
+      <img src="images/modbus-message-frame.jpg" alt="MODBUS RTU message frame structure">
+      <figcaption>โครงสร้าง Frame ของ Modbus RTU — Start (≥3.5 char silent) · Address (8 bits) · Function (8 bits) · Data (N×8 bits) · CRC (16 bits) · End (≥3.5 char silent)</figcaption>
+    </figure>
+
+    <div class="flowdiagram">
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node master">
+          <h4>Master · FX5U</h4>
+          <p class="fd-sub">RS-485 RTU</p>
+          <ul>
+            <li>ส่ง Request</li>
+            <li>รอ Response</li>
+            <li>Timeout → Error</li>
+            <li>Done → Read data</li>
+          </ul>
+        </div>
+        <div class="flowdiagram-arrow">↔</div>
+        <div style="display:flex;flex-direction:column;gap:8px;flex:2 1 0">
+          <div class="flowdiagram-node slave">
+            <h4>Slave #1 — DTK4848</h4>
+            <p class="fd-sub">Delta Temp Controller</p>
+          </div>
+          <div class="flowdiagram-node slave">
+            <h4>Slave #2 — ATV320</h4>
+            <p class="fd-sub">Schneider VFD</p>
+          </div>
+          <div class="flowdiagram-node slave">
+            <h4>Slave #3 — PM2230</h4>
+            <p class="fd-sub">Schneider Power Meter</p>
+          </div>
+        </div>
+      </div>
+      <div class="flowdiagram-loop">RS-485 Daisy-chain · 1 Master, หลาย Slave · Request ⇒ Response ที่ละตัว</div>
+    </div>
+
+    <h3>Modbus มี 2 ภาษา</h3>
+
+    <table>
+      <thead><tr><th></th><th>Modbus RTU</th><th>Modbus TCP</th></tr></thead>
+      <tbody>
+        <tr><td>Physical</td><td>RS-485 / RS-232</td><td>Ethernet</td></tr>
+        <tr><td>Frame</td><td>Binary + CRC-16</td><td>MBAP header + Binary (ไม่มี CRC)</td></tr>
+        <tr><td>Speed</td><td>9.6–115.2 kbps</td><td>100 Mbps+</td></tr>
+        <tr><td>ระยะ</td><td>~1 กม. (RS-485)</td><td>~100 ม. (Cat-5e)</td></tr>
+        <tr><td>เหมาะกับ</td><td>อุปกรณ์ภาคสนาม, sensor, drive</td><td>ระหว่าง PLC, HMI, SCADA</td></tr>
+      </tbody>
+    </table>
+
+    <h2>📡 ลองสร้าง Modbus Frame เอง</h2>
+    <p>เลือก <code>Slave</code>, <code>Function Code</code>, <code>Register Address</code>, และค่า — เครื่องมือจะคำนวณ <strong>CRC-16</strong> ให้อัตโนมัติและแสดง frame byte-by-byte
+       ลองเปลี่ยน FC ดู — request frame เปลี่ยนหน้าตาทันที. Frame ที่เห็นนี่คือสิ่งที่จะออกสาย RS-485 จริง ๆ:</p>
+    <div class="modbus-builder"></div>
+
+    <h2>Function Codes ที่ใช้บ่อย</h2>
+
+    <table>
+      <thead><tr><th>FC</th><th>ชื่อ</th><th>ใช้กับ</th></tr></thead>
+      <tbody>
+        <tr><td><code>0x01</code></td><td>Read Coils</td><td>อ่าน Bit จาก Slave (สถานะ Output)</td></tr>
+        <tr><td><code>0x02</code></td><td>Read Discrete Inputs</td><td>อ่าน Bit Input</td></tr>
+        <tr><td><code>0x03</code></td><td><strong>Read Holding Registers</strong></td><td>อ่าน Word (ค่าที่อ่านได้ส่วนใหญ่อยู่นี่)</td></tr>
+        <tr><td><code>0x04</code></td><td>Read Input Registers</td><td>อ่าน Word (Read-only)</td></tr>
+        <tr><td><code>0x05</code></td><td>Write Single Coil</td><td>เขียน Bit 1 ตัว</td></tr>
+        <tr><td><code>0x06</code></td><td><strong>Write Single Register</strong></td><td>เขียน Word 1 ตัว</td></tr>
+        <tr><td><code>0x10</code></td><td>Write Multiple Registers</td><td>เขียน Word หลายตัว</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <strong>90% ของงานใช้แค่ FC 03 และ FC 06</strong>
+      อ่านค่าด้วย <code>0x03</code> และเขียนค่าด้วย <code>0x06</code> — ทำงานได้กับ Slave เกือบทุกตัวในตลาด
+    </div>
+
+    <figure>
+      <img src="images/modbus-function-codes-table.png" alt="Modbus Function Codes table">
+      <figcaption>ตารางสรุป Function Codes จากคู่มือ — ฝั่ง <em>Discrete</em> ใช้กับ Bit (Coil/Input), ฝั่ง <em>Analog</em> ใช้กับ Register (Holding/Input)</figcaption>
+    </figure>
+
+    <h2>ตั้งค่า FX5U เป็น Modbus Master</h2>
+
+    <figure>
+      <img src="images/modbus-protocol-setting.png" alt="GX Works3 Modbus Protocol Setting">
+      <figcaption>หน้าตั้งค่า <code>485 Serial Port → Communication Protocol Type</code> ใน GX Works3 — เลือก <strong>MODBUS_RTU Communication</strong>, Parity None, Stop 1bit, Baud 115,200 (หรือ 9600 ตามที่ Slave รองรับ)</figcaption>
+    </figure>
+
+    <ol class="steps">
+      <li>
+        <strong>เปิดพอร์ต RS-485</strong>
+        ใน GX Works3 → <code>Parameter → Module Parameter → 485 Serial Port</code> →
+        ตั้ง:
+        <ul>
+          <li>Communication Protocol: <strong>MODBUS RTU Communication</strong></li>
+          <li>Baud rate: <code>9600</code> · Data length: <code>8</code> · Parity: <code>None</code> · Stop bit: <code>1</code></li>
+          <li>Sum check: <strong>None</strong> (Modbus CRC อยู่ใน Frame อยู่แล้ว)</li>
+          <li>Station No. ของ FX5U: ไม่สำคัญ — เป็น Master</li>
+        </ul>
+      </li>
+      <li>
+        <strong>Download Parameter</strong>
+        <code>Online → Write to PLC</code> → ติ๊ก Parameter → Execute
+      </li>
+      <li>
+        <strong>ต่อสาย RS-485</strong>
+        เชื่อม <code>SDA</code> (FX5U) ↔ <code>D+</code> (PM2230), <code>SDB</code> ↔ <code>D−</code>, <code>SG</code> ↔ <code>GND</code>
+        <br>ปลายสาย Daisy-chain ต้องใส่ <strong>Terminating Resistor 120Ω</strong>
+      </li>
+    </ol>
+
+    <h2>คำสั่ง ADPRW — ที่ใช้กับ Modbus RTU บน FX5U</h2>
+
+    <p>คำสั่งหลักของ FX5U สำหรับ Modbus RTU ชื่อ <code>ADPRW</code> (Adapter Read/Write)</p>
+
+    <pre><code>ADPRW  s1  s2  s3  s4  s5/d
+
+  s1 = Slave Station No. (1–247)
+  s2 = Function Code (H03, H06, ฯลฯ)
+  s3 = Slave Register Start Address
+  s4 = Number of Registers to read/write
+  s5/d = Local D-register start (where data goes / comes from)</code></pre>
+
+    <figure>
+      <img src="images/gxworks3-adprw-ladder.png" alt="ADPRW instruction in GX Works3 Ladder">
+      <figcaption>ตัวอย่างจริงใน GX Works3 — Rung ใช้ <code>ADPRW H1 H3 K4096 H1 D10</code> อ่านค่าจาก Slave 1 (FC=03) เข้า D10</figcaption>
+    </figure>
+
+    <h3>ตัวอย่าง — อ่าน 6 register จาก Slave 3 (PM2230)</h3>
+
+    <p>ก่อนเขียน Ladder ดูคู่มือว่า Slave สนับสนุนอะไรบ้าง — ตัวอย่าง register map ของ Delta DTK:</p>
+
+    <div class="fig-side">
+      <figure>
+        <img src="images/dtk-rs485-specs.png" alt="DTK RS-485 communication specs">
+        <figcaption>Spec RS-485 ของ Delta DTK — Baud 2400–38400 bps, Modbus ASCII/RTU, FC 03H อ่าน max 8 word, FC 06H เขียน 1 word</figcaption>
+      </figure>
+      <figure>
+        <img src="images/dtk-modbus-registers.png" alt="DTK Modbus register addresses">
+        <figcaption>Register map — <code>1000H</code> = PV, <code>1001H</code> = SP, <code>1002H/1003H</code> = ช่วง T, <code>1004H</code> = Sensor type, <code>1005H/1006H</code> = control method</figcaption>
+      </figure>
+    </div>
+    <pre><code>; Trigger ทุก 1 วินาทีด้วย M8013 (special internal — 1 Hz clock)
+LD    M8013
+ADPRW  K3   H03   K2999  K6   D100
+
+; ความหมาย:
+; - Slave 3 (PM2230 ตั้ง station ID = 3)
+; - Function Code 03 = Read Holding Registers
+; - Start address = 2999 (offset อยู่ใน datasheet ของ PM2230 — ดู Module 7)
+; - Read 6 registers
+; - เก็บที่ D100..D105</code></pre>
+
+    <h2>Schneider PM2230 — Power Meter</h2>
+
+    <p>PM2230 อ่าน Volt / Amp / Power Factor / kWh ของระบบไฟ 3 phase ได้ทั้งหมด
+       และส่งผ่าน Modbus RTU ไปยัง PLC ได้โดยตรง</p>
+
+    <h3>Address Map ที่ใช้บ่อย</h3>
+
+    <table>
+      <thead><tr><th>Register</th><th>ค่า</th><th>Data Type</th><th>หน่วย</th></tr></thead>
+      <tbody>
+        <tr><td><code>2999</code></td><td>Current — Phase A</td><td>Float32 (2 regs)</td><td>A</td></tr>
+        <tr><td><code>3001</code></td><td>Current — Phase B</td><td>Float32</td><td>A</td></tr>
+        <tr><td><code>3003</code></td><td>Current — Phase C</td><td>Float32</td><td>A</td></tr>
+        <tr><td><code>3019</code></td><td>Voltage L1-N</td><td>Float32</td><td>V</td></tr>
+        <tr><td><code>3021</code></td><td>Voltage L2-N</td><td>Float32</td><td>V</td></tr>
+        <tr><td><code>3023</code></td><td>Voltage L3-N</td><td>Float32</td><td>V</td></tr>
+        <tr><td><code>3053</code></td><td>Active Power — Total</td><td>Float32</td><td>kW</td></tr>
+        <tr><td><code>3083</code></td><td>Power Factor — Total</td><td>Float32</td><td>—</td></tr>
+        <tr><td><code>3203</code></td><td>Energy Active Delivered</td><td>Int64 (4 regs)</td><td>Wh</td></tr>
+      </tbody>
+    </table>
+
+    <p>หมายเหตุ: address ของ PM2230 ใช้แบบ <strong>0-indexed</strong> ตามมาตรฐาน Modbus
+       แต่บางคู่มือเขียน address แบบ "1-indexed" ทำให้สับสน — ดู Register List ฉบับสมบูรณ์ที่
+       <a href="references.html">หน้าเอกสารอ้างอิง</a></p>
+
+    <div class="callout warn">
+      <strong>Float32 = 2 register ติดกัน!</strong>
+      PM2230 ส่งค่าเป็น IEEE-754 32-bit float — ใช้ 2 register (เช่น 2999+3000)
+      ใน FX5U ใช้ <code>EBIN</code> (Extended BIN) หรือ <code>EMOV</code> เพื่อแปลงเป็น Real ใน PLC
+    </div>
+
+    <h3>การแปลง Float32 จาก 2 Word</h3>
+
+    <pre><code>; D100, D101 = 2 word ที่อ่านมาจาก PM2230
+; ต้องการเก็บเป็น Real (32-bit Float) ที่ D200
+
+LD    M8000          ; Always ON
+EMOV  D100  D200     ; ก็อป 2 word เป็น 1 ค่า Real
+
+; ตอนนี้ D200 = Voltage จริง (เช่น 220.5 V)
+; แสดงผลผ่าน HMI: link Numeric Display ของ HMI ไปที่ D200 (Data Type = Float)</code></pre>
+
+    <h3>🔢 Float32 ↔ Register — Interactive Converter</h3>
+
+    <p>ลองดูว่า 220.5 V หน้าตาเป็น register อย่างไร, หรือเอา register hex ที่อ่านได้จาก Modbus
+       มาลองแปลงกลับเป็นค่าจริง — ปัญหาคือ <strong>Word Order</strong> ของแต่ละยี่ห้อไม่เหมือนกัน
+       (PM2230 ใช้ AB CD · Schneider VFD ใช้ CD AB)</p>
+
+    <div class="f32-converter"></div>
+
+    <h2>ตั้งค่า PM2230</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>กดปุ่ม Menu</strong>
+        ค้างที่ตัว PM2230 — เข้า Configuration Menu
+      </li>
+      <li>
+        <strong>ตั้ง Communication</strong>
+        เข้า <code>Communications</code> → ตั้ง:
+        <ul>
+          <li>Protocol: <strong>Modbus</strong></li>
+          <li>Address: <strong>3</strong></li>
+          <li>Baud rate: <strong>9600</strong></li>
+          <li>Parity: <strong>None</strong></li>
+        </ul>
+      </li>
+      <li>
+        <strong>บันทึก + Restart</strong>
+        กด Save → ดับ PM2230 → เปิดใหม่ → ตอนนี้เป็น Modbus Slave #3 พร้อมตอบสนอง
+      </li>
+    </ol>
+
+    <h3>📟 ลองเดินเมนู PM2230 ก่อนของจริง</h3>
+
+    <p>เพราะ PM2230 มี Sub-menu ซ้อนกันหลายชั้น คนเริ่มต้นมักหลงทาง — ลองเล่นกับเครื่องจำลองด้านล่างก่อน
+       เพื่อจำเส้นทาง · เป้าหมาย: เข้าหา <code>CoM</code> แล้วเซ็ต <strong>Adr=3, bAUd=9600, Par=NonE</strong></p>
+
+    <div class="pm2230-walker"></div>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับการเดินเมนูจริง</strong>
+      <ul style="margin:4px 0 0 0;padding-left:18px">
+        <li><strong>จากหน้า Normal</strong> (V/A/kW อ่านได้) → กด <code>OK</code> ค้างจะเข้า Setup</li>
+        <li>เครื่องจริงจะถาม <strong>Password</strong> (default = <code>0000</code> — ถ้ายังไม่เคยตั้ง)</li>
+        <li>หลังเปลี่ยน <code>Adr/bAUd/Par</code> ต้อง <strong>ดับไฟแล้วเปิดใหม่</strong> ค่าใหม่ถึงจะมีผล</li>
+        <li>ถ้ากด <code>Menu</code> โดยไม่บันทึก — ค่ายังอยู่ในหน่วยความจำชั่วคราว · กลับเข้า Setup ดูได้ว่าค่าใหม่หรือเก่า</li>
+      </ul>
+    </div>
+
+    <h2>ตัวอย่างใช้งานจริง — สร้าง Energy Dashboard</h2>
+
+    <p>โปรเจกต์ปิดท้ายคู่มือ — สร้างระบบที่ HMI แสดง V, A, kW, kWh real-time จาก PM2230
+       และส่งสัญญาณ Alarm ถ้ากำลังเกิน 5 kW</p>
+
+    <ol class="steps">
+      <li>
+        <strong>FX5U poll PM2230 ทุก 1 วินาที</strong>
+        ใช้ <code>ADPRW K3 H03 ...</code> อ่าน V, I, P ทีละ block
+        เก็บที่ D100–D120
+      </li>
+      <li>
+        <strong>แปลง Float32 → Real</strong>
+        ใช้ <code>EMOV</code> สำหรับแต่ละค่า → เก็บ Real ที่ D200, D202, D204...
+      </li>
+      <li>
+        <strong>ส่งให้ HMI Samkoon</strong>
+        ใน HMI link Numeric Display ไปที่ D200 (V), D202 (I), D204 (kW), D206 (PF)
+        Data Type = <strong>Float 32-bit</strong> ทุกตัว
+      </li>
+      <li>
+        <strong>Set Alarm ที่ FX5U</strong>
+        <pre><code>; ถ้า kW > 5.0 → Bit M20 = ON → HMI ขึ้น Popup
+LD    M8000
+EMOVR D204  D210         ; เปรียบเทียบ Real
+ECMP  K5000 D204  M20    ; M20+0,+1,+2 = <,=,> result
+; M22 = ON เมื่อ D204 > 5.0</code></pre>
+      </li>
+      <li>
+        <strong>วาด Trend Graph บน HMI</strong>
+        ใช้ Element "Trend Curve" → link ไปที่ D204 → สุ่มสีและช่วงเวลาตามต้องการ
+      </li>
+    </ol>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับ Production</strong>
+      ในโรงงานจริง อย่า poll ทุก register ทุก 100ms — มันจะกินทรัพยากรพอร์ต RS-485
+      แบ่ง <strong>ค่าสำคัญ</strong> (kW, alarm) → 500ms · ค่ารอง (kWh, PF) → 5s · ค่าสถิติ → 30s
+    </div>
+
+    <h2>Modbus TCP — ถ้าใช้ Ethernet</h2>
+
+    <p>FX5U ทำ Modbus TCP ได้เช่นกันผ่านพอร์ต Ethernet ในตัว — ใช้ <code>SLMP</code>
+       หรือ Function Block <code>MBM_</code> จาก Library</p>
+
+    <p>ข้อดี: ความเร็วสูงกว่า · ระยะใกล้แต่เร็ว · ใช้สาย LAN ที่หาง่ายและถูกกว่า RS-485</p>
+
+    <figure>
+      <img src="images/modbus-tcp-add-protocol.png" alt="GX Works3 Add Protocol dialog with MODBUS/TCP">
+      <figcaption>การเพิ่ม MODBUS/TCP ใน GX Works3 — <code>Add Protocol → Predefined Protocol Library → General-purpose protocol → MODBUS/TCP</code></figcaption>
+    </figure>
+
+    <figure>
+      <img src="images/cp1l-modbus-tcp-network.jpg" alt="Modbus TCP network architecture">
+      <figcaption>สถาปัตยกรรมเครือข่ายแบบ Modbus TCP — PLC (CP1L-EL/EM) + HMI + PC + อุปกรณ์ภาคสนาม (SMC Valve) ผ่าน Switch Ethernet ตัวเดียว</figcaption>
+    </figure>
+
+    <h2>การ Map PLC Device → Modbus Address (FX5U เป็น Slave)</h2>
+
+    <p>ถ้าจะให้ FX5U เป็น <strong>Slave</strong> (ไม่ใช่ Master) — กำหนดได้ว่า Modbus Address ไหนแมพไปกับ Device PLC ไหน:</p>
+
+    <figure>
+      <img src="images/modbus-device-allocation-param.png" alt="GX Works3 MODBUS Device Allocation Parameter">
+      <figcaption>หน้า <code>MODBUS Device Allocation Parameter</code> — Allocation 1 mapping <code>Y0..Y1023</code> = Modbus Coil 0–1023, <code>X0..X1023</code> = Discrete Input, <code>D0..D7999</code> = Holding Register</figcaption>
+    </figure>
+
+    <h2>Bonus — Analog Input ของ FX5U เอง</h2>
+
+    <p>FX5U มี Analog Input 2 ช่อง built-in — อ่านค่าได้โดยไม่ต้องใช้ Modbus เลย ค่าจะอยู่ใน Special Data register (SD):</p>
+
+    <div class="fig-side">
+      <figure>
+        <img src="images/analog-sd-registers-ch1.png" alt="FX5U analog Special Data registers CH1">
+        <figcaption>Special Data Register ของ Analog CH1 — <code>SD6020</code> = Digital output, <code>SD6022</code> = Analog input voltage monitor, SD6026/SD6027 = Max/Min</figcaption>
+      </figure>
+      <figure>
+        <img src="images/analog-input-ladder.png" alt="Analog input read ladder">
+        <figcaption>Ladder อ่าน Analog — <code>MOV SD6020 → D100</code> ก็อปค่า Digital, <code>MOV SD6022 → D101</code> ก็อปแรงดัน, ใช้ X1/X2 เลือกค่าสเกล (K0 หรือ K4000)</figcaption>
+      </figure>
+    </div>
+
+    <h2>เอกสาร Modbus</h2>
+    <ul class="doc-list">
+      <li><a href="PLC%20project/06_Modbus_Communication/docs/FX5_Modbus_Manual_EN.pdf">FX5 Modbus Communication Manual</a> <span class="meta">PDF · Mitsubishi · EN</span></li>
+      <li><a href="PLC%20project/07_Power_Meter/data/PM2xxx_Register_List.xls">PM2xxx Register List (XLS)</a> <span class="meta">Schneider PowerLogic</span></li>
+    </ul>
+
+    <h2>🎉 จบคู่มือ</h2>
+
+    <p>ถ้าทำมาถึงตรงนี้ได้ คุณมี <strong>ทักษะ PLC Automation ครบเซต</strong>:</p>
+    <ul>
+      <li>✓ เขียน Ladder + FBD บน Mitsubishi และ Omron</li>
+      <li>✓ ต่อ Sensor และ Output ได้เอง</li>
+      <li>✓ Simulate ก่อน Deploy เพื่อ Debug</li>
+      <li>✓ ออกแบบ HMI ติดต่อกับ Operator</li>
+      <li>✓ จูน PID ด้วย Ziegler-Nichols + Auto-Tune</li>
+      <li>✓ คุย Modbus กับอุปกรณ์อุตสาหกรรมหลายยี่ห้อ</li>
+    </ul>
+
+    <p>ทักษะเหล่านี้คือ <strong>พื้นฐาน Industrial Automation</strong> ที่ใช้ได้กับทุกโรงงานในประเทศไทย —
+       ลองหาโจทย์จริงในเครื่องจักรรอบตัว แล้วนำสิ่งที่เรียนมาประยุกต์ดู</p>
+
+    <div class="callout note">
+      <strong>ก้าวต่อไป</strong>
+      Industrial IoT (MQTT), SCADA (Ignition / Wonderware), Vision System, Robot Integration —
+      ทั้งหมดต่อยอดจาก PLC ทั้งสิ้น ลองสำรวจดู
+    </div>
+
+    <div class="pager">
+      <a href="mit-06-pid.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">M06 — PID &amp; Auto-Tuning</div>
+      </a>
+      <a href="videos.html" class="next">
+        <div class="label">ดูเพิ่ม →</div>
+        <div class="title">วิดีโอเลคเชอร์</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  PLC Automation Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){var lb=document.getElementById('lightbox');if(!lb)return;var img=lb.querySelector('img');
+document.querySelectorAll('.content img').forEach(function(im){im.style.cursor='zoom-in';im.addEventListener('click',function(){img.src=im.src;lb.classList.add('open');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.classList.remove('open');});})();
+</script>
+<script src="js/progress.js" defer></script>
+<script src="js/activities/modbus-builder.js" defer></script>
+<script src="js/activities/float32-converter.js" defer></script>
+<script src="js/activities/pm2230-walker.js" defer></script>
+</body>
+</html>

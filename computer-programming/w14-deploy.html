@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W14 — Deploy + Maintain | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html" class="active"><span class="num">W14</span> Deploy + Maintain</a>
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+      <a href="principles-uxui.html"><span class="num">📐</span> UX/UI Principles</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">สัปดาห์ที่ 14 · Advanced</span>
+    <h1>Deploy + Maintain</h1>
+    <p class="lede">
+      งานบนเครื่องของคุณ ≠ งานที่คนอื่นใช้ได้ · สัปดาห์นี้ครอบคลุม
+      <strong>5 deployment targets</strong> — Cloud · Desktop · 📱 Mobile · 🤖 IoT/Edge · Hybrid ·
+      เลือก target ผิด = user ไม่ใช้ · เลือกถูก = ของ <em>"อยู่กับ user ตลอด"</em>
+    </p>
+
+    <div class="callout warn">
+      <strong>⚠️ ก่อน deploy — ตรวจ Tech vs Target match</strong>
+      <em>"Tkinter → Cloud Run"</em> · <em>"Streamlit → 10,000 user"</em> · <em>"CLI → grandma"</em> —
+      3 mismatch ที่นักศึกษาเจอบ่อยที่สุด · เปิด
+      <a href="principles-uxui.html#tech-choice"><strong>UX/UI Section 0 — เลือก UI Technology</strong></a>
+      ก่อนเริ่ม deploy · ถ้าเลือก tech ผิดมาตั้งแต่แรก → deploy ไม่ได้ ไม่ว่าจะพยายามแค่ไหน
+    </div>
+
+    <div class="callout info">
+      <strong>📐 ตรวจ UX ก่อน deploy</strong>
+      ของบน production = ทุกคนเห็น · เปิด
+      <a href="principles-uxui.html#checklist">UX/UI Checklist</a>
+      เช็คให้ครบก่อนกด deploy
+    </div>
+
+    <h2>เป้าหมายสัปดาห์นี้</h2>
+    <ul>
+      <li>เลือก <strong>deployment target ที่ตรงกับ user</strong> (เพื่อนใช้มือถือ vs IoT lab)</li>
+      <li>☁️ Deploy <strong>Cloud</strong> (Streamlit, Cloud Run, Render)</li>
+      <li>💻 Package เป็น <strong>Desktop App</strong> (.exe) ด้วย PyInstaller</li>
+      <li>📱 Make <strong>mobile-accessible</strong> — PWA, LINE bot, mobile-responsive web</li>
+      <li>🤖 Deploy ลง <strong>IoT / Edge</strong> — Raspberry Pi, ESP32 (MicroPython)</li>
+      <li>📊 <strong>Monitor</strong> production — logs, errors, uptime, cost</li>
+      <li>💰 <strong>Cost management</strong> — free tier, budget alert, kill switch</li>
+      <li>เลือก <strong>Local LLM vs Cloud LLM</strong></li>
+      <li>ใช้ <strong>Git workflow</strong> + CI/CD ดูแลระบบในระยะยาว</li>
+    </ul>
+
+    <div class="callout warn" style="border-left-width:5px">
+      <strong>🔒 ทำไม "เลือก deployment target" คือทักษะที่ AI ทำให้คุณไม่ได้</strong>
+      AI <em>"deploy ได้"</em> · แต่ AI <strong>ไม่รู้ว่า user ของคุณใช้อะไร</strong> · เพื่อนคุณเปิด
+      เครื่อง laptop วันละ 1 ชั่วโมง แต่อยู่กับ <em>มือถือ</em> ทั้งวัน · TA ในห้อง lab อยู่หน้า
+      <em>desktop</em> · พ่อแม่ในร้าน <em>"ไม่กล้าโหลดอะไรเพิ่ม"</em> · ตัวเลือก target ตัดสินว่าของคุณจะถูกใช้หรือไม่ ·
+      งานนี้เป็นงาน <strong>"คิดถึง user"</strong> · AI ทำไม่ได้
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🗺 Deployment Decision — เลือก target จาก user</h2>
+    <p>ก่อนเลือก tech · ตอบคำถามนี้ก่อน: <em>"user ของฉันใช้อะไรอยู่?"</em></p>
+
+    <div class="mermaid">flowchart TB
+    user["👤 User<br/>ใช้อะไร?"]
+    user --> q1{ต้องใช้<br/>ออฟไลน์?}
+    q1 -->|Yes| q2{อุปกรณ์?}
+    q1 -->|No| q3{อุปกรณ์?}
+
+    q2 -->|PC| desk["💻 Desktop App<br/>PyInstaller .exe"]
+    q2 -->|Phone| pwa["📱 PWA<br/>(installable web)"]
+    q2 -->|Sensor / Motor| iot["🤖 IoT / Edge<br/>Raspberry Pi · ESP32"]
+
+    q3 -->|PC| cloud["☁️ Cloud Web<br/>Streamlit · Flask"]
+    q3 -->|Phone| mobile["📱 Mobile Web<br/>+ LINE bot"]
+    q3 -->|ทั้งคู่| hybrid["🔄 Hybrid<br/>Cloud + LINE bot"]
+
+    classDef question fill:#3b2962,stroke:#8b5cf6,color:#fff
+    classDef desk fill:#1e3a5f,stroke:#3776ab,color:#fff
+    classDef mob fill:#0d3f3a,stroke:#2dd4bf,color:#fff
+    classDef iot fill:#5c2618,stroke:#ff7a18,color:#fff
+    classDef cloud fill:#064e3b,stroke:#34d399,color:#fff
+    class user,q1,q2,q3 question
+    class desk desk
+    class pwa,mobile,hybrid mob
+    class iot iot
+    class cloud cloud</div>
+
+    <h2>🎯 5 Deployment Targets — สรุป</h2>
+
+    <table>
+      <thead><tr><th>Target</th><th>เหมาะกับ</th><th>ราคา</th><th>ยาก</th><th>User เห็นแบบ</th></tr></thead>
+      <tbody>
+        <tr><td>☁️ <strong>Cloud Web</strong></td><td>app สาธารณะ · dashboard · API</td><td>ฟรี-$5/เดือน</td><td>⭐⭐</td><td>browser URL</td></tr>
+        <tr><td>💻 <strong>Desktop App</strong></td><td>tool ออฟไลน์ · ใช้ส่วนตัว · sensitive data</td><td>ฟรี</td><td>⭐⭐</td><td>.exe icon บน desktop</td></tr>
+        <tr><td>📱 <strong>Mobile (PWA / LINE / Web)</strong></td><td>user อยู่บนมือถือ</td><td>ฟรี</td><td>⭐⭐</td><td>icon บน home screen / LINE chat</td></tr>
+        <tr><td>🤖 <strong>IoT / Edge</strong></td><td>เซ็นเซอร์ · controller · ห่างจาก network</td><td>ค่า hardware</td><td>⭐⭐⭐⭐</td><td>กล่องอยู่ในที่</td></tr>
+        <tr><td>🔄 <strong>Hybrid</strong></td><td>มี user หลาย channel</td><td>ผสม</td><td>⭐⭐⭐⭐</td><td>หลายแบบพร้อมกัน</td></tr>
+      </tbody>
+    </table>
+
+    <h2>📊 ทางเลือก 1: Streamlit Cloud (ง่ายที่สุด)</h2>
+
+    <p>Streamlit = library ที่ทำให้ Python กลายเป็น web app ใน 50 บรรทัด · เหมาะมากสำหรับนักศึกษา</p>
+
+    <pre><code class="language-python"># app.py
+import streamlit as st
+import pandas as pd
+import matplotlib.pyplot as plt
+
+st.title("📊 PM2.5 Dashboard")
+
+df = pd.read_csv("data.csv")
+st.dataframe(df.tail(10))
+
+city = st.selectbox("เลือกเมือง", df["city"].unique())
+data = df[df["city"] == city]
+
+fig, ax = plt.subplots()
+ax.plot(data["date"], data["pm25"])
+ax.set_title(f"PM2.5 — {city}")
+st.pyplot(fig)</code></pre>
+
+    <p>รัน local: <code>streamlit run app.py</code> → เปิดที่ <code>localhost:8501</code></p>
+
+    <h3>Deploy ขึ้น Streamlit Cloud</h3>
+    <ol class="steps">
+      <li>push code ขึ้น GitHub (public repo)</li>
+      <li>ไปที่ <a href="https://share.streamlit.io" target="_blank">share.streamlit.io</a></li>
+      <li>Login ด้วย GitHub</li>
+      <li>เลือก repo + ไฟล์ <code>app.py</code> → Deploy</li>
+      <li>รอ 2-3 นาที → ได้ URL ของตัวเองเช่น <code>username-app.streamlit.app</code></li>
+    </ol>
+
+    <h2>🐳 ทางเลือก 2: Cloud Run (สำหรับ API)</h2>
+
+    <p>Cloud Run = Google service ที่รัน Docker container · scale ตาม traffic · pay-per-request</p>
+
+    <h3>เตรียม Dockerfile</h3>
+    <pre><code># Dockerfile
+FROM python:3.11-slim
+
+WORKDIR /app
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+COPY . .
+
+CMD ["python", "main.py"]</code></pre>
+
+    <h3>Deploy steps</h3>
+    <ol class="steps">
+      <li>ติดตั้ง <strong>gcloud CLI</strong> (Google Cloud SDK)</li>
+      <li><code>gcloud auth login</code> + <code>gcloud config set project YOUR_PROJECT</code></li>
+      <li>ใน folder project: <code>gcloud run deploy</code></li>
+      <li>ตอบคำถาม (region, port, allow unauthenticated)</li>
+      <li>ได้ URL เช่น <code>https://my-app-xxxxx.asia-southeast1.run.app</code></li>
+    </ol>
+
+    <div class="callout info">
+      <strong>Free tier ของ Cloud Run</strong>
+      2 ล้าน requests/เดือน, 180,000 vCPU-seconds — เกือบทุก project นักศึกษาอยู่ในนี้
+    </div>
+
+    <h2>💻 ทางเลือก 3: Desktop App (.exe)</h2>
+
+    <p>เปลี่ยน Python script เป็น <code>.exe</code> ที่ double-click รันได้ · ไม่ต้องลง Python</p>
+
+    <pre><code># ติดตั้ง
+pip install pyinstaller
+
+# build
+pyinstaller --onefile --windowed app.py
+
+# ผลลัพธ์ใน dist/app.exe</code></pre>
+
+    <table>
+      <thead><tr><th>Flag</th><th>ทำอะไร</th></tr></thead>
+      <tbody>
+        <tr><td><code>--onefile</code></td><td>รวมทุกอย่างเป็น .exe เดียว</td></tr>
+        <tr><td><code>--windowed</code></td><td>ไม่เปิด terminal (เหมาะกับ GUI)</td></tr>
+        <tr><td><code>--icon=app.ico</code></td><td>ใส่ icon</td></tr>
+        <tr><td><code>--add-data "data.csv;."</code></td><td>รวม data file</td></tr>
+      </tbody>
+    </table>
+
+    <h3>GUI Library</h3>
+    <ul>
+      <li><strong>tkinter</strong> — built-in, ง่าย, ไม่สวยมาก</li>
+      <li><strong>customtkinter</strong> — สวยกว่า, modern</li>
+      <li><strong>PyQt6 / PySide6</strong> — แอป production, learning curve สูง</li>
+      <li><strong>Streamlit / Gradio</strong> — web-based, ทำง่ายแต่ต้อง open browser</li>
+    </ul>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>📱 ทางเลือก 4: Mobile — user อยู่บนมือถือ</h2>
+    <p>
+      เพื่อนคุณ <strong>"อยู่กับมือถือทั้งวัน"</strong> · ของที่ต้องเปิด laptop จะถูกใช้ <em>"แค่ตอน demo"</em> ·
+      ของที่อยู่บนมือถือจะใช้ <em>"จริง"</em> · นี่คือ 5 ทางที่ทำได้ <strong>โดยไม่ต้องเขียน Swift / Kotlin</strong>
+    </p>
+
+    <h3>📱 5 ทางลง Mobile</h3>
+    <table>
+      <thead><tr><th>วิธี</th><th>ทำยังไง</th><th>เหมาะกับ</th><th>ความยาก</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Mobile-responsive Web</strong></td>
+          <td>Streamlit / Flask + CSS media queries</td>
+          <td>data dashboard, form</td>
+          <td>⭐</td>
+        </tr>
+        <tr>
+          <td><strong>2. PWA</strong> (Progressive Web App)</td>
+          <td>Web + <code>manifest.json</code> + service worker → "Install" บน home screen</td>
+          <td>web app ที่ user อยากเปิดบ่อย</td>
+          <td>⭐⭐</td>
+        </tr>
+        <tr>
+          <td><strong>3. LINE Bot</strong></td>
+          <td>LINE Messaging API (W12) — chat = UI</td>
+          <td>notifications, simple workflows, แจ้งเตือน</td>
+          <td>⭐⭐</td>
+        </tr>
+        <tr>
+          <td><strong>4. Telegram Bot</strong></td>
+          <td><code>python-telegram-bot</code> library</td>
+          <td>กลุ่ม international, automation</td>
+          <td>⭐⭐</td>
+        </tr>
+        <tr>
+          <td><strong>5. Native (BeeWare/Kivy)</strong></td>
+          <td>Python → Android/iOS native bundle</td>
+          <td>app ที่ต้อง access camera/sensor</td>
+          <td>⭐⭐⭐⭐</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับ — เริ่มที่ "responsive web" + "LINE bot" ก่อน</strong>
+      90% ของ Final Project นักศึกษาไม่ต้อง native · responsive Streamlit ทำงานบนมือถือ 80% เท่ากับ native ·
+      LINE bot ทำงานได้แม้ไม่มี internet UX
+    </div>
+
+    <h3>📲 วิธี 1: Mobile-Responsive Streamlit</h3>
+    <pre><code class="language-python"># Streamlit auto-responsive อยู่แล้ว · เพิ่ม config สำหรับ phone:
+# .streamlit/config.toml
+[theme]
+primaryColor = "#3776ab"
+base = "light"
+
+[browser]
+gatherUsageStats = false
+
+# app.py
+import streamlit as st
+st.set_page_config(
+    page_title="My App",
+    page_icon="🐰",
+    layout="centered",     # ✅ centered = phone-friendly · wide = desktop-only
+    initial_sidebar_state="collapsed",   # ✅ ซ่อน sidebar บนมือถือ
+)
+
+# ใช้ st.columns + responsive — ดูในมือถือเสมอตอนทดสอบ</code></pre>
+
+    <h3>📲 วิธี 2: PWA — Install บน Home Screen</h3>
+    <p>เปลี่ยน web app ให้ user "ติดตั้ง" ได้บนมือถือ — เห็น icon เหมือน native app</p>
+
+    <pre><code class="language-html">&lt;!-- index.html (ถ้าใช้ Flask) --&gt;
+&lt;link rel="manifest" href="/static/manifest.json"&gt;
+&lt;meta name="theme-color" content="#3776ab"&gt;
+&lt;link rel="apple-touch-icon" href="/static/icon-192.png"&gt;
+</code></pre>
+
+    <pre><code class="language-json">// static/manifest.json
+{
+  "name": "Smart Lab Monitor",
+  "short_name": "Lab Mon",
+  "start_url": "/",
+  "display": "standalone",       // ทำให้ดูเหมือน native app
+  "background_color": "#0b1020",
+  "theme_color": "#3776ab",
+  "icons": [
+    {"src": "/static/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "/static/icon-512.png", "sizes": "512x512", "type": "image/png"}
+  ]
+}</code></pre>
+
+    <p>หลังจาก deploy + เปิดบนมือถือ → Safari/Chrome → "Add to Home Screen" → ได้ icon บน phone</p>
+
+    <h3>📲 วิธี 3: LINE Bot — UI คือ Chat</h3>
+    <p>ทบทวนจาก W12 · นี่คือ <em>"the Thai-friendly mobile app"</em> · ทุกคนมี LINE อยู่แล้ว</p>
+
+    <div class="python-runner">import os
+# pip install line-bot-sdk (ใน Cursor)
+# ตัวอย่าง concept:
+
+# 1) Bot รับข้อความจาก user
+def handle_message(user_message: str, user_id: str) -&gt; str:
+    """LINE Webhook เรียก function นี้"""
+    if user_message.lower() == "pm":
+        return "🌫 PM2.5 ตอนนี้: 75 µg/m³ (ปานกลาง)"
+    if user_message.lower() == "help":
+        return "พิมพ์: pm = ดูค่า · alert = เปิดเตือน"
+    return "❓ ไม่เข้าใจ · พิมพ์ help"
+
+
+# 2) Bot ส่ง notification เอง (push)
+def send_alert(user_id: str, pm_value: int):
+    text = f"⚠️ PM2.5 = {pm_value} — สูง! ใส่ mask"
+    # client.push_message(user_id, TextSendMessage(text=text))
+
+
+# ทดสอบ logic
+print(handle_message("pm", "U001"))
+print(handle_message("xyz", "U001"))
+print(handle_message("HELP", "U001"))</div>
+
+    <div class="callout info">
+      <strong>📌 LINE Bot ใช้ได้บน mobile + desktop พร้อมกัน</strong>
+      <em>"App ที่ดีที่สุดของไทย ปี 2026 มักจะมาในรูป LINE bot"</em> — ไม่ต้องลง · ไม่ต้องเปิด browser ·
+      user เห็น notification ทันที · เก็บ chat history เป็น log
+    </div>
+
+    <h3>📲 วิธี 5: BeeWare / Kivy (Advanced)</h3>
+    <p>ถ้าจำเป็นต้อง <strong>"native มือถือจริง ๆ"</strong> (เช่น ต้อง access camera ในแบบเฉพาะ)</p>
+    <pre><code class="language-python"># pip install briefcase
+briefcase new        # สร้าง project
+briefcase create     # สร้าง bundle สำหรับ Android
+briefcase build      # build .apk
+briefcase run android   # ทดสอบ
+# → output: .apk ที่ลงในมือถือได้
+
+# Kivy ก็ทำได้คล้ายกัน — ใช้ buildozer
+# แต่ทั้งคู่ learning curve สูง · ทำเฉพาะถ้าจำเป็น</code></pre>
+
+    <div class="callout warn">
+      <strong>⚠️ BeeWare/Kivy ไม่เหมาะกับ Final Project นักศึกษาปี 1</strong>
+      ใช้เวลาเรียน 2-3 สัปดาห์ · debug ยาก · iOS ต้องมี Mac + Apple Developer account ($99/ปี) ·
+      ส่วนใหญ่ <em>PWA หรือ LINE bot</em> ทำได้ดีกว่าและเร็วกว่า
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🤖 ทางเลือก 5: IoT / Edge — Deploy ลงอุปกรณ์</h2>
+    <p>
+      สำหรับ engineering students — <strong>"deploy ลงเซ็นเซอร์ / motor / controller"</strong> ·
+      ไม่ใช่ทุก app อยู่บน cloud · บางอันต้องอยู่ "ในที่" — แท่นบนโรงงาน · ในห้อง lab · บน drone
+    </p>
+
+    <h3>🔌 4 ระดับของ IoT / Edge</h3>
+    <table>
+      <thead><tr><th>ระดับ</th><th>อุปกรณ์</th><th>Python ที่ใช้</th><th>เหมาะกับ</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Microcontroller</strong></td>
+          <td>ESP32, RP2040 (Pico)</td>
+          <td><strong>MicroPython</strong> — Python subset · จำกัด RAM/ROM</td>
+          <td>เซ็นเซอร์เดี่ยว · LED · simple control · battery-powered</td>
+        </tr>
+        <tr>
+          <td><strong>2. Single-Board Computer</strong></td>
+          <td>Raspberry Pi 4/5, Orange Pi</td>
+          <td>Python <em>เต็ม</em> + Linux</td>
+          <td>edge gateway · multi-sensor · camera · lightweight server</td>
+        </tr>
+        <tr>
+          <td><strong>3. Edge AI</strong></td>
+          <td>Coral TPU, Jetson Nano</td>
+          <td>Python + TensorFlow Lite</td>
+          <td>vision · NLP บน edge · real-time inference</td>
+        </tr>
+        <tr>
+          <td><strong>4. Industrial PLC</strong></td>
+          <td>FX5U, Siemens S7</td>
+          <td>ไม่ใช้ Python · ใช้ ladder logic + Modbus</td>
+          <td>safety-critical · factory · จาก W12 (Modbus API)</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>🥧 Raspberry Pi — Full Linux + Python</h3>
+    <p>Pi 5 ($80) = mini computer · ติดตั้ง Python · เซ็นเซอร์ผ่าน GPIO · run Flask · ทำได้ทุกอย่างที่ Cloud Run ทำได้</p>
+
+    <pre><code class="language-bash"># 1. Flash Raspberry Pi OS
+# 2. SSH เข้า
+ssh pi@192.168.1.10
+
+# 3. Setup Python project
+git clone https://github.com/you/lab-monitor.git
+cd lab-monitor
+python -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+
+# 4. รัน background ด้วย systemd service
+sudo nano /etc/systemd/system/lab-monitor.service</code></pre>
+
+    <pre><code># /etc/systemd/system/lab-monitor.service
+[Unit]
+Description=Lab Monitor
+After=network.target
+
+[Service]
+Type=simple
+User=pi
+WorkingDirectory=/home/pi/lab-monitor
+ExecStart=/home/pi/lab-monitor/.venv/bin/python main.py
+Restart=on-failure
+RestartSec=10
+
+[Install]
+WantedBy=multi-user.target</code></pre>
+
+    <pre><code class="language-bash"># Enable + start
+sudo systemctl daemon-reload
+sudo systemctl enable lab-monitor
+sudo systemctl start lab-monitor
+
+# Check status
+sudo systemctl status lab-monitor
+sudo journalctl -u lab-monitor -f  # ดู log สด</code></pre>
+
+    <div class="callout info">
+      <strong>📌 systemd = "auto-start" บน Linux</strong>
+      Pi รีบูต → service กลับมาเอง · service พัง → restart อัตโนมัติ · log ใน journalctl ·
+      <em>"production-grade" สำหรับ Pi</em>
+    </div>
+
+    <h3>🔧 MicroPython บน ESP32 — Python บน Microcontroller</h3>
+    <p>ESP32 ($5) รัน Python ได้ผ่าน <strong>MicroPython</strong> · เซ็นเซอร์ · WiFi · ไม่ต้องมี Linux</p>
+
+    <pre><code class="language-python"># main.py (รันอัตโนมัติเมื่อ ESP32 boot)
+import network
+import time
+from machine import Pin, ADC
+import urequests as requests   # MicroPython มี subset
+
+# 1) WiFi
+wlan = network.WLAN(network.STA_IF)
+wlan.active(True)
+wlan.connect("MyWiFi", "password")
+while not wlan.isconnected():
+    time.sleep(0.5)
+print("Connected:", wlan.ifconfig())
+
+# 2) อ่านเซ็นเซอร์ temperature (LM35) ผ่าน ADC
+sensor = ADC(Pin(34))
+sensor.atten(ADC.ATTN_11DB)
+
+def read_temp():
+    voltage = sensor.read() * 3.3 / 4095
+    return voltage * 100  # LM35: 10mV/°C
+
+# 3) Loop: อ่าน + ส่งขึ้น cloud
+while True:
+    t = read_temp()
+    print(f"Temp: {t:.1f}°C")
+    try:
+        requests.post("https://my-api.run.app/temp", json={"temp": t})
+    except Exception as e:
+        print("Send fail:", e)
+    time.sleep(30)</code></pre>
+
+    <p style="color:var(--text-muted);font-size:13.5px">
+      💡 Upload: ใช้ <code>ampy</code> หรือ <code>Thonny</code> IDE · 1 ครั้งแล้วทำงานตลอด — battery + solar = ยืนได้เป็นเดือน
+    </p>
+
+    <h3>📡 MQTT — Protocol มาตรฐาน IoT</h3>
+    <p>Sensor → broker → dashboard · ใช้แทน HTTP เมื่อมีเซ็นเซอร์ <em>หลายตัว</em></p>
+
+    <pre><code class="language-python"># pip install paho-mqtt
+import paho.mqtt.client as mqtt
+
+# Publish (ESP32 ส่งค่า)
+client = mqtt.Client()
+client.connect("broker.hivemq.com", 1883)
+client.publish("lab/temp/sensor1", "25.3")
+
+# Subscribe (Cloud server รับค่า)
+def on_message(client, userdata, msg):
+    print(f"{msg.topic}: {msg.payload.decode()}")
+
+sub = mqtt.Client()
+sub.connect("broker.hivemq.com", 1883)
+sub.subscribe("lab/temp/+")   # + = wildcard ทุก sensor
+sub.on_message = on_message
+sub.loop_forever()</code></pre>
+
+    <h3>🛡 IoT Production Checklist</h3>
+    <ul>
+      <li>✅ <strong>Auto-restart</strong> เมื่อพัง — systemd บน Pi / watchdog บน ESP32</li>
+      <li>✅ <strong>Auto-reconnect WiFi</strong> เมื่อ network ตก</li>
+      <li>✅ <strong>Local logging</strong> — เก็บ log ในเครื่อง · ส่งขึ้น cloud เมื่อมี internet</li>
+      <li>✅ <strong>OTA (Over-The-Air) update</strong> — อัพเดต code โดยไม่ต้องต่อสาย</li>
+      <li>✅ <strong>Health check endpoint</strong> — cloud check ว่า device ยังมีชีวิต</li>
+      <li>✅ <strong>Power management</strong> — sleep mode สำหรับ battery</li>
+    </ul>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🧠 Local LLM vs Cloud LLM</h2>
+
+    <p>หลังจาก 14 สัปดาห์ที่ใช้ AI เป็นเครื่องมือ · ในงานจริงต้องตัดสินใจ: เรียก API หรือรัน LLM ในเครื่องเอง?</p>
+
+    <div class="flowdiagram">
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node" style="background:rgba(55,118,171,0.10);border-color:rgba(55,118,171,0.6);flex:1 1 320px">
+          <h4 style="color:#3776ab">☁️ Cloud LLM</h4>
+          <p class="fd-sub">Claude API, OpenAI API, Gemini API</p>
+          <ul>
+            <li>✅ เก่งที่สุด (GPT-4, Claude Opus)</li>
+            <li>✅ ไม่ต้องมี GPU</li>
+            <li>✅ scale ได้ทันที</li>
+            <li>❌ จ่ายตาม token (~$0.001-0.03/req)</li>
+            <li>❌ ส่งข้อมูล <em>"นอกองค์กร"</em></li>
+            <li>❌ ต้อง internet</li>
+            <li>❌ rate limit</li>
+          </ul>
+        </div>
+        <div class="flowdiagram-node" style="background:rgba(255,212,59,0.10);border-color:rgba(255,212,59,0.6);flex:1 1 320px">
+          <h4 style="color:#ffd43b">🖥️ Local LLM (Ollama)</h4>
+          <p class="fd-sub">Llama 3, Qwen, Phi, Mistral</p>
+          <ul>
+            <li>✅ ฟรี · ไม่มี per-request cost</li>
+            <li>✅ ข้อมูล <em>"ไม่ออกจากเครื่อง"</em></li>
+            <li>✅ ไม่ต้อง internet (หลัง download)</li>
+            <li>✅ ไม่มี rate limit</li>
+            <li>❌ ต้องการ RAM ≥ 16 GB + GPU 8GB+ ดี</li>
+            <li>❌ ความสามารถน้อยกว่า GPT-4/Claude</li>
+            <li>❌ ช้ากว่าเมื่อใช้แค่ CPU</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <h3>ใช้ Ollama (Local LLM)</h3>
+    <pre><code># ติดตั้ง Ollama (Win/Mac/Linux): ollama.com
+# Download model
+ollama pull llama3.2:3b      # 2 GB, ใช้ใน CPU ได้
+ollama pull qwen2.5:7b       # 4 GB, ต้องการ GPU
+
+# เรียกจาก Python
+pip install ollama</code></pre>
+
+    <pre><code class="language-python">import ollama
+
+response = ollama.chat(model="llama3.2:3b", messages=[
+    {"role": "user", "content": "อธิบาย if statement ในภาษาไทยให้คนเริ่มต้น"}
+])
+print(response["message"]["content"])</code></pre>
+
+    <h3>ใช้ Cloud LLM (Claude API)</h3>
+    <pre><code class="language-python">import os
+from anthropic import Anthropic
+
+client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
+
+msg = client.messages.create(
+    model="claude-3-5-sonnet-20241022",
+    max_tokens=1024,
+    messages=[{"role": "user", "content": "อธิบาย if statement..."}]
+)
+print(msg.content[0].text)</code></pre>
+
+    <h3>เลือกอันไหน?</h3>
+    <table>
+      <thead><tr><th>สถานการณ์</th><th>เลือก</th></tr></thead>
+      <tbody>
+        <tr><td>Final Project demo</td><td>Cloud LLM (เร็ว · เก่ง)</td></tr>
+        <tr><td>ระบบเก็บข้อมูลส่วนตัว (health, finance)</td><td>Local LLM (privacy)</td></tr>
+        <tr><td>App ที่รันบน Raspberry Pi / Edge</td><td>Local LLM (offline)</td></tr>
+        <tr><td>Batch processing 10,000 รายการ</td><td>Local LLM (cost)</td></tr>
+        <tr><td>ต้องการความเข้าใจสูง / reasoning</td><td>Cloud LLM (Claude/GPT)</td></tr>
+        <tr><td>Auto-grading นักศึกษา 200 คน</td><td>Local LLM (cost + privacy)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>Hybrid pattern ที่นิยม</strong>
+      ใช้ <em>Local LLM</em> สำหรับงาน routine (sentiment, classification, embeddings)
+      + ใช้ <em>Cloud LLM</em> สำหรับงานยาก (reasoning, planning, code)
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>📊 Monitoring + Crash Reporting — รู้ก่อน user บ่น</h2>
+    <p>
+      Deploy แล้ว <em>"ไม่จบ"</em> · ของพังกลางคืน · ของเร็วลง · ของกินเงิน · ต้องมี <strong>ตา</strong> ดู ·
+      ไม่ใช่ <em>"รอ user มาบ่นใน LINE"</em>
+    </p>
+
+    <h3>🩺 4 อย่างที่ต้อง Monitor</h3>
+    <table>
+      <thead><tr><th>เรื่อง</th><th>ทำไม</th><th>เครื่องมือฟรี</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Uptime</strong> — ของยังเปิดอยู่มั้ย?</td>
+          <td>ของพังตอนตี 2 · ตื่นมา 8 โมง = user เจอครั้งแรก</td>
+          <td><a href="https://uptimerobot.com" target="_blank">UptimeRobot</a> · ฟรี 50 monitor</td>
+        </tr>
+        <tr>
+          <td><strong>2. Errors</strong> — มี exception มั้ย?</td>
+          <td>"ทำงานได้" ≠ "ไม่มี bug" · user 1 คนเจอ error 10 คน</td>
+          <td><a href="https://sentry.io" target="_blank">Sentry</a> · ฟรี 5K errors/เดือน</td>
+        </tr>
+        <tr>
+          <td><strong>3. Performance</strong> — ช้ามั้ย?</td>
+          <td>app ช้า 3 วินาที = user ใช้ครั้งเดียวแล้วไม่กลับ</td>
+          <td>Cloud Run dashboard · Streamlit Cloud metrics</td>
+        </tr>
+        <tr>
+          <td><strong>4. Usage</strong> — ใครใช้ ใช้ตรงไหน?</td>
+          <td>เพื่อปรับ feature ที่ใช้จริง</td>
+          <td><a href="https://plausible.io" target="_blank">Plausible</a> · privacy-friendly</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>🛡 Sentry — Crash Reporter (Free 5K errors/month)</h3>
+    <pre><code class="language-python"># pip install sentry-sdk
+import sentry_sdk
+import os
+sentry_sdk.init(
+    dsn=os.getenv("SENTRY_DSN"),
+    traces_sample_rate=0.1,    # 10% สำหรับ performance
+)
+
+# หลังจากนี้ทุก exception ที่ไม่ catch จะถูกส่งไป Sentry
+def my_function():
+    try:
+        risky_operation()
+    except Exception as e:
+        sentry_sdk.capture_exception(e)   # ส่งให้ Sentry
+        raise   # ยัง propagate เหมือนเดิม
+
+# Sentry dashboard:
+# - กราฟ error rate
+# - stack trace + user context
+# - email/Slack alert เมื่อ spike</code></pre>
+
+    <h3>💓 UptimeRobot — Heartbeat / Health Check</h3>
+    <p>UptimeRobot ping URL ของคุณทุก 5 นาที · ถ้าตอบ &gt; 30 วินาที หรือ status &ne; 200 → email/SMS เตือน</p>
+
+    <pre><code class="language-python"># เพิ่ม endpoint /health ใน Flask
+@app.route("/health")
+def health():
+    # ตรวจ subsystem ทุกตัวที่สำคัญ
+    db_ok = check_database()
+    api_ok = check_external_api()
+
+    if db_ok and api_ok:
+        return {"status": "ok", "db": "ok", "api": "ok"}, 200
+    else:
+        return {"status": "degraded", "db": db_ok, "api": api_ok}, 503</code></pre>
+
+    <h3>📝 Structured Logging — Log เป็น JSON</h3>
+    <p>Log แบบ "ข้อความ" ค้นยาก · Log แบบ JSON = search ได้</p>
+    <pre><code class="language-python">import json, logging, sys
+from datetime import datetime
+
+class JSONFormatter(logging.Formatter):
+    def format(self, record):
+        return json.dumps({
+            "time": datetime.utcnow().isoformat() + "Z",
+            "level": record.levelname,
+            "msg": record.getMessage(),
+            "module": record.module,
+            **getattr(record, "extra", {}),
+        })
+
+handler = logging.StreamHandler(sys.stdout)
+handler.setFormatter(JSONFormatter())
+log = logging.getLogger()
+log.addHandler(handler)
+log.setLevel(logging.INFO)
+
+log.info("user_action", extra={"extra": {"user_id": "U123", "action": "login"}})
+# → {"time":"2026-05-15T...","level":"INFO","msg":"user_action","user_id":"U123","action":"login"}
+# Cloud Run / Google Cloud Logging รู้จัก format นี้ · search ตาม field ได้</code></pre>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>💰 Cost Management — ไม่ให้ "bill ช็อก"</h2>
+    <p>
+      ตำนานของ developer: <em>"loop ผิด → AWS bill $5000 ใน 1 คืน"</em> · เรื่องจริง · เกิดทุกปีกับนักศึกษา ·
+      ตั้งกฎ <strong>"safety net"</strong> ตั้งแต่วันแรก
+    </p>
+
+    <h3>🎯 Free Tier — รู้ขีดจำกัด</h3>
+    <table>
+      <thead><tr><th>Service</th><th>Free Tier</th><th>เมื่อเกิน</th></tr></thead>
+      <tbody>
+        <tr><td>Streamlit Cloud</td><td>1 app · public</td><td>ไม่มี paid tier · ต้องย้าย</td></tr>
+        <tr><td>Cloud Run</td><td>2M req/เดือน · 180K vCPU-sec</td><td>$0.40/M req หลังจากนั้น</td></tr>
+        <tr><td>Render Web</td><td>Free instance · sleep หลัง 15 นาที</td><td>$7/เดือน เพื่อ always-on</td></tr>
+        <tr><td>Anthropic Claude</td><td>$5 credit แรก</td><td>$0.25-$15 / M tokens (Haiku-Opus)</td></tr>
+        <tr><td>OpenAI</td><td>$5 credit แรก</td><td>$0.15-$10 / M tokens</td></tr>
+        <tr><td>IQAir API</td><td>10K calls/เดือน</td><td>$$ ต้องอัพเกรด</td></tr>
+        <tr><td>GitHub Actions</td><td>2000 minutes/เดือน (private)</td><td>$0.008/นาที</td></tr>
+        <tr><td>Sentry</td><td>5K errors/เดือน</td><td>$26/เดือน</td></tr>
+      </tbody>
+    </table>
+
+    <h3>🚨 Budget Alert — ตั้งก่อน Deploy ทุกครั้ง</h3>
+
+    <table>
+      <thead><tr><th>Service</th><th>วิธีตั้ง alert</th></tr></thead>
+      <tbody>
+        <tr><td>Google Cloud</td><td>Console → Billing → Budgets → "$5 alert at 50%, 90%, 100%"</td></tr>
+        <tr><td>Anthropic</td><td>console.anthropic.com → Settings → Limits → Monthly spend cap</td></tr>
+        <tr><td>OpenAI</td><td>platform.openai.com → Billing → Usage limits</td></tr>
+        <tr><td>AWS / Azure</td><td>Billing alerts ใน console (อย่าใช้ AWS ถ้าไม่ได้บังคับ — bill surprises เกิดบ่อย)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout warn">
+      <strong>⚠️ 3 ครั้งที่ bill ช็อก — เรียนจากตัวอย่างจริง</strong>
+      <ol style="margin-top:8px">
+        <li><strong>Recursive API call</strong> — function เรียกตัวเอง · 1 ล้าน calls ใน 1 ชั่วโมง</li>
+        <li><strong>Infinite loop on LLM</strong> — for loop ไม่ break · streaming + cost = $1000/ชม.</li>
+        <li><strong>Open public endpoint</strong> — bot scraper เจอ → ping ทุก 100ms · เกิน rate limit · เกิน bill</li>
+      </ol>
+      <strong>กฎ:</strong> ตั้ง budget alert ที่ <em>$5</em> ก่อน deploy ทุก service · ใช้ Haiku/Gemini Flash ไม่ใช่ Opus ·
+      <code>--max-instances=10</code> ใน Cloud Run · rate limit ใน Flask
+    </div>
+
+    <h3>🛑 Kill Switch — ปิดเร็วเมื่อเกิดเหตุ</h3>
+    <pre><code class="language-bash"># Cloud Run — ปิดทันที
+gcloud run services update my-service --max-instances=0
+
+# หรือลบทั้ง service
+gcloud run services delete my-service
+
+# Anthropic — disable key ที่ console
+# https://console.anthropic.com → API Keys → Delete
+
+# GitHub Actions — disable workflow
+# Settings → Actions → "Disable Actions for this repository"</code></pre>
+
+    <div class="callout tip">
+      <strong>📌 ฝึก kill switch ก่อน deploy</strong>
+      ก่อน push production ครั้งแรก · <em>ฝึกใช้ kill switch 1 ครั้ง</em> · รู้ปุ่ม · รู้คำสั่ง · เพราะตอนเกิดเหตุจริง
+      มือสั่น
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🌳 Git Workflow ขั้นพื้นฐาน</h2>
+
+    <h3>คำสั่งที่ใช้ทุกวัน</h3>
+    <pre><code>git status                          # ดูสถานะ
+git add .                           # stage ทุกอย่าง
+git commit -m "message"             # commit
+git push                            # ส่งขึ้น GitHub
+git pull                            # ดึงล่าสุด
+
+git log --oneline                   # ดูประวัติย่อ
+git diff                            # ดูที่เปลี่ยน
+
+git branch feature-x                # สร้าง branch ใหม่
+git checkout feature-x              # สลับไป branch
+git checkout -b feature-x           # สร้าง + สลับ
+
+# rollback
+git reset --hard HEAD               # ทิ้งการเปลี่ยนทั้งหมด
+git revert &lt;hash&gt;                  # ทำ commit ใหม่ที่ undo อันเก่า</code></pre>
+
+    <h3>Pull Request Workflow (สำหรับทีม)</h3>
+    <ol>
+      <li><code>git checkout -b feature-grade-export</code></li>
+      <li>แก้ code + commit หลายครั้ง</li>
+      <li><code>git push -u origin feature-grade-export</code></li>
+      <li>เปิด GitHub → สร้าง <strong>Pull Request</strong> ขอ merge เข้า main</li>
+      <li>เพื่อน/อาจารย์ review · comment</li>
+      <li>แก้ตาม feedback · push เพิ่ม</li>
+      <li>กด <em>Merge</em> เมื่อทุกคนยอมรับ</li>
+    </ol>
+
+    <h2>🔁 CI/CD — GitHub Actions</h2>
+
+    <p>"ทุก push → รัน test อัตโนมัติ" · ฟรีบน public repo</p>
+
+    <p>สร้าง <code>.github/workflows/test.yml</code>:</p>
+    <pre><code class="language-yaml">name: Tests
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - run: pip install -r requirements.txt
+      - run: pytest</code></pre>
+
+    <p>หลังจากนี้ทุก push จะเห็น ✅ หรือ ❌ บน GitHub</p>
+
+    <h2>📈 Maintenance — ระบบที่อยู่ได้นาน</h2>
+
+    <h3>Checklist ก่อน "ปล่อย" ระบบให้คนอื่นใช้</h3>
+    <ul>
+      <li>✅ README ครบ — install + usage + screenshot</li>
+      <li>✅ requirements.txt มี version</li>
+      <li>✅ .env.example สำหรับ secret</li>
+      <li>✅ tests pass</li>
+      <li>✅ มี error handling สำหรับ network / file</li>
+      <li>✅ log ทุก action สำคัญ</li>
+      <li>✅ backup data ทุกวัน</li>
+      <li>✅ มี changelog เริ่มต้น</li>
+    </ul>
+
+    <h3>Changelog template</h3>
+    <pre><code># Changelog
+
+## [Unreleased]
+- ...
+
+## [1.1.0] - 2026-05-20
+### Added
+- LINE notification เมื่อ PM2.5 &gt; 100
+- /status endpoint
+
+### Changed
+- เปลี่ยน DB จาก SQLite เป็น PostgreSQL
+
+### Fixed
+- Timezone bug ในการเก็บ timestamp
+
+## [1.0.0] - 2026-05-15
+- Initial release</code></pre>
+
+    <h2>🧪 Workshop — Deploy ไป 3 Targets</h2>
+    <p>เอา project ของคุณ (เลือก 1 จาก W07/W10/W12) · deploy ใน 3 channel ที่ user เข้าถึงได้</p>
+
+    <ol class="steps">
+      <li>
+        <strong>☁️ Target 1: Cloud Web</strong>
+        — Streamlit Cloud หรือ Render — เพื่อน open URL บน laptop ได้
+      </li>
+      <li>
+        <strong>📱 Target 2: Mobile</strong>
+        เลือก 1 ใน 3:
+        <ul>
+          <li>2a) Mobile-responsive Streamlit + PWA manifest → install บน home screen</li>
+          <li>2b) LINE bot · webhook คุยกับ logic เดิม</li>
+          <li>2c) Telegram bot (option ที่ 3)</li>
+        </ul>
+      </li>
+      <li>
+        <strong>💻 Target 3: เลือก 1</strong>
+        <ul>
+          <li>3a) Desktop .exe (PyInstaller) สำหรับ Windows user</li>
+          <li>3b) Raspberry Pi + systemd service (ถ้าคุณมี Pi)</li>
+          <li>3c) ESP32 MicroPython (ถ้าทำ IoT)</li>
+        </ul>
+      </li>
+      <li>
+        <strong>📊 ตั้ง Monitoring</strong>
+        — Sentry สำหรับ errors · UptimeRobot สำหรับ uptime · log ผ่าน Cloud Run console
+      </li>
+      <li>
+        <strong>💰 ตั้ง Budget Alert ทุก service</strong>
+        — $5 alert ที่ 50%, 90%, 100% · ตั้งทุกตัวที่ใช้ (Claude, OpenAI, GCP, ...)
+      </li>
+      <li>
+        <strong>🔁 เพิ่ม CI/CD</strong>
+        — GitHub Actions รัน pytest + deploy auto บน push main
+      </li>
+      <li>
+        <strong>📝 Changelog v1.0.0</strong>
+        — เริ่มที่ v1.0.0 · log แต่ละ deploy ใน <code>CHANGELOG.md</code>
+      </li>
+      <li>
+        <strong>🧪 "Fresh clone" test</strong>
+        — ขอเพื่อน 1 คน clone repo บนเครื่องเขา · ทำตาม README · ต้องรันได้
+      </li>
+      <li>
+        <strong>📱 User test บน mobile จริง</strong>
+        — ส่ง LINE/URL ให้เพื่อน 3 คน · เปิดบนมือถือ · 2 ใน 3 ต้อง "ใช้สำเร็จ"
+      </li>
+      <li>
+        <strong>Bonus — เปรียบเทียบ Local vs Cloud LLM</strong>
+        — Ollama llama3.2:3b vs Claude Haiku · เปรียบเทียบ output + speed + cost ใน task เดียวกัน
+      </li>
+    </ol>
+
+    <h2>ข้อผิดที่พบบ่อย</h2>
+
+    <div class="callout warn">
+      <strong>Commit <code>.env</code> ขึ้น GitHub</strong>
+      — secret หลุดทันที · rotate key + ใช้ <a href="https://github.com/awslabs/git-secrets" target="_blank">git-secrets</a> ป้องกัน
+    </div>
+
+    <div class="callout warn">
+      <strong>Deploy ครั้งแรก ทำ branch main</strong>
+      ทำ <code>staging</code> branch ก่อนเสมอ · ผ่านแล้วค่อย merge main
+    </div>
+
+    <div class="callout warn">
+      <strong>ไม่ทดสอบหลัง deploy</strong>
+      Cloud มี environment ต่างกับ local · ต้องทดสอบจาก URL จริง
+    </div>
+
+    <div class="callout warn">
+      <strong>Cloud Run cost surprise</strong>
+      ลืม set max instance → traffic spike → bill หลายพันบาท · ตั้ง <code>--max-instances=10</code>
+    </div>
+
+    <h2>ส่งงานสัปดาห์นี้</h2>
+    <ul>
+      <li>🌐 URL ของ Cloud target (Streamlit / Cloud Run)</li>
+      <li>📱 URL/QR ของ Mobile target (LINE bot ID หรือ PWA URL ที่ install ได้)</li>
+      <li>💻/🤖 ไฟล์/วิดีโอ ของ Desktop หรือ IoT target</li>
+      <li>📊 screenshot Sentry + UptimeRobot dashboard</li>
+      <li>💰 screenshot budget alert ของทุก service ที่ใช้</li>
+      <li>📁 GitHub repo มี Dockerfile, .github/workflows, CHANGELOG.md</li>
+      <li>🎤 user feedback จาก 3 คนที่ทดสอบบนมือถือจริง</li>
+      <li>📝 รายงาน 1 หน้า — เปรียบเทียบ Local LLM vs Cloud LLM ที่ลอง</li>
+    </ul>
+
+    <h3>Reference จาก slide เดิม</h3>
+    <p>เนื้อหานี้เป็น Mainidea Foundation 14 (Cloud + Deployment) + 20 (Version + Change) ที่ไม่อยู่ใน slide เดิม — เป็นทักษะที่ขาดไม่ได้สำหรับ Final Project</p>
+
+    <div class="pager">
+      <a href="w13-debug-test.html"><div class="label">← สัปดาห์ที่แล้ว</div><div class="title">W13 — Debug + Test + Reality</div></a>
+      <a href="w15-final-project.html" class="next"><div class="label">สัปดาห์ถัดไป →</div><div class="title">W15 — 🎓 Final Project</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+<script src="js/diagram-tools/mermaid-editor.js" defer></script>
+<script src="js/code-tools/python-runner.js" defer></script>
+</body>
+</html>

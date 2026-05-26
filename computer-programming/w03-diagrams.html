@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W03 — Diagram 6 แบบ | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+      <h4>🚀 เริ่มต้น (Setup)</h4>
+      <a href="setup-python.html"><span class="num">🐍</span> ติดตั้ง Python</a>
+      <a href="setup-vscode.html"><span class="num">💻</span> VS Code / Cursor</a>
+      <a href="setup-terminal.html"><span class="num">🖥️</span> Terminal พื้นฐาน</a>
+      <a href="setup-pip.html"><span class="num">📦</span> pip + Packages</a>
+      <a href="setup-git.html"><span class="num">🌿</span> Git + GitHub</a>
+      <a href="setup-colab.html"><span class="num">☁️</span> Google Colab</a>
+      <a href="setup-ai.html"><span class="num">🤖</span> AI Accounts</a>
+      <a href="python-basics.html"><span class="num">📖</span> Python Cheat-sheet</a>
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html" class="active"><span class="num">W03</span> Diagram 6 แบบ</a>
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">สัปดาห์ที่ 03 · Foundation · Pre-code</span>
+    <h1>Diagram 6 แบบ — ภาษาที่ AI อ่านดีกว่าคำพูด</h1>
+    <p class="lede">
+      AI โง่ลงทันทีเมื่อคำสั่งของเรา <em>กำกวม</em> · diagram คือเครื่องมือทำให้คำสั่ง <em>ไม่กำกวม</em>
+      สัปดาห์นี้เรียน 6 แบบที่นักศึกษาวิศวกรรมต้องใช้ — เลือกใช้ให้ถูกกับสถานการณ์
+    </p>
+
+    <h2>เป้าหมายสัปดาห์นี้</h2>
+    <ul>
+      <li>รู้จัก <strong>6 แบบ</strong> ของ diagram และเลือกใช้ถูก</li>
+      <li>เขียน <strong>Mermaid</strong> ได้เบื้องต้น (AI สร้างให้ได้)</li>
+      <li>ใช้ diagram <em>สั่ง AI</em> ให้สร้างของได้ตรงกว่าเดิม</li>
+    </ul>
+
+    <h2>ทำไม Diagram ถึงสำคัญในยุค AI</h2>
+    <p>
+      ลองคิด — ถ้าคุณบอก AI ว่า <em>"ทำระบบจองเครื่อง"</em> AI จะเดาเอง 100 อย่าง · แต่ถ้าคุณส่ง
+      sequence diagram ของ flow การจองให้ดู AI จะ <em>ไม่ต้องเดา</em> · output แม่นขึ้น 10 เท่า
+    </p>
+
+    <h2>🧭 ไม่แน่ใจใช้แบบไหน? ลองตัวช่วยนี้</h2>
+    <p>ตอบคำถามสั้น ๆ → ระบบแนะนำ diagram + เทมเพลตพร้อมใช้:</p>
+
+    <div class="diagram-picker"></div>
+
+    <p style="text-align:center;margin-top:14px">
+      <em>เครื่องมือเต็ม (Editor + Validator + Cheat-sheet) ดูที่</em>
+      <a href="tools.html">🎨 หน้าเครื่องมือ</a>
+    </p>
+
+    <h2>1️⃣ Flowchart — Process Logic</h2>
+    <p>ใช้กับ: <em>workflow ของคน</em>, การประมวลผลใน 1 program, การตัดสินใจ if/else · <strong>ใช้บ่อยที่สุด</strong></p>
+
+    <pre><code>flowchart TD
+    A([Start]) --&gt; B{เข้าใจโจทย์?}
+    B --&gt;|No| C[ถาม TA]
+    C --&gt; B
+    B --&gt;|Yes| D[ทำการบ้าน]
+    D --&gt; E[/ส่ง Classroom/]
+    E --&gt; F([End])</code></pre>
+
+    <p style="text-align:center;color:var(--text-muted);font-size:13px">↓ ผลลัพธ์ ↓</p>
+
+    <div class="mermaid">flowchart TD
+    A([Start]) --> B{เข้าใจโจทย์?}
+    B -->|No| C[ถาม TA]
+    C --> B
+    B -->|Yes| D[ทำการบ้าน]
+    D --> E[/ส่ง Classroom/]
+    E --> F([End])</div>
+
+    <h2>2️⃣ Sequence Diagram — Who Talks to Who</h2>
+    <p>ใช้กับ: <em>การสื่อสารระหว่าง parts</em> — frontend ↔ backend ↔ database, hardware ↔ cloud, user ↔ bot</p>
+
+    <pre><code>sequenceDiagram
+    Student-&gt;&gt;Web: เปิดหน้าจอง
+    Web-&gt;&gt;Backend: GET /slots
+    Backend-&gt;&gt;Database: SELECT free slots
+    Database--&gt;&gt;Backend: list of slots
+    Backend--&gt;&gt;Web: JSON response
+    Web--&gt;&gt;Student: แสดงช่องว่าง
+    Student-&gt;&gt;Web: เลือกช่อง + ยืนยัน
+    Web-&gt;&gt;Backend: POST /book
+    Backend-&gt;&gt;Database: INSERT booking
+    Backend-&gt;&gt;LINE Bot: แจ้งเตือน
+    Backend--&gt;&gt;Web: success
+    Web--&gt;&gt;Student: ใบยืนยัน</code></pre>
+
+    <p style="text-align:center;color:var(--text-muted);font-size:13px">↓ ผลลัพธ์ ↓</p>
+
+    <div class="mermaid">sequenceDiagram
+    actor Student
+    participant Web
+    participant Backend
+    participant Database
+    participant LINE as LINE Bot
+
+    Student->>Web: เปิดหน้าจอง
+    Web->>Backend: GET /slots
+    Backend->>Database: SELECT free slots
+    Database-->>Backend: list of slots
+    Backend-->>Web: JSON response
+    Web-->>Student: แสดงช่องว่าง
+
+    Student->>Web: เลือกช่อง + ยืนยัน
+    Web->>Backend: POST /book
+    Backend->>Database: INSERT booking
+    Backend->>LINE: แจ้งเตือน
+    Backend-->>Web: success
+    Web-->>Student: ใบยืนยัน</div>
+
+    <div class="callout tip">
+      <strong>ใช้ sequence diagram เมื่อ</strong>
+      ระบบมีหลายส่วนคุยกัน · เกิด bug ระหว่างทาง · ต้องอธิบายให้ AI ว่า "หลังจาก click แล้วเกิดอะไรขึ้น"
+    </div>
+
+    <h2>3️⃣ C4 Model — System Architecture</h2>
+    <p>ใช้กับ: <em>"ภาพรวมของระบบ"</em> — มีอะไรอยู่ในระบบบ้าง, ใครใช้, ติดต่อ external อะไร · นักศึกษาปี 1 ใช้แค่ <strong>2 ระดับแรก</strong> พอ:</p>
+
+    <h3>L1 — Context Diagram (ระบบที่เห็นจากนอก)</h3>
+    <p>3 อย่างหลัก: <strong>คน</strong> · <strong>ระบบของเรา</strong> · <strong>ระบบภายนอกที่เราเรียกใช้</strong></p>
+
+    <div class="mermaid">flowchart LR
+    student(["👤 Student<br/>นักศึกษาที่อยากจอง"])
+    system["🏭 CNC Booking System<br/><i>ระบบของเรา</i><br/>เก็บ booking + แจ้งเตือน"]
+    line[["📧 LINE Notify<br/><i>External service</i>"]]
+
+    student <--> system
+    system --> line
+
+    classDef person fill:#0d3f3a,stroke:#2dd4bf,color:#fff
+    classDef internal fill:#1e3a5f,stroke:#3776ab,stroke-width:3px,color:#fff
+    classDef external fill:#3b2962,stroke:#8b5cf6,color:#fff
+    class student person
+    class system internal
+    class line external</div>
+
+    <h3>L2 — Container Diagram (อะไรอยู่ในระบบ)</h3>
+    <p>เจาะลึก "CNC Booking System" — มีกี่ container · technology อะไร</p>
+
+    <div class="mermaid">flowchart TB
+    student(["👤 Student"])
+
+    subgraph booking ["🏭 CNC Booking System"]
+        direction LR
+        frontend["Frontend<br/><i>Streamlit · UI</i>"]
+        backend["Backend<br/><i>Flask · API logic</i>"]
+        db[("Database<br/><i>SQLite</i>")]
+        frontend -->|REST| backend
+        backend -->|SQL| db
+    end
+
+    line[["📧 LINE Notify"]]
+
+    student -->|browser| frontend
+    backend -->|HTTPS| line
+
+    classDef person fill:#0d3f3a,stroke:#2dd4bf,color:#fff
+    classDef external fill:#3b2962,stroke:#8b5cf6,color:#fff
+    class student person
+    class line external</div>
+
+    <h2>4️⃣ State Machine Diagram — สถานะของสิ่งของ</h2>
+    <p>ใช้กับ: <em>"สิ่งที่มีหลายสถานะ"</em> — booking (รอ → ยืนยัน → ยกเลิก), เครื่องจักร (พร้อม → กำลังใช้ → maintenance), assignment (ส่ง → ตรวจ → ผ่าน/ไม่ผ่าน)</p>
+
+    <pre><code>stateDiagram-v2
+    [*] --&gt; รอยืนยัน : นักศึกษาจอง
+    รอยืนยัน --&gt; ยืนยันแล้ว : ระบบ approve
+    รอยืนยัน --&gt; ยกเลิก : timeout 1 ชม.
+    ยืนยันแล้ว --&gt; กำลังใช้งาน : ถึงเวลานัด
+    ยืนยันแล้ว --&gt; ยกเลิก : ผู้ใช้ขอยกเลิก
+    กำลังใช้งาน --&gt; เสร็จสิ้น : กดคืน
+    เสร็จสิ้น --&gt; [*]</code></pre>
+
+    <p style="text-align:center;color:var(--text-muted);font-size:13px">↓ ผลลัพธ์เมื่อ Mermaid render ↓</p>
+
+    <div class="mermaid">stateDiagram-v2
+    [*] --> รอยืนยัน : นักศึกษาจอง
+    รอยืนยัน --> ยืนยันแล้ว : ระบบ approve
+    รอยืนยัน --> ยกเลิก : timeout 1 ชม.
+    ยืนยันแล้ว --> กำลังใช้งาน : ถึงเวลานัด
+    ยืนยันแล้ว --> ยกเลิก : ผู้ใช้ขอยกเลิก
+    กำลังใช้งาน --> เสร็จสิ้น : กดคืน
+    เสร็จสิ้น --> [*]</div>
+
+    <div class="callout info">
+      <strong>สำคัญสำหรับ MAE</strong>
+      State machine คือพื้นฐานของ <em>PLC ladder logic</em>, <em>robot control</em>, <em>safety interlock</em>
+      — เป็นทักษะที่ใช้จนถึงปี 4
+    </div>
+
+    <h2>5️⃣ ER Diagram — โครงสร้างข้อมูล</h2>
+    <p>ใช้กับ: <em>"ก่อนออกแบบ database"</em> — กำหนดว่ามีตารางอะไร, field อะไร, ความสัมพันธ์ยังไง</p>
+
+    <pre><code>erDiagram
+    STUDENT ||--o{ BOOKING : "ทำการจอง"
+    MACHINE ||--o{ BOOKING : "ถูกจอง"
+    BOOKING {
+        int booking_id PK
+        int student_id FK
+        int machine_id FK
+        datetime start_time
+        datetime end_time
+        string status
+    }
+    STUDENT {
+        int student_id PK
+        string name
+        string email
+        string line_id
+    }
+    MACHINE {
+        int machine_id PK
+        string code
+        string location
+        string status
+    }</code></pre>
+
+    <p style="text-align:center;color:var(--text-muted);font-size:13px">↓ ผลลัพธ์เมื่อ render ↓</p>
+
+    <div class="mermaid">erDiagram
+    STUDENT ||--o{ BOOKING : "ทำการจอง"
+    MACHINE ||--o{ BOOKING : "ถูกจอง"
+    BOOKING {
+        int booking_id PK
+        int student_id FK
+        int machine_id FK
+        datetime start_time
+        datetime end_time
+        string status
+    }
+    STUDENT {
+        int student_id PK
+        string name
+        string email
+        string line_id
+    }
+    MACHINE {
+        int machine_id PK
+        string code
+        string location
+        string status
+    }</div>
+
+    <p>สัญลักษณ์:</p>
+    <ul>
+      <li><code>||--o{</code> = one-to-many (1 student → many bookings)</li>
+      <li><code>PK</code> = Primary Key (ID หลัก)</li>
+      <li><code>FK</code> = Foreign Key (link ไปตารางอื่น)</li>
+    </ul>
+
+    <h2>6️⃣ Block Diagram — ระบบทางกายภาพ</h2>
+    <p>ใช้กับ: <em>"ระบบฮาร์ดแวร์"</em> — IoT, sensor → microcontroller → cloud, mechatronics</p>
+
+    <div class="mermaid">flowchart LR
+    sensor[/"Temp Sensor<br/><i>DS18B20</i>"/]
+    mcu(["ESP32<br/><i>microcontroller</i>"])
+    mqtt[["MQTT Broker<br/><i>Mosquitto</i>"]]
+    dash[("Dashboard<br/><i>Streamlit</i>")]
+    relay[\"Relay<br/><i>เปิด/ปิดพัดลม</i>"\]
+
+    sensor -->|1-Wire| mcu
+    mcu -->|publish| mqtt
+    mqtt -->|subscribe| dash
+    mcu -->|GPIO| relay
+
+    classDef input fill:#0d3f3a,stroke:#34d399,color:#fff
+    classDef cpu fill:#3b2962,stroke:#8b5cf6,color:#fff
+    classDef io fill:#1e3a5f,stroke:#2dd4bf,color:#fff
+    classDef output fill:#5c2618,stroke:#ff7a18,color:#fff
+    classDef actuator fill:#5c2618,stroke:#ef4444,color:#fff
+    class sensor input
+    class mcu cpu
+    class mqtt io
+    class dash output
+    class relay actuator</div>
+
+    <p style="text-align:center;color:var(--text-muted);font-size:13.5px">
+      🟢 input · 🟣 cpu · 🔵 communication · 🟠 display · 🔴 actuator
+    </p>
+
+    <h2>📌 ตารางสรุป — ใช้แบบไหนเมื่อไหร่</h2>
+    <table>
+      <thead><tr><th>แบบ</th><th>เหมาะกับ</th><th>เครื่องมือ</th></tr></thead>
+      <tbody>
+        <tr><td>Flowchart</td><td>process / workflow / if-else</td><td>Mermaid, draw.io</td></tr>
+        <tr><td>Sequence</td><td>API call, hardware↔cloud, bot interaction</td><td>Mermaid</td></tr>
+        <tr><td>C4 (L1+L2)</td><td>"ระบบของเราคืออะไร"</td><td>draw.io, Mermaid</td></tr>
+        <tr><td>State Machine</td><td>booking, machine, assignment</td><td>Mermaid</td></tr>
+        <tr><td>ER</td><td>ก่อนสร้าง database</td><td>Mermaid, dbdiagram.io</td></tr>
+        <tr><td>Block</td><td>hardware system, IoT</td><td>draw.io, ปากกา+กระดาษ</td></tr>
+      </tbody>
+    </table>
+
+    <h2>🧰 Mermaid — เครื่องมือคู่ AI ที่สำคัญที่สุด</h2>
+    <p>
+      Mermaid เป็น syntax แบบ <em>text</em> → diagram · ข้อดี:
+    </p>
+    <ul>
+      <li>copy-paste ส่งให้ AI ได้ทันที (AI <strong>เขียน Mermaid ได้เก่งมาก</strong>)</li>
+      <li>เก็บใน Git ได้ (เป็น text ไม่ใช่ binary)</li>
+      <li>GitHub render เป็นรูปอัตโนมัติใน README.md</li>
+      <li>เปลี่ยนได้ง่าย — ไม่ต้องลาก mouse ทีละกล่อง</li>
+    </ul>
+
+    <div class="callout tip">
+      <strong>เทคนิคยุค AI</strong>
+      อย่ารีบเปิด draw.io วาด · ลอง <em>ขอ AI ให้สร้าง Mermaid</em> ก่อน — เร็วกว่า 10 เท่า
+      เช่น: <em>"ทำ sequence diagram ของระบบจอง CNC ที่: นักศึกษาเปิดเว็บ → กรอกแบบฟอร์ม → ระบบเช็คว่าง → ยืนยัน → ส่ง LINE"</em>
+    </div>
+
+    <h3>🎨 ลองเลย — Mermaid Live Editor</h3>
+    <p>เปลี่ยน template ได้จาก dropdown (6 ชนิด) · แก้ทางซ้าย → preview ทางขวาทันที</p>
+
+    <div class="mermaid-editor" data-template="sequence"></div>
+
+    <h3>🔍 ลองเช็ค — Flowchart Validator</h3>
+    <p>วาง flowchart syntax แล้วกด <em>ตรวจ</em> · เครื่องมือบอกว่า Start/End/Decision ใช้ถูก semantic มั้ย</p>
+
+    <div class="flowchart-validator">flowchart TD
+    A([Start]) --> B[เปิดใบงาน]
+    B --> C{เข้าใจ?}
+    C -->|Yes| D[ทำส่ง]
+    C -->|No| E[ถาม TA] --> B
+    D --> F([End])</div>
+
+    <h2>Workshop — เลือก 1 ระบบ วาด 3 แบบ</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>เลือก 1 ปัญหาจาก W01</strong>
+        — ตัวเดียวกับที่เขียน Problem Statement ไว้
+      </li>
+      <li>
+        <strong>วาด Flowchart</strong> ของ workflow ปัจจุบัน (อันที่เขียนใน W01 ก็ได้)
+        ลองแปลงเป็น Mermaid และให้ AI ปรับให้
+      </li>
+      <li>
+        <strong>วาด C4 Container Diagram</strong>
+        — ระบบที่อยากสร้างมีอะไรบ้าง? (frontend, backend, database, external service)
+      </li>
+      <li>
+        <strong>วาดอีก 1 แบบ</strong> ตามที่เหมาะ —
+        ถ้ามี user หลายสถานะ → State machine · ถ้ามี database → ER diagram · ถ้ามี hardware → Block diagram
+      </li>
+      <li>
+        <strong>ขอ AI ช่วยปรับ</strong>
+        — ส่ง diagram ทั้ง 3 ให้ Claude พร้อมโจทย์: <em>"ดูแล้วระบบนี้น่าจะลืมอะไรไปบ้าง?"</em>
+      </li>
+      <li>
+        <strong>บันทึก Mermaid ลงไฟล์</strong>
+        — สร้าง <code>diagrams.md</code> ใน folder ของ project — ใส่ Mermaid ทั้ง 3 ลงไป
+      </li>
+    </ol>
+
+    <h2>ข้อผิดที่พบบ่อย</h2>
+
+    <div class="callout warn">
+      <strong>วาด diagram ละเอียดเกินไปตั้งแต่แรก</strong>
+      — เริ่มที่ <em>"7-10 กล่อง"</em> ก่อนเสมอ · ถ้ามากกว่านี้ แสดงว่ายังคิดไม่ครบ ต้อง zoom out
+    </div>
+
+    <div class="callout warn">
+      <strong>ใช้ flowchart วาดทุกอย่าง</strong>
+      — flowchart เก่งเรื่อง process · แต่อธิบาย system architecture ไม่ได้ดี · เลือกแบบที่เหมาะ
+    </div>
+
+    <div class="callout warn">
+      <strong>วาด diagram โดยไม่กลับไปอัพเดต</strong>
+      — เมื่อระบบเปลี่ยน diagram ต้องเปลี่ยนตาม · Mermaid ใน git ช่วยตรงนี้
+    </div>
+
+    <h2>ส่งงานสัปดาห์นี้</h2>
+    <ul>
+      <li>📄 <strong>diagrams.md</strong> มี Mermaid 3 แบบของ 1 ระบบ (จาก W01)</li>
+      <li>📸 screenshot ของ <a href="https://mermaid.live" target="_blank">mermaid.live</a> หรือ GitHub preview ที่ render แล้ว</li>
+      <li>📝 บันทึกสั้น ๆ <em>"AI สังเกตเห็นอะไรที่ฉันลืม"</em></li>
+    </ul>
+
+    <h3>Reference จาก slide เดิม</h3>
+    <p>เนื้อหานี้เชื่อมโยงกับ <a href="references.html#topic-1">Topic 1 — IntroFlowchart</a> ของเอกสารประกอบการสอนเดิม + ขยายเป็น 6 แบบตาม Mainidea</p>
+
+    <div class="pager">
+      <a href="w02-tools-vocab.html"><div class="label">← สัปดาห์ที่แล้ว</div><div class="title">W02 — เครื่องมือ + คำศัพท์</div></a>
+      <a href="w04-read-ai-code.html" class="next"><div class="label">สัปดาห์ถัดไป →</div><div class="title">W04 — อ่านโค้ดที่ AI เขียน</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · ภาควิชาวิศวกรรมเครื่องกลและเมคาทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+<script src="js/diagram-tools/type-picker.js" defer></script>
+<script src="js/diagram-tools/mermaid-editor.js" defer></script>
+<script src="js/diagram-tools/flowchart-validator.js" defer></script>
+</body>
+</html>

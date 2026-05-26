@@ -1,0 +1,333 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>06 — Security | OPC UA Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="OPC UA Tutorial"></div>
+      <div>
+        <div class="title">OPC UA</div>
+        <div class="subtitle">สะพานสู่ Industrie 4.0</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>แนวคิดหลัก</h4>
+      <a href="ch01-why-opcua.html"><span class="num">01</span> ทำไมต้อง OPC UA?</a>
+      <a href="ch02-architecture.html"><span class="num">02</span> สถาปัตยกรรมพื้นฐาน</a>
+      <a href="ch03-information-model.html"><span class="num">03</span> Information Model</a>
+      <a href="ch04-services.html"><span class="num">04</span> Services</a>
+      <a href="ch05-pubsub.html"><span class="num">05</span> PubSub &amp; MQTT</a>
+      <a href="ch06-security.html" class="active"><span class="num">06</span> Security</a>
+
+      <h4>ระบบนิเวศ</h4>
+      <a href="ch07-companion-specs.html"><span class="num">07</span> Companion Specifications</a>
+      <a href="ch08-field-level.html"><span class="num">08</span> OPC UA FX (Field Level)</a>
+      <a href="ch09-cloud.html"><span class="num">09</span> Cloud Integration</a>
+
+      <h4>ลงมือทำ</h4>
+      <a href="ch10-handson.html"><span class="num">10</span> 🧪 Hands-on (UaExpert)</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ 06 · Built-in by Design · X.509 · TLS · 3 Layers</span>
+    <h1>Security</h1>
+    <p class="lede">
+      Security คือเหตุผลสำคัญที่ Industry 4.0 เลือก OPC UA — ออกแบบมาให้ <strong>"Secure by Default"</strong>
+      ไม่ใช่ add-on ทีหลัง — ผ่านการตรวจสอบโดย German Federal Office for Information Security (BSI)
+      ในระดับสากล
+    </p>
+
+    <h2>ทำไม Security สำคัญในระบบอุตสาหกรรม?</h2>
+
+    <p>
+      ในยุค Modbus + RS-485 ปี 1990 — โรงงานเป็น "เกาะ" แยกจาก IT Network ใครจะ Hack ก็ต้องเข้าโรงงานด้วยตนเอง
+      — Security จึงไม่สำคัญในระดับ Protocol
+    </p>
+
+    <p>
+      ในยุค Industrie 4.0 + Cloud — ทุกเครื่องเชื่อมต่อ Internet → ความเสี่ยงเพิ่มขึ้นมหาศาล:
+    </p>
+
+    <ul>
+      <li><strong>Stuxnet (2010)</strong> — Malware ที่ Sabotage โรงงาน Centrifuge นิวเคลียร์ผ่าน PLC</li>
+      <li><strong>Colonial Pipeline (2021)</strong> — Ransomware ที่ทำให้ท่อน้ำมัน East Coast US หยุดทำงาน 5 วัน</li>
+      <li><strong>JBS Foods (2021)</strong> — โรงงานเนื้อใหญ่ที่สุดของโลกหยุดผลิตเพราะ Cyber Attack</li>
+    </ul>
+
+    <p>
+      โรงงานสมัยใหม่ <strong>ต้อง</strong> มีระบบ Security ตั้งแต่ Protocol ขึ้นไป — และเป็นเรื่องของ Engineer
+      Mechatronics ไม่ใช่แค่ฝ่าย IT
+    </p>
+
+    <h2>OPC UA Security Model — 3 Layers</h2>
+
+    <p>
+      Security ของ OPC UA แยกเป็น 3 ชั้น — แต่ละชั้นมีหน้าที่ต่างกัน เปิด/ปิด แต่ละชั้นได้อิสระ:
+    </p>
+
+    <figure>
+      <img src="images/06-security-layers.png" alt="OPC UA scalable security concept: User Security (token), App Security (authentication of client/server/messages), Transport Security (signing and encryption)" style="max-width:780px">
+      <figcaption>
+        OPC UA Security Model — User, Application, และ Transport Security ทำงานคู่กัน
+        ทำให้ Client/Server ตรวจสอบกันก่อนคุย, ส่งข้อมูลอย่างปลอดภัย, และ Authorize ตาม User
+        (ที่มา: OPC Foundation Brochure)
+      </figcaption>
+    </figure>
+
+    <h3>1️⃣ Transport Security — ระดับช่องสื่อสาร</h3>
+
+    <p>
+      จุดประสงค์: ป้องกันข้อมูล <em>ระหว่างทาง</em> — ใครดักอ่านระหว่าง Client กับ Server ไม่ได้
+    </p>
+
+    <ul>
+      <li>ใช้มาตรฐาน <strong>TLS-like</strong> (เหมือน HTTPS) — Sign + Encrypt ทุก Message</li>
+      <li><strong>SecurityMode</strong> เลือกได้ 3 ระดับ:
+        <ul>
+          <li><code>None</code> — ไม่มีอะไรเลย (ใช้แค่ใน Lab ภายใน)</li>
+          <li><code>Sign</code> — เซ็นชื่อ Message (ป้องกัน Tampering แต่ยังอ่านได้)</li>
+          <li><code>SignAndEncrypt</code> — เซ็นชื่อ + เข้ารหัส (มาตรฐานในงาน Production)</li>
+        </ul>
+      </li>
+      <li><strong>SecurityPolicy</strong> เลือก Algorithm: RSA + AES + SHA-256 / SHA-384</li>
+    </ul>
+
+    <h3>2️⃣ Application Security — ระดับแอป</h3>
+
+    <p>
+      จุดประสงค์: Client และ Server ตรวจสอบ <em>ตัวตน</em> ของกันและกัน — ป้องกัน "Rogue Device" ปลอมเป็น Server
+    </p>
+
+    <ul>
+      <li>ใช้ <strong>X.509 v3 Certificates</strong> (เหมือนกับ Certificate ของ HTTPS Website)</li>
+      <li>Certificate มี:
+        <ul>
+          <li><strong>Subject</strong> — ตัวตนของ App (เช่น "PLC-Line-A-01")</li>
+          <li><strong>Public Key</strong> — สำหรับเข้ารหัส</li>
+          <li><strong>Issuer</strong> — ใครเป็นคนเซ็นรับรอง (CA)</li>
+          <li><strong>Validity</strong> — ช่วงเวลาที่ใช้ได้</li>
+        </ul>
+      </li>
+      <li>Client/Server ต้องใส่ Certificate ของกันและกันใน <strong>Trust List</strong></li>
+    </ul>
+
+    <h3>3️⃣ User Security — ระดับคน</h3>
+
+    <p>
+      จุดประสงค์: ตรวจสอบว่า <em>ใคร</em> เป็นคนใช้งาน — Authorize ตามบทบาท
+    </p>
+
+    <p>OPC UA รองรับการ Authenticate User 4 แบบ:</p>
+
+    <table>
+      <thead>
+        <tr><th>วิธี</th><th>เหมาะกับ</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><code>Anonymous</code></td>
+          <td>Public Data ที่ใครเข้าได้ (เช่น Status Page)</td>
+        </tr>
+        <tr>
+          <td><code>UserName + Password</code></td>
+          <td>Operator/Engineer ที่ใช้งาน HMI</td>
+        </tr>
+        <tr>
+          <td><code>X.509 Certificate</code></td>
+          <td>Service Account / Machine-to-Machine</td>
+        </tr>
+        <tr>
+          <td><code>IssuedToken</code> (Bearer/OAuth2)</td>
+          <td>SSO / Enterprise IdP — Azure AD, Okta, Keycloak</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>
+      <strong>Role-based Authorization</strong> (Part 18) — แต่ละ User มี Role เช่น "Operator", "Engineer", "Maintenance"
+      แต่ละ Role มีสิทธิ์ที่ระดับ Node ของแต่ละ Variable/Method
+    </p>
+
+    <h2>SecureChannel + Session — ขั้นตอนตอนต่อ</h2>
+
+    <p>ลำดับเหตุการณ์ตอน Client เปิดเข้าหา Server:</p>
+
+    <ol class="steps">
+      <li>
+        <strong>Find Endpoint</strong>
+        — Client เรียก <code>GetEndpoints</code> ไปที่ Server เพื่อดูว่ามี SecurityPolicy อะไรให้เลือก
+      </li>
+      <li>
+        <strong>OpenSecureChannel</strong>
+        — แลก Public Keys + กำหนด Symmetric Key สำหรับ Session — เข้ารหัส Message ทั้งหมดที่ตามมา
+      </li>
+      <li>
+        <strong>CreateSession</strong>
+        — Client ส่ง User Token (Username/Password/Certificate)
+      </li>
+      <li>
+        <strong>ActivateSession</strong>
+        — Server Validate User Token แล้ว Authorize ตาม Role
+      </li>
+      <li>
+        <strong>Read / Write / Browse / …</strong>
+        — เริ่มใช้งานปกติ ทุก Message ผ่าน Encryption
+      </li>
+      <li>
+        <strong>CloseSession + CloseSecureChannel</strong>
+        — ปิดเมื่อเสร็จ
+      </li>
+    </ol>
+
+    <p>ทั้งหมดนี้ทำโดย Library อัตโนมัติ — Application Developer ไม่ต้องจัดการ Crypto เอง</p>
+
+    <h2>ตัวอย่าง — ตอนต่อ OPC UA Server ด้วย Python</h2>
+
+    <pre><code>from asyncua import Client
+from asyncua.crypto.security_policies import SecurityPolicyBasic256Sha256
+from asyncua.ua import MessageSecurityMode
+
+async with Client('opc.tcp://plant-floor:4840') as client:
+    # 1) Application Security — ใช้ Certificate ของเราเอง + Trust ของ Server
+    await client.set_security(
+        SecurityPolicyBasic256Sha256,
+        certificate_path='client-cert.pem',
+        private_key_path='client-key.pem',
+        server_certificate_path='server-cert.pem',
+        mode=MessageSecurityMode.SignAndEncrypt
+    )
+
+    # 2) User Security — ใส่ Username/Password
+    client.set_user('operator-a')
+    client.set_password('s3cur3-p4ss')
+
+    # 3) Transport + Encryption ทำให้อัตโนมัติ — เริ่มใช้งานปกติ
+    await client.connect()
+    value = await client.get_node('ns=2;s=Temp1').read_value()</code></pre>
+
+    <h2>Global Discovery Server (GDS)</h2>
+
+    <p>
+      ในโรงงานใหญ่ที่มี Server เป็นร้อยตัว — การจัดการ Certificate ทุกตัวด้วยมือเป็นเรื่องโหด
+      OPC UA จึงมีระบบ <strong>GDS</strong>:
+    </p>
+
+    <ul>
+      <li>Server และ Client ทุกตัวลงทะเบียนกับ GDS</li>
+      <li>GDS เป็น <strong>Certificate Authority (CA)</strong> เซ็นรับรอง Certificate ของทุก Application</li>
+      <li>Update Trust List + Revocation List อัตโนมัติ — ถ้ามี Device ถูก Revoke ก็แจ้งทุกตัวพร้อมกัน</li>
+      <li>Auto-renewal Certificate ก่อนหมดอายุ</li>
+    </ul>
+
+    <p>เป็น Infrastructure ที่ทำให้ Security ทำงานได้ในสเกลใหญ่</p>
+
+    <h2>BSI Security Analysis — ตรวจสอบโดยผู้เชี่ยวชาญ</h2>
+
+    <div class="callout info">
+      <strong>German Federal Office for Information Security (BSI)</strong> — หน่วยงานความมั่นคงไซเบอร์ของรัฐบาลเยอรมัน —
+      เคยทำ Security Analysis ของ OPC UA ในปี 2017 — ผลคือ <em>"OPC UA ไม่มีช่องโหว่ในเชิงระบบ
+      (does not contain systematic security vulnerabilities)"</em>
+      <br>นี่คือคำแนะนำให้ใช้ OPC UA ใน Critical Infrastructure ของเยอรมนี
+    </div>
+
+    <h2>เทียบกับ Modbus</h2>
+
+    <table>
+      <thead>
+        <tr><th>ประเด็น</th><th>Modbus</th><th>OPC UA</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Encryption ระหว่างทาง</td><td>❌ Plain Text</td><td>✅ AES-256</td></tr>
+        <tr><td>Authentication App</td><td>❌ ไม่มี</td><td>✅ X.509 Certificates</td></tr>
+        <tr><td>Authentication User</td><td>❌ ไม่มี</td><td>✅ User/Pass, Cert, Token</td></tr>
+        <tr><td>Authorization (Role)</td><td>❌ ไม่มี</td><td>✅ Role-based ที่ระดับ Node</td></tr>
+        <tr><td>Integrity (กัน Tamper)</td><td>มี CRC แต่ป้องกัน Active attack ไม่ได้</td><td>✅ SHA-256 Signing</td></tr>
+        <tr><td>Audit Trail</td><td>❌ ไม่มี</td><td>✅ Session events บันทึกได้</td></tr>
+        <tr><td>Certificate Management</td><td>—</td><td>✅ GDS + Auto-renewal</td></tr>
+        <tr><td>Replay Attack Protection</td><td>❌</td><td>✅ Nonces + Timestamps</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Best Practices สำหรับโรงงาน</h2>
+
+    <ol class="steps">
+      <li><strong>ใช้ SignAndEncrypt เสมอใน Production</strong> — None และ Sign ใช้ใน Lab เท่านั้น</li>
+      <li><strong>หมุน Certificate ก่อนหมดอายุ</strong> — GDS ช่วยได้ ทำได้อัตโนมัติ</li>
+      <li><strong>กำหนด Trust List ที่ Server</strong> — รับเฉพาะ Client ที่รู้จัก ไม่ใช่ Trust ทุกคน</li>
+      <li><strong>ใช้ User Authentication ที่เหมาะสม</strong> — User/Pass สำหรับคน, Certificate สำหรับเครื่อง</li>
+      <li><strong>Audit Log ทุก Session</strong> — ใครเข้ามาเมื่อไหร่ ทำอะไรบ้าง</li>
+      <li><strong>ปิด Anonymous endpoint บน Production</strong> — เปิดเฉพาะที่จำเป็น</li>
+      <li><strong>Update SecurityPolicy ทุกๆ ปี</strong> — เปลี่ยนตามคำแนะนำของ OPC Foundation Security Advisories</li>
+    </ol>
+
+    <h2>สรุปบทที่ 06</h2>
+
+    <ul>
+      <li>OPC UA Security เป็น <strong>Built-in by Design</strong> — ไม่ใช่ Add-on</li>
+      <li>3 Layers — <strong>Transport, Application, User</strong> ทำงานคู่กัน เปิด/ปิด ได้อิสระ</li>
+      <li>ใช้มาตรฐาน IT ที่พิสูจน์แล้ว — <strong>X.509 Certificates, TLS-like, RSA + AES + SHA-256</strong></li>
+      <li>มี <strong>Global Discovery Server (GDS)</strong> สำหรับจัดการ Certificate ในสเกลใหญ่</li>
+      <li>BSI (เยอรมัน) ตรวจแล้วว่าไม่มีช่องโหว่ในเชิงระบบ — ใช้กับ Critical Infrastructure ได้</li>
+      <li>การที่ Cloud Provider (Azure, AWS) เลือก OPC UA over MQTT — ส่วนหนึ่งเพราะ Security Layer นี้</li>
+    </ul>
+
+    <p>
+      เสร็จส่วน "แนวคิดหลัก" แล้ว — บทต่อไปจะเข้าสู่ <strong>ระบบนิเวศ</strong> เริ่มจาก
+      <em>Companion Specifications</em> ที่ทำให้ Robot, Machine Tools, IO-Link พูดภาษาเดียวกันได้
+    </p>
+
+    <div class="pager">
+      <a href="ch05-pubsub.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">05 — PubSub &amp; MQTT</div>
+      </a>
+      <a href="ch07-companion-specs.html" class="next">
+        <div class="label">ถัดไป →</div>
+        <div class="title">07 — Companion Specifications</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  OPC UA &amp; Industrie 4.0 Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){
+  var lb = document.getElementById('lightbox');
+  if(!lb) return;
+  var img = lb.querySelector('img');
+  document.querySelectorAll('.gallery a, .zoomable').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      img.src = a.getAttribute('href') || a.getAttribute('data-src');
+      lb.classList.add('open');
+    });
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') lb.classList.remove('open');
+  });
+})();
+</script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

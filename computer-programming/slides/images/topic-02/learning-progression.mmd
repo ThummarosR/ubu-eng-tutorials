@@ -1,0 +1,17 @@
+---
+title: AI-Era Python Learning Progression
+---
+flowchart LR
+    A["📖 READ<br/>AI-generated code"] --> B["✏️ MODIFY<br/>change behaviour"]
+    B --> C["📋 DIRECT<br/>prompt from spec"]
+    C --> D["✍️ WRITE<br/>independent code"]
+
+    A -.- a1["• Trace variables<br/>• Ask AI to explain<br/>• Predict output"]
+    B -.- b1["• Change a constant<br/>• Add a branch<br/>• Extend a loop"]
+    C -.- c1["• Write a spec<br/>• Compose a prompt<br/>• Verify result"]
+    D -.- d1["• Confident syntax<br/>• System design<br/>• Architecture decisions"]
+
+    classDef stage fill:#3776ab,stroke:#1e4870,color:#ffffff,stroke-width:2px
+    classDef note fill:#f8fafc,stroke:#cbd5e0,color:#1a202c
+    class A,B,C,D stage
+    class a1,b1,c1,d1 note

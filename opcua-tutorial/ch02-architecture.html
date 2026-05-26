@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>02 — สถาปัตยกรรมพื้นฐาน | OPC UA Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="OPC UA Tutorial"></div>
+      <div>
+        <div class="title">OPC UA</div>
+        <div class="subtitle">สะพานสู่ Industrie 4.0</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>แนวคิดหลัก</h4>
+      <a href="ch01-why-opcua.html"><span class="num">01</span> ทำไมต้อง OPC UA?</a>
+      <a href="ch02-architecture.html" class="active"><span class="num">02</span> สถาปัตยกรรมพื้นฐาน</a>
+      <a href="ch03-information-model.html"><span class="num">03</span> Information Model</a>
+      <a href="ch04-services.html"><span class="num">04</span> Services</a>
+      <a href="ch05-pubsub.html"><span class="num">05</span> PubSub &amp; MQTT</a>
+      <a href="ch06-security.html"><span class="num">06</span> Security</a>
+
+      <h4>ระบบนิเวศ</h4>
+      <a href="ch07-companion-specs.html"><span class="num">07</span> Companion Specifications</a>
+      <a href="ch08-field-level.html"><span class="num">08</span> OPC UA FX (Field Level)</a>
+      <a href="ch09-cloud.html"><span class="num">09</span> Cloud Integration</a>
+
+      <h4>ลงมือทำ</h4>
+      <a href="ch10-handson.html"><span class="num">10</span> 🧪 Hands-on (UaExpert)</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ 02 · Layer Model · SOA · 2 Patterns</span>
+    <h1>สถาปัตยกรรมพื้นฐาน</h1>
+    <p class="lede">
+      OPC UA ไม่ใช่แค่ Protocol — แต่เป็น <em>สถาปัตยกรรมแบบเป็นชั้น (Layered Architecture)</em>
+      ที่แยกชัดเจนว่าอะไรเป็น <strong>ข้อมูล</strong>, อะไรเป็น <strong>การเข้าถึงข้อมูล</strong>,
+      และอะไรเป็น <strong>การส่งข้อมูล</strong> — บทนี้พาดูภาพรวมของแต่ละชั้น
+    </p>
+
+    <h2>ภาพรวม Layer Model</h2>
+
+    <p>
+      ลองมองดูสถาปัตยกรรมของ OPC UA แบบเป็นเค้กหลายชั้น — ชั้นล่างสุดดูเทคนิคที่สุด ชั้นบนสุดดูเป็นข้อมูลที่อุตสาหกรรมเข้าใจง่ายที่สุด:
+    </p>
+
+    <figure>
+      <img src="images/02-layer-model.png" alt="OPC UA layered architecture from Vendor Specific down to Use Case Protocol Mappings" style="max-width:680px">
+      <figcaption>
+        Layer Model ของ OPC UA — แต่ละชั้นมีหน้าที่ต่างกัน และสำคัญที่สุด: <em>ชั้นบนไม่จำเป็นต้องรู้ว่าชั้นล่างใช้ Protocol อะไร</em>
+        ทำให้เปลี่ยน Network ได้โดยไม่ต้องเขียน Application ใหม่ (ที่มา: OPC Foundation Brochure)
+      </figcaption>
+    </figure>
+
+    <h3>ไล่ดูทีละชั้น (จากบนลงล่าง)</h3>
+
+    <ol class="steps">
+      <li>
+        <strong>Vendor Specific Extensions</strong>
+        — ส่วนที่ผู้ผลิตเครื่องแต่ละราย <em>เพิ่มของตัวเอง</em> เข้ามาเพื่อให้ลูกค้าเข้าถึงฟีเจอร์เฉพาะของยี่ห้อ
+      </li>
+      <li>
+        <strong>Companion Information Models</strong>
+        — มาตรฐานเฉพาะอุตสาหกรรม เช่น Robotics, CNC Machines, Wind Power, P&amp;ID Exchange
+        (รายละเอียดในบทที่ 07)
+      </li>
+      <li>
+        <strong>Core Information Models</strong>
+        — มาตรฐาน "ของ OPC Foundation" เอง สำหรับสิ่งที่ทุกอุตสาหกรรมต้องใช้: Analog Data, Alarms, State Machines, File Transfer
+      </li>
+      <li>
+        <strong>Information Model Building Blocks (Meta Model)</strong>
+        — กฎพื้นฐานของการสร้าง Object: Variable, Type, Method, Event, Reference — เป็น "ระบบไวยากรณ์" ที่ทุกระดับใช้ร่วมกัน
+      </li>
+      <li>
+        <strong>Information Model Access</strong>
+        — บริการ (Services) ที่ Client ใช้เข้าถึงข้อมูล: Browse, Read, Write, Subscribe, Call Method (รายละเอียดในบทที่ 04)
+      </li>
+      <li>
+        <strong>Client-Server &amp; Pub-Sub</strong>
+        — สองรูปแบบของการสื่อสาร — เลือกใช้ตามสถานการณ์ (พูดต่อในบทนี้)
+      </li>
+      <li>
+        <strong>Use Case specific Protocol Mappings</strong>
+        — ชั้นล่างสุด — เลือกใช้ Network Protocol ที่เหมาะกับงาน: TCP/IP, HTTPS, MQTT, AMQP, UDP, TSN, …
+      </li>
+    </ol>
+
+    <div class="callout tip">
+      <strong>ทำไมถึงสำคัญ?</strong> ใน Modbus ถ้าจะเปลี่ยนจาก RTU (RS-485) เป็น TCP (Ethernet)
+      ต้องเปลี่ยน Code ทั้งหมด — เพราะมันรวมเรื่อง Network กับเรื่อง Data ไว้ในชั้นเดียว
+      ส่วน OPC UA ถ้าจะเปลี่ยนจาก TCP เป็น MQTT แค่เปลี่ยนชั้นล่างสุด <em>ข้อมูลและบริการเหมือนเดิม</em>
+    </div>
+
+    <h2>2 Patterns การสื่อสาร — เลือกใช้ตามสถานการณ์</h2>
+
+    <h3>Pattern 1 — Client-Server (ดั้งเดิม)</h3>
+
+    <p>
+      เหมือนกับ Web Browser คุยกับ Web Server — Client ขอ, Server ตอบ:
+    </p>
+
+    <div class="flowdiagram">
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node master">
+          <h4>Client</h4>
+          <p class="fd-sub">เช่น HMI, MES, SCADA</p>
+          <ul>
+            <li>เปิด Session</li>
+            <li>Browse Address Space</li>
+            <li>Read/Write ค่า</li>
+            <li>Subscribe ค่าที่เปลี่ยน</li>
+            <li>Call Method</li>
+          </ul>
+        </div>
+        <div class="flowdiagram-arrow">↔</div>
+        <div class="flowdiagram-node slave">
+          <h4>Server</h4>
+          <p class="fd-sub">เช่น PLC, Sensor, Gateway</p>
+          <ul>
+            <li>Listen TCP Port 4840</li>
+            <li>Authenticate Client</li>
+            <li>Serve ข้อมูลตาม Request</li>
+            <li>Push Notification ตาม Subscription</li>
+          </ul>
+        </div>
+      </div>
+      <div class="flowdiagram-loop">Bi-directional · มี Connection ตลอด · เหมาะกับ "อยากให้ Server ทำอะไรให้"</div>
+    </div>
+
+    <p><strong>จุดเด่น:</strong></p>
+    <ul>
+      <li>Browse ได้ — Client เปิดเข้ามาแล้วค้นหาเองได้ว่ามีอะไรอยู่บ้าง (ไม่ต้องเปิด Manual)</li>
+      <li>Bi-directional — ส่งคำสั่งกลับไปสั่ง Server ได้ (เช่น Start/Stop Process)</li>
+      <li>มี Session — รักษาสถานะ User Login ได้</li>
+    </ul>
+
+    <p><strong>เมื่อไหร่ใช้:</strong> HMI/SCADA ที่ต้องการ Control + Monitor, Engineering Tools, MES ที่ต้อง Read &amp; Write</p>
+
+    <h3>Pattern 2 — Publish-Subscribe (PubSub, แบบใหม่)</h3>
+
+    <p>
+      เหมือนกับการสมัครรับ Newsletter — ใครที่สนใจหัวข้อนี้ก็สมัครรับ:
+    </p>
+
+    <div class="flowdiagram">
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node master">
+          <h4>Publisher</h4>
+          <p class="fd-sub">PLC, Sensor</p>
+          <ul>
+            <li>ส่งข้อมูลออก</li>
+            <li>ไม่รู้จัก Subscriber</li>
+            <li>"ส่งแล้วลืม"</li>
+          </ul>
+        </div>
+        <div class="flowdiagram-arrow">→</div>
+        <div class="flowdiagram-node slave" style="background:rgba(165,180,252,0.15)">
+          <h4>Broker / MOM</h4>
+          <p class="fd-sub">เช่น MQTT Broker</p>
+          <ul>
+            <li>รับจาก Publisher</li>
+            <li>แจกให้ Subscriber</li>
+          </ul>
+        </div>
+        <div class="flowdiagram-arrow">→</div>
+        <div style="display:flex;flex-direction:column;gap:6px;flex:1 1 0">
+          <div class="flowdiagram-node slave">
+            <h4>Subscriber #1</h4>
+            <p class="fd-sub">Cloud Dashboard</p>
+          </div>
+          <div class="flowdiagram-node slave">
+            <h4>Subscriber #2</h4>
+            <p class="fd-sub">MES</p>
+          </div>
+          <div class="flowdiagram-node slave">
+            <h4>Subscriber #3</h4>
+            <p class="fd-sub">ML Model</p>
+          </div>
+        </div>
+      </div>
+      <div class="flowdiagram-loop">One-to-Many · ไม่มี Connection ตลอด · เหมาะกับ "ส่งข้อมูลให้หลายคนรู้พร้อมกัน"</div>
+    </div>
+
+    <p><strong>จุดเด่น:</strong></p>
+    <ul>
+      <li>Scale ได้ดี — Publisher ไม่ต้องสนใจว่ามี Subscriber กี่คน</li>
+      <li>Decoupled — Publisher และ Subscriber ไม่ต้องรู้จักกัน</li>
+      <li>เหมาะกับ Cloud — ใช้ MQTT/AMQP ที่เป็นมาตรฐาน Cloud อยู่แล้ว</li>
+    </ul>
+
+    <p><strong>เมื่อไหร่ใช้:</strong> ส่งข้อมูลเซ็นเซอร์ไป Cloud, IoT Telemetry, Many-to-Many, Field Level Real-time (UDP)</p>
+
+    <div class="callout info">
+      <strong>ใช้ทั้งสองแบบในระบบเดียวกันได้</strong> — เครื่องจักรเดียวอาจมี OPC UA Server (สำหรับ HMI ในโรงงาน)
+      และเป็น OPC UA Publisher (ส่งข้อมูลขึ้น Cloud) พร้อมกัน — เลือกแบบที่เหมาะกับ Audience ของข้อมูล
+    </div>
+
+    <h2>Protocol Mappings — Network ใช้อะไรก็ได้</h2>
+
+    <p>
+      OPC UA ออกแบบให้แยก <em>เนื้อหา</em> ออกจาก <em>วิธีส่ง</em> — ส่งผ่าน Network แบบไหนก็ได้
+      ขึ้นอยู่กับ use-case:
+    </p>
+
+    <table>
+      <thead>
+        <tr>
+          <th>Mapping</th>
+          <th>Pattern</th>
+          <th>เหมาะกับ</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>UA TCP + UA Binary</strong> (Port 4840)</td>
+          <td>Client-Server</td>
+          <td>Real-time ในโรงงาน · Performance สูงสุด</td>
+        </tr>
+        <tr>
+          <td><strong>HTTPS + JSON/WebSockets</strong></td>
+          <td>Client-Server</td>
+          <td>Web Browser Client · Firewall-friendly</td>
+        </tr>
+        <tr>
+          <td><strong>MQTT</strong></td>
+          <td>PubSub</td>
+          <td>Edge → Cloud · IoT · ผ่าน Broker</td>
+        </tr>
+        <tr>
+          <td><strong>AMQP</strong></td>
+          <td>PubSub</td>
+          <td>Enterprise Messaging</td>
+        </tr>
+        <tr>
+          <td><strong>UDP</strong></td>
+          <td>PubSub</td>
+          <td>Multicast ใน Field · ความเร็วสูงสุด</td>
+        </tr>
+        <tr>
+          <td><strong>TSN / 5G</strong></td>
+          <td>PubSub (Deterministic)</td>
+          <td>Motion Control · Safety (รายละเอียดบทที่ 08)</td>
+        </tr>
+        <tr>
+          <td><strong>REST (HTTP)</strong></td>
+          <td>Client-Server</td>
+          <td>IT Integration · Cloud APIs</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>Platform / Vendor / Language Independence</h2>
+
+    <p>
+      ปรัชญาสำคัญของ OPC UA: <strong>ไม่ผูกกับใครเลย</strong> ลองดูภาพ Pyramid นี้:
+    </p>
+
+    <figure>
+      <img src="images/02-abstract-pyramid.png" alt="Abstract UA Model pyramid: API / Proxy-Stubs / Protocol Binding / Abstract UA Model Specification" style="max-width:380px">
+      <figcaption>
+        ชั้นล่างสุดคือ <em>มาตรฐานที่ไม่ขึ้นกับใคร</em> (Abstract UA Model Specification) — ขึ้นมาที่ละชั้นจึงค่อยผูกกับ
+        Protocol, Language, และ Tool — จะใช้ .NET, Python, C++, Java ก็เลือกได้ตามสะดวก
+      </figcaption>
+    </figure>
+
+    <p>
+      ในทางปฏิบัติแปลว่า:
+    </p>
+
+    <ul>
+      <li>
+        <strong>OPC UA Server</strong> เขียนด้วย C ฝัง MCU ขนาดเล็ก (เริ่มที่ ~15 kB Flash ตามรายงาน Fraunhofer)
+        ก็มี Cloud Application เขียนด้วย Python อ่านข้อมูลได้
+      </li>
+      <li>
+        <strong>SDK พร้อมใช้</strong> มีทั้ง <code>open62541</code> (C), <code>UA-.NETStandard</code> (C#),
+        <code>python-opcua</code> / <code>asyncua</code> (Python), <code>node-opcua</code> (JavaScript),
+        <code>Eclipse Milo</code> (Java)
+      </li>
+      <li>
+        <strong>ไม่มีค่า License</strong> — Spec ฟรี (PDF เปิดให้โหลด), .NET Stack เป็น Open Source บน GitHub,
+        Information Models 430+ ตัวฟรี
+      </li>
+    </ul>
+
+    <h2>Accessibility &amp; Reliability</h2>
+
+    <p>OPC UA ออกแบบมาให้รัน 24/7 ในโรงงาน — มีของให้ในตัว:</p>
+
+    <div class="card-grid">
+      <div class="card">
+        <div class="num">⚡</div>
+        <div class="name">Automatic Reconnection</div>
+        <div class="desc">Network หลุด → Client/Server พยายามต่อใหม่อัตโนมัติ ไม่ต้องเขียน Logic เอง</div>
+      </div>
+      <div class="card">
+        <div class="num">💾</div>
+        <div class="name">Data Buffering</div>
+        <div class="desc">Server บัฟเฟอร์ข้อมูลไว้ ถ้า Client ขาดการเชื่อมต่อ — กลับมาเชื่อมต่อแล้วได้ข้อมูลครบ</div>
+      </div>
+      <div class="card">
+        <div class="num">🔁</div>
+        <div class="name">Redundancy</div>
+        <div class="desc">Server หลัก/รอง สลับกันทำงานอัตโนมัติเมื่อตัวหลักล่ม — สำคัญสำหรับงาน Mission-critical</div>
+      </div>
+      <div class="card">
+        <div class="num">📊</div>
+        <div class="name">Sequencing</div>
+        <div class="desc">รับประกันลำดับ Message · ไม่มีข้อมูลซ้ำ · ไม่ขาดหาย</div>
+      </div>
+    </div>
+
+    <h2>สรุปบทที่ 02</h2>
+
+    <ul>
+      <li>OPC UA เป็น Layered Architecture — แยกระดับ <em>ข้อมูล</em>, <em>การเข้าถึง</em>, และ <em>การส่ง</em>
+        ออกจากกันชัดเจน</li>
+      <li>มี 2 Patterns — <strong>Client-Server</strong> (สำหรับ Control + Browse) และ <strong>PubSub</strong>
+        (สำหรับ Telemetry + Cloud)</li>
+      <li>รองรับ Network Protocol หลายแบบ — TCP, MQTT, HTTPS, UDP, TSN — ใช้ได้ตามสถานการณ์</li>
+      <li>ไม่ผูกกับ Platform, Vendor, หรือภาษา — เขียนด้วยอะไรก็ได้ รันบนอะไรก็ได้</li>
+      <li>มี Reliability ในตัว — Reconnection, Buffering, Redundancy</li>
+    </ul>
+
+    <p>
+      บทต่อไปจะลงลึกที่ <strong>Information Model</strong> — ส่วนที่แตกต่างที่สุดจาก Modbus —
+      เพราะข้อมูลใน OPC UA ไม่ใช่แค่ "Register 40001 = 2350" แต่เป็น <em>Object ที่มีชื่อ, ประเภท, หน่วย, ลำดับชั้น</em>
+    </p>
+
+    <div class="pager">
+      <a href="ch01-why-opcua.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">01 — ทำไมต้อง OPC UA?</div>
+      </a>
+      <a href="ch03-information-model.html" class="next">
+        <div class="label">ถัดไป →</div>
+        <div class="title">03 — Information Model</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  OPC UA &amp; Industrie 4.0 Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){
+  var lb = document.getElementById('lightbox');
+  if(!lb) return;
+  var img = lb.querySelector('img');
+  document.querySelectorAll('.gallery a, .zoomable').forEach(function(a){
+    a.addEventListener('click', function(e){
+      e.preventDefault();
+      img.src = a.getAttribute('href') || a.getAttribute('data-src');
+      lb.classList.add('open');
+    });
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key === 'Escape') lb.classList.remove('open');
+  });
+})();
+</script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

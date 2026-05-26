@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Accounts — Claude / ChatGPT / Cursor | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>🚀 เริ่มต้น (Setup)</h4>
+      <a href="setup-python.html"><span class="num">🐍</span> ติดตั้ง Python</a>
+      <a href="setup-vscode.html"><span class="num">💻</span> VS Code / Cursor</a>
+      <a href="setup-terminal.html"><span class="num">🖥️</span> Terminal พื้นฐาน</a>
+      <a href="setup-pip.html"><span class="num">📦</span> pip + Packages</a>
+      <a href="setup-git.html"><span class="num">🌿</span> Git + GitHub</a>
+      <a href="setup-colab.html"><span class="num">☁️</span> Google Colab</a>
+      <a href="setup-ai.html" class="active"><span class="num">🤖</span> AI Accounts</a>
+      <a href="python-basics.html"><span class="num">📖</span> Python Cheat-sheet</a>
+
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">Setup · เครื่องมือคู่หูตลอด 15 สัปดาห์</span>
+    <h1>🤖 AI Accounts — Claude · ChatGPT · Cursor · Gemini</h1>
+    <p class="lede">
+      คอร์สนี้ <em>"ทำงานคู่กับ AI"</em> เป็นแกนหลัก · ต้องมี <strong>อย่างน้อย 1 account</strong>
+      ก่อนเริ่ม W04 · หน้านี้บอกว่ามีตัวไหนบ้าง · ตัวไหนเหมาะกับงานแบบไหน · และวิธีสมัคร
+    </p>
+
+    <h2>📊 เปรียบเทียบ — เลือกอันไหนดี</h2>
+
+    <table>
+      <thead>
+        <tr><th>AI</th><th>ดีที่สุดเพื่อ</th><th>Free tier</th><th>Paid</th><th>แนะนำสำหรับ</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Claude</strong> (Anthropic)</td>
+          <td>เขียน code ยาว ๆ · refactor · อ่านไฟล์ใหญ่</td>
+          <td>~30 msg/วัน (free)</td>
+          <td>$20/เดือน (Pro)</td>
+          <td>W04+ · งานคิดยาว ๆ</td>
+        </tr>
+        <tr>
+          <td><strong>ChatGPT</strong> (OpenAI)</td>
+          <td>คำถามทั่วไป · อธิบายคอนเซ็ปต์ · search ในเน็ต</td>
+          <td>GPT-5 mini ฟรี · 4 รุ่นต่อวัน</td>
+          <td>$20/เดือน (Plus)</td>
+          <td>ผู้เริ่มต้น · ใช้คู่กับการเรียน</td>
+        </tr>
+        <tr>
+          <td><strong>Cursor</strong></td>
+          <td>เขียน code ใน editor · AI ใช้บริบทไฟล์ทั้ง project</td>
+          <td>~500 fast req/เดือน</td>
+          <td>$20/เดือน (Pro)</td>
+          <td>W04+ · เป็น editor หลัก</td>
+        </tr>
+        <tr>
+          <td><strong>Gemini</strong> (Google)</td>
+          <td>Colab integration · Google Workspace</td>
+          <td>ฟรีกับ Google account</td>
+          <td>$20/เดือน (Pro)</td>
+          <td>คนที่ใช้ Colab · @ubu.ac.th มี Google EDU</td>
+        </tr>
+        <tr>
+          <td><strong>GitHub Copilot</strong></td>
+          <td>autocomplete ใน VS Code · ของฟรีนักศึกษา</td>
+          <td>ฟรีถ้าสมัคร Student Pack</td>
+          <td>$10/เดือน</td>
+          <td>นักศึกษามี GitHub Education</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>คำแนะนำสำหรับนักศึกษาคอร์สนี้</strong>
+      <ul style="margin-top:6px">
+        <li>📌 <strong>ขั้นต่ำ:</strong> Claude ฟรี + Cursor ฟรี (2 accounts) — ทำคอร์สได้ทุก week</li>
+        <li>💎 <strong>อยากสบาย:</strong> เพิ่ม ChatGPT ฟรี → สลับใช้ตัวที่ free tier ยังไม่หมด</li>
+        <li>🎓 <strong>มี budget:</strong> Claude Pro (เก่งเขียน code) + Cursor ฟรี → ครอบคลุมทุกอย่าง</li>
+        <li>🆓 <strong>นักศึกษา UBU มี Google Workspace EDU</strong> → Gemini ใช้ได้ผ่าน @ubu.ac.th</li>
+      </ul>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>📝 ขั้นที่ 1 — สมัคร Claude (แนะนำเป็นตัวแรก)</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>ไปที่ <a href="https://claude.ai" target="_blank">claude.ai</a></strong>
+        — กด Sign up · login ด้วย Google account (UBU email ได้)
+      </li>
+      <li>
+        <strong>ยืนยัน phone number (OTP)</strong>
+        — ใส่เบอร์ + รหัส OTP · ทำครั้งเดียว
+      </li>
+      <li>
+        <strong>เริ่มใช้ได้</strong>
+        — chat box พร้อมใช้ · free tier ใช้ Claude Haiku 4.5 · จำกัด ~30 message/วัน
+      </li>
+      <li>
+        <strong>(optional) อัป Pro</strong>
+        — ใช้ Claude Opus / Sonnet · ~5x จำนวน message · $20/เดือน · ยกเลิกได้ทุกเมื่อ
+      </li>
+    </ol>
+
+    <h3>ลองเลย — Prompt แรก</h3>
+    <pre><code>อธิบายว่า Python function ทำงานยังไง สำหรับนักศึกษาที่เพิ่งเริ่ม
+ใช้ภาษาไทย ใส่ตัวอย่าง code 1-2 ตัว</code></pre>
+
+    <h2>📝 ขั้นที่ 2 — สมัคร ChatGPT (ทางเลือก)</h2>
+
+    <ol class="steps">
+      <li>ไปที่ <a href="https://chat.openai.com" target="_blank">chat.openai.com</a> → Sign up</li>
+      <li>login ด้วย Google / Microsoft / Apple / email</li>
+      <li>ยืนยัน phone number</li>
+      <li>เริ่มใช้ได้ · free tier ใช้ GPT-5 mini</li>
+    </ol>
+
+    <h2>📝 ขั้นที่ 3 — Cursor login (ถ้าใช้ Cursor เป็น editor)</h2>
+
+    <p>ทำในขั้นตอน <a href="setup-vscode.html#cursor">ติดตั้ง Cursor</a> แล้ว · ทบทวนสั้น ๆ:</p>
+    <ol class="steps">
+      <li>เปิด Cursor · กด <em>Sign in</em></li>
+      <li>เด้ง browser · login ด้วย Google</li>
+      <li>กลับมา Cursor · login เสร็จ · ใช้ <kbd>Ctrl + L</kbd> เริ่ม chat</li>
+    </ol>
+
+    <h2>📝 ขั้นที่ 4 — Gemini (ฟรีสำหรับ @ubu.ac.th)</h2>
+
+    <ol class="steps">
+      <li>ไปที่ <a href="https://gemini.google.com" target="_blank">gemini.google.com</a></li>
+      <li>login ด้วย @ubu.ac.th</li>
+      <li>เริ่มใช้ได้ทันที · UBU Google Workspace EDU มีให้</li>
+      <li>ใน Colab: กด icon ⭐ มุมขวาบน → Gemini chat ในตัว notebook</li>
+    </ol>
+
+    <h2>🎓 GitHub Copilot ฟรีสำหรับนักศึกษา (Optional)</h2>
+
+    <p>มี <strong>GitHub Student Developer Pack</strong> ฟรี — มี Copilot รวมอยู่:</p>
+
+    <ol class="steps">
+      <li>
+        <strong>สร้าง GitHub account</strong> (ดู <a href="setup-git.html">setup-git</a>) ด้วย @ubu.ac.th
+      </li>
+      <li>
+        <strong>ไป <a href="https://education.github.com/pack" target="_blank">education.github.com/pack</a></strong>
+        → "Sign up for the Student Developer Pack"
+      </li>
+      <li>
+        <strong>ยืนยันสถานะนักศึกษา</strong>
+        — upload student ID / ตารางเรียน · GitHub ตรวจ ~1-2 วัน
+      </li>
+      <li>
+        <strong>ลง GitHub Copilot extension ใน VS Code</strong>
+        — Extensions → ค้น "GitHub Copilot" → Install
+      </li>
+      <li>
+        <strong>Login → ใช้ได้ฟรี</strong>
+        — Copilot ฟรีตลอดที่ยังเป็นนักศึกษา + 2 ปีหลังจบ
+      </li>
+    </ol>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🎯 ตัวไหนเหมาะกับงานอะไร — Cheat-sheet</h2>
+
+    <table>
+      <thead><tr><th>สิ่งที่จะทำ</th><th>AI ที่แนะนำ</th><th>ทำไม</th></tr></thead>
+      <tbody>
+        <tr><td>อธิบาย code 1 บรรทัด</td><td>Cursor (Ctrl+L)</td><td>มีบริบทไฟล์อยู่แล้ว</td></tr>
+        <tr><td>เขียน function ใหม่</td><td>Cursor (Ctrl+K) หรือ Claude</td><td>Cursor inline · Claude ถ้ายาว</td></tr>
+        <tr><td>เขียน function จาก spec ยาว</td><td>Claude</td><td>เก่งคิดต่อเนื่อง · ใส่ context ได้เยอะ</td></tr>
+        <tr><td>refactor file ใหญ่</td><td>Claude หรือ Cursor Composer</td><td>เห็นภาพรวมได้ดี</td></tr>
+        <tr><td>debug error</td><td>Claude / ChatGPT</td><td>เก่งหาเหตุผล · ทั้งคู่ดีพอ</td></tr>
+        <tr><td>อธิบายคอนเซ็ปต์ (เช่น "OOP คืออะไร")</td><td>ChatGPT / Claude</td><td>ตอบทั่วไป</td></tr>
+        <tr><td>autocomplete ตอนพิมพ์</td><td>Copilot หรือ Cursor (Tab)</td><td>ใน editor</td></tr>
+        <tr><td>วาด diagram (Mermaid)</td><td>Claude / ChatGPT</td><td>เก่ง Mermaid syntax</td></tr>
+        <tr><td>ทำงานบน Colab</td><td>Gemini (Colab integration)</td><td>เห็น notebook ทั้งไฟล์</td></tr>
+        <tr><td>search ในเน็ต + code</td><td>ChatGPT (มี web search)</td><td>ดึงข้อมูลจริงได้</td></tr>
+      </tbody>
+    </table>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>💬 Prompt — เริ่มต้นที่ใช้ได้ทันที</h2>
+
+    <p>นักศึกษาส่วนใหญ่เริ่มใช้ AI แล้วได้ผลห่วยเพราะ <em>"prompt ลอย ๆ"</em> · 5 template ที่ใช้ได้ตลอดคอร์ส:</p>
+
+    <h3>1. ขอ AI <em>"อธิบาย"</em></h3>
+    <pre><code>อธิบาย code นี้ทีละบรรทัด ในแบบนักศึกษาปี 1 ที่เพิ่งเริ่ม Python
+ใช้ภาษาไทย ใส่ตัวอย่างจากชีวิตจริง
+
+[paste code]</code></pre>
+
+    <h3>2. ขอ AI <em>"คิดก่อนเขียน"</em></h3>
+    <pre><code>ฉันอยากทำ X (อธิบายให้ละเอียด)
+ก่อนเขียน code ช่วย:
+1. ขอแผน (architecture)
+2. ขอ data model
+3. ขอ edge case ที่ต้องคิด
+4. ถามคำถามที่ยังไม่ชัด
+
+อย่าเพิ่งเขียน code</code></pre>
+
+    <h3>3. ขอ AI <em>"แก้แค่ที่บอก"</em></h3>
+    <pre><code>โค้ดนี้ทำงานได้ ยกเว้นกรณี score &gt; 100
+ช่วยแก้เฉพาะส่วนนั้น
+- อย่า refactor ส่วนอื่น
+- อย่าเปลี่ยนชื่อ variable
+- บอกแค่บรรทัดที่แก้ ไม่ต้อง paste ทั้งไฟล์</code></pre>
+
+    <h3>4. ขอ AI <em>"ทำ test"</em></h3>
+    <pre><code>ช่วยคิด 5 test case ที่จะทำให้ function นี้พัง
+- 3 case ที่ developer ลืมคิด
+- บอกว่า expected output คืออะไร
+- ยังไม่ต้องเขียน test code</code></pre>
+
+    <h3>5. ขอ AI <em>"วิจารณ์งานตัวเอง"</em></h3>
+    <pre><code>หลังเขียน code เสร็จ:
+- ถ้าคุณเป็น senior developer คุณจะวิจารณ์ code นี้ยังไง?
+- มีอะไรที่ over-engineered มั้ย?
+- มี hidden assumption ที่ผมไม่ได้บอกมั้ย?
+- ถ้าจะ deploy production ต้องเพิ่มอะไร?</code></pre>
+
+    <div class="callout warn">
+      <strong>3 สิ่งที่ AI ทำไม่ได้</strong>
+      <ol style="margin-top:6px">
+        <li><strong>ไม่รู้ context ของ project คุณ</strong> — ต้องบอก · paste code · paste data sample</li>
+        <li><strong>ไม่รู้ว่าโจทย์จริงคืออะไร</strong> — มันคิดเอาเอง · ผลพังบ่อย</li>
+        <li><strong>ทดสอบ code ไม่ได้</strong> — ของจริงต้องคุณรันเอง · AI <em>"คาดเดา"</em> ว่า code จะรันได้</li>
+      </ol>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🔒 ความปลอดภัยและจริยธรรม</h2>
+
+    <h3>✅ ทำได้ — แนะนำ</h3>
+    <ul>
+      <li>copy code ของตัวเองให้ AI ดูเพื่อขออธิบาย / แก้ bug</li>
+      <li>ขอ AI ช่วยเขียน + ทดสอบ + แก้</li>
+      <li>ใช้ AI เป็น <em>"คนที่ 2 อ่าน code ของคุณ"</em></li>
+      <li>บอกอาจารย์ว่าใช้ AI · บอกว่า AI ช่วยอะไร</li>
+    </ul>
+
+    <h3>❌ อย่าทำ</h3>
+    <ul>
+      <li>paste <strong>API key / password / secret</strong> ให้ AI</li>
+      <li>paste <strong>ข้อมูลส่วนตัวของคนอื่น</strong> (เกรดเพื่อน, รหัส นศ., เบอร์โทร)</li>
+      <li>ส่ง code ของ AI <em>"โดยไม่อ่าน + ไม่ทดสอบ"</em> — รับผิดชอบไม่ได้</li>
+      <li>เถียงกับ AI ว่ามันถูก ทั้งที่รันไม่ได้</li>
+      <li>ใช้ AI ทำงานสอบ / รายงานที่ห้ามใช้ AI</li>
+    </ul>
+
+    <h3>🤔 ตัดสินใจเอง</h3>
+    <ul>
+      <li>code AI เขียน · ฉันเข้าใจมั้ย? — ถ้าไม่ → ถามจน entendiero ก่อนส่ง</li>
+      <li>AI แนะนำ approach นี้ · มันใช้ได้กับ context ของฉันมั้ย? — ตรวจเอง · อย่าเชื่อ blindly</li>
+      <li>AI เปลี่ยน 5 ไฟล์ · ฉันต้องการแค่ 1 มั้ย? — บอก scope ให้ชัด</li>
+    </ul>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🎯 Workshop — 10 นาที</h2>
+    <ol class="steps">
+      <li>สมัคร Claude · login ได้</li>
+      <li>ลอง prompt: <em>"อธิบาย <code>print('hello')</code> ในภาษาไทย แบบนักศึกษาปี 1"</em></li>
+      <li>ลอง prompt: <em>"เขียน Python function ที่รับคะแนน 0-100 คืนเกรด A/B/C/D/F"</em></li>
+      <li>ลอง prompt: <em>"ทดสอบ function ข้างต้นด้วย 5 input — บอก expected output"</em></li>
+      <li>(optional) สมัคร ChatGPT · เปรียบเทียบคำตอบของ 2 ตัว</li>
+    </ol>
+
+    <h2>🎯 Checklist ก่อนไปต่อ</h2>
+    <ul>
+      <li>☐ มีอย่างน้อย 1 AI account (Claude แนะนำ)</li>
+      <li>☐ Login ได้ + chat ได้</li>
+      <li>☐ เข้าใจ 5 template prompts ข้างบน</li>
+      <li>☐ รู้ว่า "อย่าใส่อะไรใน prompt" (secrets, ข้อมูลคนอื่น)</li>
+      <li>☐ (optional) Cursor login สำเร็จ</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>เสร็จ Setup ทั้งหมดแล้ว 🎉</strong>
+      → ไปต่อ <a href="w01-problem-finding.html">W01 — หาปัญหา + Flowchart</a> ·
+      หรือเปิด <a href="python-basics.html">Python Cheat-sheet</a> ค้างไว้
+    </div>
+
+    <div class="pager">
+      <a href="setup-git.html"><div class="label">← ก่อนหน้า</div><div class="title">Git + GitHub</div></a>
+      <a href="w01-problem-finding.html" class="next"><div class="label">เริ่มเรียนจริง →</div><div class="title">W01 — หาปัญหา + Flowchart</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+</body>
+</html>

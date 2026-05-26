@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แท็บ Processor — คู่มือ Ripes</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="images/logo.png" alt="Ripes logo">
+      <div>
+        <div class="title">Ripes Tutorial</div>
+        <div class="subtitle">คู่มือการใช้งานฉบับภาษาไทย</div>
+      </div>
+    </div>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html">หน้าแรก &amp; ติดตั้ง</a>
+      <h4>แท็บการใช้งาน</h4>
+      <a href="editor.html">1. แท็บ Editor</a>
+      <a href="processor.html" class="active">2. แท็บ Processor</a>
+      <a href="memory.html">3. แท็บ Memory</a>
+      <a href="cache.html">4. แท็บ Cache</a>
+      <a href="io.html">5. แท็บ I/O</a>
+      <h4>อ้างอิง</h4>
+      <a href="ecalls.html">System Calls (ecall)</a>
+      <h4>ตัวอย่างประกอบ</h4>
+      <a href="examples/factorial.html">Factorial (Assembly)</a>
+      <a href="examples/leds.html">LEDs (I/O)</a>
+      <a href="examples/matrixmul.html">Matrix Multiply (C)</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <h1>แท็บ Processor</h1>
+    <p class="lede">หัวใจของ Ripes — หน้าจอที่แสดงวงจร datapath ของ CPU พร้อมสถานะ register, pipeline และผลลัพธ์ในขณะที่โปรแกรมทำงาน</p>
+
+    <figure>
+      <img src="images/processortab.png" alt="หน้าจอแท็บ Processor">
+      <figcaption>หน้าจอแท็บ Processor — แสดงวงจร datapath, register และข้อมูลการทำงาน</figcaption>
+    </figure>
+
+    <h2>ส่วนประกอบของหน้าจอ</h2>
+    <p>แท็บ Processor มีพื้นที่ย่อย 4 ส่วนล้อมรอบ processor view:</p>
+
+    <table>
+      <thead>
+        <tr><th>หมายเลข</th><th>ชื่อ</th><th>หน้าที่</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>1</td><td><strong>Registers</strong></td>
+          <td>รายการ register ทั้งหมดของ CPU สามารถ <strong>คลิกค่าเพื่อแก้ไข</strong> ได้โดยตรง register ที่เพิ่งถูกแก้ไขจะถูก highlight ด้วยสีเหลือง</td>
+        </tr>
+        <tr>
+          <td>2</td><td><strong>Instruction memory</strong></td>
+          <td>แสดงคำสั่งของโปรแกรมที่กำลังรัน คอลัมน์ <em>BP</em> สำหรับตั้ง breakpoint, <em>Addr</em> สำหรับที่อยู่, <em>Stage</em> สำหรับขั้นของ pipeline ปัจจุบัน</td>
+        </tr>
+        <tr>
+          <td>3</td><td><strong>Statistics</strong></td>
+          <td>ค่าสถิติต่าง ๆ เช่นจำนวน cycle, จำนวน instruction ที่ retire แล้ว, CPI (cycles per instruction)</td>
+        </tr>
+        <tr>
+          <td>4</td><td><strong>Output</strong></td>
+          <td>ข้อความที่โปรแกรมพิมพ์ออกผ่าน <code>ecall</code> จะปรากฏที่นี่</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>การอ่านสัญญาณใน Datapath</h2>
+    <p>Ripes แสดงสถานะการทำงานของวงจรผ่านหลายวิธี:</p>
+    <ul>
+      <li><strong>Multiplexer</strong> — ขาที่ถูกเลือกจะมีจุดสีเขียว</li>
+      <li><strong>Component indicator</strong> — เช่น register ถูก clock, branch ถูก taken ฯลฯ</li>
+      <li><strong>สัญญาณ Boolean</strong> (1-bit) — เส้นสายสีเขียวเมื่อค่าเป็น 1, สีเทาเมื่อค่าเป็น 0</li>
+      <li><strong>สัญญาณ multi-bit</strong> — กระพริบสีเขียวสั้น ๆ เมื่อค่ามีการเปลี่ยนแปลง</li>
+    </ul>
+
+    <h3>การดูค่าของสัญญาณ ณ จุดใด ๆ</h3>
+    <p>มี 2 วิธีหลัก:</p>
+
+    <figure>
+      <img src="images/tooltip.png" alt="Tooltip แสดงค่าสัญญาณ">
+      <figcaption>วิธีที่ 1 — เลื่อนเมาส์ไปวางบน port จะแสดง tooltip บอกชื่อและค่าปัจจุบัน</figcaption>
+    </figure>
+
+    <figure>
+      <img src="images/portlabel.png" alt="Label ติดอยู่กับ port">
+      <figcaption>วิธีที่ 2 — กดปุ่ม "Display signal values" หรือคลิกขวาที่ port แล้วเลือก "show value" เพื่อปักหมุดป้ายค่าไว้</figcaption>
+    </figure>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับ</strong>
+      <ul style="margin: 6px 0 0;">
+        <li>กด <code>Ctrl + Scroll</code> (Mac: <code>Cmd + Scroll</code>) เพื่อ zoom เข้า/ออก</li>
+        <li>คลิกที่เส้นสายเพื่อ highlight ทั้งเส้น ช่วยให้เห็นเส้นทางสัญญาณในวงจรซับซ้อนได้ชัดเจน</li>
+        <li>คลิกขวาที่ป้ายค่าเพื่อเปลี่ยนเลขฐาน (hex, decimal, binary)</li>
+      </ul>
+    </div>
+
+    <h2>ปุ่มควบคุม Simulator</h2>
+    <p>แถบเครื่องมือด้านบนของหน้าจอมีปุ่มควบคุมที่สำคัญ:</p>
+
+    <table>
+      <thead>
+        <tr><th>ปุ่ม</th><th>หน้าที่</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Select Processor</strong></td><td>เปิด dialog เลือก CPU model</td></tr>
+        <tr><td><strong>Reset</strong></td><td>รีเซตทุกอย่างให้กลับสู่สถานะเริ่มต้น (PC = entry point, memory = ค่าเริ่มต้น)</td></tr>
+        <tr><td><strong>Reverse</strong></td><td>ย้อนกลับ 1 clock cycle (มีประโยชน์มาก!)</td></tr>
+        <tr><td><strong>Clock</strong></td><td>ทำงาน 1 clock cycle ทีละก้าว</td></tr>
+        <tr><td><strong>Auto-clock</strong></td><td>รันอัตโนมัติด้วยความถี่ที่กำหนด หยุดเมื่อพบ breakpoint</td></tr>
+        <tr><td><strong>Run</strong></td><td>รันโปรแกรมจนจบ <strong>ไม่อัปเดต GUI</strong> เพื่อความเร็วสูงสุด เหมาะกับงาน profiling</td></tr>
+        <tr><td><strong>Show stage table</strong></td><td>แสดงตาราง pipeline stage แต่ละ cycle</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout note">
+      <strong>ข้อสังเกต</strong>
+      ขณะใช้ <strong>Run</strong> ข้อมูล stage table จะ <em>ไม่</em> ถูกบันทึก ถ้าต้องการดูตาราง pipeline ให้ใช้ Clock หรือ Auto-clock แทน
+    </div>
+
+    <h2>การอ่าน Pipeline Stage Table</h2>
+
+    <figure>
+      <img src="images/stagetable.png" alt="ตาราง pipeline stage">
+      <figcaption>ตารางแสดงว่า instruction ใดอยู่ใน stage ใดของแต่ละ cycle</figcaption>
+    </figure>
+
+    <p>ตารางนี้แสดงว่าในแต่ละ clock cycle, instruction แต่ละตัวอยู่ใน pipeline stage ไหน:</p>
+    <ul>
+      <li>เซลล์ที่มี <code>-</code> หมายถึง stage ถูก <strong>stall</strong> ไว้</li>
+      <li>คำว่า <code>nop</code> ที่เป็นสีแดงเหนือ stage หมายถึง pipeline ถูก <strong>flush</strong> (เช่น branch ผิดทำนาย)</li>
+    </ul>
+
+    <figure>
+      <img src="images/stalled.png" alt="Pipeline stall">
+      <figcaption>ตัวอย่าง load-use hazard ทำให้ stage ID ถูก stall 1 cycle</figcaption>
+    </figure>
+
+    <h2>การเลือก Processor Model</h2>
+
+    <figure>
+      <img src="images/processorselection.png" alt="หน้าจอเลือก processor">
+      <figcaption>Dialog การเลือก CPU และตั้งค่า initial register values</figcaption>
+    </figure>
+
+    <p>Ripes มี CPU model ให้เลือกศึกษา 5 รุ่น โดยซับซ้อนขึ้นเรื่อย ๆ:</p>
+
+    <table>
+      <thead>
+        <tr><th>Model</th><th>ลักษณะ</th><th>เหมาะกับ</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Single Cycle</strong></td>
+          <td>1 instruction ใช้ 1 cycle ทำได้ทุก stage ในรอบเดียว</td>
+          <td>การเรียนรู้พื้นฐาน datapath</td>
+        </tr>
+        <tr>
+          <td><strong>5-Stage w/o Forwarding &amp; Hazard Detection</strong></td>
+          <td>Pipeline แต่ไม่มีการจัดการ hazard เลย</td>
+          <td>เห็นปัญหา data hazard ชัดเจน</td>
+        </tr>
+        <tr>
+          <td><strong>5-Stage w/o Hazard Detection</strong></td>
+          <td>มี forwarding แต่ไม่มี hazard detection</td>
+          <td>เห็นข้อจำกัดของ forwarding</td>
+        </tr>
+        <tr>
+          <td><strong>5-Stage Processor</strong></td>
+          <td>Pipeline สมบูรณ์: forwarding + hazard detection</td>
+          <td>มาตรฐานสำหรับวิชา CompArch</td>
+        </tr>
+        <tr>
+          <td><strong>6-Stage Dual-issue</strong></td>
+          <td>Pipeline 6 stage รัน 2 instruction พร้อมกัน</td>
+          <td>ศึกษา superscalar เบื้องต้น</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>การปรับแต่ง Processor</h3>
+    <ul>
+      <li><strong>ISA Exts.</strong> — เปิด/ปิด instruction set extensions (เช่น M สำหรับ multiply/divide, C สำหรับ compressed instructions)</li>
+      <li><strong>Layout</strong> — เลือกระหว่าง <em>Standard</em> (มุมมองแบบง่าย) หรือ <em>Extended</em> (เห็น control signal และ wire bit-width)</li>
+      <li><strong>Register initializations</strong> — กำหนดค่าเริ่มต้นของ register ทุกครั้งที่ Reset</li>
+    </ul>
+
+    <figure>
+      <img src="images/expandedprocessor.png" alt="Extended layout">
+      <figcaption>Extended layout ของ 5-stage processor — เห็น control signal ครบ</figcaption>
+    </figure>
+
+    <div class="pager">
+      <a href="editor.html">
+        <div class="label">← บทก่อนหน้า</div>
+        <div class="title">1. แท็บ Editor</div>
+      </a>
+      <a class="next" href="memory.html">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">3. แท็บ Memory</div>
+      </a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

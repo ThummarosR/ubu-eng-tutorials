@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W07 — Workshop 3 CLI Tools | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html" class="active"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">สัปดาห์ที่ 07 · Workshop · Code Literacy</span>
+    <h1>Workshop — 3 CLI Tools ใน 1 สัปดาห์</h1>
+    <p class="lede">
+      ปิดเฟส Code Literacy ด้วยการ <strong>"สร้างของจริง 3 ชิ้น"</strong> · แต่ละชิ้นเริ่มจาก
+      spec → plan → code → test → docs · นี่คือ <em>"workflow ที่ใช้จริงตลอด 15 สัปดาห์ที่เหลือ"</em>
+    </p>
+
+    <h2>เป้าหมายสัปดาห์นี้</h2>
+    <ul>
+      <li>สร้าง CLI tool ที่ทำงานได้จริง 3 ตัว</li>
+      <li>ฝึก workflow Spec→Plan→Code→Test→Docs ให้ติดเป็นนิสัย</li>
+      <li>แต่ละ tool ต้องใช้ได้กับ <em>real input</em> ของตัวเอง (ไม่ใช่แค่ test case)</li>
+      <li>มี README.md ที่ใครก็ใช้ tool ตามได้</li>
+      <li>เปรียบเทียบ code ของคุณกับ <em>reference implementation</em> ในหน้านี้</li>
+    </ul>
+
+    <div class="callout warn" style="border-left-width:5px">
+      <strong>🔒 ทำไม Workshop นี้สำคัญ — มันคือ "ขั้นรู้รอบ"</strong>
+      W04 อ่าน · W05 แก้ · W06 spec → AI สร้าง · <strong>W07 = ทำเองทั้ง cycle 3 ครั้ง</strong>
+      จนกลายเป็นนิสัย · หลังจาก W07 คุณจะมี <em>"กล้ามเนื้อ"</em> ที่ใช้ได้กับทุก project · นี่คือ
+      ทักษะที่ AI ทำให้คุณไม่ได้ — เพราะ AI ทำตามคำสั่งคุณ ไม่ใช่ทำงานแทนคุณ
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🎯 3 Tools ต่างกัน แต่ใช้ Pattern เดียวกัน</h2>
+    <p>
+      ทุก CLI tool ใน 15 สัปดาห์นี้ — และในงานจริง — ใช้ <em>"pattern"</em> เดียวกัน:
+    </p>
+
+    <div class="mermaid">flowchart LR
+    input[/Input<br/><i>argv / input / file</i>/] --> validate{Valid?}
+    validate -->|No| err[/Error msg/]
+    validate -->|Yes| logic[Process<br/><i>คำนวณ / parse / aggregate</i>]
+    logic --> persist[(Persist<br/><i>ถ้าต้องเก็บ</i>)]
+    logic --> output[/Output<br/><i>print / file</i>/]
+    persist --> output
+
+    classDef io fill:#0d3f3a,stroke:#2dd4bf,color:#fff
+    classDef logic fill:#3b2962,stroke:#8b5cf6,color:#fff
+    classDef decision fill:#5c2618,stroke:#ff7a18,color:#fff
+    classDef err fill:#5c1818,stroke:#ef4444,color:#fff
+    classDef db fill:#1e3a5f,stroke:#3776ab,color:#fff
+    class input,output io
+    class logic logic
+    class validate decision
+    class err err
+    class persist db</div>
+
+    <p style="text-align:center;color:var(--text-muted);font-size:13.5px">
+      Tool 1 (Grade): Input→Logic→Output · Tool 2 (WC): Input(file)→Logic→Output · Tool 3 (TODO): Input(argv)→Persist→Output ·
+      เห็น pattern เดียวกันมั้ย?
+    </p>
+
+    <h2>🛠️ Tool 1 — Grade Calculator ตัวจริง</h2>
+    <h3>Spec</h3>
+    <pre><code>## Spec: Course Grade Calculator
+
+**ปัญหา:** นักศึกษาอยากรู้ระหว่างเทอมว่า "ถ้าฉันได้คะแนน X final ฉันจะได้เกรดอะไร"
+แทนที่จะเดาเอง
+
+**Input:**
+- คะแนน homework (รวมแล้ว, max 30)
+- คะแนน midterm (max 30)
+- คะแนน final ที่เดาว่าจะได้ (max 40)
+
+**Output:**
+- คะแนนรวม
+- เกรดที่จะได้ (A/B+/B/C+/C/D+/D/F ตามเกณฑ์ภาควิชา)
+- คะแนน final ขั้นต่ำเพื่อได้เกรด B (target)
+
+**Rules:**
+- ใช้เกณฑ์: 80+=A, 75+=B+, 70+=B, 65+=C+, 60+=C, 55+=D+, 50+=D, &lt;50=F
+- ถ้า input ติดลบ/เกิน max → error
+
+**Success:**
+- (hw=25, mid=24, final=32) → รวม 81 → A
+- target B (70) ต้องการ final อย่างน้อยเท่าไหร่
+
+**Non-goals:**
+- ยังไม่เซฟ history
+- ยังไม่รองรับวิชาที่มี weight ต่างกัน</code></pre>
+
+    <h3>ตัวอย่าง output</h3>
+    <pre><code>$ python grade_calc.py
+คะแนน homework (max 30): 25
+คะแนน midterm (max 30): 24
+คะแนน final คาดการณ์ (max 40): 32
+
+📊 คะแนนรวม: 81 / 100
+🎓 เกรดที่คาดว่าได้: A
+
+🎯 เป้าหมาย B (70+):
+   ต้องการ final อย่างน้อย: 21 / 40 คะแนน
+   (ตอนนี้คาดว่าได้ 32 → ผ่านเป้าแล้ว ✅)</code></pre>
+
+    <h3>🐍 Reference Implementation — ลองรันก่อนเขียนเอง</h3>
+    <p>นี่คือ <strong>working version</strong> ที่ตรงตาม spec · รันดูก่อน · เปลี่ยนค่า input ดูพฤติกรรม</p>
+
+    <div class="python-runner" data-inputs="25&#10;24&#10;32">def calc_grade(total):
+    if total &gt;= 80: return "A"
+    if total &gt;= 75: return "B+"
+    if total &gt;= 70: return "B"
+    if total &gt;= 65: return "C+"
+    if total &gt;= 60: return "C"
+    if total &gt;= 55: return "D+"
+    if total &gt;= 50: return "D"
+    return "F"
+
+GRADE_THRESHOLDS = {"A": 80, "B+": 75, "B": 70, "C+": 65, "C": 60, "D+": 55, "D": 50}
+
+def min_final_for(target_grade, hw, mid):
+    threshold = GRADE_THRESHOLDS[target_grade]
+    needed = threshold - hw - mid
+    return max(0, needed)
+
+
+def validate(hw, mid, final):
+    if not (0 &lt;= hw &lt;= 30): return False, f"homework ต้อง 0-30 (ได้ {hw})"
+    if not (0 &lt;= mid &lt;= 30): return False, f"midterm ต้อง 0-30 (ได้ {mid})"
+    if not (0 &lt;= final &lt;= 40): return False, f"final ต้อง 0-40 (ได้ {final})"
+    return True, ""
+
+
+hw = int(input("คะแนน homework (max 30): "))
+mid = int(input("คะแนน midterm (max 30): "))
+final = int(input("คะแนน final คาดการณ์ (max 40): "))
+
+ok, err = validate(hw, mid, final)
+if not ok:
+    print(f"❌ {err}")
+else:
+    total = hw + mid + final
+    grade = calc_grade(total)
+    needed = min_final_for("B", hw, mid)
+
+    print(f"\n📊 คะแนนรวม: {total} / 100")
+    print(f"🎓 เกรดที่คาดว่าได้: {grade}")
+    print(f"\n🎯 เป้าหมาย B (70+):")
+    print(f"   ต้องการ final อย่างน้อย: {needed} / 40 คะแนน")
+    if final &gt;= needed:
+        print(f"   (ตอนนี้คาดว่าได้ {final} → ผ่านเป้าแล้ว ✅)")
+    else:
+        print(f"   (ตอนนี้คาดว่าได้ {final} → ขาดอีก {needed - final} คะแนน ⚠️)")</div>
+
+    <p style="color:var(--text-muted);font-size:13.5px">
+      💡 <strong>เปรียบเทียบกับของคุณ:</strong> หลังเขียน tool เสร็จ — เอามาวางใน Python Runner ของหน้านี้
+      หรือใช้ <a href="code-tools.html#diff-viewer">Diff Viewer</a> เทียบบรรทัดต่อบรรทัด
+    </p>
+
+    <h2>🛠️ Tool 2 — Word Counter ตัวจริง</h2>
+    <h3>Spec</h3>
+    <pre><code>## Spec: Word/Line Counter
+
+**ปัญหา:** อาจารย์ขอให้นักศึกษาเขียนรายงาน 1000-1500 คำ — ต้องการเครื่องมือนับเร็ว ๆ
+ที่ทำงานกับไฟล์ .txt ได้
+
+**Input:**
+- path ของไฟล์ .txt (argument หรือ input)
+
+**Output:**
+- จำนวนบรรทัด
+- จำนวนคำ
+- จำนวนตัวอักษร (รวม / ไม่รวมช่องว่าง)
+- คำที่พบบ่อย 10 อันดับแรก
+
+**Rules:**
+- ภาษาไทย: ใช้ space แยกคำ (ไม่ต้องใช้ word segmenter)
+- skip บรรทัดว่าง
+- ตัด punctuation ออกก่อนนับ
+
+**Success:**
+- ทำงานกับไฟล์ขนาด &lt; 100KB
+- รัน &lt; 1 วินาที
+
+**Non-goals:**
+- ยังไม่รองรับ .docx / .pdf
+- ยังไม่ใช้ Thai word segmenter (PyThaiNLP)</code></pre>
+
+    <h3>ตัวอย่าง output</h3>
+    <pre><code>$ python wc.py report.txt
+📄 report.txt
+
+   บรรทัด: 87
+   คำ: 1247
+   ตัวอักษร: 8,432 (ไม่นับช่องว่าง 7,015)
+
+🏆 คำที่พบบ่อย:
+   1. ระบบ      → 42
+   2. นักศึกษา     → 38
+   3. ข้อมูล    → 25
+   ...</code></pre>
+
+    <p>Tool นี้แนะนำ Python concept ใหม่: <code>open()</code>, <code>str.split()</code>, <code>collections.Counter</code></p>
+
+    <h3>🐍 Reference Implementation</h3>
+    <p>
+      ใน browser นี้ไม่มี file system จริง · เลยใช้ <em>"text ตัวอย่างใน input"</em> แทน · ของจริงใน Cursor
+      จะใช้ <code>open(sys.argv[1])</code>
+    </p>
+
+    <div class="python-runner" data-inputs="ในยุค AI นักศึกษาต้องเรียนหาปัญหา ก่อนเริ่มเขียนโค้ด นักศึกษาที่หาปัญหาเป็น จะใช้ AI ได้ดี ระบบที่ดี ต้องเริ่มจาก ปัญหาจริง ไม่ใช่ tech เท่ ๆ นักศึกษาวิศวะยุคนี้ ต้องเข้าใจ ระบบ และ คน เพื่อสร้างของที่ใช้ได้จริง">import re
+from collections import Counter
+
+# ในของจริง: with open(sys.argv[1], encoding="utf-8") as f: text = f.read()
+text = input("paste text ที่จะนับ: ")
+
+# split + clean
+lines = text.split("\n")
+non_empty = [l for l in lines if l.strip()]
+words = re.findall(r"\S+", text)
+
+# strip punctuation for counting
+clean_words = [re.sub(r"[\.\,\!\?\(\)\[\]\:\;\"\'…]", "", w) for w in words]
+clean_words = [w for w in clean_words if w]
+
+chars_all = len(text)
+chars_no_space = len(text.replace(" ", "").replace("\n", ""))
+
+print(f"📄 text ที่วาง\n")
+print(f"   บรรทัด: {len(non_empty)}")
+print(f"   คำ: {len(clean_words)}")
+print(f"   ตัวอักษร: {chars_all:,} (ไม่นับช่องว่าง {chars_no_space:,})")
+print()
+print("🏆 คำที่พบบ่อย:")
+counter = Counter(clean_words)
+for i, (word, n) in enumerate(counter.most_common(10), 1):
+    print(f"   {i}. {word:&lt;12} → {n}")</div>
+
+    <p style="color:var(--text-muted);font-size:13.5px">
+      💡 ลองเปลี่ยน input เป็น paragraph อื่น · หรือใส่ word ซ้ำ ๆ ดูว่า top ranking ขึ้น
+    </p>
+
+    <h2>🛠️ Tool 3 — TODO Manager (มี JSON persistence)</h2>
+    <h3>Spec</h3>
+    <pre><code>## Spec: TODO Manager CLI
+
+**ปัญหา:** นักศึกษาอยากเก็บ TODO ของวิชาต่าง ๆ — แทนการเขียนใน Notes ของมือถือ
+ที่หาไม่เจอตอนต้องการ
+
+**Commands:**
+- add &lt;ข้อความ&gt;        → เพิ่ม TODO
+- list                  → แสดงทั้งหมด
+- done &lt;id&gt;             → mark ว่าเสร็จ
+- delete &lt;id&gt;           → ลบ
+
+**Persistence:**
+- เซฟลง todo.json ใน folder ของโปรแกรม
+- โหลด todo.json ทุกครั้งที่รัน (ถ้ามี)
+
+**Output:**
+- list แสดงเป็น:
+  [ ] 1. ทำการบ้านวิชา CP
+  [x] 2. ส่งใบงาน lab 3
+  [ ] 3. นัด TA Tuesday
+
+**Rules:**
+- id เพิ่มทีละ 1, ไม่ใช้ id ซ้ำแม้จะลบไปแล้ว
+- list เรียงตาม id
+
+**Success:**
+- เพิ่ม + รัน list → เห็น
+- มาร์ค done + รัน list → เห็น [x]
+- ปิดโปรแกรม + เปิดใหม่ → ข้อมูลยังอยู่</code></pre>
+
+    <h3>ตัวอย่าง session</h3>
+    <pre><code>$ python todo.py add "ทำการบ้านวิชา CP"
+✅ เพิ่ม TODO #1
+
+$ python todo.py add "ส่งใบงาน lab 3"
+✅ เพิ่ม TODO #2
+
+$ python todo.py list
+📋 TODO List
+  [ ] 1. ทำการบ้านวิชา CP
+  [ ] 2. ส่งใบงาน lab 3
+
+$ python todo.py done 1
+✅ มาร์ค TODO #1 เสร็จแล้ว
+
+$ python todo.py list
+📋 TODO List
+  [x] 1. ทำการบ้านวิชา CP
+  [ ] 2. ส่งใบงาน lab 3</code></pre>
+
+    <p>Tool นี้แนะนำ Python concept ใหม่:</p>
+    <ul>
+      <li><code>sys.argv</code> — รับ argument จาก command line</li>
+      <li><code>json.load() / json.dump()</code> — เซฟ/โหลดข้อมูล</li>
+      <li>การจัดการไฟล์ <em>"ไม่มีก็สร้าง"</em></li>
+    </ul>
+
+    <h3>🐍 Reference Implementation (in-memory simulation)</h3>
+    <p>
+      Browser ไม่มี file system · simulation นี้เก็บใน memory แทน · ของจริงใน Cursor ใช้
+      <code>json.load(open("todo.json"))</code> · ลองพิมพ์ command หลาย ๆ ครั้ง
+    </p>
+
+    <div class="python-runner" data-inputs="add ทำการบ้านวิชา CP&#10;add ส่งใบงาน lab 3&#10;list&#10;done 1&#10;list&#10;quit">import json
+import sys
+
+# In-browser: simulate JSON file with this dict
+# In real life: load_todos() reads todo.json file
+state = {"todos": [], "next_id": 1}
+
+
+def add_todo(text):
+    todo = {"id": state["next_id"], "text": text, "done": False}
+    state["todos"].append(todo)
+    state["next_id"] += 1
+    print(f"✅ เพิ่ม TODO #{todo['id']}")
+
+
+def list_todos():
+    if not state["todos"]:
+        print("📭 ยังไม่มี TODO")
+        return
+    print("📋 TODO List")
+    for t in state["todos"]:
+        check = "[x]" if t["done"] else "[ ]"
+        print(f"   {check} {t['id']}. {t['text']}")
+
+
+def mark_done(tid):
+    for t in state["todos"]:
+        if t["id"] == tid:
+            t["done"] = True
+            print(f"✅ มาร์ค TODO #{tid} เสร็จแล้ว")
+            return
+    print(f"❌ ไม่พบ TODO #{tid}")
+
+
+def delete_todo(tid):
+    before = len(state["todos"])
+    state["todos"] = [t for t in state["todos"] if t["id"] != tid]
+    if len(state["todos"]) &lt; before:
+        print(f"🗑 ลบ TODO #{tid}")
+    else:
+        print(f"❌ ไม่พบ TODO #{tid}")
+
+
+# REPL loop (real version: รับ sys.argv)
+while True:
+    cmd = input("\n&gt; ").strip()
+    if not cmd or cmd == "quit": break
+    parts = cmd.split(maxsplit=1)
+    action = parts[0]
+
+    if action == "add" and len(parts) &gt; 1:
+        add_todo(parts[1])
+    elif action == "list":
+        list_todos()
+    elif action == "done" and len(parts) &gt; 1:
+        mark_done(int(parts[1]))
+    elif action == "delete" and len(parts) &gt; 1:
+        delete_todo(int(parts[1]))
+    else:
+        print("❌ ใช้: add &lt;text&gt; / list / done &lt;id&gt; / delete &lt;id&gt; / quit")
+
+print("\n👋 bye!")</div>
+
+    <p style="color:var(--text-muted);font-size:13.5px">
+      💡 ใน Input — แต่ละบรรทัดคือ 1 command · ลองเพิ่ม / ลบ / list ดูว่า state คงอยู่
+    </p>
+
+    <h2>🧪 Workshop Process — สำหรับทุก Tool</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>(วันจันทร์-อังคาร) เลือก Tool</strong>
+        — ใช้ spec ตามที่ให้ หรือดัดให้เข้ากับ <em>"ของจริง"</em> ของคุณ (เช่น ใช้คะแนนวิชาที่กำลังเรียน)
+      </li>
+      <li>
+        <strong>ขอ AI วาง plan</strong>
+        — function names, validation, test cases · ตอบคำถามที่ AI ถามให้ครบ
+      </li>
+      <li>
+        <strong>ขอ AI เขียน code</strong>
+        — อ่านทุกบรรทัด · ถ้าไม่เข้าใจ → ถาม
+      </li>
+      <li>
+        <strong>รัน test cases ทั้งหมด</strong>
+        — บันทึกใน <code>test-results.md</code>
+      </li>
+      <li>
+        <strong>ใช้กับ "ของจริง"</strong>
+        — Tool 1: ใส่คะแนนตัวเอง · Tool 2: ใส่ไฟล์รายงานจริง · Tool 3: ใส่ TODO จริงของสัปดาห์นี้
+      </li>
+      <li>
+        <strong>เขียน README.md</strong>
+        ที่: คำอธิบาย + วิธีติดตั้ง + วิธีใช้ + ตัวอย่าง output + known issues
+      </li>
+      <li>
+        <strong>commit + push GitHub</strong>
+        — แต่ละ tool เป็นโฟลเดอร์ใน repo เดียวกัน
+      </li>
+      <li>
+        <strong>ทำ Tool ถัดไป</strong>
+        — repeat 1-7
+      </li>
+    </ol>
+
+    <h2>📁 โครงสร้าง Repo ที่แนะนำ</h2>
+    <pre><code>cp-w07-cli-tools/
+├── README.md                ← อธิบายภาพรวม + ลิงก์ไป tool แต่ละตัว
+├── grade-calc/
+│   ├── grade_calc.py
+│   ├── README.md
+│   ├── spec.md
+│   └── test-results.md
+├── word-counter/
+│   ├── wc.py
+│   ├── sample.txt
+│   ├── README.md
+│   ├── spec.md
+│   └── test-results.md
+└── todo-manager/
+    ├── todo.py
+    ├── todo.json           ← สร้างอัตโนมัติเมื่อรันครั้งแรก
+    ├── README.md
+    ├── spec.md
+    └── test-results.md</code></pre>
+
+    <h2>📝 Template — README.md ที่ดี</h2>
+    <pre><code># Grade Calculator
+
+CLI tool คำนวณเกรดจากคะแนน hw + midterm + final
+และบอก final ขั้นต่ำเพื่อได้ตามเป้า
+
+## ติดตั้ง
+ต้องมี Python 3.11+
+
+## วิธีใช้
+```bash
+python grade_calc.py
+```
+แล้วกรอกคะแนนตามที่ถาม
+
+## ตัวอย่าง
+[screenshot หรือ output ตัวอย่าง]
+
+## Known issues
+- ยังไม่รองรับวิชาที่มี weight ต่างกัน
+- ยังไม่ save history
+
+## License
+สำหรับใช้ในวิชา Computer Programming คณะวิศวกรรมศาสตร์ UBU</code></pre>
+
+    <h2>✅ "Done" Rubric — รู้ได้ยังไงว่า tool เสร็จแล้ว</h2>
+    <p>
+      <em>"พอ"</em> ของแต่ละคนไม่เท่ากัน · ใช้ checklist นี้ทุก tool —
+      ถ้าได้ครบ ≥ 8/10 = ส่งได้
+    </p>
+
+    <table>
+      <thead><tr><th>เกณฑ์</th><th>ผ่านเมื่อ</th></tr></thead>
+      <tbody>
+        <tr><td><strong>1. มี spec.md</strong></td><td>ผ่าน Spec Scorecard ≥ 75% (ใน W06)</td></tr>
+        <tr><td><strong>2. รันได้</strong></td><td><code>python tool.py</code> รันแล้วไม่ crash</td></tr>
+        <tr><td><strong>3. Happy path ผ่าน</strong></td><td>Input ปกติ → Output ตรงตาม spec</td></tr>
+        <tr><td><strong>4. Edge case ผ่าน</strong></td><td>Input ผิด (empty, ติดลบ, type ผิด) → error message ชัด</td></tr>
+        <tr><td><strong>5. ทำงานกับ "ของจริง"</strong></td><td>ลองใช้กับข้อมูลจริงของตัวเอง 1 ครั้ง</td></tr>
+        <tr><td><strong>6. test-results.md</strong></td><td>มีตาราง test case + ผล ≥ 5 case</td></tr>
+        <tr><td><strong>7. README.md</strong></td><td>install + usage + screenshot</td></tr>
+        <tr><td><strong>8. Code อ่านง่าย</strong></td><td>function names ชัด · ไม่มี code ที่ใช้งานไม่ได้</td></tr>
+        <tr><td><strong>9. Git commit ≥ 5</strong></td><td>commit ระหว่างทาง · ไม่ใช่ 1 commit ใหญ่</td></tr>
+        <tr><td><strong>10. เพื่อน 1 คน "ใช้ได้"</strong></td><td>ส่งให้เพื่อน clone → รันตาม README → ใช้ได้</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับ — Done &gt; Perfect</strong>
+      8/10 ที่ส่งทัน &gt; 10/10 ที่ส่งช้า · ทำ "ครบ rough draft" ก่อน · ค่อยพัฒนา bonus ทีหลัง
+    </div>
+
+    <h2>🎯 Bonus Challenges (ทำได้ค่อยทำ)</h2>
+
+    <table>
+      <thead><tr><th>Bonus</th><th>Tool</th><th>ทำอะไร</th></tr></thead>
+      <tbody>
+        <tr><td>B1</td><td>grade_calc</td><td>เซฟ history ลง <code>history.json</code> + คำสั่ง <code>--history</code></td></tr>
+        <tr><td>B2</td><td>wc</td><td>รองรับหลายไฟล์ + รวมผล</td></tr>
+        <tr><td>B3</td><td>wc</td><td>ใช้ <code>argparse</code> รับ flag เช่น <code>--top 20</code></td></tr>
+        <tr><td>B4</td><td>todo</td><td>เพิ่มคำสั่ง <code>edit &lt;id&gt; &lt;new text&gt;</code></td></tr>
+        <tr><td>B5</td><td>todo</td><td>เพิ่ม <code>tag</code> และ filter <code>list --tag urgent</code></td></tr>
+        <tr><td>B6</td><td>todo</td><td>เพิ่ม due date + สีถ้าใกล้</td></tr>
+      </tbody>
+    </table>
+
+    <h2>ข้อผิดที่พบบ่อย</h2>
+
+    <div class="callout warn">
+      <strong>ข้าม spec ไปขอ code เลย</strong>
+      — Tool 3 (TODO) ง่ายต่อการพังเพราะมี state · ไม่มี spec = ทำมั่ว
+    </div>
+
+    <div class="callout warn">
+      <strong>Test แค่ครั้งเดียว</strong>
+      Tool 3 ต้อง <em>"ปิด-เปิด"</em> โปรแกรมแล้วทดสอบใหม่ เพราะ persistence
+    </div>
+
+    <div class="callout warn">
+      <strong>README.md เขียนทีหลัง / ไม่เขียน</strong>
+      — เพื่อน + AI จะใช้ tool ของคุณไม่ได้ · เขียนตั้งแต่ commit แรก
+    </div>
+
+    <h2>ส่งงานสัปดาห์นี้</h2>
+    <ul>
+      <li>📁 GitHub repo <code>cp-w07-cli-tools/</code> มีโครงสร้างตามด้านบน</li>
+      <li>📷 screenshot การรันแต่ละ tool</li>
+      <li>📋 test-results.md ของแต่ละ tool ครบทุกเคส</li>
+      <li>📝 README.md ของแต่ละ tool (3 ไฟล์)</li>
+    </ul>
+
+    <h3>Reference จาก slide เดิม</h3>
+    <p>Workshop นี้รวมทักษะจาก Topic 2-7 ของ slide เดิม + วิธีการ AI-assist จาก Topic 11</p>
+
+    <div class="pager">
+      <a href="w06-direct-from-spec.html"><div class="label">← สัปดาห์ที่แล้ว</div><div class="title">W06 — สั่ง AI จาก spec</div></a>
+      <a href="w08-tables.html" class="next"><div class="label">สัปดาห์ถัดไป →</div><div class="title">W08 — ตาราง list/dict/CSV</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+<script src="js/diagram-tools/mermaid-editor.js" defer></script>
+<script src="js/code-tools/python-runner.js" defer></script>
+<script src="js/code-tools/spec-scorecard.js" defer></script>
+</body>
+</html>

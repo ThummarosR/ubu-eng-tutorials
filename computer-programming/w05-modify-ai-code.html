@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W05 — แก้ไข + ต่อยอดโค้ด AI | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html" class="active"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">สัปดาห์ที่ 05 · Code Literacy with AI</span>
+    <h1>แก้ไข + ต่อยอดโค้ด AI</h1>
+    <p class="lede">
+      ตอนนี้คุณอ่านโค้ดได้แล้ว — สัปดาห์นี้คือ <em>"แก้ทีละนิด"</em> ·
+      เปลี่ยนเงื่อนไข, เพิ่มข้อมูล, รวมหลายโปรแกรม
+      — เรียน syntax โดย <strong>ลงมือแก้จริง</strong> ไม่ใช่ท่องตำรา
+    </p>
+
+    <h2>เป้าหมายสัปดาห์นี้</h2>
+    <ul>
+      <li>เปลี่ยนค่า / เงื่อนไข / output ของโปรแกรม AI ได้</li>
+      <li>เพิ่ม feature เล็ก ๆ (เพิ่ม field, เพิ่ม case, เพิ่ม print) ได้</li>
+      <li>ใช้ <strong>Cursor Ctrl+K</strong> ให้ AI แก้ inline + ดู <strong>diff</strong> ก่อนรับ</li>
+      <li>ทำ <strong>regression test</strong> — เช็คว่าของเดิมยังทำงานหลังแก้</li>
+      <li>เจอ error และอ่านมันออก</li>
+      <li>ใช้ <strong>git commit</strong> หลังทุกการแก้ที่สำเร็จ</li>
+    </ul>
+
+    <div class="callout warn" style="border-left-width:5px">
+      <strong>🔒 ทำไม "การแก้โค้ด" คือทักษะที่ AI ทำให้คุณไม่ได้</strong>
+      AI <em>แก้ให้</em> ได้ใน 5 วินาที · แต่ <strong>"ตัดสินใจว่าจะแก้อะไร / ตรวจว่า AI แก้ถูกมั้ย / รับ-ปฏิเสธ change"</strong>
+      ต้องเป็นคุณ · ทุกครั้งที่ AI commit code = <em>"คุณ commit code"</em> เพราะคุณกด accept ·
+      ถ้าแก้พังในที่ทำงานจริง — บอกหัวหน้าไม่ได้ว่า "AI พัง" · ความรับผิดชอบเป็นของคนกด accept
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🎯 Running Case — ต่อยอด Grading App ของพี่นัท</h2>
+    <p>
+      ใน W04 เราอ่าน code ของ Grading App แล้ว · สัปดาห์นี้ <strong>แก้ + ต่อยอด</strong> ·
+      ความจริงคือ — ในงานจริง 90% ของเวลาคุณใช้แก้ code ที่มีอยู่ ไม่ใช่เขียนใหม่
+    </p>
+
+    <h2>📊 4 ระดับของการแก้โค้ด (Modification Pyramid)</h2>
+    <p>
+      ไม่ใช่ทุกการแก้ <em>"ยากเท่ากัน"</em> · จัดเป็น 4 ระดับ — เริ่มจากระดับต่ำสุด ปลอดภัยที่สุด ·
+      ไต่ขึ้นเมื่อมั่นใจ
+    </p>
+
+    <div class="mermaid">flowchart TB
+    L4["<b>Level 4: แก้ Behavior</b><br/><i>เปลี่ยนวิธีคำนวณ · เปลี่ยน format</i><br/>⚠️ ต้อง regression test"]
+    L3["<b>Level 3: รวมหลาย program</b><br/><i>function + list + dict + loop ผสมกัน</i><br/>เริ่มซับซ้อน"]
+    L2["<b>Level 2: เพิ่ม case / field</b><br/><i>เพิ่ม condition · field ใหม่ใน dict</i><br/>ปานกลาง"]
+    L1["<b>Level 1: เปลี่ยนค่า / ข้อความ</b><br/><i>เลข · string · ไม่แตะ logic</i><br/>✅ ปลอดภัยสุด"]
+
+    L1 --> L2 --> L3 --> L4
+
+    classDef safe fill:#064e3b,stroke:#34d399,color:#fff
+    classDef mid fill:#3d2c1a,stroke:#ffd43b,color:#fff
+    classDef risky fill:#3b2962,stroke:#8b5cf6,color:#fff
+    classDef dangerous fill:#5c1818,stroke:#ef4444,color:#fff
+    class L1 safe
+    class L2 mid
+    class L3 risky
+    class L4 dangerous</div>
+
+    <p style="text-align:center;color:var(--text-muted);font-size:13.5px">
+      🟢 Level 1 = แก้ไม่พลาด · 🔴 Level 4 = ต้องทดสอบหนัก เพราะอาจพังของเดิม
+    </p>
+
+    <h2>หลักคิด — "Small Steps, Always Working"</h2>
+    <p>
+      กฎสำคัญที่นักศึกษาปี 1 มักทำผิด: <em>"พยายามแก้หลายอย่างพร้อมกัน"</em> · ผลคือ code เสีย
+      แล้วไม่รู้ว่าตรงไหน · กฎคือ:
+    </p>
+
+    <div class="callout tip">
+      <strong>กฎ Small Steps</strong>
+      1) แก้ 1 อย่าง · 2) รัน · 3) ถ้าได้ผล → commit · 4) ถ้าไม่ได้ → undo (Ctrl+Z) · 5) แล้วค่อยแก้อันถัดไป
+      <br>ทุก commit คือ <em>save point</em> ที่ปลอดภัย — ย้อนกลับได้เสมอ
+    </div>
+
+    <h2>🟢 Level 1 — เปลี่ยนค่า / ข้อความ</h2>
+    <p>เริ่มจากการแก้ที่ <em>ปลอดภัยที่สุด</em> — เปลี่ยน string หรือเลข · ไม่แตะ logic</p>
+
+    <h3>ตัวอย่าง: เปลี่ยนเกณฑ์ + เพิ่มเกรด A+</h3>
+
+    <div class="diff-viewer" data-title="Level 1: ขยับ threshold + เพิ่มข้อความ +">
+      <div class="diff-before">def calc_grade(score):
+    if score &gt;= 80:
+        return "A"
+    elif score &gt;= 70:
+        return "B"
+    elif score &gt;= 60:
+        return "C"
+    else:
+        return "F"</div>
+      <div class="diff-after">def calc_grade(score):
+    if score &gt;= 85:
+        return "A+"
+    elif score &gt;= 75:
+        return "A"
+    elif score &gt;= 70:
+        return "B+"
+    elif score &gt;= 60:
+        return "C"
+    else:
+        return "F"</div>
+    </div>
+
+    <p>ดู diff ทางขวา — เปลี่ยนแค่ <em>"เลข + ข้อความ"</em> · structure ของ if/elif เหมือนเดิม</p>
+
+    <div class="python-runner" data-inputs="76">def calc_grade(score):
+    if score &gt;= 85:
+        return "A+"
+    elif score &gt;= 75:
+        return "A"
+    elif score &gt;= 70:
+        return "B+"
+    elif score &gt;= 60:
+        return "C"
+    else:
+        return "F"
+
+
+score = int(input("คะแนน: "))
+print(f"เกรด: {calc_grade(score)}")</div>
+
+    <p>การเปลี่ยนแค่ค่าตัวเลขกับข้อความ — <em>"ทำไม่พลาด"</em> · เริ่มฝึก git commit ตรงนี้</p>
+
+    <h2>🟡 Level 2 — เพิ่ม case / field ใหม่</h2>
+
+    <h3>ตัวอย่าง: เพิ่มเกรด "I" สำหรับคะแนนติดลบ</h3>
+
+    <div class="diff-viewer" data-title="Level 2: เพิ่ม condition ใหม่">
+      <div class="diff-before">def calc_grade(score):
+    if score &gt;= 80:
+        return "A"
+    elif score &gt;= 70:
+        return "B"
+    elif score &gt;= 60:
+        return "C"
+    else:
+        return "F"</div>
+      <div class="diff-after">def calc_grade(score):
+    if score &lt; 0:
+        return "I"
+    elif score &gt;= 80:
+        return "A"
+    elif score &gt;= 70:
+        return "B"
+    elif score &gt;= 60:
+        return "C"
+    else:
+        return "F"</div>
+    </div>
+
+    <div class="callout warn">
+      <strong>⚠️ สังเกตการเปลี่ยนที่ "เนียน"</strong>
+      <code>if</code> บรรทัดแรกของ Before กลายเป็น <code>elif</code> ใน After ·
+      ถ้าลืมเปลี่ยนตัวนี้ — code จะรันได้ <em>"แต่ผลผิด"</em> เพราะ <code>score &gt;= 80</code> ก็จะเป็น A
+      แม้คะแนน &lt; 0 (ตรวจไม่เจอ I) · นี่คือเหตุที่ต้องใช้ <strong>Diff Viewer</strong> ดูทุก change
+    </div>
+
+    <h3>ตัวอย่าง: เพิ่ม field "email" ใน student dict</h3>
+
+    <div class="diff-viewer" data-title="Level 2: เพิ่ม field + print">
+      <div class="diff-before">student = {
+    "name": "Ploy",
+    "id": "640001",
+    "scores": [85, 72, 91],
+}
+
+print(f"นักศึกษา: {student['name']}")
+print(f"รหัส: {student['id']}")</div>
+      <div class="diff-after">student = {
+    "name": "Ploy",
+    "id": "640001",
+    "email": "ploy.k@ubu.ac.th",
+    "scores": [85, 72, 91],
+}
+
+print(f"นักศึกษา: {student['name']}")
+print(f"รหัส: {student['id']}")
+print(f"อีเมล: {student['email']}")</div>
+    </div>
+
+    <h2>🟣 Level 3 — รวม 2 โปรแกรม</h2>
+
+    <p>เอา <code>grade_calc.py</code> มารวมกับ <code>pass_count.py</code> — สร้างโปรแกรมที่:</p>
+    <ul>
+      <li>รับ list ของคะแนน</li>
+      <li>คำนวณเกรดทุกคน</li>
+      <li>นับจำนวนแต่ละเกรด</li>
+    </ul>
+
+    <div class="python-runner">def calc_grade(score):
+    if score &gt;= 80: return "A"
+    elif score &gt;= 70: return "B"
+    elif score &gt;= 60: return "C"
+    elif score &gt;= 50: return "D"
+    else: return "F"
+
+
+scores = [85, 72, 45, 91, 60, 33, 78]
+
+# นับเกรด — ใช้ dict
+grade_count = {"A": 0, "B": 0, "C": 0, "D": 0, "F": 0}
+
+for s in scores:
+    g = calc_grade(s)
+    grade_count[g] += 1
+
+# พิมพ์ผล
+for grade, count in grade_count.items():
+    print(f"{grade}: {count} คน")</div>
+
+    <p>ตรงนี้คุณ <em>ผสม</em> 4 อย่างแล้ว: function, list, dict, loop · นี่คือ "Level 3"</p>
+
+    <h2>🔴 Level 4 — แก้ behavior</h2>
+    <p>ขั้นนี้ <em>ยากที่สุด</em> เพราะต้องเข้าใจ flow จริง — เช่น เปลี่ยนวิธีคำนวณ, เปลี่ยน output format</p>
+
+    <h3>ตัวอย่าง: ใช้ค่าเฉลี่ยถ่วงน้ำหนัก</h3>
+
+    <div class="python-runner">def calc_grade(score):
+    if score &gt;= 80: return "A"
+    elif score &gt;= 70: return "B"
+    elif score &gt;= 60: return "C"
+    elif score &gt;= 50: return "D"
+    else: return "F"
+
+
+scores = {
+    "homework": 78,
+    "midterm": 65,
+    "final": 82,
+}
+
+weights = {
+    "homework": 0.30,
+    "midterm": 0.30,
+    "final": 0.40,
+}
+
+total = 0
+for key in scores:
+    total += scores[key] * weights[key]
+
+print(f"คะแนนรวมถ่วงน้ำหนัก: {total:.2f}")
+print(f"เกรด: {calc_grade(int(total))}")</div>
+
+    <h2>⌨️ Cursor Ctrl+K — ให้ AI แก้ Inline (Level 1-2 ของ AI-assisted edit)</h2>
+    <p>
+      Cursor มี shortcut พิเศษ <kbd>Ctrl+K</kbd> (Mac: <kbd>Cmd+K</kbd>) ที่ <em>"แทรก AI ที่ตำแหน่ง cursor"</em>
+      — แทนที่จะ copy-paste ใน chat → ทำงานเร็วกว่าเดิม 5 เท่า
+    </p>
+
+    <h3>Workflow แนะนำ</h3>
+    <ol class="steps">
+      <li>
+        <strong>เลือก code ที่อยากแก้</strong>
+        — ไฮไลต์บรรทัดที่ต้องการแก้ใน editor
+      </li>
+      <li>
+        <strong>กด <kbd>Ctrl+K</kbd></strong>
+        — กล่อง prompt จะลอยขึ้นมาเหนือ selection
+      </li>
+      <li>
+        <strong>พิมพ์ instruction สั้น ๆ</strong>
+        — เช่น <em>"เพิ่ม A+ สำหรับ ≥ 85"</em> หรือ <em>"แก้ให้รับ float ด้วย"</em>
+      </li>
+      <li>
+        <strong>กด Enter — รอ AI</strong>
+        AI จะแสดง <em>"diff overlay"</em> (เขียว/แดง) แสดงสิ่งที่จะเปลี่ยน
+      </li>
+      <li>
+        <strong>กด Accept (✓) หรือ Reject (✗)</strong>
+        — <em>"อ่าน diff ให้ละเอียดก่อนรับเสมอ"</em> · นี่คือจุดที่คุณรับผิดชอบ
+      </li>
+      <li>
+        <strong>รัน + commit</strong>
+        — ถ้าใช้ได้ → git commit · ถ้าพัง → Ctrl+Z ทันที
+      </li>
+    </ol>
+
+    <div class="callout warn">
+      <strong>⚠️ จุดที่นักศึกษาพลาด — กด Accept โดยไม่อ่าน diff</strong>
+      AI อาจ <em>"แก้เกิน"</em> — เปลี่ยน format เดิมโดยไม่ขอ, ลบบรรทัดที่คุณตั้งใจไว้ ·
+      นิสัย <strong>"อ่าน diff ก่อนรับ"</strong> เป็นกฎเหล็ก
+    </div>
+
+    <h2>✅ Regression Test — เช็คว่าของเดิมยังทำงาน</h2>
+    <p>
+      Regression = "ถอยหลัง" · <strong>Regression test</strong> = ตรวจว่า <em>"feature เก่ายังทำงาน"</em>
+      หลังจากเพิ่ม feature ใหม่ · ทุกครั้งที่แก้ code ต้องถามตัวเอง:
+      <em>"input ที่เคยได้ผลถูก ตอนนี้ยังถูกอยู่มั้ย?"</em>
+    </p>
+
+    <h3>วิธีง่ายที่สุด — เขียน test list ก่อนแก้</h3>
+
+    <pre><code># ก่อนแก้ — บันทึก expected behavior
+calc_grade(85)  → "A"
+calc_grade(75)  → "B"
+calc_grade(45)  → "F"
+calc_grade(0)   → "F"
+
+# หลังแก้ Level 2 (เพิ่ม case I) — ต้องผ่านเดิม + case ใหม่
+calc_grade(85)  → "A"    ✅ ของเดิมยังถูก
+calc_grade(75)  → "B"    ✅
+calc_grade(45)  → "F"    ✅
+calc_grade(0)   → "F"    ✅
+calc_grade(-5)  → "I"    ✅ ของใหม่ใช้ได้</code></pre>
+
+    <div class="python-runner">def calc_grade(score):
+    if score &lt; 0:
+        return "I"
+    elif score &gt;= 80:
+        return "A"
+    elif score &gt;= 70:
+        return "B"
+    elif score &gt;= 60:
+        return "C"
+    else:
+        return "F"
+
+
+# Regression tests — ทำเสมอหลังแก้
+tests = [
+    (85, "A"),
+    (75, "B"),
+    (45, "F"),
+    (0, "F"),
+    (-5, "I"),
+]
+
+for score, expected in tests:
+    got = calc_grade(score)
+    status = "✅" if got == expected else "❌"
+    print(f"{status} calc_grade({score}) = {got!r}  (expected {expected!r})")</div>
+
+    <p>
+      <strong>กฎเหล็ก:</strong> ก่อน commit ทุกครั้ง — รัน test ทุกตัวที่เคยมี ·
+      ถ้ามีตัวไหนพัง = <em>"คุณทำของเดิมพังโดยไม่รู้ตัว"</em>
+    </p>
+
+    <h2>🕵️ จับ AI เมื่อมัน "แก้เกิน" (Over-modification)</h2>
+    <p>
+      AI ชอบช่วย <em>"เกินที่ขอ"</em> · ขอแก้บรรทัดเดียว — มันเปลี่ยน 5 อย่าง ·
+      Diff Viewer คือเครื่องมือจับ
+    </p>
+
+    <h3>ตัวอย่าง: ขอ AI แก้ "เพิ่ม case I" แต่ AI ทำเกิน</h3>
+
+    <div class="diff-viewer" data-title="❌ AI แก้เกิน — เปลี่ยน return type และ rename function">
+      <div class="diff-before">def calc_grade(score):
+    if score &gt;= 80:
+        return "A"
+    elif score &gt;= 70:
+        return "B"
+    else:
+        return "F"</div>
+      <div class="diff-after">def calculate_grade_letter(score: int) -&gt; dict:
+    if score &lt; 0:
+        return {"grade": "I", "valid": False}
+    elif score &gt;= 80:
+        return {"grade": "A", "valid": True}
+    elif score &gt;= 70:
+        return {"grade": "B", "valid": True}
+    else:
+        return {"grade": "F", "valid": True}</div>
+    </div>
+
+    <div class="callout warn">
+      <strong>❌ ทำไมถึงไม่ดี</strong>
+      <ul style="margin-top:8px">
+        <li><strong>Rename function</strong> — ทุกที่ที่เรียก <code>calc_grade()</code> จะพังหมด</li>
+        <li><strong>เปลี่ยน return type</strong> จาก string → dict — <em>caller ที่คาด string ก็พัง</em></li>
+        <li><strong>เพิ่ม type hints</strong> — ไม่ได้ขอ · ถ้าอยากได้ ค่อยขอแยก</li>
+      </ul>
+      → <strong>Reject</strong> → ขอใหม่: <em>"แก้แค่เพิ่ม case I · อย่าเปลี่ยน function name · อย่าเปลี่ยน return type"</em>
+    </div>
+
+    <h3>5 pattern ของ AI ที่ "ทำเกิน"</h3>
+    <table>
+      <thead><tr><th>Pattern</th><th>วิธีจับ</th></tr></thead>
+      <tbody>
+        <tr><td>Rename ตัวแปร / function</td><td>ดู diff — ชื่อเปลี่ยนทุกที่</td></tr>
+        <tr><td>เปลี่ยน return type</td><td>ดูบรรทัด return — type เดิมกับใหม่ตรงกัน?</td></tr>
+        <tr><td>เพิ่ม import / library</td><td>ดูส่วนบน — import ใหม่โผล่มั้ย</td></tr>
+        <tr><td>เพิ่ม error handling ที่ไม่ขอ</td><td>ดู <code>try/except</code> ที่ไม่เคยมี</td></tr>
+        <tr><td>Refactor structure</td><td>ดูถ้าจำนวน function เพิ่ม / ลด</td></tr>
+      </tbody>
+    </table>
+
+    <h2>🐞 อ่าน Error Message ให้เป็น — Error Anatomy</h2>
+
+    <p>หลีกเลี่ยงไม่ได้ — เมื่อแก้ code คุณจะเจอ error · มันไม่น่ากลัวถ้าอ่านเป็น</p>
+
+    <h3>กายวิภาคของ Python Error</h3>
+    <pre><code>Traceback (most recent call last):    ← ② "เกิด error ที่ขั้นไหน"
+  File "grade.py", line 12, in &lt;module&gt;
+    print(scor)                          ← ③ บรรทัด code ที่พัง
+NameError: name 'scor' is not defined ← ① "ชนิด error" + "รายละเอียด"</code></pre>
+
+    <p><strong>วิธีอ่าน:</strong></p>
+    <ol class="steps">
+      <li><strong>อ่านบรรทัดสุดท้ายก่อน</strong> — บอก type + reason</li>
+      <li><strong>ดูชื่อ error</strong> — NameError / TypeError / SyntaxError ฯลฯ</li>
+      <li><strong>ดู file + line</strong> — ตามขึ้นไปดู code ที่บรรทัดนั้น</li>
+      <li><strong>เข้าใจ "ทำไม"</strong> — error message มักบอกตรง ๆ ถ้าอ่านช้า ๆ</li>
+    </ol>
+
+    <h3>5 Error ที่นักศึกษาเจอบ่อยที่สุด</h3>
+
+    <table>
+      <thead><tr><th>Error</th><th>แปลว่า</th><th>ตัวอย่าง</th><th>วิธีแก้</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><code>NameError</code></td>
+          <td>ใช้ตัวแปรที่ยังไม่ได้สร้าง</td>
+          <td><code>print(scor)</code> ทั้งที่ตัวแปรชื่อ <code>score</code></td>
+          <td>เช็ค typo · ดูว่าตัวแปรประกาศก่อนใช้</td>
+        </tr>
+        <tr>
+          <td><code>TypeError</code></td>
+          <td>ใช้ type ผิด</td>
+          <td><code>"5" + 3</code> (str + int)</td>
+          <td>แปลง type ก่อน: <code>int("5") + 3</code></td>
+        </tr>
+        <tr>
+          <td><code>SyntaxError</code></td>
+          <td>เขียนผิดไวยากรณ์</td>
+          <td>ลืม <code>:</code> หลัง <code>if</code></td>
+          <td>ดูบรรทัดที่ Python ชี้ · ปกติคือลืม : / ) / "</td>
+        </tr>
+        <tr>
+          <td><code>IndentationError</code></td>
+          <td>เยื้องผิด</td>
+          <td>code ใน <code>if</code> ไม่เยื้อง</td>
+          <td>เยื้อง 4 space (กด Tab) · ห้ามผสม tab + space</td>
+        </tr>
+        <tr>
+          <td><code>KeyError</code></td>
+          <td>คีย์ใน dict ไม่มี</td>
+          <td><code>student["age"]</code> ไม่มี field age</td>
+          <td>ใช้ <code>.get("age")</code> · หรือเช็ค <code>"age" in student</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>ลองรัน + แก้ error ด้วยตัวเอง</h3>
+    <p>code นี้มี <strong>3 error</strong> · ลอง Run → อ่าน error → แก้ → Run อีก จนผ่าน</p>
+
+    <div class="python-runner">def calc_grade(score)
+    if score &gt;= 80:
+        return "A"
+    elif score &gt;= 70:
+        return "B"
+    else:
+    return "F"
+
+
+score = input("คะแนน: ")
+print(grad(calc_grade(score)))</div>
+
+    <details style="margin-top:14px;padding:14px;background:var(--bg-elev);border-radius:8px">
+      <summary style="cursor:pointer;color:var(--accent-2)">🔓 เฉลย (พยายามแก้เองก่อน!)</summary>
+      <ol style="margin-top:10px">
+        <li><code>def calc_grade(score)</code> ขาด <code>:</code> ท้ายบรรทัด → <strong>SyntaxError</strong></li>
+        <li><code>else:</code> ตามด้วย <code>return "F"</code> ที่ไม่เยื้อง → <strong>IndentationError</strong> (ต้องเยื้อง 4 space)</li>
+        <li><code>print(grad(...))</code> ใช้ <code>grad</code> แทน <code>calc_grade</code> · จริง ๆ ไม่ต้อง wrap → <code>print(calc_grade(int(score)))</code></li>
+      </ol>
+    </details>
+
+    <div class="callout info">
+      <strong>กฎทอง — ส่ง Error ให้ AI</strong>
+      อย่าจ้องอ่านเอง 10 นาที · copy error ทั้งก้อน → paste ใน Cursor chat → ถาม <em>"error นี้แปลว่าอะไร และจะแก้ยังไง?"</em>
+      AI ตอบได้ใน 5 วินาที · แล้วจึง <em>เข้าใจ</em> มัน
+    </div>
+
+    <h2>🧪 Workshop — 15 การแก้ใน 1 สัปดาห์</h2>
+    <p>เอา 4 โปรแกรมจาก W04 มา แก้ทั้งหมด 15 ครั้ง · commit ทุกครั้งที่ทำสำเร็จ</p>
+
+    <ol class="steps">
+      <li>
+        <strong>grade_calc.py — แก้เกณฑ์เป็น A+/A/B+/B/C+/C/D/F</strong>
+        (8 ระดับ แทน 5 ระดับ)
+      </li>
+      <li>
+        <strong>grade_calc.py — เพิ่ม case "I" สำหรับคะแนน &lt; 0</strong>
+      </li>
+      <li>
+        <strong>grade_calc.py — แสดง emoji 🎉 ถ้าได้ A/A+</strong>
+      </li>
+      <li>
+        <strong>grade_calc.py — รับคะแนนหลายตัวคั่นด้วยจุลภาค</strong>
+        (เช่น "85, 72, 91") แล้วคำนวณ avg
+      </li>
+      <li>
+        <strong>pass_count.py — เปลี่ยน threshold ผ่านเป็น 60</strong>
+      </li>
+      <li>
+        <strong>pass_count.py — เพิ่มการรายงาน "คะแนนสูงสุด" และ "คะแนนต่ำสุด"</strong>
+      </li>
+      <li>
+        <strong>pass_count.py — เพิ่ม category "เกียรตินิยม" สำหรับ ≥ 80</strong>
+      </li>
+      <li>
+        <strong>student_dict.py — เพิ่ม field "email" และ "year"</strong>
+      </li>
+      <li>
+        <strong>student_dict.py — เก็บ list ของ student (3 คน) แทน 1 คน</strong>
+      </li>
+      <li>
+        <strong>student_dict.py — print เรียงตามคะแนนเฉลี่ย</strong>
+      </li>
+      <li>
+        <strong>login.py — เปลี่ยน max_attempts เป็น 5</strong>
+      </li>
+      <li>
+        <strong>login.py — เพิ่ม username ด้วย</strong>
+        (ต้องตรงทั้งคู่ถึงเข้าได้)
+      </li>
+      <li>
+        <strong>login.py — print เวลาที่ login ได้สำเร็จ</strong>
+        (ใช้ <code>from datetime import datetime</code> ขอ AI ช่วยถ้าไม่รู้)
+      </li>
+      <li>
+        <strong>รวม grade_calc + pass_count</strong>
+        — ตามตัวอย่าง "ระดับ 3" ด้านบน
+      </li>
+      <li>
+        <strong>เพิ่มถ่วงน้ำหนัก</strong>
+        — ตามตัวอย่าง "ระดับ 4" ด้านบน
+      </li>
+    </ol>
+
+    <h2>🐙 ฝึก Git Commit</h2>
+    <p>Cursor มี git ในตัว — เปิด <em>Source Control</em> ที่ sidebar (icon รูปสาขา)</p>
+
+    <ol class="steps">
+      <li><strong>เปิด terminal</strong> ใน Cursor → <code>git init</code> ใน folder โปรเจกต์</li>
+      <li><strong>สร้าง .gitignore</strong> ใส่ <code>__pycache__/</code>, <code>*.pyc</code>, <code>.venv/</code></li>
+      <li><strong>หลังแก้แต่ละข้อ + รันได้</strong> → <em>Source Control</em> → กรอกข้อความ → <em>Commit</em></li>
+      <li><strong>ข้อความ commit ที่ดี</strong> สั้น + verb + noun เช่น "เพิ่ม case I สำหรับคะแนนติดลบ"</li>
+      <li><strong>หลังจาก 15 commits</strong> → push ขึ้น GitHub (W14 จะลงลึก)</li>
+    </ol>
+
+    <h2>ข้อผิดที่พบบ่อย</h2>
+
+    <div class="callout warn">
+      <strong>แก้หลายอย่างพร้อมกัน + พังพร้อมกัน</strong>
+      — 1 commit = 1 การเปลี่ยน · ถ้าพังจะรู้เลยว่าตรงไหน
+    </div>
+
+    <div class="callout warn">
+      <strong>เห็น error → ลบ code ทิ้ง → ขอ AI ใหม่</strong>
+      อย่าทำ! · พยายามอ่าน error · ถ้าไม่เข้าใจ → ถาม AI ให้อธิบาย · จะได้เรียน
+    </div>
+
+    <div class="callout warn">
+      <strong>ไม่ commit ระหว่างทาง</strong>
+      เมื่อพังจะกลับไปจุดที่ทำงานไม่ได้ · commit = save point
+    </div>
+
+    <h2>ส่งงานสัปดาห์นี้</h2>
+    <ul>
+      <li>📁 GitHub repo ที่มี <strong>≥ 15 commits</strong> ของ Workshop</li>
+      <li>📝 <code>changelog.md</code> สรุปการแก้ทั้ง 15 อย่างสั้น ๆ</li>
+      <li>🐞 <code>errors.md</code> รวม error ที่เจอ + วิธีแก้ (เปิดประวัติฝึกอ่าน error)</li>
+    </ul>
+
+    <h3>Reference จาก slide เดิม</h3>
+    <p>ครอบคลุม <a href="references.html#topic-5">Topic 5 (Conditions)</a>, <a href="references.html#topic-6">Topic 6 (Repetition)</a>, <a href="references.html#topic-7">Topic 7 (Functions)</a> ผ่านการแก้โค้ดจริง</p>
+
+    <div class="pager">
+      <a href="w04-read-ai-code.html"><div class="label">← สัปดาห์ที่แล้ว</div><div class="title">W04 — อ่านโค้ดที่ AI เขียน</div></a>
+      <a href="w06-direct-from-spec.html" class="next"><div class="label">สัปดาห์ถัดไป →</div><div class="title">W06 — สั่ง AI จาก spec</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+<script src="js/diagram-tools/mermaid-editor.js" defer></script>
+<script src="js/code-tools/python-runner.js" defer></script>
+<script src="js/code-tools/diff-viewer.js" defer></script>
+<script src="js/code-tools/predict-quiz.js" defer></script>
+</body>
+</html>

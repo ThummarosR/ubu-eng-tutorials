@@ -1,0 +1,28 @@
+---
+title: Loop vs Vectorised Operation
+---
+flowchart TB
+    subgraph loop["❌ Loop-based (slow)"]
+        direction TB
+        l1["scores = [85, 72, 45]"] --> l2["result = []"]
+        l2 --> l3["for s in scores:"]
+        l3 --> l4["    result.append(s * 1.1)"]
+        l4 --> l5["result is built one<br/>element at a time"]
+    end
+
+    subgraph vec["✅ Vectorised (fast)"]
+        direction TB
+        v1["scores = np.array([85, 72, 45])"] --> v2["result = scores * 1.1"]
+        v2 --> v3["entire array processed<br/>in a single operation"]
+    end
+
+    loop --> COMP{"Compare<br/>1,000,000 elements"}
+    vec --> COMP
+    COMP --> R["⚡ Vectorised version is<br/>typically 10–100× faster"]
+
+    classDef bad fill:#fee2e2,stroke:#ef4444,color:#7f1d1d
+    classDef good fill:#d1fae5,stroke:#10b981,color:#064e3b
+    classDef result fill:#ffd43b,stroke:#cc9c00,color:#1a1410,stroke-width:2px
+    class l1,l2,l3,l4,l5 bad
+    class v1,v2,v3 good
+    class COMP,R result

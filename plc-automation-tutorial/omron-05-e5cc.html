@@ -1,0 +1,389 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O05 — Omron E5CC Temperature Control | PLC Automation Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="PLC Automation"></div>
+      <div><div class="title">PLC Automation</div><div class="subtitle">คู่มือฉบับภาษาไทย — 2 Tracks</div></div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; เลือก Track</a>
+      <h4>🟥 Mitsubishi Track</h4>
+      <a href="mit-01-intro.html"><span class="num">M01</span> รู้จัก FX5U</a>
+      <a href="mit-02-ladder.html"><span class="num">M02</span> Ladder Logic</a>
+      <a href="mit-03-sensors.html"><span class="num">M03</span> เซ็นเซอร์ &amp; I/O</a>
+      <a href="mit-04-simulation.html"><span class="num">M04</span> GX Simulator</a>
+      <a href="mit-05-hmi.html"><span class="num">M05</span> HMI Samkoon</a>
+      <a href="mit-06-pid.html"><span class="num">M06</span> PID &amp; Auto-Tuning</a>
+      <a href="mit-07-modbus.html"><span class="num">M07</span> Modbus + PM2230</a>
+      <h4>🟦 Omron Track</h4>
+      <a href="omron-01-intro.html"><span class="num">O01</span> รู้จัก CP1L/CPM2A</a>
+      <a href="omron-02-ladder.html"><span class="num">O02</span> CX-Programmer Ladder</a>
+      <a href="omron-03-fbd.html"><span class="num">O03</span> Function Block (FBD)</a>
+      <a href="omron-04-modbus.html"><span class="num">O04</span> Modbus + Inverter</a>
+      <a href="omron-05-e5cc.html" class="active"><span class="num">O05</span> E5CC Temp Control</a>
+      <a href="omron-06-scada.html"><span class="num">O06</span> SCADA (CX-Supervisor)</a>
+      <a href="omron-07-scada-workshop.html"><span class="num">O07</span> 🏭 SCADA Workshop</a>
+      <h4>แหล่งข้อมูล</h4>
+      <a href="videos.html"><span class="num">▶</span> วิดีโอเลคเชอร์</a>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ O05 · E5CC · Temperature Control</span>
+    <h1>Omron E5CC — Temperature Controller</h1>
+    <p class="lede">
+      <strong>E5CC</strong> คือตัวควบคุมอุณหภูมิ PID ของ Omron — น้องของ E5EC ใหญ่กว่าหน่อย และเป็นรุ่นที่ยังขายอยู่ในปี 2026
+      บทนี้พาตั้งค่า E5CC, เซ็ต Auto-Tune, สื่อสารผ่าน Modbus กับ CP1L
+    </p>
+
+    <div class="callout info">
+      <strong>E5CC vs E5EC vs Delta DTK — ต่างกันยังไง?</strong>
+      ทั้ง 3 ทำงานคล้ายกัน (รับ PV จาก TC/RTD → คำนวณ PID → ส่ง Output ไปฮีตเตอร์):
+      <br>· <strong>Omron E5CC</strong> (48×48mm) — รุ่นนิยมในตำราอ. ผดุง
+      <br>· <strong>Omron E5EC</strong> (48×96mm) — ใหญ่กว่า, จอชัดกว่า — ใบงาน FBD + Temperature ใช้รุ่นนี้
+      <br>· <strong>Delta DTK4848</strong> — ใช้ใน Mitsubishi track (<a href="mit-06-pid.html">M06</a>)
+      <br><br>หลักการ PID + Auto-Tune เหมือนกัน — ดู <a href="mit-06-pid.html">M06</a> สำหรับทฤษฎี PID, ตรงนี้เน้น Practice กับ E5CC
+    </div>
+
+    <h2>E5CC — รุ่นในห้อง Lab</h2>
+
+    <figure>
+      <img src="images/omron-e5cc-brochure-cover.jpg" alt="Omron E5CC Temperature Control brochure cover">
+      <figcaption>Omron <strong>E5CC</strong> — Temperature Controller สำหรับงานอุตสาหกรรม (ภาพจากคู่มือ "เทคนิคการควบคุมอุณหภูมิ" ของ Omron Thailand)</figcaption>
+    </figure>
+
+    <figure>
+      <img src="images/omron-e5ec-display.jpg" alt="Omron E5EC display showing PV/SV/MV">
+      <figcaption>Omron <strong>E5CC/E5EC</strong> — หน้าจอแสดง <strong>PV</strong> (ขาว) + <strong>SV</strong> (เขียว) + <strong>MV</strong> (ส้ม) พร้อมกัน · มีปุ่ม PF / Down / Up / Enter (Mode) สำหรับเข้าเมนู</figcaption>
+    </figure>
+
+    <figure>
+      <img src="images/temperature-control-system-th.jpg" alt="Temperature control system diagram (Thai)">
+      <figcaption>ระบบควบคุมอุณหภูมิแบบครบวงจร — <strong>เทอร์โมคัปเปิ้ล</strong> วัดอุณหภูมิ → ส่งเข้า <strong>Temperature Controller</strong> → คุม <strong>แมกเนติกคอนแทกเตอร์</strong> → จ่ายไฟให้ <strong>ฮีสเตอร์</strong> ใน <strong>เตาไฟฟ้า</strong></figcaption>
+    </figure>
+
+    <h3>การถอดรหัสรุ่น E5CC-QQ2ASM-000</h3>
+
+    <table>
+      <thead><tr><th>ตำแหน่ง</th><th>ค่า</th><th>ความหมาย</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td><strong>Q</strong></td><td>Multi-range input (TC + RTD + DC voltage/current)</td></tr>
+        <tr><td>2</td><td><strong>Q</strong></td><td>Aux output type — 2 = SPST-NO (เปลี่ยนกับฮีตเตอร์ผ่าน SSR)</td></tr>
+        <tr><td>3</td><td><strong>2</strong></td><td>2 Auxiliary outputs</td></tr>
+        <tr><td>4</td><td><strong>A</strong></td><td>Heater Burnout (HB) detection</td></tr>
+        <tr><td>5</td><td><strong>S</strong></td><td>Communication = RS-485 Modbus</td></tr>
+        <tr><td>6</td><td><strong>M</strong></td><td>Event Input function</td></tr>
+        <tr><td>7-9</td><td><strong>000</strong></td><td>No additional features</td></tr>
+      </tbody>
+    </table>
+
+    <h3>หลักการของเทอร์โมคัปเปิ้ล</h3>
+
+    <figure>
+      <img src="images/thermocouple-emf-diagram.png" alt="Thermocouple EMF principle (Seebeck effect)">
+      <figcaption>หลักการ Seebeck effect — เส้นโลหะ A กับ โลหะ B ต่อเป็นวง, ปลายหนึ่ง <strong>Hot Junction</strong> (เตา) อีกปลาย <strong>Cold Junction</strong> (อ้างอิง) → เกิด <strong>EMF</strong> ตามผลต่างอุณหภูมิ → E5CC ใช้ EMF นี้คำนวณ °C</figcaption>
+    </figure>
+
+    <h3>การต่อสาย E5CC</h3>
+
+    <figure>
+      <img src="images/e5ec-terminal-wiring.jpg" alt="E5EC-QR2ASM terminal wiring diagram">
+      <figcaption>ขั้วต่อด้านหลัง E5CC/E5EC — 1,2 = AC 100-240V · 3-6 = Output 1, 2 · 13,14 = RS-485 (A, B) · 16-18 = Event input EV1, EV2 · 22-24 = Input (mA, V, TC/RTD)</figcaption>
+    </figure>
+
+    <ol class="steps">
+      <li>
+        <strong>Power</strong>
+        ขั้ว 1-2 รับ AC 100-240V — ใส่ Breaker ทางต้นทาง
+      </li>
+      <li>
+        <strong>Input — Thermocouple Type K</strong>
+        ขั้ว 22 (+) / 23 (-) — สีแดง = +, สีดำ/ขาว = - <strong>(ระวังขั้วบวกลบ)</strong>
+      </li>
+      <li>
+        <strong>Output 1 — Heater (SSR)</strong>
+        ขั้ว 3 (+) / 4 (-) → ต่อเข้า <strong>SSR</strong> (Solid State Relay) → SSR คุมไฟ AC เข้าฮีตเตอร์
+      </li>
+      <li>
+        <strong>RS-485 — Communication</strong>
+        ขั้ว 14 (A+) / 13 (B-) → ไปต่อกับ CP1L ผ่าน CIF11
+      </li>
+      <li>
+        <strong>Event Input — Optional</strong>
+        ขั้ว 16-18 → กดปุ่มภายนอกเปิด Auto-Tune หรือ switch SV bank ได้
+      </li>
+    </ol>
+
+    <h2>📟 ลองใช้ Menu E5CC — Interactive Walker</h2>
+
+    <p>ก่อนเดินไปกดเครื่องจริง — ลองเล่นกับหน้า E5CC จำลองด้านล่าง ดูว่าปุ่ม PF / ▼ / ▲ / O↩
+       ทำงานยังไง · <strong>กดค้าง O↩ 3 วินาที</strong> เพื่อเข้า Initial Setting · <strong>จากนั้น
+       กด O↩ ค้างอีก 1 วินาที</strong> เพื่อเข้า Communications Setting</p>
+
+    <div class="e5cc-walker"></div>
+
+    <h2>ตั้งค่าเริ่มต้น</h2>
+
+    <p>หลังเปิดไฟ E5CC จะแสดง <code>0.0</code> และอ่าน PV ไม่ขึ้น (เพราะยังไม่ตั้ง input type):</p>
+
+    <ol class="steps">
+      <li>
+        <strong>เข้า Initial Setting Mode</strong>
+        กดปุ่ม <code>Mode (O↩)</code> ค้างประมาณ <strong>3 วินาที</strong> — จอจะแสดง <code>in-t</code>
+      </li>
+      <li>
+        <strong>ตั้ง Input Type</strong>
+        ที่ <code>in-t</code> → ใช้ ▲▼ เลือก:
+        <ul>
+          <li><code>5</code> = K (Thermocouple Type K, -200 to 1300°C)</li>
+          <li><code>0</code> = Pt100 (RTD)</li>
+          <li><code>4</code> = J Thermocouple</li>
+        </ul>
+        กด <code>O↩</code> เพื่อยืนยัน
+      </li>
+      <li>
+        <strong>ตั้ง Temperature Unit</strong>
+        เลื่อนหา <code>d-u</code> → <code>°C</code> (เป็นค่า default)
+      </li>
+      <li>
+        <strong>ตั้ง Control Period</strong>
+        <code>cp</code> (control period) = <strong>2 วินาที</strong> (สำหรับ SSR) หรือ 20s (สำหรับ Relay)
+      </li>
+      <li>
+        <strong>ออกจาก Initial Setting</strong>
+        กด <code>Mode (O↩)</code> ค้าง 1 วินาที — กลับสู่หน้า Operation
+      </li>
+      <li>
+        <strong>ตั้ง Set Point</strong>
+        จากหน้า Operation กด ▲▼ จนได้ค่าที่ต้องการ (เช่น 60°C) → SV จะติดเขียวที่จอ
+      </li>
+    </ol>
+
+    <h2>SSR — Solid State Relay สำหรับ Heater</h2>
+
+    <figure>
+      <img src="images/ssr-load-ac-schematic.png" alt="SSR + Load + AC schematic">
+      <figcaption>วงจร Controller Output (DC pulse) → ขับ <strong>SSR</strong> (Triac/SCR ภายใน) → จ่ายไฟ AC ให้ <strong>Load</strong> (ฮีตเตอร์) — ไม่มีหน้าสัมผัสเชิงกล, ทำ on/off ความถี่สูงได้ดีกว่า Relay</figcaption>
+    </figure>
+
+    <h3>หลักการ Closed-loop Control แบบเข้าใจง่าย</h3>
+
+    <figure>
+      <img src="images/closed-loop-control-lamp.png" alt="Closed-loop control example with lamp + photometry">
+      <figcaption>ตัวอย่างคลาสสิก — <strong>Variable Resistor</strong> ปรับแรงดันให้ <strong>Lamp</strong>, <strong>Illumination Photometry</strong> วัดความสว่างกลับมาเป็น <strong>Feedback</strong>, ระบบ <strong>Adjustment</strong> เปลี่ยน VR เพื่อให้ความสว่างคงที่ — Concept เดียวกับ Temperature Control แค่เปลี่ยนตัวกระทำ</figcaption>
+    </figure>
+
+    <h2>🧪 ลองจูน PID เอง — ก่อนกด Auto-Tune ที่ E5CC</h2>
+
+    <p>ก่อนไปกด AT ที่หน้าตัวเครื่องจริง — ลองเล่นกับ Plant Model ก่อน เพื่อให้เห็นว่า Kp/Ti/Td แต่ละตัวมีผลยังไง
+       (Plant: First-Order Heater, K=1, τ=25s, θ=5s · Step 25→60°C ที่ t=0)
+       · ทฤษฎี Ziegler-Nichols เต็มอยู่ที่ <a href="mit-06-pid.html">M06</a></p>
+
+    <div class="pid-tuner"></div>
+
+    <div class="callout tip">
+      <strong>ความเชื่อมโยงกับ E5CC จริง</strong>
+      ตัวเครื่อง E5CC ใช้ <strong>Proportional Band (P%)</strong> ไม่ใช่ Kp ตรง ๆ — แต่ความสัมพันธ์คือ
+      <code>Kp ≈ 100 / P%</code> เช่น P=40% ⇄ Kp=2.5 · Ti กับ Td ที่ E5CC เป็นหน่วยวินาทีเหมือนกับ Simulator นี้
+    </div>
+
+    <h2>Auto-Tune — ปรับ PID อัตโนมัติ</h2>
+
+    <p>E5CC มี <strong>Auto-Tune ในตัว</strong> เหมือน Delta DTK — กระบวนการคล้ายกัน:</p>
+
+    <ol class="steps">
+      <li>
+        <strong>ตั้งระบบให้พร้อม</strong>
+        เปิด Power เข้า Heater, ตั้ง Set Point ที่ค่าที่จะใช้จริง (เช่น 60°C)
+      </li>
+      <li>
+        <strong>รอให้ระบบเข้า Steady State</strong>
+        ห้ามทำ AT ตอนเครื่องเย็น — รอจน PV ใกล้ SV (เช่น ±5°C)
+      </li>
+      <li>
+        <strong>เริ่ม Auto-Tune</strong>
+        กด <code>Mode</code> สั้น → เลื่อนหา <code>at</code> → กด <code>O↩</code> → <code>at-2</code> (100% AT) → ยืนยัน
+        <br>หน้าจอจะกระพริบ <code>at</code>
+      </li>
+      <li>
+        <strong>รอ ~5-15 นาที</strong>
+        ระบบจะ <em>เปิด-ปิดฮีตเตอร์ค้าง</em> เพื่อวัด Ku และ Pu — เสร็จแล้ว E5CC จะเซฟ Kp/Ti/Td อัตโนมัติ
+        <figure style="margin-top:10px">
+          <img src="images/pid-autotune-relay-feedback.jpg" alt="PID Auto-tune Relay Feedback method">
+          <figcaption>การ Auto-Tune จะสร้างสัญญาณรูปแบบนี้ — ระบบไปแตะค่า <strong>Extreme value 1</strong> (ต่ำสุด) แล้ว <strong>Extreme value 2</strong> (สูงสุด) เพื่อวัด <strong>Ku</strong> (ultimate gain) และ <strong>Pu</strong> (period) → คำนวณ Kp/Ti/Td ตามสูตร Ziegler-Nichols</figcaption>
+        </figure>
+      </li>
+      <li>
+        <strong>ทดสอบ</strong>
+        เปลี่ยน SV ไปค่าอื่น (เช่น 80°C) → ดูที่กราฟ Trend ว่าระบบเข้าถึงเร็วและนิ่ง
+      </li>
+    </ol>
+
+    <div class="callout warn">
+      <strong>Auto-Tune กับ Process ที่มี Thermal Lag สูง</strong>
+      ถ้าระบบช้ามาก (เช่น เตาขนาดใหญ่) Auto-Tune อาจกินเวลา 30-60 นาที — อย่ายกเลิกระหว่างทาง
+      ถ้าเซ็ตค่า PID ที่ AT ให้แล้วยังแกว่ง ให้ลด Kp เอง 20-30%
+    </div>
+
+    <h2>Modbus Register Map ของ E5CC</h2>
+
+    <figure>
+      <img src="images/e5ec-register-map.png" alt="E5EC/E5CC register address map">
+      <figcaption>Register address ของ E5CC/E5EC — รองรับ <strong>Two-byte mode</strong> (16-bit address) และ <strong>Four-byte mode</strong> (32-bit address) แล้วแต่ตั้งค่า</figcaption>
+    </figure>
+
+    <table>
+      <thead><tr><th>Two-byte addr</th><th>หน้าที่</th><th>R/W</th><th>หน่วย</th></tr></thead>
+      <tbody>
+        <tr><td><code>2000</code></td><td>PV (Process Value)</td><td>R</td><td>°C × 10</td></tr>
+        <tr><td><code>2103</code></td><td>Set Point (active)</td><td>R/W</td><td>°C × 10</td></tr>
+        <tr><td><code>2104</code></td><td>Alarm Value 1</td><td>R/W</td><td>°C × 10</td></tr>
+        <tr><td><code>2003</code></td><td>Heater Current 1</td><td>R</td><td>A × 10</td></tr>
+        <tr><td><code>2004</code></td><td>MV (Heating)</td><td>R</td><td>% × 10</td></tr>
+        <tr><td><code>2407</code></td><td>Proportional Band (P)</td><td>R/W</td><td>%FS × 10</td></tr>
+        <tr><td><code>2408</code></td><td>Integral Time (I)</td><td>R/W</td><td>s</td></tr>
+        <tr><td><code>2409</code></td><td>Derivative Time (D)</td><td>R/W</td><td>s</td></tr>
+      </tbody>
+    </table>
+
+    <h2>ตั้งค่า Communication บน E5CC</h2>
+
+    <figure>
+      <img src="images/e5ec-comm-settings-menu.jpg" alt="E5CC Communications Setting Level menu">
+      <figcaption>Communications Setting Level — เมนูเรียงตามลำดับ: <code>PSEL</code> → <code>U-No</code> → <code>BPS</code> → <code>LEN</code> → <code>SbtL</code> → <code>PrtY</code> → <code>SdWt</code></figcaption>
+    </figure>
+
+    <ol class="steps">
+      <li>
+        <strong>เข้า Communications Setting Level</strong>
+        กด <code>Mode</code> ค้าง 3 วินาที จนถึง Initial Setting → กดอีกครั้ง 1 วินาที → เข้า Communications Level
+      </li>
+      <li>
+        <strong>ตั้งค่าตามนี้</strong>
+        <ul>
+          <li><code>PSEL</code> = <strong>Cwf</strong> หรือ <strong>Mod</strong> (Modbus)</li>
+          <li><code>U-No</code> = <strong>1</strong> (Slave Address)</li>
+          <li><code>bPS</code> = <strong>96</strong> (= 9600 bps)</li>
+          <li><code>LEn</code> = <strong>8</strong> bits</li>
+          <li><code>SbtL</code> = <strong>1</strong> stop bit</li>
+          <li><code>PRtY</code> = <strong>NonE</strong> (Parity = None)</li>
+          <li><code>SdWt</code> = <strong>20</strong> ms (Send Wait Time)</li>
+        </ul>
+      </li>
+      <li>
+        <strong>ดับไฟ → เปิดใหม่</strong>
+        ค่า Communication จะมีผลหลัง Reboot
+      </li>
+    </ol>
+
+    <h2>CP1L → E5CC: อ่านอุณหภูมิ + เซ็ต Set Point</h2>
+
+    <p>Logic เดียวกับ <a href="omron-04-modbus.html">O04 — Inverter</a> เปลี่ยนแค่ Slave Address + Register:</p>
+
+    <pre><code>; Read PV (2000H)
+LD    P_On
+MOV   #0001  D32300   ; Slave 1 (E5CC)
+MOV   #0003  D32301   ; FC 03 = Read
+MOV   #0004  D32302   ; bytes
+MOV   #2000  D32303   ; Register = 2000H (PV)
+MOV   #0001  D32304   ; 1 register
+
+LD    P_1s
+OUT   A640.00         ; Trigger
+
+; ค่าที่อ่านได้จะอยู่ใน D32355 (response area)
+; แปลงจาก × 10 → จริง
+LD    A640.01         ; Done
+DIV   D32355  #10  D200  ; D200 = อุณหภูมิจริง (°C)
+
+
+; Write Set Point (2103H) = 80.0°C
+LD    W2.00           ; Trigger จาก HMI
+MOV   #0001  D32300
+MOV   #0006  D32301   ; FC 06 = Write
+MOV   #0004  D32302
+MOV   #2103  D32303   ; Reg 2103H (SP)
+MOV   #800   D32304   ; 80.0 × 10
+OUT   A640.00</code></pre>
+
+    <h2>Heater Burnout (HB) Detection</h2>
+
+    <p>E5CC มีฟังก์ชัน <strong>HB</strong> — ตรวจจับว่าฮีตเตอร์ขาด/ไหม้ โดยอ่านกระแสที่ไหลผ่านฮีตเตอร์ตอน Output ON:</p>
+
+    <ol class="steps">
+      <li>
+        <strong>ติดตั้ง CT (Current Transformer)</strong>
+        E5CC-Q<strong>Q2A</strong>SM มี CT input — สอด CT คล้องรอบสายเฟส L1 ของฮีตเตอร์ → เสียบเข้า CT input ของ E5CC
+      </li>
+      <li>
+        <strong>ตั้งค่า HB</strong>
+        <code>hb1</code> = ค่ากระแสต่ำสุดที่ยอมรับได้ (เช่น 5.0A) — ถ้ากระแสต่ำกว่านี้ตอน Heater ON → HB alarm
+      </li>
+      <li>
+        <strong>Alarm Output</strong>
+        เซ็ต Aux Output 2 เป็น HB alarm → ส่งสัญญาณไป PLC เมื่อตรวจพบ
+      </li>
+    </ol>
+
+    <div class="callout tip">
+      <strong>ทำไม HB สำคัญ?</strong>
+      ถ้าฮีตเตอร์ขาด PV จะลดลง → PID จะคิดว่าระบบยังไม่ร้อน → เร่ง Output ไป 100% ตลอดเวลา → กินไฟฟรี
+      และอาจทำให้ส่วนอื่นเสียหาย — HB จับได้ทันที
+    </div>
+
+    <h2>เรื่องนอกเหนือ — เทคนิคควบคุมอุณหภูมิ</h2>
+
+    <ul>
+      <li><strong>เลือก Output ระหว่าง Relay vs SSR</strong> — Relay ทนสูงกว่า แต่อายุน้อย (100k ครั้ง), SSR ทำ on/off ความถี่สูงได้ → ใช้กับ Control Period สั้น (~2 วินาที) ทำให้ PID เนียน</li>
+      <li><strong>Sensor — TC vs RTD</strong> — TC ราคาถูก, ทนอุณหภูมิสูง (1000°C+), แต่ความแม่นยำน้อยกว่า · RTD (Pt100) แม่นกว่ามาก แต่ใช้ได้ถึง 600°C เท่านั้น</li>
+      <li><strong>Heating + Cooling Control</strong> — E5CC รุ่นที่มี 2 Output คุมทั้ง Heating + Cooling พร้อมกันได้ (เช่น Mold Cooling System)</li>
+    </ul>
+
+    <h2>เอกสารอ้างอิงสำหรับบทนี้</h2>
+    <ul class="doc-list">
+      <li><a href="PLC%20project/11_Omron_Inverter_Modbus_E5CC/docs/เทคนิคการควบคุมอุณหภูมิ%20E5CC.pdf">เทคนิคการควบคุมอุณหภูมิ E5CC</a> <span class="meta">PDF · ภาษาไทย</span></li>
+      <li><a href="PLC%20project/11_Omron_Inverter_Modbus_E5CC/docs/Control_Inverter_and_Temperature_controller.pdf">Control Inverter + Temperature Controller</a> <span class="meta">PDF · ภาษาไทย</span></li>
+      <li><a href="PLC%20project/03_Lab_10_FB_TempControl/docs/Lab10_TH.pdf">ใบงาน FBD + Temperature Controller (E5EC)</a> <span class="meta">PDF · ภาษาไทย</span></li>
+    </ul>
+
+    <div class="pager">
+      <a href="omron-04-modbus.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">O04 — Modbus + Inverter</div>
+      </a>
+      <a href="omron-06-scada.html" class="next">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">O06 — SCADA (CX-Supervisor)</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  PLC Automation Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){var lb=document.getElementById('lightbox');if(!lb)return;var img=lb.querySelector('img');
+document.querySelectorAll('.content img').forEach(function(im){im.style.cursor='zoom-in';im.addEventListener('click',function(){img.src=im.src;lb.classList.add('open');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.classList.remove('open');});})();
+</script>
+<script src="js/progress.js" defer></script>
+<script src="js/activities/pid-tuner.js" defer></script>
+<script src="js/activities/e5cc-walker.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W10 — Data Project ปลายทาง | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html" class="active"><span class="num">W10</span> Data Project ปลายทาง</a>
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">สัปดาห์ที่ 10 · Data Project · End-to-end</span>
+    <h1>Data Project ปลายทาง</h1>
+    <p class="lede">
+      ปิดเฟส Data ด้วยการ <em>"เล่าเรื่องด้วยข้อมูล"</em> · เก็บข้อมูลจริง → ทำความสะอาด →
+      วิเคราะห์ → ทำกราฟ → เขียน insight 1 หน้า · จบขั้นนี้ = ทำ data report ได้เอง
+    </p>
+
+    <h2>เป้าหมายสัปดาห์นี้</h2>
+    <ul>
+      <li>เก็บข้อมูล <strong>ของจริง</strong> แบบที่ <em>ถูกต้องตามจริยธรรม</em></li>
+      <li>ทำ <strong>"data cleaning"</strong> — handle missing, duplicate, wrong format</li>
+      <li>ตอบ <strong>3 คำถามด้วยข้อมูล</strong> + ทำกราฟแต่ละคำถาม</li>
+      <li><strong>ตรวจ AI</strong> — ไม่เชื่อ output ก่อนยืนยันเอง</li>
+      <li>เขียน <strong>insight report</strong> 1 หน้า A4 + ระบุข้อจำกัด</li>
+    </ul>
+
+    <div class="callout warn" style="border-left-width:5px">
+      <strong>🔒 W10 มี 2 อย่างที่ AI ทำให้คุณไม่ได้</strong>
+      <ol style="margin:8px 0 0">
+        <li><strong>ตัดสินใจเรื่อง privacy</strong> — AI ไม่รู้ว่าเพื่อนคุณยินยอมให้ใช้ข้อมูลมั้ย ·
+          ไม่รู้ว่า GPA / สุขภาพ / เงิน ของใคร · ไม่รู้ว่า raw data จะไป public หรือเปล่า</li>
+        <li><strong>ตรวจว่า analysis ถูก</strong> — AI <em>hallucinate ตัวเลขได้</em> · เสนอ correlation ที่ไม่มี ·
+          drop row ที่ไม่ควร drop · สรุปเกินที่ data รองรับ · <strong>คุณคือคนที่ลงชื่อใน report</strong></li>
+      </ol>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🔐 Privacy &amp; Security — ก่อนเก็บข้อมูลคนอื่น</h2>
+    <p>
+      ถ้าโจทย์ของคุณคือ <em>"ขอให้เพื่อน 30 คนกรอก Google Form"</em> — คุณกำลังเป็น
+      <strong>"data controller"</strong> ตามกฎหมาย <strong>PDPA</strong>
+      (พ.ร.บ. คุ้มครองข้อมูลส่วนบุคคล 2562) · ทำผิดมีโทษได้ · ทำถูกใช้งานได้ทั้งชีวิต
+    </p>
+
+    <h3>✅ 6-Question Consent Checklist</h3>
+    <p>ก่อนส่ง form ให้เพื่อน ตอบ checklist นี้ทั้ง 6 ข้อให้ครบ:</p>
+
+    <table>
+      <thead><tr><th>คำถาม</th><th>ต้องตอบยังไง</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>1. คนตอบรู้มั้ย ว่าฉันเอาข้อมูลไปทำอะไร?</strong></td>
+          <td>ใส่ใน description ของ Form: "ใช้สำหรับวิชา CP เท่านั้น · จะรายงานเฉพาะค่าเฉลี่ย ไม่ระบุชื่อ"</td>
+        </tr>
+        <tr>
+          <td><strong>2. ให้ตัวเลือก "ไม่ตอบ" มั้ย?</strong></td>
+          <td>Form ทุกคำถามต้อง <em>ไม่บังคับ</em> (uncheck "Required") ยกเว้น consent</td>
+        </tr>
+        <tr>
+          <td><strong>3. ขอ consent ชัด ๆ มั้ย?</strong></td>
+          <td>คำถามแรก: "ฉันยินยอมให้ใช้ข้อมูลนี้สำหรับงานในคอร์ส" ☐ ยินยอม / ☐ ไม่ยินยอม</td>
+        </tr>
+        <tr>
+          <td><strong>4. ขอข้อมูลที่ <em>ระบุตัวตน</em> มั้ย?</strong></td>
+          <td>ลบ Email collection ใน Form settings · ห้ามถามชื่อจริง · student_id ถ้าไม่จำเป็น ห้ามถาม</td>
+        </tr>
+        <tr>
+          <td><strong>5. ใครเห็น raw data ได้บ้าง?</strong></td>
+          <td>แค่คุณ + อาจารย์ · <strong>ห้าม commit raw CSV ขึ้น GitHub public</strong></td>
+        </tr>
+        <tr>
+          <td><strong>6. หลังคอร์สจบ ลบมั้ย?</strong></td>
+          <td>ใส่ใน Form: "ข้อมูลจะถูกลบหลังเทอมจบ" · แล้วลบจริง ๆ</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>🏷 ระดับความเสี่ยงของข้อมูล (Sensitivity Tiers)</h3>
+
+    <table>
+      <thead><tr><th>Tier</th><th>ประเภท</th><th>ตัวอย่าง</th><th>วิธีจัดการ</th></tr></thead>
+      <tbody>
+        <tr style="background:rgba(52,211,153,0.08)">
+          <td><strong>🟢 Tier 1: Safe</strong></td>
+          <td>Public / Aggregate</td>
+          <td>PM2.5, สภาพอากาศ, public dataset, lab equipment usage</td>
+          <td>ใช้ได้เลย · public ได้ทุกระดับ</td>
+        </tr>
+        <tr style="background:rgba(255,212,59,0.08)">
+          <td><strong>🟡 Tier 2: Care</strong></td>
+          <td>Personal Habits</td>
+          <td>นอน, อาหาร, AI usage, time tracking ของ user แต่ละคน</td>
+          <td>ต้อง consent + anonymize · raw data ห้าม public</td>
+        </tr>
+        <tr style="background:rgba(239,68,68,0.10)">
+          <td><strong>🔴 Tier 3: Sensitive</strong></td>
+          <td>GPA / Health / Finance / Opinions</td>
+          <td>คะแนน, สุขภาพ, รายได้, รายจ่าย, ความคิดเห็นแอบ</td>
+          <td>หลีกเลี่ยงถ้าทำได้ · ถ้าจำเป็น → consent + ลบ identifier + รายงานเฉพาะ aggregate</td>
+        </tr>
+        <tr style="background:rgba(239,68,68,0.18)">
+          <td><strong>⛔ ห้ามทำ</strong></td>
+          <td>ข้อมูลที่ระบุ + เปิดเผยได้</td>
+          <td>คะแนนของเพื่อนที่ระบุชื่อ · รูปคนอื่นที่ไม่ขอ · social media posts ที่ไม่ใช่ของตัวเอง</td>
+          <td>ไม่ทำ · ใช้ public alternative</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>🛡 Anonymization — ลบ identifier ก่อน analyze</h3>
+
+    <div class="python-runner" data-packages="pandas">import pandas as pd
+import hashlib
+
+# raw data from Google Forms — มี email + name (PII)
+raw = pd.DataFrame([
+    {"email": "ploy@ubu.ac.th", "name": "Ploy K.", "sleep_hr": 7, "gpa": 3.45},
+    {"email": "bank@ubu.ac.th", "name": "Bank S.", "sleep_hr": 5, "gpa": 3.20},
+    {"email": "mint@ubu.ac.th", "name": "Mint P.", "sleep_hr": 8, "gpa": 3.78},
+    {"email": "tum@ubu.ac.th",  "name": "Tum L.",  "sleep_hr": 6, "gpa": 2.90},
+])
+
+print("=== RAW (มี PII) — ห้าม commit ขึ้น GitHub ===")
+print(raw)
+
+# Anonymize — แทน email + name ด้วย hash
+def hash_id(s):
+    return "U" + hashlib.sha256(s.encode()).hexdigest()[:6]
+
+anon = raw.copy()
+anon["user_id"] = anon["email"].apply(hash_id)
+anon = anon.drop(columns=["email", "name"])
+
+# Re-order
+anon = anon[["user_id", "sleep_hr", "gpa"]]
+
+print("\n=== ANONYMIZED — commit ตัวนี้ได้ ===")
+print(anon)
+
+# เซฟทั้ง 2 — raw ใน /private (gitignore), anon ใน /data
+# (ใน Cursor: ใส่ "private/" ใน .gitignore)
+raw.to_csv("private_raw.csv", index=False, encoding="utf-8")
+anon.to_csv("data_anon.csv", index=False, encoding="utf-8")
+print("\n✅ raw → private/ (gitignored) · anon → data/ (commit ได้)")</div>
+
+    <h3>📁 Folder structure ที่ปลอดภัย</h3>
+    <pre><code>my-data-project/
+├── .gitignore                    ← สำคัญที่สุด
+├── private/                      ← ใน .gitignore
+│   └── raw_responses.csv         ← มี email + name
+├── data/                         ← commit ได้
+│   ├── responses_anon.csv        ← anonymized
+│   └── responses_clean.csv
+├── notebook.ipynb
+├── README.md
+└── .env                          ← ใน .gitignore (ถ้ามี API key)
+</code></pre>
+
+    <p><strong><code>.gitignore</code></strong> ต้องมี:</p>
+    <pre><code>private/
+*.raw.csv
+.env
+.env.local</code></pre>
+
+    <div class="callout warn">
+      <strong>⚠️ ครั้งหนึ่งใน git history = ตลอดกาล</strong>
+      ถ้า commit raw CSV ครั้งเดียวแล้วลบทีหลัง — ข้อมูลยังอยู่ใน git history · ต้อง
+      <code>git filter-branch</code> หรือ <code>BFG Repo-Cleaner</code> ลบจริง ๆ ·
+      <strong>ทางที่ดีที่สุดคือ "ไม่ commit ตั้งแต่แรก"</strong>
+    </div>
+
+    <h2>📋 Project Spec — Mini Data Story</h2>
+    <p>แต่ละนักศึกษาเลือก 1 หัวข้อ · ทำ end-to-end ใน 1 สัปดาห์ · <strong>เลือกตาม Tier</strong></p>
+
+    <h3>หัวข้อที่แนะนำ (จัดตาม Tier ความเสี่ยง)</h3>
+    <table>
+      <thead><tr><th>Tier</th><th>หัวข้อ</th><th>วิธีได้ข้อมูล</th><th>คำถามตัวอย่าง</th></tr></thead>
+      <tbody>
+        <tr style="background:rgba(52,211,153,0.08)">
+          <td>🟢 1</td>
+          <td>มลพิษ PM2.5 / อากาศ</td>
+          <td>IQAir API หรือ <code>aqicn.org</code></td>
+          <td>วันไหน/ช่วงไหนค่าสูงสุด? เปลี่ยนตามฤดูยังไง?</td>
+        </tr>
+        <tr style="background:rgba(52,211,153,0.08)">
+          <td>🟢 1</td>
+          <td>การใช้ห้อง lab / เครื่องมือ</td>
+          <td>booking log ของห้องภาควิชา (anonymous)</td>
+          <td>เครื่องไหนใช้บ่อย? วันไหน peak?</td>
+        </tr>
+        <tr style="background:rgba(52,211,153,0.08)">
+          <td>🟢 1</td>
+          <td>การเดินทาง / TomTom</td>
+          <td>data.go.th / TomTom Traffic API</td>
+          <td>เวลาไหนช้าที่สุด?</td>
+        </tr>
+        <tr style="background:rgba(52,211,153,0.08)">
+          <td>🟢 1</td>
+          <td>Public dataset</td>
+          <td><a href="https://kaggle.com/datasets" target="_blank">Kaggle</a> · <a href="https://data.go.th" target="_blank">data.go.th</a></td>
+          <td>วิเคราะห์ trend</td>
+        </tr>
+        <tr style="background:rgba(255,212,59,0.10)">
+          <td>🟡 2</td>
+          <td>นิสัยการนอน / กิจวัตร</td>
+          <td>Form 30+ คน · consent + anon</td>
+          <td>กิจกรรมไหนกินเวลามากที่สุด?</td>
+        </tr>
+        <tr style="background:rgba(255,212,59,0.10)">
+          <td>🟡 2</td>
+          <td>การใช้ AI ของนักศึกษา</td>
+          <td>Form 30+ คน · consent + anon</td>
+          <td>ใช้ AI กับงานไหนบ่อยที่สุด?</td>
+        </tr>
+        <tr style="background:rgba(255,212,59,0.10)">
+          <td>🟡 2</td>
+          <td>ค่าใช้จ่ายของตัวเอง (1 คน)</td>
+          <td>บันทึกของตัวเอง 30 วัน — ไม่ขอจากเพื่อน</td>
+          <td>หมวดไหนใช้เยอะ?</td>
+        </tr>
+        <tr style="background:rgba(239,68,68,0.10)">
+          <td>🔴 3</td>
+          <td>GPA / ผลคะแนน</td>
+          <td><strong>หลีกเลี่ยง</strong> — ถ้าจำเป็น ใช้ของตัวเองเทียบกับ public average เท่านั้น</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับ — เริ่ม Tier 1 ก่อน</strong>
+      90% ของ data project นักศึกษาปี 1 ไม่ต้องเก็บ personal data · public dataset
+      เพียงพอแล้วสำหรับฝึก pandas/groupby/plot
+    </div>
+
+    <div class="callout info">
+      <strong>หลักคิด — ข้อมูลเล็กก็เล่าเรื่องได้</strong>
+      30-50 records ก็เริ่มเห็น pattern แล้ว · อย่าตั้งเป้าหา big data — focus ที่ <em>"คำถาม"</em>
+    </div>
+
+    <h2>🔄 Pipeline 5 ขั้น</h2>
+
+    <div class="mermaid">flowchart LR
+    collect[/"1. Collect<br/><i>Forms / API / CSV</i>"/]
+    clean["2. Clean<br/><i>fix missing/wrong</i>"]
+    analyze["3. Analyze<br/><i>groupby · calc · stats</i>"]
+    viz[("4. Visualize<br/><i>4-5 กราฟ</i>")]
+    story(["5. Tell Story<br/><i>insight 1 หน้า</i>"])
+
+    collect --> clean --> analyze --> viz --> story
+
+    classDef io fill:#0d3f3a,stroke:#2dd4bf,color:#fff
+    classDef wrangle fill:#5c2618,stroke:#ffd43b,color:#fff
+    classDef compute fill:#3b2962,stroke:#8b5cf6,color:#fff
+    classDef plot fill:#1e3a5f,stroke:#3776ab,color:#fff
+    classDef final fill:#064e3b,stroke:#34d399,stroke-width:2px,color:#fff
+    class collect io
+    class clean wrangle
+    class analyze compute
+    class viz plot
+    class story final</div>
+
+    <p style="text-align:center;color:var(--text-muted);font-size:13px">
+      ทุกขั้นเชื่อมกัน — ถ้าขั้นใดทำผิด ผลลัพธ์ขั้นถัด ๆ ไปจะ <em>"แตกตาม"</em>
+    </p>
+
+    <h2>1️⃣ Collect — เก็บข้อมูล</h2>
+
+    <h3>วิธี A: Google Forms</h3>
+    <ol>
+      <li>สร้าง Form ที่ <code>forms.google.com</code></li>
+      <li>ออกแบบคำถาม <em>"ที่ตอบง่าย / ตอบเหมือนกันได้"</em> — multiple choice ดีกว่า open-ended</li>
+      <li>กระจายให้เพื่อน → รอ 30+ responses</li>
+      <li>Form → <em>Responses</em> → <em>Download as CSV</em></li>
+    </ol>
+
+    <h3>วิธี B: Public dataset</h3>
+    <ul>
+      <li><a href="https://data.go.th" target="_blank">data.go.th</a> — ข้อมูลภาครัฐไทย</li>
+      <li><a href="https://kaggle.com/datasets" target="_blank">Kaggle Datasets</a> — หลากหลาย</li>
+      <li><a href="https://www.bot.or.th/th/statistics" target="_blank">Bank of Thailand</a> — เศรษฐกิจ</li>
+    </ul>
+
+    <h3>วิธี C: API call (preview ของ W12)</h3>
+    <pre><code class="language-python">import requests
+import pandas as pd
+
+# IQAir example (PM2.5)
+url = "https://api.airvisual.com/v2/city?city=Ubon Ratchathani&state=Ubon Ratchathani&country=Thailand&key=YOUR_KEY"
+r = requests.get(url)
+data = r.json()</code></pre>
+
+    <h2>2️⃣ Clean — ทำความสะอาด</h2>
+    <p>ข้อมูลจริง <em>"สกปรกเสมอ"</em> — missing, typo, duplicate · ต้องจัดการก่อน <strong>แต่ระวัง AI</strong> ที่ลบของไม่ควรลบ</p>
+
+    <div class="python-runner" data-packages="pandas">import pandas as pd
+
+# Sample dirty data — เลียนแบบ Google Form responses
+data = {
+    "id": ["U1", "U2", "U3", "U4", "U5", "U6", "U7", "U7", "U8"],   # U7 ซ้ำ
+    "sleep_hr": ["7", "5", "8", "  6 ", "abc", None, "7.5", "7.5", "9"],  # type มั่ว
+    "gpa": [3.45, 3.20, 3.78, 2.90, 3.10, 3.55, None, None, 3.80],   # null
+    "major": ["MAE", "ee", " MAE ", "CHE", "MAE", "Mae", "EE", "EE", "MAE"],  # case/space
+}
+df = pd.DataFrame(data)
+print("=== ก่อน clean ===")
+print(df)
+print(f"shape: {df.shape}")
+
+# Step 1: duplicate
+df = df.drop_duplicates(subset=["id"])
+print(f"\nหลัง drop_duplicates: {df.shape}")
+
+# Step 2: type — แปลง sleep_hr เป็นเลข (typo "abc" → NaN)
+df["sleep_hr"] = pd.to_numeric(df["sleep_hr"], errors="coerce")
+
+# Step 3: clean string (major) — strip + upper
+df["major"] = df["major"].str.strip().str.upper()
+
+# Step 4: missing values — handle ทีละ column
+df["sleep_hr"] = df["sleep_hr"].fillna(df["sleep_hr"].median())  # ใส่ median
+# gpa: เก็บ null ไว้ก่อน (ดูใน analyze)
+
+print("\n=== หลัง clean ===")
+print(df)
+
+# Step 5: add derived column
+df["sleep_category"] = pd.cut(
+    df["sleep_hr"], bins=[0, 6, 8, 24], labels=["น้อย", "พอดี", "เยอะ"]
+)
+print("\n=== พร้อม sleep_category ===")
+print(df[["id", "sleep_hr", "sleep_category"]])</div>
+
+    <div class="callout warn" style="border-left-width:5px">
+      <strong>⚠️ AI ชอบใช้ <code>df.dropna()</code> ทันที — ระวัง!</strong>
+      <code>dropna()</code> <em>"ไม่มี argument"</em> = ลบทุกแถวที่มี null แม้แต่ column เดียว ·
+      ถ้าเรา gpa null 30% และ sleep_hr null 10% — อาจ <strong>ลบไป 40%</strong> ของข้อมูล ·
+      ใช้ <code>subset=["col1"]</code> เสมอ — ระบุชัดว่าจะลบเมื่อ column ไหนเป็น null
+    </div>
+
+    <div class="callout tip">
+      <strong>หลักการ data cleaning</strong>
+      — เก็บ <em>"raw"</em> file ไว้เสมอ · clean ลงเป็นไฟล์ใหม่ · ใน notebook บันทึกเหตุผลว่า <em>"ทำไมลบ row นี้"</em>
+    </div>
+
+    <h2>3️⃣ Analyze — ตอบคำถาม</h2>
+
+    <div class="python-runner" data-packages="pandas">import pandas as pd
+import numpy as np
+
+# ใช้ข้อมูลจริงจาก step Clean
+np.random.seed(42)
+df = pd.DataFrame({
+    "id": [f"U{i}" for i in range(40)],
+    "sleep_hr": np.random.normal(7, 1.5, 40).round(1),
+    "gpa": np.random.normal(3.2, 0.4, 40).round(2),
+    "major": np.random.choice(["MAE", "EE", "ChE"], 40),
+})
+df["sleep_category"] = pd.cut(df["sleep_hr"], bins=[0, 6, 8, 24], labels=["น้อย", "พอดี", "เยอะ"])
+
+# คำถาม 1: GPA เฉลี่ยแตกต่างตามการนอนมั้ย?
+print("--- Q1: GPA ตามการนอน ---")
+print(df.groupby("sleep_category", observed=True)["gpa"].agg(["mean", "std", "count"]).round(2))
+
+# คำถาม 2: นักศึกษาแต่ละสาขามีกี่คน?
+print("\n--- Q2: จำนวนต่อสาขา ---")
+print(df["major"].value_counts())
+
+# คำถาม 3: GPA เฉลี่ยของแต่ละสาขา
+print("\n--- Q3: GPA ต่อสาขา ---")
+print(df.groupby("major")["gpa"].mean().round(2).sort_values(ascending=False))</div>
+
+    <h2>4️⃣ Visualize — 1 คำถาม = 1 กราฟ</h2>
+
+    <pre><code class="language-python">import matplotlib.pyplot as plt
+
+fig, axes = plt.subplots(1, 3, figsize=(15, 4))
+
+# Q1
+gpa_by_sleep["mean"].plot(kind="bar", ax=axes[0], color="#3776ab")
+axes[0].set_title("GPA เฉลี่ยตามการนอน")
+axes[0].set_ylabel("GPA")
+
+# Q2
+spend_by_cat.plot(kind="barh", ax=axes[1], color="#ffd43b")
+axes[1].set_title("ค่าใช้จ่ายแต่ละหมวด")
+
+# Q3
+pm_by_day.plot(kind="line", ax=axes[2], marker="o", color="#ec4899")
+axes[2].set_title("PM2.5 ตามวันในสัปดาห์")
+
+plt.tight_layout()
+plt.savefig("report.png", dpi=150)
+plt.show()</code></pre>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🤖 ตรวจ AI ก่อนเชื่อ — Data Verification</h2>
+    <p>
+      AI <em>"พูดมั่นใจ"</em> ทั้งที่ผิด · ในงาน data — บางทีต่างกัน <strong>1 บรรทัด</strong> = ผิดทั้ง report ·
+      สัปดาห์นี้ฝึก <em>"distrust + verify"</em>
+    </p>
+
+    <h3>🚨 5 รูปแบบ Hallucination ของ AI ใน Data Work</h3>
+
+    <table>
+      <thead><tr><th>รูปแบบ</th><th>ตัวอย่าง</th><th>วิธีจับ</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>1. Made-up numbers</strong></td>
+          <td>"<em>p-value = 0.043, statistically significant</em>" — ไม่เคยรัน scipy เลย</td>
+          <td>ขอ code ที่คำนวณ + รันด้วยตัวเอง · ห้ามรับตัวเลขที่ AI พิมพ์ตรง ๆ</td>
+        </tr>
+        <tr>
+          <td><strong>2. Wrong column name</strong></td>
+          <td><code>df.groupby("Year")</code> ทั้งที่จริงคือ "year" (lowercase)</td>
+          <td>รัน — ถ้า KeyError = พังตรงไหน · ถ้าเงียบ ๆ = ระวังกว่า</td>
+        </tr>
+        <tr>
+          <td><strong>3. dropna ที่ลบมากเกิน</strong></td>
+          <td><code>df.dropna()</code> ลบ 40% โดยไม่บอก · n เหลือ 18 จาก 30</td>
+          <td>เช็ค <code>len(df)</code> ก่อน/หลัง · ทุก cleaning step</td>
+        </tr>
+        <tr>
+          <td><strong>4. Off-by-one ใน aggregation</strong></td>
+          <td><code>bins=[0, 6, 8, 24]</code> — เวลา 6 ชม. ตกหมวดไหน? · บางครั้ง AI เขียน <code>right=False</code> ลืม</td>
+          <td>รัน <code>value_counts()</code> ของ category ใหม่ — รวมแล้วเท่า total เดิมมั้ย?</td>
+        </tr>
+        <tr>
+          <td><strong>5. สรุปเกินที่ data รองรับ</strong></td>
+          <td>"<em>นอนน้อยทำให้ GPA ลดลง</em>" จาก n=30 · เป็น correlation ไม่ใช่ cause</td>
+          <td>ดูหัวข้อ "Correlation ≠ Causation" ด้านล่าง</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>📐 Pattern 1: Data Validation — ใส่ assert ทุกขั้น</h3>
+    <p>ก่อน analyze — เช็คก่อนว่า data ที่เรามี <em>"เป็นไปตามที่คิด"</em></p>
+
+    <div class="python-runner" data-packages="pandas">import pandas as pd
+import numpy as np
+
+np.random.seed(0)
+df = pd.DataFrame({
+    "id": [f"U{i}" for i in range(40)],
+    "sleep_hr": np.random.normal(7, 1.5, 40).round(1),
+    "gpa": np.random.normal(3.2, 0.4, 40).round(2),
+    "major": np.random.choice(["MAE", "EE", "ChE"], 40),
+    "age": np.random.randint(18, 25, 40),
+})
+
+# === Validation checks — รันก่อน analyze ===
+
+# 1. Row count
+assert len(df) == 40, f"คาดว่ามี 40 rows แต่ได้ {len(df)}"
+print(f"✅ row count: {len(df)}")
+
+# 2. Required columns
+required = ["id", "sleep_hr", "gpa", "major"]
+missing = [c for c in required if c not in df.columns]
+assert not missing, f"ขาด columns: {missing}"
+print(f"✅ columns ครบ: {required}")
+
+# 3. Range checks
+assert df["sleep_hr"].between(0, 24).all(), "sleep_hr ต้อง 0-24"
+assert df["gpa"].between(0, 4).all(), "gpa ต้อง 0-4"
+assert df["age"].between(15, 80).all(), "age ผิดธรรมชาติ"
+print("✅ range OK")
+
+# 4. No critical nulls
+critical = ["id", "major"]
+for col in critical:
+    assert df[col].notna().all(), f"{col} มี null"
+print("✅ no critical nulls")
+
+# 5. Unique IDs
+assert df["id"].nunique() == len(df), "ID ซ้ำ"
+print("✅ ID unique")
+
+# 6. Expected categories
+valid_majors = {"MAE", "EE", "ChE", "IE", "ME"}
+unexpected = set(df["major"]) - valid_majors
+assert not unexpected, f"พบ major ที่ไม่คาด: {unexpected}"
+print(f"✅ majors ใน whitelist: {set(df['major'])}")
+
+print("\n🎉 ผ่าน validation ทุกข้อ — พร้อม analyze")
+print(df.describe().round(2))</div>
+
+    <div class="callout tip">
+      <strong>ทำไม <code>assert</code> สำคัญ — fail fast</strong>
+      ถ้า data ผิด · ให้ <em>"พังตรงนี้"</em> · ไม่ใช่ "ผ่านไปแล้วได้ report ผิด" · ดีกว่ารู้ทีหลังตอน demo
+    </div>
+
+    <h3>🔍 Pattern 2: Manual Cross-Check — เช็คด้วยมือ 3 rows</h3>
+    <p>หลัง groupby/aggregate ทุกครั้ง · เลือก <em>3 rows สุ่ม</em> · คำนวณด้วยมือ · เทียบกับ AI</p>
+
+    <div class="python-runner" data-packages="pandas">import pandas as pd
+
+# Sample
+df = pd.DataFrame({
+    "name": ["Ploy", "Bank", "Mint", "Tum", "Aof"],
+    "scores": [[85, 90, 78], [60, 70, 55], [92, 88, 95], [50, 60, 45], [78, 82, 70]],
+})
+
+# AI's "เฉลี่ยของแต่ละคน":
+df["mean"] = df["scores"].apply(lambda s: sum(s) / len(s))
+
+print("--- AI's output ---")
+print(df)
+
+# Manual cross-check — Ploy ควรเฉลี่ย (85+90+78)/3 = 84.33
+print("\n--- Manual check ---")
+print(f"Ploy: (85+90+78)/3 = {(85+90+78)/3:.2f}  (AI: {df.loc[0, 'mean']:.2f})")
+print(f"Bank: (60+70+55)/3 = {(60+70+55)/3:.2f}  (AI: {df.loc[1, 'mean']:.2f})")
+print(f"Mint: (92+88+95)/3 = {(92+88+95)/3:.2f}  (AI: {df.loc[2, 'mean']:.2f})")
+
+# ถ้าทั้ง 3 ตรง = น่าจะถูกทั้งหมด
+# ถ้าผิด = bug แน่ ๆ — ต้องหาให้เจอ</div>
+
+    <h3>⚠️ Pattern 3: Correlation ≠ Causation</h3>
+
+    <div class="callout warn" style="border-left-width:5px">
+      <strong>❌ "นักศึกษาที่นอน &lt; 6 ชม. ได้ GPA ต่ำกว่า → นอนน้อยทำให้ GPA ลด"</strong>
+      <br>นี่คือ <em>correlation</em> · ไม่ใช่ <em>causation</em> · อาจเป็นเพราะ:
+      <ul style="margin-top:8px">
+        <li><strong>ทิศทางตรงข้าม:</strong> GPA ต่ำ → เครียด → นอนไม่หลับ (ไม่ใช่นอนน้อยทำ)</li>
+        <li><strong>Confounding variable:</strong> งานพิเศษ → ทั้งนอนน้อย ทั้งไม่มีเวลาเรียน</li>
+        <li><strong>Selection bias:</strong> เฉพาะคนที่ตอบ Form (ปกตินอนเยอะกว่าค่าเฉลี่ย)</li>
+        <li><strong>Small sample:</strong> n=30 — coincidence ได้ง่าย</li>
+      </ul>
+      → ในการเขียน insight: <strong>"คนนอนน้อยมี GPA ต่ำกว่าโดยเฉลี่ย (correlation)"</strong>
+      ไม่ใช่ <strong>"นอนน้อยทำให้ GPA ลด (causation)"</strong>
+    </div>
+
+    <h3>📊 Pattern 4: ดูกราฟก่อน trust ตัวเลข</h3>
+    <p>
+      <strong>Anscombe's Quartet</strong> — 4 datasets ที่ <em>"mean / variance / correlation เหมือนกันทุกตัว"</em>
+      แต่กราฟต่างกันโดยสิ้นเชิง · บางอันมี outlier · บางอันไม่ใช่ linear · <strong>กราฟแสดงสิ่งที่ summary ตัวเลขไม่บอก</strong>
+    </p>
+    <p>หลัง groupby ทุกครั้ง → ทำ <code>plt.scatter</code> หรือ <code>boxplot</code> ดูก่อนเชื่อ mean</p>
+
+    <h3>📏 Pattern 5: ระบุข้อจำกัดใน Report — แม้ AI จะไม่บอก</h3>
+
+    <table>
+      <thead><tr><th>ข้อจำกัด</th><th>ต้องเขียนใน report</th></tr></thead>
+      <tbody>
+        <tr><td><strong>Sample size เล็ก (n &lt; 100)</strong></td><td>"ผลนี้จากตัวอย่าง n=X เท่านั้น · อาจไม่สะท้อนประชากรทั้งหมด"</td></tr>
+        <tr><td><strong>Self-selection bias</strong></td><td>"เฉพาะคนที่ยินดีตอบ Form · อาจ skew"</td></tr>
+        <tr><td><strong>Self-report</strong></td><td>"ข้อมูลจากการรายงานตนเอง · อาจเอียงไปทาง 'น่าจะดูดี'"</td></tr>
+        <tr><td><strong>Time window</strong></td><td>"เก็บช่วง X-Y · อาจไม่สะท้อนช่วงสอบ/ปิดเทอม"</td></tr>
+        <tr><td><strong>Missing demographic mix</strong></td><td>"คนตอบ 90% เป็น MAE · ไม่สะท้อนสาขาอื่น"</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <strong>กฎเหล็ก — "Insight ทุกข้อต้องมาคู่กับข้อจำกัด"</strong>
+      ระดับมืออาชีพ คือ <em>"รายงานสิ่งที่ data บอก + บอกว่าอะไรที่ data ไม่บอก"</em>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>5️⃣ Tell Story — Insight Report</h2>
+
+    <h3>Template — Insight Report</h3>
+    <pre><code># Data Story: [หัวข้อ]
+
+## คำถาม
+1. ...
+2. ...
+3. ...
+
+## ที่มาของข้อมูล
+- จาก: [Google Form / data.go.th / etc.]
+- ขนาด: [กี่ records, period ไหน]
+- ข้อจำกัด: [bias / sample size / coverage]
+
+## ผลที่พบ
+1. **[คำถาม 1]** → [ตัวเลข + กราฟ + ความหมาย 2-3 ประโยค]
+2. ...
+3. ...
+
+## ที่ "ทำให้แปลกใจ"
+[1 ประโยค — สิ่งที่ไม่คาด]
+
+## ข้อจำกัด
+- [bias ที่อาจมี]
+- [confounding variable ที่ไม่ได้คุม]
+
+## ใช้กับใคร / ทำต่อยังไง
+- [ใครได้ประโยชน์จาก insight นี้]
+- [ถ้ามีเวลาอีก จะทำอะไรต่อ]</code></pre>
+
+    <h2>🧪 Workshop — Full Pipeline</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>เลือกหัวข้อ + วิธีเก็บข้อมูล</strong>
+        — ภายในวันแรก
+      </li>
+      <li>
+        <strong>เก็บข้อมูลให้ได้ ≥ 30 records</strong>
+        — ถ้า Form ก็ส่งให้เพื่อน · ถ้า dataset ก็ download
+      </li>
+      <li>
+        <strong>เขียน <em>3 คำถาม</em> ที่อยากตอบ</strong>
+        ลงใน <code>questions.md</code> ก่อนเริ่ม analyze (อย่าให้ data ชี้นำ)
+      </li>
+      <li>
+        <strong>เปิด Jupyter/Colab</strong> ทำ data cleaning · เซฟ <code>clean.csv</code>
+      </li>
+      <li>
+        <strong>ตอบ 3 คำถามด้วย pandas</strong>
+        + วาดกราฟแต่ละคำถาม
+      </li>
+      <li>
+        <strong>เซฟกราฟเป็น <code>report.png</code> หรือ <code>charts/</code>folder</strong>
+      </li>
+      <li>
+        <strong>เขียน Insight Report</strong> ตาม template (1 หน้า A4)
+      </li>
+      <li>
+        <strong>Demo กับเพื่อน 1 คน</strong> · บันทึก feedback
+      </li>
+    </ol>
+
+    <h2>🎯 Rubric — ประเมิน Data Project</h2>
+    <table>
+      <thead><tr><th>เกณฑ์</th><th>คะแนน</th><th>มาตรฐาน</th></tr></thead>
+      <tbody>
+        <tr><td>Data collection</td><td>20</td><td>≥ 30 records จริง · มี source ที่ verify ได้</td></tr>
+        <tr><td>Data cleaning</td><td>15</td><td>handle missing + duplicate + type · log ใน notebook</td></tr>
+        <tr><td>Analysis</td><td>20</td><td>ตอบ 3 คำถามถูก · มี groupby/agg</td></tr>
+        <tr><td>Visualization</td><td>20</td><td>≥ 3 กราฟ · มี title/label · เลือกชนิดถูก</td></tr>
+        <tr><td>Insight</td><td>15</td><td>เห็น pattern · เขียนเป็นภาษาคนได้</td></tr>
+        <tr><td>Limitations</td><td>10</td><td>ระบุ bias / sample / confound</td></tr>
+      </tbody>
+    </table>
+
+    <h2>ข้อผิดที่พบบ่อย</h2>
+
+    <div class="callout warn">
+      <strong>เริ่มจากข้อมูล → หาเรื่องที่จะเล่า</strong>
+      — ตรงข้าม · <em>"เริ่มจากคำถาม"</em> ก่อน · ข้อมูลที่หาเอามาตอบคำถาม
+    </div>
+
+    <div class="callout warn">
+      <strong>เห็น correlation = สรุปว่า cause</strong>
+      — "นักศึกษาที่นอน 8 ชม. GPA สูง" ≠ "นอนเยอะทำให้ GPA สูง" · อาจมี confound (มีเวลาเรียน, ครอบครัว, สุขภาพ)
+    </div>
+
+    <div class="callout warn">
+      <strong>n=5 แล้วสรุป trend</strong>
+      — sample เล็กเกินไป trend ไม่ชัด · ระบุ <em>"ข้อจำกัด"</em> ใน report เสมอ
+    </div>
+
+    <h2>ส่งงานสัปดาห์นี้</h2>
+    <ul>
+      <li>📓 notebook ครบ pipeline + raw.csv + clean.csv</li>
+      <li>🖼️ 3+ กราฟใน folder <code>charts/</code> หรือ <code>report.png</code></li>
+      <li>📄 <strong>insight-report.md</strong> 1 หน้า ตาม template</li>
+      <li>🎤 บันทึก feedback จาก demo กับเพื่อน 1 คน</li>
+    </ul>
+
+    <h3>Reference จาก slide เดิม</h3>
+    <p>ครอบคลุม <a href="references.html#topic-10">Topic 10 — Pandas + Stat</a> ครบ + ขยายเป็น end-to-end project ตาม Mainidea</p>
+
+    <div class="pager">
+      <a href="w09-numpy-plot.html"><div class="label">← สัปดาห์ที่แล้ว</div><div class="title">W09 — NumPy + Matplotlib</div></a>
+      <a href="w11-oop-structure.html" class="next"><div class="label">สัปดาห์ถัดไป →</div><div class="title">W11 — OOP + จัดระเบียบโค้ด</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+<script src="js/diagram-tools/mermaid-editor.js" defer></script>
+<script src="js/code-tools/python-runner.js" defer></script>
+<script src="js/code-tools/predict-quiz.js" defer></script>
+</body>
+</html>

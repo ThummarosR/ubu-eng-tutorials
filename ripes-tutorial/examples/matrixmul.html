@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ตัวอย่าง Matrix Multiply — คู่มือ Ripes</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../images/logo.png" alt="Ripes logo">
+      <div>
+        <div class="title">Ripes Tutorial</div>
+        <div class="subtitle">คู่มือการใช้งานฉบับภาษาไทย</div>
+      </div>
+    </div>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="../index.html">หน้าแรก &amp; ติดตั้ง</a>
+      <h4>แท็บการใช้งาน</h4>
+      <a href="../editor.html">1. แท็บ Editor</a>
+      <a href="../processor.html">2. แท็บ Processor</a>
+      <a href="../memory.html">3. แท็บ Memory</a>
+      <a href="../cache.html">4. แท็บ Cache</a>
+      <a href="../io.html">5. แท็บ I/O</a>
+      <h4>อ้างอิง</h4>
+      <a href="../ecalls.html">System Calls (ecall)</a>
+      <h4>ตัวอย่างประกอบ</h4>
+      <a href="factorial.html">Factorial (Assembly)</a>
+      <a href="leds.html">LEDs (I/O)</a>
+      <a href="matrixmul.html" class="active">Matrix Multiply (C)</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <h1>ตัวอย่าง: Matrix Multiply</h1>
+    <p class="lede">โปรแกรมภาษา C คำนวณการคูณเมทริกซ์ 20×20 — เหมาะสำหรับศึกษาผลกระทบของ <strong>cache</strong> ต่อประสิทธิภาพ และเปรียบเทียบ <strong>pipeline</strong> แบบต่าง ๆ</p>
+
+    <h2>เป้าหมายของบทเรียน</h2>
+    <ul>
+      <li>เห็นการเขียนภาษา C ใน Ripes แบบ <code>-nostdlib</code> ที่ provide startup เอง</li>
+      <li>วัด <strong>CPI</strong> (cycles per instruction) ของ processor model ต่าง ๆ</li>
+      <li>เห็น <strong>cache miss rate</strong> ของ algorithm ที่ access memory แบบ stride</li>
+      <li>เรียนรู้การ profile โปรแกรมจริงในระดับ instruction</li>
+    </ul>
+
+    <h2>วิธีโหลดโปรแกรม</h2>
+    <ol class="steps">
+      <li>ตั้งค่า C compiler ใน <code>Edit → Settings → Editor</code> (ดู <a href="../editor.html">บท Editor</a>)</li>
+      <li>เลือกเมนู <code>File → Load Example → C → Matrix Multiply</code></li>
+      <li>เปลี่ยน Input type เป็น <strong>C</strong></li>
+      <li>กด <strong>Build</strong> (Ctrl+B)</li>
+    </ol>
+
+    <h2>โค้ดทั้งหมด</h2>
+<pre><code>/**
+ * คูณเมทริกซ์ขนาด WxW สองตัว
+ * ใช้ -nostdlib (ไม่พึ่ง C standard library)
+ */
+
+asm("li sp, 0x100000");  // ตั้ง stack pointer ที่ 1 MB
+asm("jal main");         // เรียก main
+asm("mv a1, a0");        // เก็บ return value ใน a1
+asm("li a7, 10");        // เตรียม ecall exit
+asm("ecall");            // หยุด simulator
+
+#define W 20  // ขนาดของเมทริกซ์
+
+void mmul(const int a[W][W], const int b[W][W], int c[W][W]) {
+    for (int row = 0; row &lt; W; row++) {
+        for (int col = 0; col &lt; W; col++) {
+            for (int k = 0; k &lt; W; k++) {
+                c[row][col] += a[row][k] * b[k][col];
+            }
+        }
+    }
+}
+
+int main() {
+    int A[W][W];
+    int B[W][W];
+    int C[W][W];
+    mmul(A, B, C);
+    return 0;
+}</code></pre>
+
+    <h2>วิเคราะห์โครงสร้าง</h2>
+
+    <h3>1) Startup code แบบเขียนเอง</h3>
+    <p>เนื่องจาก compile แบบ <code>-nostdlib</code> โปรแกรมต้องเตรียม environment เอง:</p>
+    <ul>
+      <li><code>li sp, 0x100000</code> — ตั้ง stack pointer ที่ address 1 MB เพื่อให้มี stack ใช้</li>
+      <li><code>jal main</code> — เรียก main เหมือนเป็นการ call function ทั่วไป</li>
+      <li>หลัง main return ค่ามาที่ <code>a0</code> ให้ย้ายไป <code>a1</code> และเรียก ecall 10 เพื่อหยุด</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>ทำไมต้อง <code>-nostdlib</code>?</strong>
+      เพื่อให้ executable เล็กลงและอ่านง่าย เพราะ standard library จะ link โค้ดเสริมเข้ามา (เช่น <code>__libc_start_main</code>, soft-float routines) ที่ไม่จำเป็นสำหรับการเรียน
+    </div>
+
+    <h3>2) Loop access pattern (สำคัญสำหรับ cache!)</h3>
+    <p>การคูณเมทริกซ์มี loop 3 ชั้น:</p>
+<pre><code>for (row = 0; row &lt; W; row++)
+    for (col = 0; col &lt; W; col++)
+        for (k = 0; k &lt; W; k++)
+            c[row][col] += a[row][k] * b[k][col];</code></pre>
+
+    <p>การ access matrix ทั้ง 3 ตัวมี pattern ต่างกัน:</p>
+    <ul>
+      <li><code>a[row][k]</code> — access ตามแถว → <strong>spatial locality สูง</strong> → cache friendly</li>
+      <li><code>b[k][col]</code> — access ตามคอลัมน์ → <strong>stride = W × 4 byte</strong> → cache unfriendly</li>
+      <li><code>c[row][col]</code> — เขียนซ้ำที่เดิม → <strong>temporal locality สูงมาก</strong></li>
+    </ul>
+
+    <p>ลองคิด: ถ้า cache line = 4 word (16 byte) และ <code>W = 20</code> matrix <code>b</code> มี stride = 80 byte ทำให้ทุก access เกินขนาด cache line — เกิด cache miss ทุกครั้ง!</p>
+
+    <h2>การทดลองที่ 1: เปรียบเทียบ Pipeline</h2>
+
+    <h3>ลองที่ 1.1: Single Cycle</h3>
+    <ol class="steps">
+      <li>เลือก <strong>Single Cycle processor</strong></li>
+      <li>กด <strong>Run</strong></li>
+      <li>บันทึก: จำนวน <strong>cycles</strong> และ <strong>instructions retired</strong></li>
+      <li>คำนวณ CPI = cycles / instructions</li>
+    </ol>
+
+    <p>CPI จะใกล้ <code>1.0</code> เพราะ single cycle ทำ 1 instruction ใน 1 cycle เสมอ</p>
+
+    <h3>ลองที่ 1.2: 5-Stage Pipelined</h3>
+    <ol class="steps">
+      <li>เปลี่ยนเป็น <strong>5-Stage Processor</strong> (ตัวสมบูรณ์ที่มี forwarding + hazard detection)</li>
+      <li>กด <strong>Reset</strong> แล้ว <strong>Run</strong></li>
+      <li>บันทึกค่าใหม่</li>
+    </ol>
+
+    <p>CPI จะลดลงต่ำกว่า 1 (น่าจะอยู่ ~1.1-1.3) เพราะ pipeline ทำให้ทำงานคู่ขนานได้ แต่ก็มี stall จาก data hazard และ load-use</p>
+
+    <h3>ลองที่ 1.3: 6-Stage Dual-issue</h3>
+    <p>เปลี่ยนเป็น <strong>6-Stage Dual-issue</strong> แล้วรันใหม่ — CPI ควรลดลงอีก เพราะรัน 2 instruction พร้อมกันได้</p>
+
+    <h2>การทดลองที่ 2: Cache Configuration</h2>
+
+    <p>เปิดแท็บ <strong>Cache</strong> ในระหว่างรัน Matrix Multiply:</p>
+
+    <h3>ลองที่ 2.1: Cache เล็ก</h3>
+    <ol class="steps">
+      <li>เลือก preset <strong>"8-entry 4-word direct mapped"</strong></li>
+      <li>กด Reset แล้ว Run</li>
+      <li>ดู Cache plot → เลือก Numerator = Hits, Denominator = Access count</li>
+      <li>บันทึก hit rate</li>
+    </ol>
+
+    <h3>ลองที่ 2.2: Cache ใหญ่ขึ้น</h3>
+    <ol class="steps">
+      <li>เปลี่ยนเป็น <strong>"32-entry 4-word direct mapped"</strong></li>
+      <li>Reset → Run</li>
+      <li>เปรียบเทียบ hit rate</li>
+    </ol>
+
+    <h3>ลองที่ 2.3: Set-associative</h3>
+    <ol class="steps">
+      <li>เปลี่ยนเป็น <strong>"32-entry 4-word 2-way set associative"</strong></li>
+      <li>Reset → Run</li>
+      <li>เปรียบเทียบ hit rate กับสองครั้งก่อนหน้า</li>
+    </ol>
+
+    <div class="callout tip">
+      <strong>คำถามชวนคิด</strong>
+      <ul style="margin: 6px 0 0;">
+        <li>ทำไม hit rate ไม่เพิ่มขึ้นเท่ากับขนาด cache?</li>
+        <li>ถ้าเปลี่ยน loop ordering จาก <code>row-col-k</code> เป็น <code>row-k-col</code> hit rate จะดีขึ้นไหม? (ลองแก้โค้ดดู!)</li>
+        <li>เพิ่ม <code>W</code> เป็น 32 หรือ 40 hit rate จะเปลี่ยนอย่างไร?</li>
+      </ul>
+    </div>
+
+    <h2>การทดลองที่ 3: Loop Reordering</h2>
+    <p>ลองแก้ไขลำดับ loop ในโค้ดเป็น <code>row → k → col</code>:</p>
+
+<pre><code>void mmul(const int a[W][W], const int b[W][W], int c[W][W]) {
+    for (int row = 0; row &lt; W; row++) {
+        for (int k = 0; k &lt; W; k++) {
+            for (int col = 0; col &lt; W; col++) {
+                c[row][col] += a[row][k] * b[k][col];
+            }
+        }
+    }
+}</code></pre>
+
+    <p>ตอนนี้ <code>b[k][col]</code> ถูก access แบบเรียงตาม column ทำให้ <strong>spatial locality ดีขึ้นมาก</strong> → hit rate ควรกระโดดขึ้น!</p>
+
+    <h2>แบบฝึกหัด</h2>
+    <ol>
+      <li>เพิ่มขนาด <code>W</code> เป็น 50 — สังเกตว่า cycles เพิ่มขึ้นกี่เท่า?</li>
+      <li>เปรียบเทียบ <strong>CPI ของแต่ละ pipeline</strong> รวมตารางส่งอาจารย์</li>
+      <li>สำหรับ Matrix ขนาด W=20, จำนวน multiplication คือ W³ = 8000 ครั้ง — โปรแกรมใช้ instruction กี่ตัวต่อ multiplication?</li>
+      <li>ลอง <strong>blocking</strong>: แบ่ง matrix เป็น sub-block ขนาด 4×4 แล้วคูณทีละ block — hit rate ดีขึ้นแค่ไหน?</li>
+    </ol>
+
+    <div class="pager">
+      <a href="leds.html">
+        <div class="label">← บทก่อนหน้า</div>
+        <div class="title">ตัวอย่าง: LEDs</div>
+      </a>
+      <a class="next" href="../index.html">
+        <div class="label">กลับสู่ →</div>
+        <div class="title">หน้าแรก</div>
+      </a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

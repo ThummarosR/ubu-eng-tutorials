@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>เครื่องมือสร้าง Diagram | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html" class="active"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">เครื่องมือ · Built-in Diagram Tools</span>
+    <h1>เครื่องมือสร้าง Diagram</h1>
+    <p class="lede">
+      Diagram ในยุค AI ไม่ใช่แค่ <em>"วาดให้สวย"</em> — แต่ต้อง <strong>"precise"</strong>
+      เพราะแต่ละ block มีความหมาย และ AI อ่านได้แม่นกว่าคำพูดคลุมเครือ ·
+      4 เครื่องมือที่นี่ช่วยให้คุณสร้าง diagram ที่ <em>"ถูกต้องตาม semantic"</em>
+    </p>
+
+    <h2>🧰 4 เครื่องมือในหน้านี้</h2>
+
+    <div class="tools-grid">
+      <a href="#diagram-picker" class="tool-card">
+        <div class="tool-card-emoji">🧭</div>
+        <div class="tool-card-name">Diagram Type Picker</div>
+        <div class="tool-card-desc">ไม่แน่ใจว่าจะใช้ diagram แบบไหน? ตอบ 1-2 คำถาม → ระบบแนะนำ</div>
+      </a>
+      <a href="#mermaid-editor" class="tool-card">
+        <div class="tool-card-emoji">🎨</div>
+        <div class="tool-card-name">Mermaid Live Editor</div>
+        <div class="tool-card-desc">พิมพ์ Mermaid syntax → เห็น diagram render ทันที · มี template 6 ชนิด · download SVG ได้</div>
+      </a>
+      <a href="#flowchart-validator" class="tool-card">
+        <div class="tool-card-emoji">🔍</div>
+        <div class="tool-card-name">Flowchart Validator</div>
+        <div class="tool-card-desc">ตรวจว่า flowchart ของคุณใช้สัญลักษณ์ถูก semantic มั้ย — Start/End/Decision ครบ?</div>
+      </a>
+      <a href="#cheatsheet" class="tool-card">
+        <div class="tool-card-emoji">📚</div>
+        <div class="tool-card-name">Symbol Cheat-sheet</div>
+        <div class="tool-card-desc">รวมสัญลักษณ์ flowchart 6 แบบ — แต่ละแบบหมายความว่าอะไร ใช้ยังไง</div>
+      </a>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:48px 0">
+
+    <!-- ============================================ -->
+    <!-- TOOL 1: Diagram Type Picker -->
+    <!-- ============================================ -->
+    <h2 id="diagram-picker">🧭 Tool 1 — Diagram Type Picker</h2>
+    <p>
+      Diagram 6 แบบไม่ได้ใช้แทนกัน — แต่ละแบบเก่งกับเรื่องคนละแบบ ·
+      ถ้าใช้ผิด <em>"ดูยังไงก็งงเอง"</em> · เครื่องมือนี้ถามคำถามสั้น ๆ แล้วแนะนำให้
+    </p>
+
+    <div class="diagram-picker"></div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:48px 0">
+
+    <!-- ============================================ -->
+    <!-- TOOL 2: Mermaid Live Editor -->
+    <!-- ============================================ -->
+    <h2 id="mermaid-editor">🎨 Tool 2 — Mermaid Live Editor</h2>
+    <p>
+      Mermaid = ภาษา <em>text</em> ที่กลายเป็นรูป diagram · ข้อดี:
+      <strong>(1)</strong> AI เขียนเก่งมาก · <strong>(2)</strong> เก็บใน Git ได้ ·
+      <strong>(3)</strong> GitHub render อัตโนมัติใน README.md
+    </p>
+
+    <p>
+      เลือก <strong>เทมเพลต</strong> จาก dropdown → แก้ syntax ทางซ้าย → preview ขึ้นทางขวาทันที ·
+      เสร็จแล้วกด <em>Copy</em> หรือ <em>SVG</em> หรือเปิดใน <em>mermaid.live</em> เพื่อแก้ต่อ
+    </p>
+
+    <div class="mermaid-editor" data-template="flowchart"></div>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับใช้ Mermaid ร่วมกับ AI</strong>
+      <ol style="margin-top:8px">
+        <li>ขอ AI ให้สร้าง Mermaid syntax — <em>"ทำ sequence diagram ของ ระบบ X ที่: นักศึกษา click → server check → ส่ง LINE"</em></li>
+        <li>วาง syntax ใน editor นี้ → ดู render</li>
+        <li>แก้ syntax ตรง ๆ ใน editor (ไม่ต้องกลับไปคุย AI สำหรับเปลี่ยนเล็ก ๆ)</li>
+        <li>กด <em>Copy</em> → paste ลง <code>diagrams.md</code> ใน project</li>
+      </ol>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:48px 0">
+
+    <!-- ============================================ -->
+    <!-- TOOL 3: Flowchart Validator -->
+    <!-- ============================================ -->
+    <h2 id="flowchart-validator">🔍 Tool 3 — Flowchart Semantic Validator</h2>
+    <p>
+      Flowchart ที่ <em>"วาดถูก"</em> ≠ Flowchart ที่ <em>"ถูก semantic"</em> ·
+      สัญลักษณ์แต่ละอันมีกฎตายตัว: Start มี out-arrow 1 เส้น · Decision มี out-arrow ≥ 2 ·
+      End ไม่มี out-arrow · เครื่องมือนี้ <em>parse Mermaid</em> แล้วตรวจให้
+    </p>
+
+    <h3>กฎที่ตรวจ</h3>
+    <ul>
+      <li><strong>Start</strong> (<code>([Start])</code>) ต้องมีลูกศรออก <em>1 เส้น</em> · ลูกศรเข้า <em>0</em></li>
+      <li><strong>End</strong> (<code>([End])</code>) ต้องมีลูกศรเข้า <em>≥ 1</em> · ลูกศรออก <em>0</em></li>
+      <li><strong>Decision</strong> (<code>{...}</code>) ต้องมีลูกศรออก <em>≥ 2</em> · ควรมี label (Yes/No)</li>
+      <li><strong>Process</strong> / <strong>I/O</strong> ที่ไม่ใช่ terminal ต้องมีลูกศรออก <em>≥ 1</em></li>
+      <li>ไม่มี <strong>orphan</strong> (node ที่ไม่เชื่อมกับใคร)</li>
+      <li>ไม่มี <strong>unreachable</strong> (node ที่ไม่มีทางไปถึง)</li>
+    </ul>
+
+    <div class="flowchart-validator">flowchart TD
+    A([Start]) --> B[อ่านโจทย์]
+    B --> C{เข้าใจ?}
+    C -->|Yes| D[ทำการบ้าน]
+    C -->|No| E[ถาม TA]
+    E --> B
+    D --> F[/ส่ง Classroom/]
+    F --> G([End])</div>
+
+    <div class="callout info">
+      <strong>วิธีใช้ร่วมกับ Mermaid Editor</strong>
+      <ol style="margin-top:8px">
+        <li>วาด flowchart ใน Mermaid Editor ด้านบน — ดูจน render ออกมาดูสวย</li>
+        <li>copy syntax → วางใน Validator ด้านบน → กด <em>ตรวจ</em></li>
+        <li>ถ้ามี warning/error — กลับไปแก้ใน Editor → validate อีกครั้ง</li>
+        <li>เมื่อ <em>"ไม่พบปัญหา"</em> = flowchart ของคุณ <strong>"ถูกทั้งรูปและ semantic"</strong></li>
+      </ol>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:48px 0">
+
+    <!-- ============================================ -->
+    <!-- TOOL 4: Symbol Cheatsheet -->
+    <!-- ============================================ -->
+    <h2 id="cheatsheet">📚 Tool 4 — Flowchart Symbol Cheat-sheet</h2>
+    <p>สัญลักษณ์ 6 แบบของ flowchart — แต่ละแบบมี <em>"กฎเรื่องลูกศร"</em> ที่ต่างกัน</p>
+
+    <div class="symbol-cheatsheet">
+
+      <div class="sc-card">
+        <div class="sc-card-icon sc-stadium">Start / End</div>
+        <div class="sc-card-name">Stadium</div>
+        <div class="sc-card-thai">จุดเริ่ม / จุดจบ</div>
+        <p class="sc-card-meaning">วงรี — ทุก flowchart ต้องมี <strong>1 Start</strong> และ <strong>≥ 1 End</strong></p>
+        <ul class="sc-card-rules">
+          <li>Start: in=0, out=1</li>
+          <li>End: in≥1, out=0</li>
+          <li>ห้ามมี process ที่ "ลอย" ไม่เชื่อม Start/End</li>
+        </ul>
+        <div class="sc-card-mermaid">A([Start])</div>
+      </div>
+
+      <div class="sc-card">
+        <div class="sc-card-icon sc-rect">Process</div>
+        <div class="sc-card-name">Rectangle</div>
+        <div class="sc-card-thai">การทำงาน 1 ขั้น</div>
+        <p class="sc-card-meaning">สี่เหลี่ยม — "verb + noun" เช่น "คำนวณคะแนน", "บันทึกไฟล์"</p>
+        <ul class="sc-card-rules">
+          <li>in: ≥ 1</li>
+          <li>out: ≥ 1 (ถ้าไม่ใช่ตัวสุดท้าย)</li>
+          <li>ถ้า out = 0 → ใช้ End แทน</li>
+        </ul>
+        <div class="sc-card-mermaid">B[คำนวณคะแนน]</div>
+      </div>
+
+      <div class="sc-card">
+        <div class="sc-card-icon sc-diamond"><span>Yes/No</span></div>
+        <div class="sc-card-name">Diamond</div>
+        <div class="sc-card-thai">การตัดสินใจ</div>
+        <p class="sc-card-meaning">สี่เหลี่ยมข้าวหลามตัด — คำถาม yes/no, แตกออก ≥ 2 ทาง</p>
+        <ul class="sc-card-rules">
+          <li>in: ≥ 1</li>
+          <li>out: ≥ 2 (labeled!)</li>
+          <li>ใช้ |Yes| / |No| บนลูกศร</li>
+        </ul>
+        <div class="sc-card-mermaid">C{ผ่าน?}</div>
+      </div>
+
+      <div class="sc-card">
+        <div class="sc-card-icon sc-parallel">I / O</div>
+        <div class="sc-card-name">Parallelogram</div>
+        <div class="sc-card-thai">รับ/ส่งข้อมูล</div>
+        <p class="sc-card-meaning">สี่เหลี่ยมขนาน — "อ่านไฟล์", "พิมพ์ผล", "เก็บใน DB"</p>
+        <ul class="sc-card-rules">
+          <li>in: ≥ 1</li>
+          <li>out: ≥ 1</li>
+          <li>ใช้เมื่อข้อมูลข้ามขอบเขตระบบ</li>
+        </ul>
+        <div class="sc-card-mermaid">D[/อ่าน CSV/]</div>
+      </div>
+
+      <div class="sc-card">
+        <div class="sc-card-icon sc-arrow">→</div>
+        <div class="sc-card-name">Arrow</div>
+        <div class="sc-card-thai">ลูกศร · ทิศทางการไหล</div>
+        <p class="sc-card-meaning">เชื่อมระหว่างกล่อง — มีทิศทางชัด · ห้ามชนกันโดยไม่มี junction</p>
+        <ul class="sc-card-rules">
+          <li>--&gt; ลูกศรปกติ</li>
+          <li>--&gt;|label| ลูกศรมี label</li>
+          <li>-.-&gt; ลูกศรประ (optional)</li>
+        </ul>
+        <div class="sc-card-mermaid">A --&gt;|Yes| B</div>
+      </div>
+
+      <div class="sc-card">
+        <div class="sc-card-icon sc-circle">C</div>
+        <div class="sc-card-name">Circle</div>
+        <div class="sc-card-thai">จุดเชื่อม (Connector)</div>
+        <p class="sc-card-meaning">วงกลม — ใช้เมื่อ flowchart ยาวจนต้องข้ามหน้า · ใส่ตัวอักษรเหมือนกัน 2 ที่</p>
+        <ul class="sc-card-rules">
+          <li>คู่ — ที่ "ออก" และที่ "เข้า"</li>
+          <li>ตัวอักษรต้องเหมือนกัน (A↔A)</li>
+          <li>ใช้สำหรับ flowchart ใหญ่</li>
+        </ul>
+        <div class="sc-card-mermaid">E((A))</div>
+      </div>
+
+    </div>
+
+    <h2>💡 ใช้ Diagram ร่วมกับ AI — Workflow ที่แนะนำ</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>ใช้ Diagram Picker</strong>
+        — ก่อนเริ่ม brainstorm — ตอบคำถาม → รู้ว่าจะใช้ diagram แบบไหน
+      </li>
+      <li>
+        <strong>วาดมือก่อน (ปากกา + กระดาษ)</strong>
+        — 5-10 นาที · ช่วยจัดความคิด · อย่ารีบเปิด tool
+      </li>
+      <li>
+        <strong>ใช้ Mermaid Editor</strong>
+        — เปลี่ยน sketch มือเป็น Mermaid syntax · เลือก template แล้วแก้
+      </li>
+      <li>
+        <strong>ใช้ Flowchart Validator</strong>
+        — copy syntax → ตรวจ semantic
+      </li>
+      <li>
+        <strong>ส่งให้ AI review</strong>
+        — paste syntax + บริบทใน Claude/ChatGPT: <em>"ดู diagram นี้แล้ว ฉันลืมอะไรไปบ้าง?"</em>
+      </li>
+      <li>
+        <strong>เซฟลง project</strong>
+        — เซฟ Mermaid ใน <code>diagrams.md</code> ใน git · GitHub render อัตโนมัติ
+      </li>
+    </ol>
+
+    <div class="callout tip">
+      <strong>เพราะอะไร Mermaid &gt; draw.io/Excalidraw สำหรับยุค AI</strong>
+      <ul style="margin-top:8px">
+        <li><strong>Text-based</strong> → AI เขียนได้ · diff/merge ได้ใน git</li>
+        <li><strong>Standard syntax</strong> → AI ทุกตัวรู้จัก (Claude, ChatGPT, Gemini)</li>
+        <li><strong>Render อัตโนมัติ</strong> → GitHub, Notion, VS Code preview</li>
+        <li><strong>6 diagram types ในภาษาเดียว</strong> → ไม่ต้องเปลี่ยน tool</li>
+      </ul>
+    </div>
+
+    <div class="pager">
+      <a href="index.html">
+        <div class="label">← กลับ</div>
+        <div class="title">หน้าแรก</div>
+      </a>
+      <a href="w03-diagrams.html" class="next">
+        <div class="label">เรียน Diagram 6 แบบ →</div>
+        <div class="title">W03 — Diagram 6 แบบ</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+<script src="js/diagram-tools/type-picker.js" defer></script>
+<script src="js/diagram-tools/mermaid-editor.js" defer></script>
+<script src="js/diagram-tools/flowchart-validator.js" defer></script>
+</body>
+</html>

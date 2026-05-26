@@ -1,0 +1,289 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>M01 — รู้จัก PLC Mitsubishi FX5U | PLC Automation Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="PLC Automation"></div>
+      <div>
+        <div class="title">PLC Automation</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย — 2 Tracks</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; เลือก Track</a>
+
+      <h4>🟥 Mitsubishi Track</h4>
+      <a href="mit-01-intro.html" class="active"><span class="num">M01</span> รู้จัก FX5U</a>
+      <a href="mit-02-ladder.html"><span class="num">M02</span> Ladder Logic</a>
+      <a href="mit-03-sensors.html"><span class="num">M03</span> เซ็นเซอร์ &amp; I/O</a>
+      <a href="mit-04-simulation.html"><span class="num">M04</span> GX Simulator</a>
+      <a href="mit-05-hmi.html"><span class="num">M05</span> HMI Samkoon</a>
+      <a href="mit-06-pid.html"><span class="num">M06</span> PID &amp; Auto-Tuning</a>
+      <a href="mit-07-modbus.html"><span class="num">M07</span> Modbus + PM2230</a>
+
+      <h4>🟦 Omron Track</h4>
+      <a href="omron-01-intro.html"><span class="num">O01</span> รู้จัก CP1L/CPM2A</a>
+      <a href="omron-02-ladder.html"><span class="num">O02</span> CX-Programmer Ladder</a>
+      <a href="omron-03-fbd.html"><span class="num">O03</span> Function Block (FBD)</a>
+      <a href="omron-04-modbus.html"><span class="num">O04</span> Modbus + Inverter</a>
+      <a href="omron-05-e5cc.html"><span class="num">O05</span> E5CC Temp Control</a>
+      <a href="omron-06-scada.html"><span class="num">O06</span> SCADA (CX-Supervisor)</a>
+      <a href="omron-07-scada-workshop.html"><span class="num">O07</span> 🏭 SCADA Workshop</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="videos.html"><span class="num">▶</span> วิดีโอเลคเชอร์</a>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ M01 · Hardware</span>
+    <h1>รู้จัก PLC Mitsubishi FX5U</h1>
+    <p class="lede">
+      ก่อนจะเขียนโปรแกรมได้ ต้องเข้าใจว่า PLC คืออะไร ทำงานยังไง แล้ว <strong>FX5U-32MT/ES</strong>
+      ที่เราจะใช้ตลอดคู่มือนี้ มีอะไรอยู่ในตัวบ้าง — บทนี้พาดูตั้งแต่ระดับ Concept จนถึงรายละเอียดของรหัสรุ่น
+    </p>
+
+    <h2>PLC คืออะไร</h2>
+    <p><strong>Programmable Logic Controller (PLC)</strong> คือคอมพิวเตอร์เฉพาะทางที่ออกแบบมาให้ทนต่อสภาพแวดล้อมในโรงงาน
+       อ่านสัญญาณจาก <em>เซ็นเซอร์</em> และ <em>สวิตช์</em> เข้ามาประมวลผลตาม Logic ที่เราเขียน
+       แล้วสั่งงาน <em>actuator</em> เช่น มอเตอร์ โซลินอยด์ ฮีตเตอร์ ออกไปอีกฝั่ง</p>
+
+    <div class="flowdiagram">
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node input">
+          <h4>Input (X)</h4>
+          <p class="fd-sub">สัญญาณเข้า</p>
+          <ul>
+            <li>Limit Switch</li>
+            <li>Push Button</li>
+            <li>Sensor</li>
+            <li>Encoder</li>
+            <li>Analog (4–20 mA)</li>
+          </ul>
+        </div>
+        <div class="flowdiagram-arrow">→</div>
+        <div class="flowdiagram-node cpu">
+          <h4>CPU + Program</h4>
+          <p class="fd-sub">ประมวลผล</p>
+          <ul>
+            <li>อ่าน Input ทุกตัว</li>
+            <li>ประมวลผล Ladder บน→ล่าง</li>
+            <li>เขียน Output ทุกตัวพร้อมกัน</li>
+          </ul>
+        </div>
+        <div class="flowdiagram-arrow">→</div>
+        <div class="flowdiagram-node output">
+          <h4>Output (Y)</h4>
+          <p class="fd-sub">สั่งงานออก</p>
+          <ul>
+            <li>Motor / Relay</li>
+            <li>Solenoid</li>
+            <li>Indicator</li>
+            <li>Heater</li>
+            <li>Valve</li>
+          </ul>
+        </div>
+      </div>
+      <div class="flowdiagram-loop">↻ วนรอบทุก ๆ Scan Time (1–10 ms โดยทั่วไป)</div>
+    </div>
+
+    <p>หัวใจของ PLC คือมัน <strong>scan ทำซ้ำ</strong> ตลอดเวลา — ทุกรอบจะ (1) อ่าน Input ทุกตัวพร้อมกัน
+       (2) ประมวลผลโปรแกรมจากบนลงล่าง (3) เขียนค่า Output ทั้งหมดออกพร้อมกัน
+       Concept นี้เรียกว่า <em>Scan Cycle</em> เป็นสิ่งที่ต้องเข้าใจก่อนเขียนโปรแกรม</p>
+
+    <h2>ตระกูล MELSEC iQ-F และตำแหน่งของ FX5U</h2>
+    <p>Mitsubishi แบ่งกลุ่ม PLC ของตัวเองเป็น <strong>iQ-R</strong> (large), <strong>iQ-F</strong> (compact),
+       และซีรีส์เก่าอย่าง <strong>Q Series</strong> — ตัว FX5U อยู่ในกลุ่ม iQ-F แทนที่ FX3U/FX3G/FX3S เดิม
+       และใช้ <strong>GX Works3</strong> (ไม่ใช่ GX Works2 ที่ใช้กับ FX3U)</p>
+
+    <figure>
+      <img src="images/melsec-family.jpg" alt="MELSEC family overview">
+      <figcaption>ตำแหน่งของ MELSEC iQ-F ในตระกูล MELSEC ทั้งหมด — จากซ้าย: MELSEC-F · iQ-F · L · Q · iQ-R</figcaption>
+    </figure>
+
+    <table>
+      <thead>
+        <tr><th>รุ่น</th><th>กลุ่ม</th><th>IDE</th><th>หมายเหตุ</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><code>FX1N / FX2N</code></td><td>Legacy</td><td>GX Developer</td><td>เก่าแล้ว ไม่แนะนำของใหม่</td></tr>
+        <tr><td><code>FX3S / FX3G / FX3U</code></td><td>FX Gen-3</td><td>GX Works2</td><td>ยังเจอในโรงงานเยอะ</td></tr>
+        <tr><td><code>FX5U / FX5UC / FX5UJ</code></td><td><strong>MELSEC iQ-F</strong></td><td><strong>GX Works3</strong></td><td>รุ่นที่เราใช้ในคู่มือนี้</td></tr>
+        <tr><td><code>Q Series / iQ-R</code></td><td>High-end</td><td>GX Works2/3</td><td>สำหรับงานใหญ่ระดับโรงงานทั้งสาย</td></tr>
+      </tbody>
+    </table>
+
+    <h2>FX5U-32MT/ES — รุ่นที่เราใช้</h2>
+
+    <figure>
+      <img src="images/fx5u-front.jpg" alt="FX5U-32MT/ES PLC front view">
+      <figcaption>Mitsubishi MELSEC iQ-F FX5U-32MT/ES — PLC หลักที่ใช้ในคู่มือเล่มนี้</figcaption>
+    </figure>
+
+    <figure>
+      <img src="images/fx5u-nameplate.jpg" alt="FX5U-32MT/ES nameplate">
+      <figcaption>ฉลากรหัสรุ่นที่ด้านข้างตัว PLC — แสดง <code>FX5U-32MT/ES · 100-240VAC 50/60Hz 30W · OUT 5~30VDC 0.5A</code></figcaption>
+    </figure>
+
+    <p>มาแกะรหัสรุ่นกัน — <code>FX5U-32MT/ES</code> หมายความว่า:</p>
+
+    <div class="model-decoder" data-series="fx5u"></div>
+
+    <p style="margin-top:12px;color:var(--text-muted);font-size:13px">💡 ลองคลิกที่แต่ละส่วนของรหัสรุ่น (เช่น <code>T</code> หรือ <code>/ES</code>) เพื่อดูตัวเลือกอื่น ๆ และเปรียบเทียบความแตกต่าง</p>
+
+    <div class="callout info">
+      <strong>ทำไมต้อง Output แบบ Transistor (T) ไม่ใช่ Relay (R)?</strong>
+      เพราะงานควบคุมในคู่มือนี้รวม PWM, Pulse Output, และต้องสลับงานเร็ว — Relay มีอายุการใช้งานจำกัด
+      (~100,000 ครั้ง) และทำงานได้ช้ากว่า Transistor มาก
+    </div>
+
+    <h2>คุณสมบัติสำคัญที่ติดมากับตัว</h2>
+
+    <div class="lesson-grid">
+      <div class="lesson">
+        <span class="badge">SPEC 01</span>
+        <div class="title">Digital I/O 32 จุด</div>
+        <div class="desc">Input 16 จุด (X0–X17 ในระบบ Octal) + Output 16 จุด (Y0–Y17) — ขยายได้ถึง 256 I/O ผ่าน Extension Block</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">SPEC 02</span>
+        <div class="title">Program Capacity</div>
+        <div class="desc"><strong>64,000 step</strong> สำหรับ FX5U (และ 128k สำหรับรุ่นสูงกว่า) — เพียงพอสำหรับ Lab ทั่วไป</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">SPEC 03</span>
+        <div class="title">5 ภาษา Programming</div>
+        <div class="desc">Ladder (LD), Structured Text (ST), Function Block Diagram (FBD), Sequential Function Chart (SFC), Continuous Function Chart (CFC*)</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">SPEC 04</span>
+        <div class="title">Analog Built-in</div>
+        <div class="desc">Analog Input 2-ch + Analog Output 1-ch ติดมากับตัว มี Warning Output — ไม่ต้องซื้อโมดูลเพิ่ม</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">SPEC 05</span>
+        <div class="title">Ethernet TCP/IP</div>
+        <div class="desc">มีพอร์ต Ethernet ในตัว — ใช้ทั้งโปรแกรม PLC, ต่อกับ HMI, และทำ Modbus TCP</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">SPEC 06</span>
+        <div class="title">RS-485 + Modbus</div>
+        <div class="desc">มีพอร์ต RS-485 พร้อม Modbus RTU ในตัว — ใช้ต่อกับ Inverter, Temp Controller, Power Meter</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">SPEC 07</span>
+        <div class="title">SD Card Slot</div>
+        <div class="desc">เก็บ Log, สำรองโปรแกรม, อัปเดตจาก SD card ได้ — สะดวกในงานภาคสนาม</div>
+      </div>
+      <div class="lesson">
+        <span class="badge">SPEC 08</span>
+        <div class="title">High-Speed Counter</div>
+        <div class="desc">รองรับ Encoder ความเร็วสูงในตัว 8 ch — เหมาะกับงาน Servo / Positioning</div>
+      </div>
+    </div>
+
+    <h2>การจ่ายไฟและการต่อ I/O</h2>
+
+    <h3>การจ่ายไฟเข้า PLC</h3>
+    <p>FX5U-32MT<strong>/ES</strong> รับไฟ <strong>AC 100–240V</strong> ที่ขั้ว <code>L / N</code>
+       และจ่ายไฟ DC 24V ออกที่ขั้ว <code>24V / 0V</code> สำหรับเลี้ยง Sensor และ Input ของ PLC เอง</p>
+
+    <div class="callout warn">
+      <strong>ระวัง — ห้ามต่อ AC เข้าขั้ว Input!</strong>
+      ขั้ว Input ของ FX5U เป็น DC 24V <em>เท่านั้น</em> — การจ่าย AC เข้าจะทำให้ PLC เสียถาวร
+      เช็คให้ดีก่อนเปิดเบรกเกอร์
+    </div>
+
+    <h3>การต่อ Input — Sink vs Source</h3>
+    <p>ขั้ว Input ของ FX5U-32MT/ES รองรับการต่อแบบ <strong>Sink</strong> (S = ตัวอักษรสุดท้ายของรหัสรุ่น)
+       ซึ่งหมายความว่ากระแสจะไหล <strong>จาก Sensor เข้าหา PLC</strong> เมื่อ Sensor ทำงาน</p>
+
+    <div class="fig-side">
+      <figure>
+        <img src="images/sink-input-wiring.png" alt="FX5U Sink Input wiring diagram">
+        <figcaption>วงจร <strong>Sink Input</strong> ของ FX5U-32MT/ES — Three-wire sensor ต่อกับ X0, ขั้ว S/S เชื่อม +24V</figcaption>
+      </figure>
+      <figure>
+        <img src="images/sink-output-wiring.png" alt="Sink Output wiring diagram">
+        <figcaption>วงจร <strong>Sink Output</strong> — Load ต่อระหว่าง Y และ +24V, COM เชื่อม 0V</figcaption>
+      </figure>
+    </div>
+
+    <p>สำหรับ Sensor แบบ NPN (เช่น <code>LJ18A3-8-Z/BX</code>) จะเข้าได้ตรงเลย — รายละเอียดอยู่ใน <a href="mit-03-sensors.html">M03 — เซ็นเซอร์ &amp; I/O</a></p>
+
+    <h2>ก่อนไปบทถัดไป — เช็คความเข้าใจ</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>แยก FX5U ออกจาก FX3U ได้</strong>
+        เข้าใจว่า FX5U เป็น iQ-F และใช้ GX Works3 ส่วน FX3U เก่ากว่าและใช้ GX Works2
+      </li>
+      <li>
+        <strong>อ่านรหัสรุ่นเป็น</strong>
+        FX5U-32MT/ES = 32 I/O · Output Transistor · ไฟ AC · Input Sink
+      </li>
+      <li>
+        <strong>เข้าใจ Scan Cycle</strong>
+        Input → Program → Output ทำซ้ำในเวลา 1–10 ms — ไม่ใช่ทำงานแบบ Sequential เหมือนโปรแกรม PC
+      </li>
+      <li>
+        <strong>รู้ว่าไฟเข้าอยู่ที่ขั้วไหน</strong>
+        L/N รับ AC 100–240V — ห้ามต่อ AC เข้า X input!
+      </li>
+    </ol>
+
+    <div class="callout tip">
+      <strong>อยากเข้าใจลึกขึ้น?</strong>
+      ดูวิดีโอ <a href="videos.html">EP1 — แนะนำ PLC FX5U</a> หรือเปิดเอกสาร
+      <a href="PLC%20project/01_PLC_FX5U_Programming/docs/FX5U_Training_Level1.pdf">FX5U Training Level 1 (PDF)</a>
+    </div>
+
+    <div class="pager">
+      <a href="index.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">00 — หน้าแรก</div>
+      </a>
+      <a href="mit-02-ladder.html" class="next">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">M02 — Ladder Logic</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  PLC Automation Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){
+  var lb = document.getElementById('lightbox');
+  if(!lb) return;
+  var img = lb.querySelector('img');
+  document.querySelectorAll('.content img').forEach(function(im){
+    im.style.cursor = 'zoom-in';
+    im.addEventListener('click', function(){
+      img.src = im.src;
+      lb.classList.add('open');
+    });
+  });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') lb.classList.remove('open'); });
+})();
+</script>
+<script src="js/progress.js" defer></script>
+<script src="js/activities/model-decoder.js" defer></script>
+</body>
+</html>

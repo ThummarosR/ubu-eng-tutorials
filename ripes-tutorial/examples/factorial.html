@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ตัวอย่าง Factorial — คู่มือ Ripes</title>
+<link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="../images/logo.png" alt="Ripes logo">
+      <div>
+        <div class="title">Ripes Tutorial</div>
+        <div class="subtitle">คู่มือการใช้งานฉบับภาษาไทย</div>
+      </div>
+    </div>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="../index.html">หน้าแรก &amp; ติดตั้ง</a>
+      <h4>แท็บการใช้งาน</h4>
+      <a href="../editor.html">1. แท็บ Editor</a>
+      <a href="../processor.html">2. แท็บ Processor</a>
+      <a href="../memory.html">3. แท็บ Memory</a>
+      <a href="../cache.html">4. แท็บ Cache</a>
+      <a href="../io.html">5. แท็บ I/O</a>
+      <h4>อ้างอิง</h4>
+      <a href="../ecalls.html">System Calls (ecall)</a>
+      <h4>ตัวอย่างประกอบ</h4>
+      <a href="factorial.html" class="active">Factorial (Assembly)</a>
+      <a href="leds.html">LEDs (I/O)</a>
+      <a href="matrixmul.html">Matrix Multiply (C)</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <h1>ตัวอย่าง: Factorial</h1>
+    <p class="lede">โปรแกรม assembly คำนวณ 7! = 5040 — ครอบคลุมแนวคิด recursion, stack frame, function calling convention และ ecall</p>
+
+    <h2>เป้าหมายของบทเรียน</h2>
+    <ul>
+      <li>เข้าใจการใช้ <strong>stack</strong> สำหรับเก็บ return address และ local variable</li>
+      <li>เห็นการเรียกฟังก์ชันแบบ <strong>recursive</strong> ในระดับ assembly</li>
+      <li>เรียนรู้ <strong>calling convention</strong> ของ RISC-V (a0-a7 สำหรับ argument, ra สำหรับ return address)</li>
+      <li>ฝึกใช้ ecall สำหรับพิมพ์ผลลัพธ์</li>
+    </ul>
+
+    <h2>วิธีโหลดโปรแกรม</h2>
+    <ol class="steps">
+      <li>เปิด Ripes</li>
+      <li>เลือกเมนู <code>File → Load Example → Assembly → Factorial</code></li>
+      <li>โปรแกรมจะปรากฏใน Editor tab และถูก assemble โดยอัตโนมัติ</li>
+    </ol>
+
+    <h2>โค้ดทั้งหมด</h2>
+<pre><code># คำนวณ factorial ของ 7 (7! = 5040)
+
+.data
+argument: .word   7
+str1:     .string "Factorial value of "
+str2:     .string " is "
+
+.text
+main:
+        lw  a0, argument   # โหลด argument จาก static data
+        jal ra, fact       # เรียก function fact
+
+        # พิมพ์ผลลัพธ์ออกหน้าจอ
+        mv  a1, a0         # ย้ายผลลัพธ์ไป a1
+        lw  a0, argument   # โหลด argument อีกครั้ง (โดน fact เปลี่ยน)
+        jal ra, printResult
+
+        # ออกจากโปรแกรม
+        li a7, 10
+        ecall
+
+fact:
+        addi sp, sp, -16   # จองพื้นที่ stack 16 bytes
+        sw   ra, 8(sp)     # เก็บ return address
+        sw   a0, 0(sp)     # เก็บ argument ปัจจุบัน
+        addi t0, a0, -1
+        bge  t0, zero, nfact   # ถ้า a0 - 1 >= 0 ไป recurse
+
+        # Base case: fact(0) = 1
+        addi a0, zero, 1
+        addi sp, sp, 16
+        jr x1              # return
+
+nfact:
+        addi a0, a0, -1    # ลด argument ลง 1
+        jal  ra, fact      # recurse
+        addi t1, a0, 0     # เก็บผล recurse ไว้ใน t1
+        lw   a0, 0(sp)     # โหลด argument เดิมกลับมา
+        lw   ra, 8(sp)     # โหลด return address กลับมา
+        addi sp, sp, 16    # คืน stack
+        mul a0, a0, t1     # a0 = a0 * t1 (= n * fact(n-1))
+        ret
+
+# --- printResult ---
+# a0: ค่าที่นำมาคำนวณ factorial
+# a1: ผลลัพธ์ factorial
+printResult:
+        mv t0, a0
+        mv t1, a1
+        la a0, str1
+        li a7, 4
+        ecall              # พิมพ์ "Factorial value of "
+        mv a0, t0
+        li a7, 1
+        ecall              # พิมพ์เลข argument
+        la a0, str2
+        li a7, 4
+        ecall              # พิมพ์ " is "
+        mv a0, t1
+        li a7, 1
+        ecall              # พิมพ์เลขผลลัพธ์
+        ret</code></pre>
+
+    <h2>วิเคราะห์โครงสร้าง</h2>
+
+    <h3>1) main — เริ่มต้นและจบโปรแกรม</h3>
+    <p><code>main</code> ทำหน้าที่:</p>
+    <ul>
+      <li>โหลดเลข 7 จาก <code>.data</code> เข้า <code>a0</code></li>
+      <li>เรียก <code>fact</code> ด้วย <code>jal ra, fact</code> — ตอนกลับมา <code>a0</code> จะมีผลลัพธ์</li>
+      <li>เรียก <code>printResult</code> โดยใส่ argument เข้า <code>a0</code> และผลลัพธ์เข้า <code>a1</code></li>
+      <li>เรียก <code>ecall 10</code> เพื่อหยุดโปรแกรม</li>
+    </ul>
+
+    <h3>2) fact — ฟังก์ชัน recursive</h3>
+    <p>นี่คือหัวใจของโปรแกรม ทุกครั้งที่ <code>fact</code> ถูกเรียก:</p>
+
+    <ol class="steps">
+      <li><strong>จองพื้นที่ stack</strong> 16 bytes ด้วย <code>addi sp, sp, -16</code></li>
+      <li><strong>เก็บ return address</strong> (<code>ra</code>) และ <strong>argument ปัจจุบัน</strong> (<code>a0</code>) ลง stack — สำคัญมาก เพราะการ recurse จะทำให้ทั้งคู่ถูกเขียนทับ</li>
+      <li><strong>ตรวจ base case</strong>: ถ้า <code>a0 - 1 &lt; 0</code> (คือ <code>a0 = 0</code>) ให้คืน 1</li>
+      <li><strong>Recurse</strong>: เรียก <code>fact(a0 - 1)</code></li>
+      <li><strong>คูณผลลัพธ์</strong>: ดึง argument เดิมกลับมาแล้วคูณกับผลของ recursion</li>
+      <li><strong>คืน stack</strong> และ return</li>
+    </ol>
+
+    <div class="callout note">
+      <strong>ทำไมต้องเก็บ <code>a0</code> ลง stack?</strong>
+      เพราะการเรียก <code>jal ra, fact</code> จะ <em>เขียนทับ</em> <code>ra</code> และเมื่อ recurse สำเร็จ <code>a0</code> ก็จะถูกเขียนทับด้วยผลลัพธ์ของ <code>fact(n-1)</code> ถ้าไม่เก็บไว้จะคูณกลับไม่ได้
+    </div>
+
+    <h3>3) printResult — พิมพ์ผลลัพธ์</h3>
+    <p>ใช้ ecall 3 service สลับกัน:</p>
+    <ul>
+      <li><code>ecall 4</code> — พิมพ์ string</li>
+      <li><code>ecall 1</code> — พิมพ์ integer</li>
+    </ul>
+    <p>สังเกตว่า <code>t0, t1</code> ใช้เก็บค่าชั่วคราว เพราะ <code>a0</code> จะถูกเขียนทับทุกครั้งที่เรียก ecall</p>
+
+    <h2>วิธีดูการทำงานทีละขั้น</h2>
+
+    <ol class="steps">
+      <li>กดปุ่ม <strong>Reset</strong> ใน toolbar</li>
+      <li>เปิด <strong>Memory tab</strong> เลือก <code>Go to register → sp</code> เพื่อดู stack</li>
+      <li>กลับมา <strong>Processor tab</strong> แล้วกด <strong>Clock</strong> ทีละครั้ง</li>
+      <li>สังเกต:
+        <ul>
+          <li>ค่า <code>sp</code> ลดลง 16 ทุกครั้งที่เข้า <code>fact</code></li>
+          <li>ค่าใน Stack memory เปลี่ยนตามทุกครั้งที่ recurse</li>
+          <li>ค่าใน <code>a0</code> ลดลง 1 ทุกครั้ง</li>
+        </ul>
+      </li>
+      <li>เมื่อถึง base case (<code>a0 = 0</code>) ให้สังเกตการ unwind: <code>sp</code> เพิ่มขึ้นทีละ 16 และ <code>a0</code> ถูกคูณกลับขึ้นเรื่อย ๆ</li>
+    </ol>
+
+    <h2>ผลลัพธ์ที่คาดหวัง</h2>
+    <p>ใน Output console:</p>
+<pre><code>Factorial value of 7 is 5040</code></pre>
+
+    <h2>แบบฝึกหัด</h2>
+    <ol>
+      <li>เปลี่ยนค่า <code>argument</code> จาก 7 เป็น 10 แล้วรันใหม่ ผลลัพธ์ที่ได้คือ?</li>
+      <li>ลอง <code>argument = 13</code> — จะเกิด integer overflow ใน 32-bit หรือไม่? ทำไม?</li>
+      <li>เขียน fact แบบ iterative (ใช้ loop แทน recursion) แล้วเปรียบเทียบจำนวน cycle และ memory access</li>
+      <li>เปิด <strong>Stage Table</strong> ดูว่า <code>fact</code> มี pipeline stall หรือไม่ จุดไหนเกิด data hazard?</li>
+    </ol>
+
+    <div class="pager">
+      <a href="../ecalls.html">
+        <div class="label">← บทก่อนหน้า</div>
+        <div class="title">System Calls (ecall)</div>
+      </a>
+      <a class="next" href="leds.html">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">ตัวอย่าง: LEDs</div>
+      </a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

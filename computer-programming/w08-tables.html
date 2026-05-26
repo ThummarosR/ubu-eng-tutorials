@@ -1,0 +1,1378 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>W08 — ตาราง: list/dict/CSV/JSON/SQLite | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+<script src="https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.min.js"></script>
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html" class="active"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">สัปดาห์ที่ 08 · Data with AI</span>
+    <h1>ตาราง — list / dict / CSV / JSON / SQLite</h1>
+    <p class="lede">
+      ในคอร์สเดิม สิ่งเหล่านี้สอนกระจาย 4 หัวข้อ · ในคู่มือนี้รวมเป็นเรื่องเดียว —
+      <strong>"ทุกอย่างคือตาราง"</strong> · แค่เก็บที่ต่างกัน เลือกตามขนาด/ความถาวร/จำนวนผู้ใช้
+    </p>
+
+    <h2>เป้าหมายสัปดาห์นี้</h2>
+    <ul>
+      <li>มอง list/dict/JSON/CSV/SQL เป็น <em>"ตารางที่เก็บคนละแบบ"</em></li>
+      <li>อ่าน-เขียน CSV, JSON, SQLite ด้วย Python ได้</li>
+      <li>ออกแบบ <strong>schema</strong> — field, type, primary key, relationships</li>
+      <li>ใช้ <strong>Pandas</strong> เป็น "universal translator" ระหว่างทุก format</li>
+      <li>ทำ groupby / merge / filter ด้วย pandas</li>
+    </ul>
+
+    <div class="callout warn" style="border-left-width:5px">
+      <strong>🔒 ทำไม "ออกแบบ schema" คือทักษะที่ AI ทำให้คุณไม่ได้</strong>
+      AI เขียน <code>read_csv</code> ได้ใน 5 วินาที · แต่ <strong>"ตัดสินใจว่าจะเก็บ field อะไร · type อะไร ·
+      จับคู่ตารางยังไง"</strong> = งานของคุณ · ถ้าออกแบบผิดตอนแรก — แก้ทีหลังเจ็บปวด · AI ก็ไม่รู้ว่า
+      Grading App ของคุณ <em>จะใช้กี่ user · เก็บนานแค่ไหน · ต้อง query อะไรบ้าง</em> · นั่นเป็น domain knowledge
+      ของคุณ
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🎯 Running Case — เก็บข้อมูล Grading App ของพี่นัท</h2>
+    <p>
+      W04-W07 เราสร้าง logic ของ Grading App แล้ว · ตอนนี้ต้องตัดสินใจว่า <strong>"ข้อมูลจริง"</strong>
+      จะเก็บไว้ที่ไหน · พี่นัทมีข้อมูล 4 ชนิด — นักศึกษา 50 คน · drawing assignments · rubric items · คะแนน
+      · เลือก format ผิด = ปวดหัวภายหลัง
+    </p>
+
+    <h2>🗺 Data Storage Ladder — เลือกตามขนาดของปัญหา</h2>
+    <p>
+      ทุก format มีจุดที่ <em>"ดีที่สุด"</em> · ไต่ขึ้นเมื่อปัญหาใหญ่ขึ้น · ไม่ใช่ <em>"ใช้ SQL ตลอด"</em>
+    </p>
+
+    <div class="mermaid">flowchart TB
+    L1["<b>1. ตัวแปร (RAM)</b><br/>list / dict<br/><i>ทดลอง · code ตัวอย่าง · ใน function</i><br/>❌ ปิดโปรแกรม = หาย"]
+    L2["<b>2. ไฟล์ในเครื่อง</b><br/>.json / .csv / .txt<br/><i>script ส่วนตัว · config · &lt; 1000 row</i><br/>❌ 2 คนเขียนพร้อมกัน = ชน"]
+    L3["<b>3. Database 1 ไฟล์</b><br/>SQLite<br/><i>app เล็ก · 1 user · query ซับซ้อน</i><br/>❌ หลายคนพร้อมกัน lock ทั้งไฟล์"]
+    L4["<b>4. Database จริงจัง</b><br/>PostgreSQL / MySQL<br/><i>หลาย user · production · network</i><br/>⚠️ ต้อง host server · backup"]
+
+    L1 -->|"&gt; 1000 row<br/>ต้องคงอยู่"| L2
+    L2 -->|"ต้อง search/filter<br/>หรือมี relationship"| L3
+    L3 -->|"หลาย user/server<br/>พร้อมกัน"| L4
+
+    classDef ram fill:#0d3f3a,stroke:#34d399,color:#fff
+    classDef file fill:#3d2c1a,stroke:#ffd43b,color:#fff
+    classDef sqlite fill:#1e3a5f,stroke:#3776ab,color:#fff
+    classDef prod fill:#5c1818,stroke:#ef4444,color:#fff
+    class L1 ram
+    class L2 file
+    class L3 sqlite
+    class L4 prod</div>
+
+    <div class="callout tip">
+      <strong>กฎ — เริ่มล่างสุดเสมอ</strong>
+      Grading App ใหม่ → เริ่ม <em>list/dict ใน RAM</em> · พอเริ่มทดลองจริง → JSON file · พอใส่จริง 50 คน →
+      SQLite · ถ้ามี TA หลายคนใช้พร้อมกัน → PostgreSQL · <strong>90% ของ project นักศึกษาปี 1 อยู่แค่ขั้น 1-2</strong>
+    </div>
+
+    <h2>🏭 ข้อมูลที่ Engineer เจอจริง</h2>
+    <p>ไม่ใช่แค่ list ของนักศึกษา — ลองดูว่าแต่ละสาขาเจอข้อมูลแบบไหน</p>
+
+    <table>
+      <thead><tr><th>สาขา</th><th>ข้อมูลที่เจอจริง</th><th>Format ที่ใช้บ่อย</th></tr></thead>
+      <tbody>
+        <tr><td>Mechatronics / Robotics</td><td>Sensor log (อุณหภูมิ, vibration, distance)</td><td>CSV (จาก data logger) · MQTT → InfluxDB</td></tr>
+        <tr><td>Electrical / Power</td><td>Energy meter readings · Power quality</td><td>CSV ทุก 15 นาที · SQLite ใน gateway</td></tr>
+        <tr><td>Civil / Smart Building</td><td>Building automation log · Occupancy</td><td>CSV หรือ JSON ผ่าน BMS</td></tr>
+        <tr><td>Chemical</td><td>Lab measurement · Batch records</td><td>Excel/CSV · LIMS database</td></tr>
+        <tr><td>Industrial</td><td>Production data · Quality control</td><td>SQL (MES) · Excel report</td></tr>
+        <tr><td>Mechanical</td><td>Part list (BOM) · CAD properties</td><td>Excel · JSON (config)</td></tr>
+        <tr><td>ทุกสาขา (vibe-coding)</td><td>Form responses · API JSON · config</td><td>Google Sheets · JSON · SQLite</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <strong>สังเกต — CSV ครองโลก vendor data</strong>
+      เกือบทุก data logger / instrument / sensor export มาเป็น CSV · ถ้าทำงานกับ hardware แทบจะเห็น CSV ตลอด ·
+      ต้องอ่าน + clean CSV ให้คล่อง = essential skill
+    </div>
+
+    <h2>🔑 หลักคิด — All Data is a Table</h2>
+    <p>ลองดู — ทุกอย่างมีหน้าตาเหมือนตาราง · แค่ภาษา/รูปแบบต่างกัน</p>
+
+    <table>
+      <thead><tr><th>id</th><th>name</th><th>email</th><th>year</th></tr></thead>
+      <tbody>
+        <tr><td>1</td><td>Ploy</td><td>ploy@ubu.ac.th</td><td>1</td></tr>
+        <tr><td>2</td><td>Bank</td><td>bank@ubu.ac.th</td><td>1</td></tr>
+        <tr><td>3</td><td>Mint</td><td>mint@ubu.ac.th</td><td>2</td></tr>
+      </tbody>
+    </table>
+
+    <h3>เขียนแบบเดียวกัน — 5 รูปแบบ</h3>
+
+    <p><strong>1. Python list of dicts (in RAM):</strong></p>
+    <pre><code class="language-python">students = [
+    {"id": 1, "name": "Ploy", "email": "ploy@ubu.ac.th", "year": 1},
+    {"id": 2, "name": "Bank", "email": "bank@ubu.ac.th", "year": 1},
+    {"id": 3, "name": "Mint", "email": "mint@ubu.ac.th", "year": 2},
+]</code></pre>
+
+    <p><strong>2. JSON file (in disk):</strong></p>
+    <pre><code class="language-json">[
+  {"id": 1, "name": "Ploy", "email": "ploy@ubu.ac.th", "year": 1},
+  {"id": 2, "name": "Bank", "email": "bank@ubu.ac.th", "year": 1},
+  {"id": 3, "name": "Mint", "email": "mint@ubu.ac.th", "year": 2}
+]</code></pre>
+
+    <p><strong>3. CSV file (in disk):</strong></p>
+    <pre><code>id,name,email,year
+1,Ploy,ploy@ubu.ac.th,1
+2,Bank,bank@ubu.ac.th,1
+3,Mint,mint@ubu.ac.th,2</code></pre>
+
+    <p><strong>4. Pandas DataFrame (RAM, but "table-aware"):</strong></p>
+    <pre><code class="language-python">import pandas as pd
+df = pd.read_csv("students.csv")
+print(df)</code></pre>
+
+    <p><strong>5. SQLite (file but searchable):</strong></p>
+    <pre><code class="language-sql">CREATE TABLE students (
+    id INTEGER PRIMARY KEY,
+    name TEXT,
+    email TEXT,
+    year INTEGER
+);
+INSERT INTO students VALUES (1, 'Ploy', 'ploy@ubu.ac.th', 1);
+...</code></pre>
+
+    <div class="callout info">
+      <strong>เลือกอันไหน?</strong>
+      ดูได้จากตารางใน <a href="w02-tools-vocab.html#database">W02 — Database Overview</a> ·
+      สั้น ๆ: เริ่มจาก list/dict → เมื่อข้อมูลเยอะค่อยใส่ JSON/CSV → เมื่อต้อง query/multi-user ค่อยขึ้น SQLite
+    </div>
+
+    <h2>🧱 list — ลำดับของอะไรก็ได้</h2>
+
+    <div class="python-runner">scores = [85, 72, 91, 60, 45]
+
+# เข้าถึงสมาชิก (index เริ่มที่ 0)
+print("scores[0]  =", scores[0])      # ตัวแรก
+print("scores[-1] =", scores[-1])     # ตัวสุดท้าย
+print("scores[1:3] =", scores[1:3])   # slice
+
+# เพิ่ม / ลบ
+scores.append(78)
+scores.insert(0, 100)
+print("after append+insert:", scores)
+
+# functions ที่ใช้บ่อย
+print("len:", len(scores), "| sum:", sum(scores))
+print("max:", max(scores), "| min:", min(scores))
+print("sorted:", sorted(scores))</div>
+
+    <h3>List comprehension — เขียน loop เป็น 1 บรรทัด</h3>
+
+    <div class="python-runner">scores = [85, 72, 91, 60, 45, 33]
+
+# เดิม: 3 บรรทัด
+doubled = []
+for s in scores:
+    doubled.append(s * 2)
+print("doubled (long):", doubled)
+
+# ใหม่: 1 บรรทัด
+doubled2 = [s * 2 for s in scores]
+print("doubled (comp):", doubled2)
+
+# มี filter
+passing = [s for s in scores if s &gt;= 50]
+print("passing:", passing)
+
+# ใช้ใน data work บ่อยมาก
+emails = [{"id": 1, "name": "Ploy"}, {"id": 2, "name": "Bank"}]
+names = [s["name"] for s in emails]
+print("names:", names)</div>
+
+    <div class="predict-quiz" data-question="โปรแกรมนี้พิมพ์อะไร?">
+      <pre class="pq-code">nums = [1, 2, 3, 4, 5]
+result = [n * n for n in nums if n % 2 == 0]
+print(result)</pre>
+      <pre class="pq-answer">[4, 16]</pre>
+      <div class="pq-explain">
+        Filter <code>n % 2 == 0</code> = เลขคู่ → [2, 4] · แล้ว map <code>n * n</code> → [4, 16]
+      </div>
+    </div>
+
+    <h2>📚 dict — คีย์ → ค่า</h2>
+
+    <div class="python-runner">student = {
+    "id": "640001",
+    "name": "Ploy",
+    "scores": [85, 72, 91],
+}
+
+# เข้าถึง
+print("name:", student["name"])
+print("phone:", student.get("phone", "N/A"))   # default ถ้าไม่มี
+
+# เพิ่ม / แก้
+student["email"] = "ploy@ubu.ac.th"
+print("\nafter add email:")
+for key, value in student.items():
+    print(f"  {key}: {value}")
+
+# nested dict — common in real data
+drawing = {
+    "id": "D001",
+    "student": {"id": "640001", "name": "Ploy"},
+    "scores": {"R1": 28, "R2": 18, "R3": 22, "R4": 24}
+}
+print("\nstudent name:", drawing["student"]["name"])
+print("R1 score:    ", drawing["scores"]["R1"])
+print("total:       ", sum(drawing["scores"].values()))</div>
+
+    <div class="predict-quiz" data-question="โปรแกรมนี้พิมพ์อะไร?">
+      <pre class="pq-code">d = {"a": [1, 2, 3], "b": [4, 5]}
+print(len(d), sum(d["a"]), d.get("c", 0))</pre>
+      <pre class="pq-answer">2 6 0</pre>
+      <div class="pq-explain">
+        <code>len(d)</code> = จำนวน key = 2 · <code>sum(d["a"])</code> = 1+2+3 = 6 ·
+        <code>d.get("c", 0)</code> = ไม่มี key "c" → default 0
+      </div>
+    </div>
+
+    <pre><code class="language-python"># ทุก key / ทุก value
+list(student.keys())
+list(student.values())</code></pre>
+
+    <h2>📦 JSON — เซฟ dict/list ลงไฟล์</h2>
+    <p>เปิดไฟล์ใน Cursor: <code>open("students.json", "w", encoding="utf-8")</code> · ใน browser นี้ Pyodide ใช้ virtual file system จึงรันได้เลย</p>
+
+    <div class="python-runner">import json
+
+# Grading App data — เก็บนักศึกษา
+students = [
+    {"id": "640001", "name": "Ploy", "year": 2, "major": "MAE"},
+    {"id": "640002", "name": "Bank", "year": 2, "major": "EE"},
+    {"id": "640003", "name": "Mint", "year": 2, "major": "MAE"},
+]
+
+# เขียน JSON — กฎทอง: utf-8 + ensure_ascii=False สำหรับภาษาไทย
+with open("students.json", "w", encoding="utf-8") as f:
+    json.dump(students, f, ensure_ascii=False, indent=2)
+
+# อ่านกลับ
+with open("students.json", "r", encoding="utf-8") as f:
+    loaded = json.load(f)
+
+print("จำนวน:", len(loaded))
+for s in loaded:
+    print(f"  {s['id']}: {s['name']} (year {s['year']}, {s['major']})")
+
+# ดู raw JSON ที่เขียนลงไฟล์
+print("\n=== raw JSON ===")
+with open("students.json", encoding="utf-8") as f:
+    print(f.read())</div>
+
+    <div class="callout tip">
+      <strong>กฎทอง — encoding="utf-8" + ensure_ascii=False เสมอ</strong>
+      ลองลบ <code>ensure_ascii=False</code> ใน runner ด้านบนแล้ว Run — ภาษาไทยจะกลายเป็น
+      <code>ปล..</code> · นี่คือสิ่งที่ทำให้ JSON ดู "ขยะ"
+    </div>
+
+    <h2>📊 CSV — มาตรฐานของข้อมูลจากภายนอก</h2>
+
+    <div class="python-runner">import csv
+
+students = [
+    {"id": "640001", "name": "Ploy", "year": 2, "major": "MAE"},
+    {"id": "640002", "name": "Bank", "year": 2, "major": "EE"},
+    {"id": "640003", "name": "Mint", "year": 2, "major": "MAE"},
+]
+
+# เขียน CSV
+with open("students.csv", "w", encoding="utf-8", newline="") as f:
+    fieldnames = ["id", "name", "year", "major"]
+    writer = csv.DictWriter(f, fieldnames=fieldnames)
+    writer.writeheader()
+    writer.writerows(students)
+
+# ดู raw CSV
+print("=== raw CSV ===")
+with open("students.csv", encoding="utf-8") as f:
+    print(f.read())
+
+# อ่านกลับ
+with open("students.csv", encoding="utf-8") as f:
+    reader = csv.DictReader(f)
+    rows = list(reader)
+
+print(f"อ่านได้ {len(rows)} แถว")
+print(f"row 0: {rows[0]}")
+print(f"name ของ row 1: {rows[1]['name']}")</div>
+
+    <div class="callout warn">
+      <strong>CSV จาก Excel/Google Sheets ระวัง</strong>
+      <ul>
+        <li>encoding อาจจะเป็น cp874 (Thai Windows) ไม่ใช่ utf-8 — เปิด Excel → Save As → CSV UTF-8 (Comma delimited)</li>
+        <li>Excel ชอบเปลี่ยน "001234" เป็น 1234 — เก็บ ID เป็น string ใน source data</li>
+        <li>field ที่มี comma ต้องครอบด้วย "..."</li>
+        <li>CSV ไม่มี type — อ่านทุก field มาเป็น <strong>string</strong> เสมอ · ต้อง <code>int()</code> เอง</li>
+      </ul>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🐼 Pandas — Universal Translator + Data Wrangler</h2>
+    <p>
+      Pandas <em>คือ</em> Excel + SQL + format converter รวมกัน · runner นี้โหลด pandas package (~20s ครั้งแรก ·
+      cache หลังจากนั้น) — แล้วคุณรัน <em>"จริง"</em> ได้
+    </p>
+
+    <h3>📥 1) อ่านได้ทุก format — เขียนได้ทุก format</h3>
+    <p>นี่คือ <strong>superpower</strong> ของ Pandas — ใช้เป็น universal translator</p>
+
+    <div class="python-runner" data-packages="pandas">import pandas as pd
+import json
+
+# เริ่มต้นจาก list of dicts
+students = [
+    {"id": "640001", "name": "Ploy", "year": 2, "major": "MAE", "gpa": 3.45},
+    {"id": "640002", "name": "Bank", "year": 2, "major": "EE", "gpa": 3.20},
+    {"id": "640003", "name": "Mint", "year": 2, "major": "MAE", "gpa": 3.78},
+    {"id": "640004", "name": "Tum",  "year": 1, "major": "ChE", "gpa": 2.90},
+]
+
+# → DataFrame
+df = pd.DataFrame(students)
+print("=== DataFrame ===")
+print(df)
+
+# → CSV
+df.to_csv("out.csv", index=False, encoding="utf-8")
+
+# → JSON
+df.to_json("out.json", orient="records", force_ascii=False, indent=2)
+
+# → SQLite (built-in)
+import sqlite3
+conn = sqlite3.connect("out.db")
+df.to_sql("students", conn, if_exists="replace", index=False)
+conn.close()
+
+# อ่านกลับจาก SQLite — แสดงว่าเขียนสำเร็จ
+conn = sqlite3.connect("out.db")
+df2 = pd.read_sql("SELECT * FROM students WHERE gpa &gt;= 3.5", conn)
+print("\n=== query กลับจาก SQLite (gpa &gt;= 3.5) ===")
+print(df2)</div>
+
+    <p style="color:var(--text-muted);font-size:13.5px">
+      💡 ครั้งแรกใช้เวลา ~20 วินาทีโหลด pandas + sqlite3 (built-in Python) · ครั้งต่อ ๆ ไปเร็ว
+    </p>
+
+    <h3>👀 2) Inspect — รู้จักข้อมูลก่อนใช้งาน</h3>
+
+    <div class="python-runner" data-packages="pandas">import pandas as pd
+
+# Sample: drawing scores ของห้องเรียนพี่นัท
+data = {
+    "student_id": ["640001", "640002", "640003", "640004", "640005"],
+    "name":       ["Ploy", "Bank", "Mint", "Tum", "Aof"],
+    "drawing_id": ["D1", "D1", "D1", "D1", "D1"],
+    "R1": [28, 25, 30, 20, 26],   # Dimensions
+    "R2": [18, 15, 20, 12, 18],   # Line quality
+    "R3": [22, 20, 23, 18, 21],   # Annotations
+    "R4": [24, 22, 25, 18, 24],   # Title block
+}
+df = pd.DataFrame(data)
+
+print("--- head() ---")          # 5 แถวแรก
+print(df.head())
+print("\n--- shape ---")
+print(df.shape)                   # (rows, cols)
+print("\n--- columns ---")
+print(list(df.columns))
+print("\n--- dtypes ---")
+print(df.dtypes)                  # type ของแต่ละ column
+print("\n--- describe() ---")
+print(df.describe())              # mean, std, min, max ของ numeric</div>
+
+    <h3>🎯 3) Select &amp; Filter — เลือกแถว/คอลัมน์</h3>
+
+    <div class="python-runner" data-packages="pandas">import pandas as pd
+
+df = pd.DataFrame({
+    "name": ["Ploy", "Bank", "Mint", "Tum", "Aof"],
+    "year": [2, 2, 2, 1, 3],
+    "gpa":  [3.45, 3.20, 3.78, 2.90, 3.60],
+    "major": ["MAE", "EE", "MAE", "ChE", "MAE"],
+})
+
+# เลือก 1 column → Series
+print("--- df['name'] ---")
+print(df["name"].tolist())
+
+# เลือกหลาย columns → DataFrame
+print("\n--- df[['name', 'gpa']] ---")
+print(df[["name", "gpa"]])
+
+# Filter ด้วย boolean
+print("\n--- gpa &gt;= 3.5 ---")
+print(df[df["gpa"] &gt;= 3.5])
+
+# Filter หลายเงื่อนไข — ใช้ & และ |
+print("\n--- MAE และ gpa &gt;= 3.4 ---")
+print(df[(df["major"] == "MAE") &amp; (df["gpa"] &gt;= 3.4)])
+
+# .loc[row, col] — เลือกตาม label
+print("\n--- df.loc[0, 'name'] ---")
+print(df.loc[0, "name"])
+
+# .iloc[row, col] — เลือกตาม position
+print("\n--- df.iloc[-1] (แถวสุดท้าย) ---")
+print(df.iloc[-1])</div>
+
+    <h3>📊 4) Groupby — สรุปข้อมูลตามกลุ่ม</h3>
+
+    <div class="python-runner" data-packages="pandas">import pandas as pd
+
+# scores ของนักศึกษา 50 คน — แต่ละคนทำ drawing 3 ชิ้น
+data = {
+    "student_id": ["640001", "640001", "640001",
+                   "640002", "640002", "640002",
+                   "640003", "640003", "640003"],
+    "drawing":    ["D1", "D2", "D3"] * 3,
+    "score": [78, 82, 85,
+              65, 70, 72,
+              90, 88, 92],
+}
+df = pd.DataFrame(data)
+
+# คะแนนเฉลี่ยของแต่ละนักศึกษา
+print("--- เฉลี่ยต่อคน ---")
+print(df.groupby("student_id")["score"].mean())
+
+# จำนวน drawing ของแต่ละคน
+print("\n--- นับ drawing ต่อคน ---")
+print(df.groupby("student_id").size())
+
+# หลาย aggregation พร้อมกัน
+print("\n--- multi agg ---")
+print(df.groupby("student_id")["score"].agg(["mean", "min", "max", "count"]))
+
+# Groupby + filter
+top = df.groupby("student_id")["score"].mean()
+print("\n--- ใครเฉลี่ย &gt; 80 ---")
+print(top[top &gt; 80])</div>
+
+    <h3>🔗 5) Merge — รวมตาราง (Join)</h3>
+
+    <div class="python-runner" data-packages="pandas">import pandas as pd
+
+# 2 ตาราง — แยกกัน เพื่อไม่ซ้ำข้อมูล
+students = pd.DataFrame({
+    "id": ["640001", "640002", "640003"],
+    "name": ["Ploy", "Bank", "Mint"],
+    "year": [2, 2, 2],
+})
+
+scores = pd.DataFrame({
+    "student_id": ["640001", "640001", "640002", "640003"],
+    "drawing": ["D1", "D2", "D1", "D1"],
+    "score": [85, 90, 70, 95],
+})
+
+# Merge — เหมือน SQL JOIN
+merged = students.merge(scores, left_on="id", right_on="student_id")
+print("--- merged ---")
+print(merged)
+
+# ตอนนี้ groupby ก็ได้ชื่อแล้ว
+print("\n--- เฉลี่ยพร้อมชื่อ ---")
+print(merged.groupby("name")["score"].mean())</div>
+
+    <h3>🧰 6) value_counts &amp; apply — utility ที่ใช้บ่อยมาก</h3>
+
+    <div class="python-runner" data-packages="pandas">import pandas as pd
+
+df = pd.DataFrame({
+    "name": ["Ploy", "Bank", "Mint", "Tum", "Aof", "Som", "Pat"],
+    "major": ["MAE", "EE", "MAE", "ChE", "MAE", "EE", "MAE"],
+    "score": [85, 70, 92, 60, 78, 88, 75],
+})
+
+# value_counts — นับ unique values
+print("--- จำนวนนักศึกษาแต่ละสาขา ---")
+print(df["major"].value_counts())
+
+# apply — function กับทุกแถว
+def to_grade(s):
+    if s &gt;= 80: return "A"
+    if s &gt;= 70: return "B"
+    if s &gt;= 60: return "C"
+    return "F"
+
+df["grade"] = df["score"].apply(to_grade)
+print("\n--- พร้อม grade column ---")
+print(df)
+
+# นับ grade
+print("\n--- กระจาย grade ---")
+print(df["grade"].value_counts())</div>
+
+    <div class="callout info">
+      <strong>6 moves นี้ครอบคลุม 80% ของ data work ในอาชีพ</strong>
+      อ่าน → inspect → filter → groupby → merge → apply · ฝึกให้คล่อง — Final Project และทุกงานต่อ ๆ ไปจะใช้
+    </div>
+
+    <h2>💾 SQLite — Database 1 ไฟล์</h2>
+    <p>เมื่อข้อมูลเริ่มเยอะ + ต้อง <em>search/filter ซับซ้อน</em> · CSV ช้า · ใช้ SQLite</p>
+
+    <div class="python-runner">import sqlite3
+
+# สร้าง/เปิด database (สร้างไฟล์ถ้ายังไม่มี)
+conn = sqlite3.connect("grading.db")
+cur = conn.cursor()
+
+# สร้าง table — ระบุ type + constraints
+cur.execute("""
+    CREATE TABLE IF NOT EXISTS students (
+        id TEXT PRIMARY KEY,
+        name TEXT NOT NULL,
+        year INTEGER,
+        major TEXT
+    )
+""")
+
+# เพิ่มแถว — ใช้ ? เพื่อ safe (ป้องกัน SQL injection)
+data = [
+    ("640001", "Ploy", 2, "MAE"),
+    ("640002", "Bank", 2, "EE"),
+    ("640003", "Mint", 2, "MAE"),
+    ("640004", "Tum",  1, "ChE"),
+]
+cur.executemany(
+    "INSERT OR REPLACE INTO students VALUES (?, ?, ?, ?)",
+    data
+)
+conn.commit()
+
+# Query 1: SELECT ทั้งหมด
+print("--- ทั้งหมด ---")
+for row in cur.execute("SELECT * FROM students"):
+    print(row)
+
+# Query 2: WHERE filter
+print("\n--- เฉพาะ MAE ---")
+for row in cur.execute("SELECT name, year FROM students WHERE major = ?", ("MAE",)):
+    print(row)
+
+# Query 3: aggregation
+print("\n--- นับนักศึกษาแต่ละสาขา ---")
+for row in cur.execute("SELECT major, COUNT(*) FROM students GROUP BY major"):
+    print(row)
+
+conn.close()</div>
+
+    <h3>SQL พื้นฐาน 5 คำสั่ง</h3>
+    <table>
+      <tbody>
+        <tr><td><code>SELECT cols FROM table</code></td><td>ดึงข้อมูลออก</td></tr>
+        <tr><td><code>INSERT INTO table VALUES (...)</code></td><td>เพิ่มแถว</td></tr>
+        <tr><td><code>UPDATE table SET col=val WHERE ...</code></td><td>แก้แถว</td></tr>
+        <tr><td><code>DELETE FROM table WHERE ...</code></td><td>ลบแถว</td></tr>
+        <tr><td><code>WHERE / GROUP BY / ORDER BY</code></td><td>กรอง / จัดกลุ่ม / เรียง</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <strong>SQLite ใน Pandas ก็ได้</strong>
+      <pre><code class="language-python">df = pd.read_sql("SELECT * FROM students WHERE year = 1", conn)
+df.to_sql("students_2026", conn, if_exists="replace")</code></pre>
+      ใช้ pandas สำหรับ analyze + SQLite สำหรับ persistence — ของ Python รับกันได้หมด
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>📐 Schema Design — ออกแบบ "ตาราง" ก่อนเก็บ</h2>
+    <p>
+      <strong>นี่คือทักษะ human-only ของเฟส Data</strong> · ตัดสินใจว่า <em>ตารางไหน · field อะไร ·
+      type อะไร · ความสัมพันธ์ยังไง</em> = ส่งผลตลอด lifecycle ของ project
+    </p>
+
+    <h3>🔑 4 คำถามที่ต้องตอบก่อนสร้าง schema</h3>
+
+    <ol class="steps">
+      <li>
+        <strong>มี entity (สิ่งของ) อะไรบ้าง?</strong>
+        — Grading App มี: <em>Student · Drawing · Rubric · Score</em>
+      </li>
+      <li>
+        <strong>แต่ละ entity มี field อะไร?</strong>
+        — Student: id, name, year, major · Drawing: id, student_id, due_date, …
+      </li>
+      <li>
+        <strong>field ไหนเป็น Primary Key (PK)?</strong>
+        — ID เฉพาะของแต่ละ row · ห้ามซ้ำ · เช่น <code>student_id = "640001"</code>
+      </li>
+      <li>
+        <strong>มี relationship ระหว่าง entity มั้ย?</strong>
+        — Drawing ของใคร? → ใส่ <code>student_id</code> เป็น <strong>Foreign Key (FK)</strong> ใน Drawing
+      </li>
+    </ol>
+
+    <h3>📊 Schema ของ Grading App (ตัวอย่างเต็ม)</h3>
+
+    <div class="mermaid">erDiagram
+    STUDENT ||--o{ DRAWING : ส่ง
+    DRAWING ||--o{ SCORE : ได้คะแนน
+    RUBRIC ||--o{ SCORE : ตาม_criteria
+
+    STUDENT {
+        string id PK "เช่น 640001"
+        string name "ชื่อ-นามสกุล"
+        int year "1-4"
+        string major "MAE/EE/ChE..."
+        string email
+    }
+    DRAWING {
+        string id PK "D001"
+        string student_id FK
+        date submitted_at
+        string filename
+    }
+    RUBRIC {
+        string id PK "R1"
+        string criteria "Dimensions accurate"
+        int weight "0-100"
+    }
+    SCORE {
+        int id PK
+        string drawing_id FK
+        string rubric_id FK
+        int score "0-weight"
+        string note
+    }</div>
+
+    <h3>📝 กฎ Schema Design ที่ใช้ได้กับทุก project</h3>
+
+    <table>
+      <thead><tr><th>กฎ</th><th>เพราะ</th><th>ตัวอย่าง</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>ทุก table มี <strong>PK</strong></td>
+          <td>ต้องระบุได้ว่า row ไหน "ตัวเดียวกัน"</td>
+          <td><code>id TEXT PRIMARY KEY</code></td>
+        </tr>
+        <tr>
+          <td>PK ห้ามเปลี่ยน</td>
+          <td>ถ้าเปลี่ยน → FK ทุกที่พัง</td>
+          <td>ใช้ UUID หรือ student_id ที่ไม่เปลี่ยน</td>
+        </tr>
+        <tr>
+          <td>1 field = 1 ข้อมูล (Atomic)</td>
+          <td>ห้ามเก็บ "Ploy, Bank, Mint" ใน 1 cell</td>
+          <td>ถ้ามีหลายค่า → ทำ table ใหม่</td>
+        </tr>
+        <tr>
+          <td>ห้ามทำซ้ำ (Don't Repeat)</td>
+          <td>ถ้าข้อมูลซ้ำ → update ที่เดียว ไม่ใช่หลายที่</td>
+          <td>student.name เก็บที่ STUDENT table เท่านั้น</td>
+        </tr>
+        <tr>
+          <td>Type ที่ตรงกับธรรมชาติของข้อมูล</td>
+          <td>ตัวเลข → INTEGER · วันที่ → DATE · ไม่ใช่ TEXT ทุกอัน</td>
+          <td>price <code>REAL</code> ไม่ใช่ <code>TEXT</code></td>
+        </tr>
+        <tr>
+          <td>NOT NULL ถ้า required</td>
+          <td>ป้องกันข้อมูลขาด</td>
+          <td><code>name TEXT NOT NULL</code></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>🚩 Schema ที่ "ผิดพลาดที่พบบ่อย"</h3>
+
+    <div class="callout warn">
+      <strong>❌ เก็บหลายค่าใน column เดียว</strong>
+      <pre><code># ผิด — เก็บคะแนน 4 criteria ในช่องเดียว
+students = [
+    {"id": "640001", "name": "Ploy", "scores": "28,18,22,24"},
+]
+# ถูก — แยกตาราง
+scores = [
+    {"student_id": "640001", "rubric_id": "R1", "score": 28},
+    {"student_id": "640001", "rubric_id": "R2", "score": 18},
+    ...
+]</code></pre>
+    </div>
+
+    <div class="callout warn">
+      <strong>❌ ทำซ้ำชื่อในหลายที่</strong>
+      <pre><code># ผิด — เก็บชื่อนักศึกษาทุกแถวของ scores
+scores = [
+    {"student_id": "640001", "name": "Ploy", "score": 28},
+    {"student_id": "640001", "name": "Ploy", "score": 18},
+    # ถ้า Ploy เปลี่ยนชื่อ → ต้องแก้ทุกแถว
+]
+# ถูก — เก็บชื่อใน students แล้ว merge เมื่อต้องใช้
+students = [{"id": "640001", "name": "Ploy"}]
+scores = [{"student_id": "640001", "score": 28}, ...]</code></pre>
+    </div>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับ — ใช้ AI สร้าง schema จาก spec</strong>
+      ลองส่ง prompt: <em>"ออกแบบ schema สำหรับ Grading App ที่มี Student/Drawing/Rubric/Score ·
+      แสดงเป็น Mermaid erDiagram"</em> — AI สร้างให้ได้ดี · แต่คุณต้อง <em>"review"</em> ด้วยกฎ 6 ข้อด้านบน
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🔗 SQL Deep Dive — JOIN · Aggregate · NULL · CASE</h2>
+
+    <div class="callout info" style="border-left-width:5px">
+      <strong>📌 ก่อนเริ่ม — "ไม่ต้องใช้ SQL ทุกครั้ง"</strong>
+      สำหรับ <strong>script เล็ก ๆ · CLI tool · config · 1-user app</strong> →
+      <em>JSON file ดีกว่า</em> · ง่ายกว่า · อ่านได้ด้วยตา · ไม่ต้อง setup ·
+      <strong>ดู Data Storage Ladder ด้านบน</strong> · ขยับขึ้น SQL <em>"เมื่อจำเป็น"</em> เท่านั้น ·
+      ส่วนต่อไปนี้คือทักษะ SQL <em>"สำหรับวันที่จำเป็น"</em> ไม่ใช่ "ต้องใช้ตั้งแต่ Day 1"
+    </div>
+
+    <p>
+      W08 ส่วน SQLite เบื้องต้นใช้ตารางเดียว · ในความจริง <strong>"data ดี ๆ อยู่ในหลายตาราง"</strong>
+      (ตาม Schema Design ด้านบน) · ตอนจะใช้ต้อง <strong>JOIN</strong> กลับมา · นี่คือทักษะ SQL ที่ทำเงินจริง
+    </p>
+
+    <h3>📊 เลือก storage ตามขนาดของ project</h3>
+    <table>
+      <thead><tr><th>Project size</th><th>เลือก</th><th>เหตุผล</th></tr></thead>
+      <tbody>
+        <tr><td>script ใช้ครั้งเดียว · &lt; 10 records</td><td>list / dict ใน RAM</td><td>ไม่ต้อง persist</td></tr>
+        <tr><td>CLI tool · config · 1 user · &lt; 1000 records</td><td><strong>JSON file</strong> ✅</td><td>ง่ายที่สุด · มนุษย์อ่านได้ · gitignore ได้</td></tr>
+        <tr><td>Data analysis · CSV จาก vendor</td><td>CSV + pandas</td><td>มาตรฐาน · Excel เปิดได้</td></tr>
+        <tr><td>app เล็ก · multi-table · ต้อง query</td><td><strong>SQLite</strong> ✅</td><td>1 file · ไม่ต้อง server</td></tr>
+        <tr><td>multi-user · production</td><td>PostgreSQL</td><td>concurrent · network</td></tr>
+      </tbody>
+    </table>
+
+    <p style="color:var(--text-muted);font-size:13.5px;text-align:center">
+      👇 ถ้า project ของคุณตกหมวด "JSON ก็พอ" — <em>"skip section นี้ได้"</em> · กลับมาอ่านเมื่อจำเป็น
+    </p>
+
+    <h3>🔗 1) JOIN — รวม 2 ตารางด้วย Foreign Key</h3>
+    <p>
+      ใน Grading App: <code>students</code> มีข้อมูลคน · <code>scores</code> มีคะแนน ·
+      อยากดู <em>"ชื่อ + คะแนน"</em> ในรายการเดียว → ต้อง JOIN
+    </p>
+
+    <div class="python-runner">import sqlite3
+
+conn = sqlite3.connect(":memory:")
+cur = conn.cursor()
+
+# สร้าง 2 ตาราง
+cur.executescript("""
+CREATE TABLE students (
+    id TEXT PRIMARY KEY,
+    name TEXT,
+    major TEXT
+);
+CREATE TABLE scores (
+    id INTEGER PRIMARY KEY,
+    student_id TEXT,
+    subject TEXT,
+    score INTEGER
+);
+INSERT INTO students VALUES
+    ('640001', 'Ploy', 'MAE'),
+    ('640002', 'Bank', 'EE'),
+    ('640003', 'Mint', 'MAE'),
+    ('640004', 'Tum',  'ChE');
+INSERT INTO scores VALUES
+    (1, '640001', 'Drawing', 85),
+    (2, '640001', 'Lab',     78),
+    (3, '640002', 'Drawing', 70),
+    (4, '640002', 'Lab',     82),
+    (5, '640003', 'Drawing', 92);
+    -- 640004 (Tum) ไม่มีคะแนนเลย!
+""")
+
+print("=== INNER JOIN — เฉพาะคนที่มีคะแนน ===")
+for row in cur.execute("""
+    SELECT s.name, sc.subject, sc.score
+    FROM students s
+    INNER JOIN scores sc ON s.id = sc.student_id
+    ORDER BY s.name
+"""):
+    print(row)
+# Tum ไม่ปรากฏ — เพราะไม่มีคะแนน
+
+print("\n=== LEFT JOIN — รวม Tum ด้วย (NULL ตรงคะแนน) ===")
+for row in cur.execute("""
+    SELECT s.name, sc.subject, sc.score
+    FROM students s
+    LEFT JOIN scores sc ON s.id = sc.student_id
+    ORDER BY s.name
+"""):
+    print(row)
+# Tum ปรากฏ · subject=None · score=None</div>
+
+    <table>
+      <thead><tr><th>JOIN type</th><th>คืนแถวเมื่อ</th><th>ใช้เมื่อ</th></tr></thead>
+      <tbody>
+        <tr><td><strong>INNER JOIN</strong></td><td>match ทั้ง 2 ตาราง</td><td>ดูเฉพาะคนที่มี scores · default ถ้าไม่ระบุ</td></tr>
+        <tr><td><strong>LEFT JOIN</strong></td><td>ทุกแถวฝั่งซ้าย + match ฝั่งขวา (ที่ขาดเป็น NULL)</td><td>"รายชื่อทั้งหมด · ใครยังไม่ส่งงาน"</td></tr>
+        <tr><td><strong>RIGHT JOIN</strong></td><td>ตรงข้าม LEFT (SQLite ไม่มี · ใช้ swap LEFT แทน)</td><td>ไม่ค่อยใช้</td></tr>
+        <tr><td><strong>FULL OUTER JOIN</strong></td><td>ทุกแถวทั้ง 2 ตาราง</td><td>ไม่ค่อยใช้ · SQLite ไม่รองรับ</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>กฎทอง — เริ่มที่ INNER · ใช้ LEFT เมื่อ "อยากเห็นคนที่ขาด"</strong>
+      90% ของ JOIN ในงานจริงคือ INNER · LEFT ใช้เพื่อตรวจ <em>"ใครที่ยังไม่มีข้อมูล"</em>
+    </div>
+
+    <h3>🔗 JOIN 3 ตาราง — chain ได้</h3>
+
+    <div class="python-runner">import sqlite3
+
+conn = sqlite3.connect(":memory:")
+cur = conn.cursor()
+
+cur.executescript("""
+CREATE TABLE students (id TEXT PRIMARY KEY, name TEXT);
+CREATE TABLE drawings (id TEXT PRIMARY KEY, student_id TEXT, title TEXT);
+CREATE TABLE rubrics  (id TEXT PRIMARY KEY, drawing_id TEXT, score INTEGER);
+
+INSERT INTO students VALUES ('640001', 'Ploy'), ('640002', 'Bank');
+INSERT INTO drawings VALUES
+    ('D1', '640001', 'House'),
+    ('D2', '640001', 'Engine'),
+    ('D3', '640002', 'Bridge');
+INSERT INTO rubrics VALUES
+    ('R1', 'D1', 28),
+    ('R2', 'D1', 18),
+    ('R3', 'D2', 25),
+    ('R4', 'D3', 30);
+""")
+
+# JOIN 3 ตาราง — รายชื่อ + ภาพ + คะแนน
+print("=== Full chain JOIN ===")
+for row in cur.execute("""
+    SELECT s.name, d.title, r.score
+    FROM students s
+    INNER JOIN drawings d ON s.id = d.student_id
+    INNER JOIN rubrics r  ON d.id = r.drawing_id
+    ORDER BY s.name, d.title
+"""):
+    print(row)</div>
+
+    <h3>📊 2) Aggregate Functions — สรุปข้อมูล</h3>
+
+    <table>
+      <thead><tr><th>Function</th><th>ทำอะไร</th><th>ตัวอย่าง</th></tr></thead>
+      <tbody>
+        <tr><td><code>COUNT(*)</code></td><td>นับแถว</td><td><code>SELECT COUNT(*) FROM students</code></td></tr>
+        <tr><td><code>COUNT(col)</code></td><td>นับ non-NULL ใน column</td><td><code>COUNT(email)</code> = คนที่มี email</td></tr>
+        <tr><td><code>SUM(col)</code></td><td>รวม</td><td><code>SUM(score)</code></td></tr>
+        <tr><td><code>AVG(col)</code></td><td>เฉลี่ย</td><td><code>AVG(gpa)</code></td></tr>
+        <tr><td><code>MIN(col)</code> / <code>MAX(col)</code></td><td>น้อยสุด / มากสุด</td><td><code>MAX(score)</code></td></tr>
+        <tr><td><code>GROUP BY</code></td><td>จัดกลุ่มก่อน aggregate</td><td><code>GROUP BY major</code></td></tr>
+        <tr><td><code>HAVING</code></td><td>filter หลัง GROUP BY (WHERE filter ก่อน)</td><td><code>HAVING COUNT(*) &gt; 5</code></td></tr>
+      </tbody>
+    </table>
+
+    <div class="python-runner">import sqlite3
+conn = sqlite3.connect(":memory:")
+cur = conn.cursor()
+
+cur.executescript("""
+CREATE TABLE scores (
+    student_id TEXT, subject TEXT, score INTEGER, major TEXT
+);
+INSERT INTO scores VALUES
+    ('U1', 'Drawing', 85, 'MAE'),
+    ('U2', 'Drawing', 70, 'EE'),
+    ('U3', 'Drawing', 92, 'MAE'),
+    ('U4', 'Drawing', 60, 'ChE'),
+    ('U1', 'Lab',     78, 'MAE'),
+    ('U2', 'Lab',     82, 'EE'),
+    ('U3', 'Lab',     88, 'MAE');
+""")
+
+print("=== ทั้งหมด ===")
+print(list(cur.execute("SELECT COUNT(*), AVG(score), MAX(score), MIN(score) FROM scores")))
+
+print("\n=== กลุ่มตามวิชา (GROUP BY) ===")
+for row in cur.execute("""
+    SELECT subject, COUNT(*) AS n, ROUND(AVG(score), 1) AS avg, MAX(score) AS hi
+    FROM scores
+    GROUP BY subject
+"""):
+    print(row)
+
+print("\n=== กลุ่มตามสาขา · เฉพาะที่มี &gt; 1 คน (HAVING) ===")
+for row in cur.execute("""
+    SELECT major, COUNT(*) AS n, ROUND(AVG(score), 1) AS avg
+    FROM scores
+    GROUP BY major
+    HAVING COUNT(*) &gt; 1
+    ORDER BY avg DESC
+"""):
+    print(row)</div>
+
+    <h3>🕳 3) NULL Handling + CASE/WHEN</h3>
+    <p>
+      Real-world data <em>มี NULL เสมอ</em> · SQL จัดการ NULL พิเศษ (NULL ≠ 0 · NULL ≠ "")
+    </p>
+
+    <div class="python-runner">import sqlite3
+conn = sqlite3.connect(":memory:")
+cur = conn.cursor()
+
+cur.executescript("""
+CREATE TABLE students (
+    id TEXT PRIMARY KEY,
+    name TEXT,
+    email TEXT,        -- บางคนยังไม่มี
+    gpa REAL           -- ปี 1 ยังไม่มี
+);
+INSERT INTO students VALUES
+    ('U1', 'Ploy', 'ploy@ubu.ac.th', 3.45),
+    ('U2', 'Bank', NULL,             3.20),
+    ('U3', 'Mint', 'mint@ubu.ac.th', NULL),
+    ('U4', 'Tum',  NULL,             NULL);
+""")
+
+# IS NULL / IS NOT NULL — ห้ามใช้ = NULL
+print("=== คนที่ไม่มี email ===")
+print(list(cur.execute("SELECT name FROM students WHERE email IS NULL")))
+
+print("\n=== คนที่มีทั้ง email และ gpa ===")
+print(list(cur.execute("SELECT name FROM students WHERE email IS NOT NULL AND gpa IS NOT NULL")))
+
+# COALESCE — แทน NULL ด้วยค่า default
+print("\n=== COALESCE — แสดง 'N/A' แทน NULL ===")
+for row in cur.execute("""
+    SELECT name,
+           COALESCE(email, 'N/A') AS email,
+           COALESCE(gpa, 0.0) AS gpa
+    FROM students
+"""):
+    print(row)
+
+# CASE/WHEN — if-else ใน SQL
+print("\n=== CASE/WHEN — แปลง gpa เป็น grade band ===")
+for row in cur.execute("""
+    SELECT name, gpa,
+        CASE
+            WHEN gpa IS NULL THEN 'ยังไม่มี'
+            WHEN gpa &gt;= 3.5 THEN 'ดีเยี่ยม'
+            WHEN gpa &gt;= 3.0 THEN 'ดี'
+            WHEN gpa &gt;= 2.0 THEN 'พอใช้'
+            ELSE 'อ่อน'
+        END AS band
+    FROM students
+"""):
+    print(row)</div>
+
+    <div class="callout warn">
+      <strong>⚠️ <code>WHERE x = NULL</code> ไม่ทำงาน!</strong>
+      NULL เปรียบเทียบเท่าไม่ได้ · ต้องใช้ <code>IS NULL</code> / <code>IS NOT NULL</code> ·
+      bug นี้พบบ่อยมาก · AI ก็เขียนผิดบางครั้ง
+    </div>
+
+    <h3>🔄 4) Transactions — All-or-Nothing</h3>
+    <p>
+      ถ้าโปรแกรม <em>crash กลาง INSERT 100 แถว</em> — อะไรเกิดขึ้น? · ครึ่งหนึ่งใน · ครึ่งหนึ่งหาย ·
+      <strong>transaction</strong> ป้องกัน
+    </p>
+
+    <div class="python-runner">import sqlite3
+conn = sqlite3.connect(":memory:")
+cur = conn.cursor()
+cur.execute("CREATE TABLE accounts (id TEXT, balance INTEGER)")
+cur.execute("INSERT INTO accounts VALUES ('A', 1000), ('B', 500)")
+conn.commit()
+
+# ตัวอย่าง — โอนเงิน A → B
+def transfer(amount):
+    try:
+        cur.execute("BEGIN")
+        cur.execute("UPDATE accounts SET balance = balance - ? WHERE id = 'A'", (amount,))
+
+        if amount &gt; 800:
+            raise ValueError("จำลอง error กลาง transaction!")
+
+        cur.execute("UPDATE accounts SET balance = balance + ? WHERE id = 'B'", (amount,))
+        conn.commit()    # ✅ ทุกอย่างผ่าน → save
+        print(f"✅ โอน {amount} สำเร็จ")
+    except Exception as e:
+        conn.rollback()   # ❌ rollback ทุกการเปลี่ยน
+        print(f"❌ {e} → rollback · เงินกลับเดิม")
+
+
+print("ก่อน:")
+print(list(cur.execute("SELECT * FROM accounts")))
+
+transfer(100)   # ✅ ผ่าน
+
+print("\nหลังโอน 100:")
+print(list(cur.execute("SELECT * FROM accounts")))
+
+transfer(900)   # ❌ error → rollback
+
+print("\nหลังพยายามโอน 900 (พังกลางทาง):")
+print(list(cur.execute("SELECT * FROM accounts")))
+# A ยังคงมี 900 — ไม่ใช่ -800!</div>
+
+    <div class="callout info">
+      <strong>ACID — 4 คุณสมบัติของ Database</strong>
+      <ul style="margin-top:8px">
+        <li><strong>A</strong>tomic — transaction = all-or-nothing</li>
+        <li><strong>C</strong>onsistent — data จะ valid ตามกฎเสมอ (constraints)</li>
+        <li><strong>I</strong>solated — 2 transaction รันพร้อมกันไม่ปนกัน</li>
+        <li><strong>D</strong>urable — commit แล้ว = save แน่นอน · แม้ไฟดับ</li>
+      </ul>
+      SQLite, PostgreSQL, MySQL = ACID · NoSQL ส่วนใหญ่ <em>ไม่</em> ACID เต็มที่ (eventual consistency)
+    </div>
+
+    <h3>📇 5) Indexes — เร็วขึ้น 100 เท่า เมื่อข้อมูลเยอะ</h3>
+    <p>
+      ตาราง 10 ล้านแถว · <code>WHERE email = 'x'</code> = scan ทุกแถว = ช้า ·
+      สร้าง <strong>index</strong> = เหมือนสารบัญหนังสือ = เร็ว
+    </p>
+
+    <pre><code class="language-sql">-- สร้าง index บน column ที่ query บ่อย
+CREATE INDEX idx_students_email ON students(email);
+CREATE INDEX idx_scores_student_id ON scores(student_id);
+
+-- composite index (หลาย column)
+CREATE INDEX idx_scores_subj_score ON scores(subject, score);
+
+-- ดู query plan
+EXPLAIN QUERY PLAN
+SELECT * FROM students WHERE email = 'ploy@ubu.ac.th';
+-- → "USING INDEX idx_students_email" = เร็ว ✅</code></pre>
+
+    <div class="callout warn">
+      <strong>⚠️ Index ไม่ฟรี</strong>
+      Index = ใช้ disk space · INSERT/UPDATE ช้าขึ้น (ต้อง update index ด้วย) ·
+      <strong>กฎ:</strong> สร้าง index บน column ที่ <em>query บ่อย</em> เท่านั้น · ไม่ใช่ทุก column ·
+      Year 1 ไม่ต้องลึก · "รู้ว่ามี" + "เมื่อช้าให้คิดถึง"
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>⚛️ ORM — เขียน Python · ได้ SQL</h2>
+    <p>
+      <strong>ORM</strong> (Object-Relational Mapping) = library ที่ <em>"แปลง Python class ↔ SQL table"</em> ·
+      ไม่ต้องเขียน SQL ดิบ · ทุก framework เว็บ (Django, FastAPI, Flask-SQLAlchemy) ใช้ ORM
+    </p>
+
+    <h3>📊 SQL ดิบ vs ORM</h3>
+
+    <div class="diff-viewer" data-title="Same query — SQL ดิบ vs SQLAlchemy ORM">
+      <div class="diff-before"># SQL ดิบ — เขียน string
+import sqlite3
+conn = sqlite3.connect("app.db")
+cur = conn.cursor()
+
+cur.execute("""
+    SELECT s.name, AVG(sc.score)
+    FROM students s
+    JOIN scores sc ON s.id = sc.student_id
+    WHERE s.major = ?
+    GROUP BY s.id
+    HAVING AVG(sc.score) &gt; 75
+""", ("MAE",))
+
+results = cur.fetchall()
+for name, avg in results:
+    print(name, avg)</div>
+      <div class="diff-after"># SQLAlchemy ORM — เขียน Python
+from sqlalchemy import create_engine, func
+from sqlalchemy.orm import Session
+from models import Student, Score   # class ของเรา
+
+engine = create_engine("sqlite:///app.db")
+with Session(engine) as session:
+    results = (
+        session.query(Student.name, func.avg(Score.score))
+        .join(Score)
+        .filter(Student.major == "MAE")
+        .group_by(Student.id)
+        .having(func.avg(Score.score) &gt; 75)
+        .all()
+    )
+    for name, avg in results:
+        print(name, avg)</div>
+    </div>
+
+    <h3>🎯 เมื่อไหร่ใช้ ORM vs SQL ดิบ</h3>
+    <table>
+      <thead><tr><th>สถานการณ์</th><th>ใช้</th></tr></thead>
+      <tbody>
+        <tr><td>app เล็ก · query ง่าย · 1 ตาราง</td><td>SQL ดิบ · ใช้ <code>sqlite3</code> + <code>pandas</code></td></tr>
+        <tr><td>app กลาง · หลาย table · CRUD เยอะ</td><td>ORM (SQLAlchemy, Tortoise, Django ORM)</td></tr>
+        <tr><td>query ซับซ้อนมาก · subquery · window function</td><td>SQL ดิบ · เพราะ ORM แปลออกมาแย่</td></tr>
+        <tr><td>ทีมใหญ่ · ต้อง migration</td><td>ORM + Alembic</td></tr>
+        <tr><td>เรียนรู้ครั้งแรก</td><td>SQL ดิบก่อน · เข้าใจดีกว่า · ค่อยขึ้น ORM</td></tr>
+      </tbody>
+    </table>
+
+    <h3>🗂 Database Migrations (Alembic) — รู้ว่ามี</h3>
+    <p>
+      เมื่อ schema เปลี่ยน (เพิ่ม column · rename · drop) ใน production — <strong>migration</strong> = script
+      อัพเดต database ทีละ version · เก็บใน git · rollback ได้ · ใช้ Alembic ที่จับคู่กับ SQLAlchemy
+    </p>
+    <pre><code class="language-bash">alembic init migrations
+alembic revision --autogenerate -m "add email to students"
+alembic upgrade head        # apply
+alembic downgrade -1        # rollback</code></pre>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🌸 NoSQL — เมื่อ SQL ไม่เหมาะ</h2>
+    <p>
+      <strong>NoSQL</strong> = database ที่ไม่ใช่ตารางแบบ relational · มีหลายแบบ · เลือกใช้เมื่อ
+      <em>"data structure ไม่เหมาะกับตาราง"</em>
+    </p>
+
+    <table>
+      <thead><tr><th>NoSQL</th><th>เก็บแบบ</th><th>เหมาะกับ</th><th>ตัวอย่าง</th></tr></thead>
+      <tbody>
+        <tr>
+          <td><strong>MongoDB</strong></td>
+          <td>Document (JSON)</td>
+          <td>schema ไม่นิ่ง · nested data · social feed · CMS</td>
+          <td>Atlas free tier · <code>pymongo</code></td>
+        </tr>
+        <tr>
+          <td><strong>Redis</strong></td>
+          <td>Key-Value (in-memory)</td>
+          <td>cache · session · rate limit · queue · pub/sub</td>
+          <td>Upstash free · <code>redis-py</code></td>
+        </tr>
+        <tr>
+          <td><strong>Firestore</strong></td>
+          <td>Document + real-time</td>
+          <td>mobile app · real-time chat · IoT live data</td>
+          <td>Firebase free tier</td>
+        </tr>
+        <tr>
+          <td><strong>InfluxDB</strong></td>
+          <td>Time-series</td>
+          <td>sensor data · IoT logs · metrics</td>
+          <td>InfluxDB Cloud free</td>
+        </tr>
+        <tr>
+          <td><strong>Vector DB</strong> (Pinecone, Qdrant)</td>
+          <td>Embeddings</td>
+          <td>RAG · semantic search · AI memory</td>
+          <td>ตัวเลือกใหม่ในยุค AI</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>📊 SQL vs NoSQL — เมื่อไหร่เลือก</h3>
+    <table>
+      <thead><tr><th>ดี ๆ กับ</th><th>SQL (Postgres/SQLite)</th><th>NoSQL (Mongo/Redis/Firestore)</th></tr></thead>
+      <tbody>
+        <tr><td>Schema นิ่ง · structured</td><td>✅</td><td>❌</td></tr>
+        <tr><td>Schema เปลี่ยนบ่อย · flexible</td><td>❌</td><td>✅</td></tr>
+        <tr><td>JOIN หลายตาราง</td><td>✅</td><td>⚠️ ลำบาก</td></tr>
+        <tr><td>ACID transactions</td><td>✅</td><td>⚠️ ส่วนใหญ่ eventual</td></tr>
+        <tr><td>Real-time updates</td><td>⚠️</td><td>✅ (Firestore)</td></tr>
+        <tr><td>Cache / session</td><td>❌</td><td>✅ Redis</td></tr>
+        <tr><td>Time-series sensor data</td><td>⚠️</td><td>✅ InfluxDB</td></tr>
+        <tr><td>AI embeddings · semantic search</td><td>⚠️ pgvector</td><td>✅ Vector DB</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>📌 สำหรับ Final Project</strong>
+      เริ่มที่ SQLite ก่อนเสมอ · ถ้ามี IoT/sensor + real-time → ลอง Firestore · ถ้าทำ AI chatbot ที่ต้อง
+      "จำเรื่องที่คุยไปแล้ว" → ลอง vector DB (W12 LLM section) · <strong>อย่ารีบไป NoSQL ถ้า SQL พอ</strong>
+    </div>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🧪 Workshop — Grading App End-to-End Data Pipeline</h2>
+    <p>
+      ใน 1 notebook — เริ่มจาก list of dict → แปลง JSON → CSV → SQLite → query กลับ
+      · ใช้ข้อมูล Grading App ของพี่นัทเป็น "ของจริง"
+    </p>
+
+    <div class="python-runner" data-packages="pandas">import pandas as pd
+import json, csv, sqlite3
+
+# ==== STEP 1: สร้างข้อมูลจาก list of dicts ====
+students = [
+    {"id": "640001", "name": "Ploy", "year": 2, "major": "MAE", "gpa": 3.45},
+    {"id": "640002", "name": "Bank", "year": 2, "major": "EE",  "gpa": 3.20},
+    {"id": "640003", "name": "Mint", "year": 2, "major": "MAE", "gpa": 3.78},
+    {"id": "640004", "name": "Tum",  "year": 1, "major": "ChE", "gpa": 2.90},
+    {"id": "640005", "name": "Aof",  "year": 3, "major": "MAE", "gpa": 3.60},
+]
+print(f"✅ Step 1: สร้าง {len(students)} students ใน RAM")
+
+# ==== STEP 2: เซฟลง JSON ====
+with open("students.json", "w", encoding="utf-8") as f:
+    json.dump(students, f, ensure_ascii=False, indent=2)
+print("✅ Step 2: เขียน students.json")
+
+# ==== STEP 3: แปลงเป็น CSV ผ่าน Pandas ====
+df = pd.DataFrame(students)
+df.to_csv("students.csv", index=False, encoding="utf-8")
+print("✅ Step 3: แปลงเป็น students.csv")
+print(df)
+
+# ==== STEP 4: ใส่ลง SQLite ====
+conn = sqlite3.connect("grading.db")
+df.to_sql("students", conn, if_exists="replace", index=False)
+print("\n✅ Step 4: ใส่ลง SQLite (table 'students')")
+
+# ==== STEP 5: ตอบ 3 คำถามด้วย SQL ====
+print("\n--- Q1: นักศึกษาในแต่ละสาขา ---")
+print(pd.read_sql("SELECT major, COUNT(*) as cnt FROM students GROUP BY major", conn))
+
+print("\n--- Q2: gpa เฉลี่ยของแต่ละชั้นปี ---")
+print(pd.read_sql("SELECT year, AVG(gpa) as avg_gpa FROM students GROUP BY year", conn))
+
+print("\n--- Q3: top 3 GPA ---")
+print(pd.read_sql("SELECT name, gpa FROM students ORDER BY gpa DESC LIMIT 3", conn))
+
+conn.close()
+print("\n🎉 ครบ pipeline · ลองแก้ข้อมูล หรือคำถาม แล้ว Run ใหม่")</div>
+
+    <h3>📝 ส่วนต่อยอด (ใน Cursor — งานบ้าน)</h3>
+
+    <ol class="steps">
+      <li>
+        <strong>copy code นี้ลง Jupyter notebook (.ipynb)</strong>
+        — แยกเป็น 5 cell ตาม step
+      </li>
+      <li>
+        <strong>หา data จริงของคุณ</strong>
+        — Google Forms ที่เคยทำ · sensor log · expense tracking · datase ที่ <code>data.go.th</code>
+      </li>
+      <li>
+        <strong>ออกแบบ schema</strong> ตาม 4 คำถามด้านบน · วาด ER diagram ใน Mermaid
+      </li>
+      <li>
+        <strong>แทนข้อมูล Grading App ด้วยของคุณ</strong>
+        — รันทั้ง pipeline ใหม่
+      </li>
+      <li>
+        <strong>ตอบ 3 คำถามใหม่ด้วย groupby / merge / value_counts</strong>
+      </li>
+      <li>
+        <strong>commit + push GitHub</strong>
+        — README.md อธิบาย data source + schema + คำถาม
+      </li>
+    </ol>
+
+    <h2>📌 ตัดสินใจ — ใช้อันไหนเมื่อไหร่</h2>
+
+    <table>
+      <thead><tr><th>สถานการณ์</th><th>ใช้</th><th>เหตุผล</th></tr></thead>
+      <tbody>
+        <tr><td>ตัวแปรในโปรแกรม &lt; 1000 records</td><td>list of dict</td><td>เร็ว · simple</td></tr>
+        <tr><td>เซฟ config / state ของ CLI tool</td><td>JSON</td><td>มนุษย์อ่านได้ · มี structure</td></tr>
+        <tr><td>ส่งออกให้ Excel</td><td>CSV หรือ .xlsx</td><td>มาตรฐาน · เปิดที่ไหนก็ได้</td></tr>
+        <tr><td>analyze ข้อมูล + plot</td><td>pandas DataFrame</td><td>function สำหรับ data ครบ</td></tr>
+        <tr><td>app ที่ต้อง search/filter ซับซ้อน</td><td>SQLite</td><td>SQL เร็ว · index</td></tr>
+        <tr><td>หลาย user · production</td><td>PostgreSQL (W12)</td><td>concurrent · network · backup</td></tr>
+      </tbody>
+    </table>
+
+    <h2>ข้อผิดที่พบบ่อย</h2>
+
+    <div class="callout warn">
+      <strong>กระโดดไป SQL ตั้งแต่แรก</strong>
+      — โปรเจกต์ส่วนใหญ่ของนักศึกษาปี 1 ใช้ JSON ก็เพียงพอ · เริ่ม simple ก่อน
+    </div>
+
+    <div class="callout warn">
+      <strong>เซฟ JSON โดยไม่มี encoding="utf-8"</strong>
+      ภาษาไทยพังทันที · กฎทอง: <em>UTF-8 ทุกไฟล์</em>
+    </div>
+
+    <div class="callout warn">
+      <strong>ลืม index=False เวลา to_csv</strong>
+      Pandas จะใส่ column ใหม่ "Unnamed: 0" · กฎ: <code>df.to_csv(..., index=False)</code> เสมอ
+    </div>
+
+    <h2>ส่งงานสัปดาห์นี้</h2>
+    <ul>
+      <li>📓 Jupyter/Colab notebook ที่ทำ Workshop ครบ 7 ขั้น</li>
+      <li>📂 ใน repo มี: ไฟล์ต้นฉบับ CSV + JSON ที่แปลงแล้ว + .db ที่ insert แล้ว</li>
+      <li>📝 README อธิบายว่าข้อมูลมาจากไหน + 3 คำถามที่ตอบ</li>
+    </ul>
+
+    <h3>Reference จาก slide เดิม</h3>
+    <p>ครอบคลุม Topic เดิมที่กระจายอยู่ — list/dict (จาก Topic 7), CSV จาก Topic 10 (Pandas), และขยายไป JSON + SQLite ที่ slide เดิมไม่ครอบคลุม</p>
+
+    <div class="pager">
+      <a href="w07-cli-workshop.html"><div class="label">← สัปดาห์ที่แล้ว</div><div class="title">W07 — Workshop 3 CLI Tools</div></a>
+      <a href="w09-numpy-plot.html" class="next"><div class="label">สัปดาห์ถัดไป →</div><div class="title">W09 — NumPy + Matplotlib</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+<script src="js/diagram-tools/mermaid-editor.js" defer></script>
+<script src="js/code-tools/python-runner.js" defer></script>
+<script src="js/code-tools/predict-quiz.js" defer></script>
+<script src="js/code-tools/diff-viewer.js" defer></script>
+</body>
+</html>

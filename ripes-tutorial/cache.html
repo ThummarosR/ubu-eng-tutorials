@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>แท็บ Cache — คู่มือ Ripes</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <div class="brand">
+      <img src="images/logo.png" alt="Ripes logo">
+      <div>
+        <div class="title">Ripes Tutorial</div>
+        <div class="subtitle">คู่มือการใช้งานฉบับภาษาไทย</div>
+      </div>
+    </div>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html">หน้าแรก &amp; ติดตั้ง</a>
+      <h4>แท็บการใช้งาน</h4>
+      <a href="editor.html">1. แท็บ Editor</a>
+      <a href="processor.html">2. แท็บ Processor</a>
+      <a href="memory.html">3. แท็บ Memory</a>
+      <a href="cache.html" class="active">4. แท็บ Cache</a>
+      <a href="io.html">5. แท็บ I/O</a>
+      <h4>อ้างอิง</h4>
+      <a href="ecalls.html">System Calls (ecall)</a>
+      <h4>ตัวอย่างประกอบ</h4>
+      <a href="examples/factorial.html">Factorial (Assembly)</a>
+      <a href="examples/leds.html">LEDs (I/O)</a>
+      <a href="examples/matrixmul.html">Matrix Multiply (C)</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+    <h1>แท็บ Cache</h1>
+    <p class="lede">เครื่องมือจำลอง L1 cache ทั้งฝั่ง data (L1D) และ instruction (L1I) สามารถปรับแต่งโครงสร้าง cache และวิเคราะห์ผลกระทบต่อประสิทธิภาพได้</p>
+
+    <figure>
+      <img src="images/cacheanimation.gif" alt="Cache animation">
+      <figcaption>ภาพเคลื่อนไหวแสดงการ access cache</figcaption>
+    </figure>
+
+    <h2>หลักการทำงาน</h2>
+    <p>แท็บ Cache ของ Ripes ทำงานในแบบ <strong>trace-based simulation</strong> — ตัว processor model จะ <em>ไม่</em> เข้าถึง cache โดยตรง แต่ตัว cache simulator จะดู memory access ของ CPU ทุก cycle แล้วนำมาจำลองการทำงานของ cache</p>
+
+    <div class="callout note">
+      <strong>ข้อจำกัดที่ต้องเข้าใจ</strong>
+      <ul style="margin: 6px 0 0;">
+        <li>Ripes <strong>ไม่</strong> จำลอง cache access latency ดังนั้นไม่สามารถบอก execution time ที่แท้จริงได้</li>
+        <li>บอกได้แค่ <strong>hit rate, miss rate, writeback rate</strong></li>
+        <li>แม้ตั้ง write-back policy ค่าที่ "dirty" ใน cache จะปรากฏใน memory view ด้วยเสมอ (Ripes เขียนทุก write ลง main memory)</li>
+      </ul>
+    </div>
+
+    <div class="callout tip">
+      <strong>เคล็ดลับ</strong>
+      สำหรับการเรียนเรื่อง cache แนะนำให้ใช้ <strong>Single Cycle processor</strong> เพราะ pipelined processor อาจ stall ระหว่าง memory access ซึ่งจะทำให้นับ memory access เกินจริง
+    </div>
+
+    <h2>การตั้งค่า Cache</h2>
+
+    <figure>
+      <img src="images/cacheconfig.png" alt="Cache configuration">
+      <figcaption>หน้าจอตั้งค่า cache</figcaption>
+    </figure>
+
+    <table>
+      <thead>
+        <tr><th>พารามิเตอร์</th><th>ความหมาย</th><th>หน่วย</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><strong>Ways</strong></td>
+          <td>Associativity ของ cache (เก็บเป็น power of 2)
+            <br><code>ways=0</code> → 1-way (direct mapped)
+            <br><code>ways=1</code> → 2-way set associative
+            <br><code>ways=2</code> → 4-way set associative</td>
+          <td>เลขชี้กำลังของ 2</td>
+        </tr>
+        <tr>
+          <td><strong>Sets</strong></td>
+          <td>จำนวน cache set กำหนดขนาดของ index field</td>
+          <td>เลขชี้กำลังของ 2</td>
+        </tr>
+        <tr>
+          <td><strong>Words per Line</strong></td>
+          <td>จำนวน word ในแต่ละ cache line กำหนดขนาดของ word offset</td>
+          <td>เลขชี้กำลังของ 2</td>
+        </tr>
+        <tr>
+          <td><strong>Wr. hit / Wr. miss</strong></td>
+          <td>Cache write policy เช่น write-through, write-back, write-allocate, no-write-allocate</td>
+          <td>—</td>
+        </tr>
+        <tr>
+          <td><strong>Repl. policy</strong></td>
+          <td>Replacement policy เช่น LRU, Random</td>
+          <td>—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <p>นอกจากนี้มี <strong>preset</strong> ที่กำหนดมาให้ใช้ทันที และยังสามารถบันทึก preset ของตัวเองได้</p>
+
+    <h2>การอ่าน Cache View</h2>
+
+    <figure>
+      <img src="images/cacheview.png" alt="Cache view">
+      <figcaption>โครงสร้าง cache view</figcaption>
+    </figure>
+
+    <ul>
+      <li><strong>Cache sets</strong> — คั่นด้วยเส้น <strong>ทึบ</strong> แต่ละแถวมี index ของ set</li>
+      <li><strong>Cache ways</strong> — อยู่ภายในแต่ละ set คั่นกันด้วยเส้น <strong>ประ</strong></li>
+    </ul>
+
+    <p>โดยปกติแบบเรียนจะวาด set-associative cache เป็นตารางแยกตาม way Ripes ใช้รูปแบบที่เทียบเท่ากันแต่รวมเป็นตารางเดียว:</p>
+
+    <figure>
+      <img src="images/cachewayexpl.svg" alt="Cache way explanation">
+      <figcaption>การเทียบรูปแบบที่ Ripes ใช้กับรูปแบบแบบเรียนทั่วไป</figcaption>
+    </figure>
+
+    <h3>คอลัมน์ใน Cache View</h3>
+    <ul>
+      <li><strong>V</strong> — Valid bit (cache line นี้มีข้อมูล valid หรือไม่)</li>
+      <li><strong>D</strong> — Dirty bit (cache line นี้ถูกเขียน โดยใช้ write-back policy หรือไม่)</li>
+      <li><strong>LRU</strong> — แสดงเมื่อ <code>ways &gt; 0</code> และใช้ LRU policy ค่ายิ่งสูง = ใกล้ถูก evict</li>
+      <li><strong>Tag</strong> — ค่า tag ของ cache line</li>
+      <li><strong>Word #</strong> — ข้อมูลที่ cache เก็บไว้</li>
+    </ul>
+
+    <h3>การอ่าน Highlight</h3>
+    <ul>
+      <li>เมื่อ cache ถูก access — แถวของ set และคอลัมน์ของ word จะ <strong>highlight สีเหลือง</strong></li>
+      <li><strong>สีเขียว</strong> = cache hit</li>
+      <li><strong>สีแดง</strong> = cache miss</li>
+      <li><strong>สีฟ้า</strong> = ค่าที่ dirty (เมื่อใช้ write-back policy)</li>
+      <li>เลื่อนเมาส์บน word เพื่อดู physical address</li>
+      <li>คลิกบน word เพื่อกระโดดไปยัง memory tab ที่ address นั้น</li>
+    </ul>
+
+    <h2>สถิติและกราฟ Cache</h2>
+
+    <figure>
+      <img src="images/cacheplot.png" alt="Cache plot">
+      <figcaption>กราฟแสดง cache statistics แบบ real-time</figcaption>
+    </figure>
+
+    <p>Ripes บันทึกข้อมูลทุก cycle:</p>
+    <ul>
+      <li><strong>Writes</strong> — จำนวนครั้งที่ access cache เพื่อเขียน</li>
+      <li><strong>Reads</strong> — จำนวนครั้งที่ access cache เพื่ออ่าน</li>
+      <li><strong>Hits / Misses</strong> — จำนวน hit/miss ทั้งหมด</li>
+      <li><strong>Writebacks</strong> — จำนวนครั้งที่ cache line ถูก write กลับเข้า memory</li>
+      <li><strong>Access count</strong> — จำนวน access ทั้งหมด (= reads + writes)</li>
+    </ul>
+
+    <p>เลือก <strong>Numerator</strong> และ <strong>Denominator</strong> เพื่อ plot อัตราส่วน เช่น เลือก Hits/Access count จะได้ <strong>hit rate</strong> ตามเวลา</p>
+
+    <h2>ตัวอย่าง: ผลของการเลือก Cache แบบต่าง ๆ</h2>
+    <p>โปรแกรมตัวอย่างที่ access memory ด้วย stride เฉพาะ:</p>
+
+<pre><code>.data
+stride:          .word   512   # ก้าวกระโดดทีละกี่ word
+accessesPerTurn: .word   2
+turns:           .word   128
+baseAddress:     .word   4096
+
+.text
+cacheLoop:
+        lw      a6, turns
+        lw      a7, baseAddress
+        lw      a2, stride
+        lw      a0, accessesPerTurn
+        # ... (วน access memory ตาม stride)</code></pre>
+
+    <h3>ลองที่ 1: 32-entry 4-word direct mapped cache</h3>
+    <ol class="steps">
+      <li>เปิด Memory tab แล้วเลือก preset <strong>"32-entry 4-word direct mapped cache"</strong></li>
+      <li>กด <strong>Run</strong></li>
+      <li>ได้ hit rate = <code>0.01154</code> (ต่ำมาก!)</li>
+    </ol>
+
+    <p>เหตุผล: stride = 512 word ทำให้ทุก access map ลง set เดียวกัน เกิด conflict miss ทุกครั้ง</p>
+
+    <h3>ลองที่ 2: 32-entry 4-word 2-way set associative</h3>
+    <ol class="steps">
+      <li>เปลี่ยน preset เป็น <strong>"32-entry 4-word 2-way set associative"</strong> (ขนาด cache เท่าเดิม!)</li>
+      <li>กด <strong>Run</strong></li>
+      <li>ได้ hit rate = <code>0.9885</code> (สูงมาก!)</li>
+    </ol>
+
+    <p>เหตุผล: ทั้ง 2 address ที่ access สามารถอยู่ใน 2 way ของ set เดียวกันได้ ไม่มี conflict miss</p>
+
+    <div class="callout tip">
+      <strong>บทเรียน</strong>
+      <strong>ขนาด cache เท่ากันแต่ associativity ต่างกัน → hit rate ต่างกันมาก!</strong> นี่คือเหตุผลที่ CPU จริงเลือกใช้ set-associative cache ในระดับ L1/L2
+    </div>
+
+    <div class="pager">
+      <a href="memory.html">
+        <div class="label">← บทก่อนหน้า</div>
+        <div class="title">3. แท็บ Memory</div>
+      </a>
+      <a class="next" href="io.html">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">5. แท็บ I/O</div>
+      </a>
+    </div>
+  </main>
+</div>
+</body>
+</html>

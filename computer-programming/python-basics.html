@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Python Cheat-sheet — พื้นฐานที่ใช้บ่อย | Computer Programming</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/theme.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="Computer Programming"></div>
+      <div>
+        <div class="title">Computer Programming</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย · 15 สัปดาห์ · ยุค AI</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>🚀 เริ่มต้น (Setup)</h4>
+      <a href="setup-python.html"><span class="num">🐍</span> ติดตั้ง Python</a>
+      <a href="setup-vscode.html"><span class="num">💻</span> VS Code / Cursor</a>
+      <a href="setup-terminal.html"><span class="num">🖥️</span> Terminal พื้นฐาน</a>
+      <a href="setup-pip.html"><span class="num">📦</span> pip + Packages</a>
+      <a href="setup-git.html"><span class="num">🌿</span> Git + GitHub</a>
+      <a href="setup-colab.html"><span class="num">☁️</span> Google Colab</a>
+      <a href="setup-ai.html"><span class="num">🤖</span> AI Accounts</a>
+      <a href="python-basics.html" class="active"><span class="num">📖</span> Python Cheat-sheet</a>
+
+      <h4>🧭 ก่อนเขียนโค้ด</h4>
+      <a href="w01-problem-finding.html"><span class="num">W01</span> หาปัญหา + Flowchart</a>
+      <a href="w02-tools-vocab.html"><span class="num">W02</span> เครื่องมือ + คำศัพท์</a>
+      <a href="w03-diagrams.html"><span class="num">W03</span> Diagram 6 แบบ</a>
+
+      <h4>🤖 Code Literacy with AI</h4>
+      <a href="w04-read-ai-code.html"><span class="num">W04</span> อ่านโค้ดที่ AI เขียน</a>
+      <a href="w05-modify-ai-code.html"><span class="num">W05</span> แก้ไข + ต่อยอด</a>
+      <a href="w06-direct-from-spec.html"><span class="num">W06</span> สั่ง AI จาก spec</a>
+      <a href="w07-cli-workshop.html"><span class="num">W07</span> Workshop — 3 CLI tools</a>
+
+      <h4>📊 Data with AI</h4>
+      <a href="w08-tables.html"><span class="num">W08</span> ตาราง list/dict/CSV</a>
+      <a href="w09-numpy-plot.html"><span class="num">W09</span> NumPy + Matplotlib</a>
+      <a href="w10-data-project.html"><span class="num">W10</span> Data Project ปลายทาง</a>
+
+      <h4>🚀 Advanced</h4>
+      <a href="w11-oop-structure.html"><span class="num">W11</span> OOP + จัดระเบียบโค้ด</a>
+      <a href="w12-apis.html"><span class="num">W12</span> APIs + Integration</a>
+      <a href="w13-debug-test.html"><span class="num">W13</span> Debug + Test + Reality</a>
+      <a href="w14-deploy.html"><span class="num">W14</span> Deploy + Maintain</a>
+
+      <h4>🎓 Capstone</h4>
+      <a href="w15-final-project.html"><span class="num">W15</span> Final Project</a>
+
+      <h4>🛠️ เครื่องมือ</h4>
+      <a href="tools.html"><span class="num">🎨</span> สร้าง Diagram</a>
+      <a href="code-tools.html"><span class="num">🐍</span> ฝึก Code</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="references.html"><span class="num">📚</span> เอกสาร &amp; Slide เก่า</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">Reference · ติดตั้งเครื่องไม่ได้ก็เล่นได้ในหน้านี้เลย</span>
+    <h1>📖 Python Cheat-sheet</h1>
+    <p class="lede">
+      หน้านี้ไม่ใช่ <em>"บทเรียน"</em> — เป็น <strong>"ตัวอ้างอิงเร็ว"</strong> · เปิดไว้ขณะทำงาน
+      W04–W14 · ทุก example รันได้เลยในเบราว์เซอร์ (กด ▶ Run) · จำไม่ได้เรื่องไหน → กลับมาดูที่นี่
+    </p>
+
+    <div class="callout info">
+      <strong>หน้านี้ <em>เสริม</em> ไม่ใช่ <em>แทน</em></strong>
+      เนื้อหาจริงสอนใน W04 (อ่านโค้ด AI) · W05 (แก้) · W06 (เขียน spec) · W08 (ตาราง) ·
+      หน้านี้ <em>"ใช้ลืม"</em> — ลืม syntax ไหน → ค้นที่นี่
+    </div>
+
+    <h2>📑 สารบัญ</h2>
+    <ol style="columns:2;column-gap:30px">
+      <li><a href="#variables">ตัวแปร + Type</a></li>
+      <li><a href="#operators">Operators</a></li>
+      <li><a href="#strings">Strings + f-string</a></li>
+      <li><a href="#input-print">input() + print()</a></li>
+      <li><a href="#if">if / elif / else</a></li>
+      <li><a href="#for">for loop</a></li>
+      <li><a href="#while">while loop</a></li>
+      <li><a href="#list">List</a></li>
+      <li><a href="#dict">Dict</a></li>
+      <li><a href="#tuple-set">Tuple + Set</a></li>
+      <li><a href="#functions">Functions (def)</a></li>
+      <li><a href="#imports">Import + Modules</a></li>
+      <li><a href="#files">อ่าน/เขียน ไฟล์</a></li>
+      <li><a href="#errors">Try / Except</a></li>
+      <li><a href="#builtin">Built-in Functions</a></li>
+      <li><a href="#gotchas">Gotchas ที่เจอบ่อย</a></li>
+    </ol>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2 id="variables">1. ตัวแปร + Type</h2>
+    <p>ตัวแปร = "กล่องเก็บค่า" · Python รู้ type อัตโนมัติจากค่าที่ใส่ ไม่ต้องประกาศ</p>
+
+    <div class="python-runner">name = "Ploy"          # str (string — ข้อความ)
+age = 20               # int (integer — เลขจำนวนเต็ม)
+gpa = 3.45             # float (เลขทศนิยม)
+is_active = True       # bool (True / False)
+nothing = None         # None — "ไม่มีค่า"
+
+# ตรวจ type ของตัวแปร
+print(type(name))      # &lt;class 'str'&gt;
+print(type(age))       # &lt;class 'int'&gt;
+print(type(gpa))       # &lt;class 'float'&gt;
+print(type(is_active)) # &lt;class 'bool'&gt;
+
+# แปลง type
+print(int("42"))       # 42 (str → int)
+print(str(42))         # "42" (int → str)
+print(float("3.14"))   # 3.14 (str → float)
+print(int(3.7))        # 3 (ตัดเศษ — ไม่ปัด)</div>
+
+    <p style="color:var(--text-muted);font-size:13.5px">
+      📚 สอนลึกที่ <a href="w04-read-ai-code.html">W04</a>
+    </p>
+
+    <h2 id="operators">2. Operators</h2>
+
+    <table>
+      <thead><tr><th>กลุ่ม</th><th>Operator</th><th>ตัวอย่าง</th></tr></thead>
+      <tbody>
+        <tr><td rowspan="7"><strong>Math</strong></td><td><code>+</code> บวก</td><td><code>3 + 2</code> → 5</td></tr>
+        <tr><td><code>-</code> ลบ</td><td><code>5 - 3</code> → 2</td></tr>
+        <tr><td><code>*</code> คูณ</td><td><code>4 * 3</code> → 12</td></tr>
+        <tr><td><code>/</code> หาร (ทศนิยม)</td><td><code>7 / 2</code> → 3.5</td></tr>
+        <tr><td><code>//</code> หารปัดลง</td><td><code>7 // 2</code> → 3</td></tr>
+        <tr><td><code>%</code> เศษ (modulo)</td><td><code>7 % 2</code> → 1</td></tr>
+        <tr><td><code>**</code> ยกกำลัง</td><td><code>2 ** 3</code> → 8</td></tr>
+        <tr><td rowspan="6"><strong>Compare</strong></td><td><code>==</code> เท่ากัน</td><td><code>5 == 5</code> → True</td></tr>
+        <tr><td><code>!=</code> ไม่เท่า</td><td><code>5 != 3</code> → True</td></tr>
+        <tr><td><code>&gt;</code> มากกว่า</td><td><code>5 &gt; 3</code> → True</td></tr>
+        <tr><td><code>&lt;</code> น้อยกว่า</td><td><code>5 &lt; 3</code> → False</td></tr>
+        <tr><td><code>&gt;=</code> มากกว่าเท่ากับ</td><td><code>5 &gt;= 5</code> → True</td></tr>
+        <tr><td><code>&lt;=</code> น้อยกว่าเท่ากับ</td><td><code>3 &lt;= 5</code> → True</td></tr>
+        <tr><td rowspan="3"><strong>Logic</strong></td><td><code>and</code></td><td><code>(5&gt;3) and (2&lt;4)</code> → True</td></tr>
+        <tr><td><code>or</code></td><td><code>(5&gt;3) or (2&gt;4)</code> → True</td></tr>
+        <tr><td><code>not</code></td><td><code>not (5&gt;3)</code> → False</td></tr>
+        <tr><td rowspan="4"><strong>Assign</strong></td><td><code>=</code></td><td><code>x = 5</code></td></tr>
+        <tr><td><code>+=</code></td><td><code>x += 1</code> เหมือน <code>x = x + 1</code></td></tr>
+        <tr><td><code>-=</code></td><td><code>x -= 2</code> เหมือน <code>x = x - 2</code></td></tr>
+        <tr><td><code>*=</code> <code>/=</code> <code>//=</code> <code>%=</code></td><td>ทำงานเหมือนกัน</td></tr>
+      </tbody>
+    </table>
+
+    <div class="python-runner">a, b = 7, 2
+
+print(a / b)    # 3.5 — หารปกติ
+print(a // b)   # 3   — ปัดลง
+print(a % b)    # 1   — เศษ
+print(a ** b)   # 49  — 7^2
+
+# ลำดับความสำคัญ (precedence) — เหมือนคณิตศาสตร์
+print(2 + 3 * 4)        # 14 (ไม่ใช่ 20)
+print((2 + 3) * 4)      # 20 — ใช้วงเล็บเปลี่ยนลำดับ
+
+# Logic
+score = 75
+print(score &gt;= 50 and score &lt;= 100)   # True
+print(score &gt; 100 or score &lt; 0)       # False</div>
+
+    <div class="callout warn">
+      <strong>กับดักที่เจอบ่อย — <code>=</code> vs <code>==</code></strong>
+      <code>=</code> คือ <em>assign</em> (ใส่ค่า) · <code>==</code> คือ <em>compare</em> (เปรียบเทียบ) ·
+      ใน <code>if</code> ใช้ <code>==</code> เสมอ — เขียน <code>if x = 5:</code> จะ SyntaxError
+    </div>
+
+    <h2 id="strings">3. Strings + f-string</h2>
+
+    <div class="python-runner">name = "นัท"
+score = 85
+
+# 1. ต่อ string ด้วย + (ต้อง str ทั้งคู่)
+greeting = "สวัสดี " + name
+print(greeting)
+
+# 2. f-string — แทรกตัวแปรในเครื่องหมาย {}
+print(f"คะแนนของ {name} คือ {score}")
+
+# 3. format ตัวเลข
+pi = 3.14159
+print(f"pi = {pi:.2f}")      # 2 ตำแหน่งทศนิยม → 3.14
+print(f"pi = {pi:.4f}")      # 4 ตำแหน่ง → 3.1416
+print(f"price = {12345:,}")  # ใส่ comma คั่นพัน → 12,345
+
+# 4. string methods ที่ใช้บ่อย
+s = "  Hello World  "
+print(s.strip())             # ตัดช่องว่างหัว/ท้าย → "Hello World"
+print(s.lower())             # → "  hello world  "
+print(s.upper())             # → "  HELLO WORLD  "
+print(s.replace("World", "Python"))  # → "  Hello Python  "
+print("a,b,c".split(","))    # → ['a', 'b', 'c']
+print("-".join(["a","b","c"]))  # → "a-b-c"
+
+# 5. ความยาว + index
+text = "Python"
+print(len(text))             # 6
+print(text[0])               # 'P' (ตัวแรก = index 0)
+print(text[-1])              # 'n' (ติดลบ = นับจากท้าย)
+print(text[0:3])             # 'Pyt' (slice 0–2)</div>
+
+    <p style="color:var(--text-muted);font-size:13.5px">📚 สอนลึกที่ <a href="w04-read-ai-code.html">W04</a> + <a href="w05-modify-ai-code.html">W05</a></p>
+
+    <h2 id="input-print">4. input() + print()</h2>
+
+    <div class="python-runner" data-inputs="Ploy&#10;20"># input() — รับจาก user · คืนค่าเป็น str เสมอ
+name = input("ชื่อ: ")          # ผู้ใช้พิมพ์: Ploy
+age_str = input("อายุ: ")       # ผู้ใช้พิมพ์: 20
+
+# ต้อง convert ถ้าจะคำนวณ
+age = int(age_str)
+print(f"{name} อายุ {age} ปี · อีก 5 ปี = {age + 5}")
+
+# print() — option useful
+print("a", "b", "c")              # default separator = " "
+print("a", "b", "c", sep="-")     # → "a-b-c"
+print("no newline", end="")       # ไม่ขึ้นบรรทัดใหม่
+print(" continue same line")</div>
+
+    <div class="callout warn">
+      <strong>input() คืน string เสมอ</strong>
+      ถ้าจะคำนวณ → ต้องใช้ <code>int()</code> หรือ <code>float()</code> · ไม่งั้น <code>"3" + 5</code> = TypeError
+    </div>
+
+    <h2 id="if">5. if / elif / else</h2>
+
+    <div class="python-runner" data-inputs="78">score = int(input("คะแนน: "))
+
+if score &gt;= 80:
+    grade = "A"
+elif score &gt;= 70:
+    grade = "B"
+elif score &gt;= 60:
+    grade = "C"
+elif score &gt;= 50:
+    grade = "D"
+else:
+    grade = "F"
+
+print(f"เกรด: {grade}")
+
+# inline if (ternary) — ใช้เมื่อมี 2 ทางเลือกสั้น ๆ
+status = "ผ่าน" if score &gt;= 50 else "ตก"
+print(status)
+
+# เช็คหลายเงื่อนไขพร้อมกัน
+age = 22
+has_license = True
+
+if age &gt;= 18 and has_license:
+    print("ขับรถได้")
+elif age &gt;= 18 and not has_license:
+    print("รอสอบ")
+else:
+    print("ยังเด็กเกิน")</div>
+
+    <p style="color:var(--text-muted);font-size:13.5px">📚 ดู flowchart-เทียบ-code ที่ <a href="w04-read-ai-code.html">W04</a></p>
+
+    <h2 id="for">6. for loop</h2>
+
+    <div class="python-runner"># 1. วน list
+scores = [85, 72, 45, 91]
+for s in scores:
+    print(s)
+
+# 2. วนช่วงตัวเลข — range()
+for i in range(5):           # 0, 1, 2, 3, 4
+    print(i, end=" ")
+print()
+
+for i in range(2, 7):        # 2, 3, 4, 5, 6
+    print(i, end=" ")
+print()
+
+for i in range(0, 20, 5):    # 0, 5, 10, 15
+    print(i, end=" ")
+print()
+
+# 3. enumerate — ดู index + ค่า พร้อมกัน
+fruits = ["apple", "banana", "cherry"]
+for i, fruit in enumerate(fruits):
+    print(f"{i}: {fruit}")
+
+# 4. zip — วน 2 list พร้อมกัน
+names = ["Ploy", "Nat", "Mint"]
+ages = [20, 22, 19]
+for name, age in zip(names, ages):
+    print(f"{name} อายุ {age}")
+
+# 5. วน string (เป็น char ทีละตัว)
+for c in "Python":
+    print(c, end=".")
+print()
+
+# break + continue
+for i in range(10):
+    if i == 3:
+        continue       # ข้าม 3 ไป 4 ต่อ
+    if i == 7:
+        break          # ออก loop ที่ 7
+    print(i, end=" ")</div>
+
+    <h2 id="while">7. while loop</h2>
+
+    <div class="python-runner" data-inputs="wrong&#10;wrong&#10;open-sesame">attempts = 0
+max_attempts = 3
+
+while attempts &lt; max_attempts:
+    password = input("รหัสผ่าน: ")
+    if password == "open-sesame":
+        print("✅ เข้าได้")
+        break
+    attempts += 1
+    print(f"❌ ผิด ({attempts}/{max_attempts})")
+else:
+    # else ของ while = ทำเมื่อ loop จบโดยไม่มี break
+    print("🔒 บัญชีถูกล็อค")</div>
+
+    <div class="callout warn">
+      <strong>ระวัง infinite loop</strong>
+      ถ้าตัวแปรในเงื่อนไข <em>"ไม่เปลี่ยน"</em> → loop จะวนตลอดไป · ใน VS Code กด <kbd>Ctrl + C</kbd> ใน terminal เพื่อหยุด
+    </div>
+
+    <h2 id="list">8. List</h2>
+
+    <div class="python-runner">scores = [85, 72, 45, 91]
+
+# เข้าถึงด้วย index (เริ่มจาก 0)
+print(scores[0])         # 85
+print(scores[-1])        # 91 (ตัวสุดท้าย)
+print(scores[1:3])       # [72, 45] — slice
+
+# เพิ่ม
+scores.append(60)        # ต่อท้าย → [85, 72, 45, 91, 60]
+scores.insert(0, 100)    # แทรกตำแหน่ง 0 → [100, 85, 72, 45, 91, 60]
+print(scores)
+
+# ลบ
+scores.remove(72)        # ลบค่า 72 (ตัวแรกที่เจอ)
+del scores[0]            # ลบ index 0
+last = scores.pop()      # ดึง + ลบ ตัวสุดท้าย
+print(scores, "ดึงออก:", last)
+
+# ความยาว + ตรวจสมาชิก
+print(len(scores))
+print(85 in scores)      # True
+
+# loop + index
+for i, s in enumerate(scores):
+    print(f"index {i}: {s}")
+
+# functions ที่ใช้บ่อย
+print(sum(scores))       # ผลรวม
+print(max(scores))       # มากสุด
+print(min(scores))       # น้อยสุด
+print(sorted(scores))    # เรียงน้อยไปมาก
+print(sorted(scores, reverse=True))  # มากไปน้อย
+
+# list comprehension — สร้าง list ใหม่จาก list เดิม
+squares = [x**2 for x in range(5)]
+print(squares)           # [0, 1, 4, 9, 16]
+
+evens = [x for x in range(10) if x % 2 == 0]
+print(evens)             # [0, 2, 4, 6, 8]</div>
+
+    <p style="color:var(--text-muted);font-size:13.5px">📚 สอนลึกที่ <a href="w08-tables.html">W08</a></p>
+
+    <h2 id="dict">9. Dict</h2>
+    <p>Dict = ตาราง <code>key → value</code> · เข้าถึงด้วย key ไม่ใช่ index</p>
+
+    <div class="python-runner">student = {
+    "name": "Ploy",
+    "id": "640001",
+    "gpa": 3.45,
+    "scores": [85, 72, 91],
+}
+
+# เข้าถึง
+print(student["name"])           # Ploy
+print(student["scores"][0])      # 85
+
+# .get() — ปลอดภัยกว่า · ไม่เจอ key → คืน None (ไม่ error)
+print(student.get("phone"))                 # None
+print(student.get("phone", "ไม่มี"))         # ค่า default
+
+# เพิ่ม / แก้
+student["email"] = "ploy@ubu.ac.th"   # เพิ่ม
+student["gpa"] = 3.60                 # แก้
+del student["id"]                     # ลบ
+print(student)
+
+# loop key + value
+for key, value in student.items():
+    print(f"{key}: {value}")
+
+# loop เฉพาะ key
+for key in student.keys():
+    print(key)
+
+# ตรวจมี key มั้ย
+print("name" in student)     # True
+print("phone" in student)    # False
+
+# nested dict — dict ซ้อน dict (ใช้บ่อย)
+classroom = {
+    "640001": {"name": "Ploy", "gpa": 3.45},
+    "640002": {"name": "Nat",  "gpa": 3.12},
+}
+print(classroom["640001"]["name"])  # Ploy</div>
+
+    <p style="color:var(--text-muted);font-size:13.5px">📚 สอนลึกที่ <a href="w08-tables.html">W08</a></p>
+
+    <h2 id="tuple-set">10. Tuple + Set</h2>
+
+    <div class="python-runner"># Tuple = list แต่ "แก้ไม่ได้" — ใช้สำหรับค่าที่ไม่อยากให้เปลี่ยน
+point = (3, 5)
+print(point[0], point[1])
+# point[0] = 10  # ❌ TypeError
+
+# unpacking — แยกค่าใส่ตัวแปร
+x, y = point
+print(f"x={x}, y={y}")
+
+# สลับค่าตัวแปร (Pythonic)
+a, b = 1, 2
+a, b = b, a
+print(a, b)    # 2 1
+
+# Set = list แต่ "ไม่ซ้ำ + ไม่มีลำดับ"
+scores = [85, 72, 85, 91, 72]
+unique = set(scores)
+print(unique)             # {72, 85, 91} — ไม่ซ้ำ
+print(len(unique))        # 3
+
+# union / intersection
+A = {1, 2, 3}
+B = {2, 3, 4}
+print(A | B)              # {1, 2, 3, 4} — รวม
+print(A &amp; B)              # {2, 3}       — เหมือนกัน
+print(A - B)              # {1}          — ใน A แต่ไม่ใน B</div>
+
+    <h2 id="functions">11. Functions (def)</h2>
+
+    <div class="python-runner"># 1. function ง่าย ๆ
+def greet(name):
+    return f"สวัสดี {name}!"
+
+print(greet("Ploy"))
+
+# 2. หลาย parameter + default value
+def calc_grade(score, passing=50):
+    if score &gt;= passing:
+        return "ผ่าน"
+    return "ตก"
+
+print(calc_grade(75))          # ผ่าน (passing = 50 default)
+print(calc_grade(45, 40))      # ผ่าน (override default)
+
+# 3. keyword arguments — เรียกใช้ระบุชื่อ
+def make_user(name, age, role="student"):
+    return {"name": name, "age": age, "role": role}
+
+print(make_user(name="Ploy", age=20))
+print(make_user("Nat", 30, role="teacher"))
+
+# 4. คืน หลายค่า (จริง ๆ คืน tuple)
+def stats(numbers):
+    return min(numbers), max(numbers), sum(numbers) / len(numbers)
+
+lo, hi, avg = stats([85, 72, 91, 60])
+print(f"low={lo}, high={hi}, avg={avg:.2f}")
+
+# 5. *args (รับ argument กี่ตัวก็ได้)
+def total(*nums):
+    return sum(nums)
+
+print(total(1, 2, 3))          # 6
+print(total(1, 2, 3, 4, 5))    # 15
+
+# 6. **kwargs (รับ keyword argument กี่ตัวก็ได้)
+def describe(**props):
+    for k, v in props.items():
+        print(f"{k}: {v}")
+
+describe(name="Ploy", age=20, gpa=3.45)</div>
+
+    <p style="color:var(--text-muted);font-size:13.5px">📚 สอนลึกที่ <a href="w04-read-ai-code.html">W04</a> + <a href="w05-modify-ai-code.html">W05</a> + <a href="w11-oop-structure.html">W11</a></p>
+
+    <h2 id="imports">12. Import + Modules</h2>
+
+    <div class="python-runner">import math
+
+print(math.pi)                # 3.141592...
+print(math.sqrt(16))          # 4.0
+print(math.floor(3.7))        # 3
+print(math.ceil(3.2))         # 4
+
+# from-import — เอามาเฉพาะตัว
+from random import randint, choice
+
+print(randint(1, 10))          # สุ่ม 1-10
+print(choice(["A", "B", "C"]))  # สุ่ม element
+
+# import + ตั้งชื่อสั้น (มาตรฐาน data science)
+import numpy as np
+import pandas as pd
+
+arr = np.array([1, 2, 3, 4])
+print(arr.mean())              # 2.5
+
+# import file ของตัวเอง
+# สมมุติมี helpers.py ใน folder เดียวกัน
+# from helpers import calc_grade
+# print(calc_grade(75))</div>
+
+    <p style="color:var(--text-muted);font-size:13.5px">📚 สอนลึกที่ <a href="w11-oop-structure.html">W11</a> (จัดระเบียบ module)</p>
+
+    <h2 id="files">13. อ่าน/เขียน ไฟล์</h2>
+
+    <p>ตัวอย่างเขียนแล้วอ่านในที่เดียว (ใน Pyodide จะใช้ virtual filesystem):</p>
+
+    <div class="python-runner"># เขียน (mode="w" = write, ลบของเก่า)
+with open("students.txt", "w", encoding="utf-8") as f:
+    f.write("Ploy 85\n")
+    f.write("Nat 72\n")
+    f.write("Mint 91\n")
+
+# อ่านทั้งหมด
+with open("students.txt", "r", encoding="utf-8") as f:
+    content = f.read()
+print("ทั้งไฟล์:")
+print(content)
+
+# อ่านทีละบรรทัด — วิธีที่ใช้บ่อยสุด
+print("ทีละบรรทัด:")
+with open("students.txt", "r", encoding="utf-8") as f:
+    for line in f:
+        line = line.strip()       # ตัด \n ทิ้ง
+        name, score = line.split()
+        print(f"{name} ได้ {score}")
+
+# เพิ่มต่อท้าย (append) — mode="a"
+with open("students.txt", "a", encoding="utf-8") as f:
+    f.write("Pim 88\n")
+
+# CSV — ใช้ module csv (จะใช้ใน W08)
+import csv
+with open("scores.csv", "w", newline="", encoding="utf-8") as f:
+    writer = csv.writer(f)
+    writer.writerow(["name", "score"])
+    writer.writerow(["Ploy", 85])
+    writer.writerow(["Nat", 72])
+
+with open("scores.csv", "r", encoding="utf-8") as f:
+    for row in csv.reader(f):
+        print(row)</div>
+
+    <div class="callout tip">
+      <strong>ทำไม <code>with open(...)</code></strong>
+      Block <code>with</code> ปิดไฟล์ให้อัตโนมัติแม้เกิด error · ไม่ต้องเขียน <code>f.close()</code> เอง · เป็น Python idiom
+    </div>
+
+    <p style="color:var(--text-muted);font-size:13.5px">📚 สอนลึกที่ <a href="w08-tables.html">W08</a> (CSV) + <a href="w10-data-project.html">W10</a> (real files)</p>
+
+    <h2 id="errors">14. Try / Except</h2>
+
+    <div class="python-runner">def safe_divide(a, b):
+    try:
+        result = a / b
+    except ZeroDivisionError:
+        return "หารด้วย 0 ไม่ได้"
+    except TypeError:
+        return "type ผิด"
+    else:
+        # ทำเมื่อ try สำเร็จไม่ error
+        return result
+    finally:
+        # ทำเสมอ — error หรือไม่ก็ตาม
+        print("(ตรวจสอบเสร็จ)")
+
+print(safe_divide(10, 2))       # 5.0
+print(safe_divide(10, 0))       # หารด้วย 0 ไม่ได้
+print(safe_divide("10", 2))     # type ผิด
+
+# จับ exception ทุกชนิด (ระวังใช้ — ปกปิด bug ได้)
+try:
+    score = int(input("คะแนน: "))
+except ValueError as e:
+    print(f"ใส่ตัวเลขสิ — error: {e}")
+
+# raise — โยน error เอง
+def set_age(age):
+    if age &lt; 0:
+        raise ValueError("อายุติดลบไม่ได้")
+    return age
+
+try:
+    set_age(-5)
+except ValueError as e:
+    print(f"ตรวจจับได้: {e}")</div>
+
+    <p style="color:var(--text-muted);font-size:13.5px">📚 สอนลึกที่ <a href="w13-debug-test.html">W13</a></p>
+
+    <h2 id="builtin">15. Built-in Functions ที่ใช้บ่อย</h2>
+
+    <table>
+      <thead><tr><th>Function</th><th>ทำอะไร</th><th>ตัวอย่าง</th></tr></thead>
+      <tbody>
+        <tr><td><code>len(x)</code></td><td>ความยาว</td><td><code>len("hi")</code> → 2 · <code>len([1,2,3])</code> → 3</td></tr>
+        <tr><td><code>type(x)</code></td><td>ดู type</td><td><code>type(42)</code> → int</td></tr>
+        <tr><td><code>print(...)</code></td><td>แสดงผล</td><td><code>print("hi")</code></td></tr>
+        <tr><td><code>input(prompt)</code></td><td>รับจาก user</td><td><code>name = input("ชื่อ: ")</code></td></tr>
+        <tr><td><code>int(x) / float(x) / str(x) / bool(x)</code></td><td>แปลง type</td><td><code>int("42")</code> → 42</td></tr>
+        <tr><td><code>range(stop) / range(start, stop, step)</code></td><td>ลำดับเลข</td><td><code>list(range(5))</code> → [0,1,2,3,4]</td></tr>
+        <tr><td><code>sum(iterable)</code></td><td>ผลรวม</td><td><code>sum([1,2,3])</code> → 6</td></tr>
+        <tr><td><code>min(...) / max(...)</code></td><td>ค่าน้อย/มากสุด</td><td><code>max([1,5,3])</code> → 5</td></tr>
+        <tr><td><code>abs(x)</code></td><td>ค่าสัมบูรณ์</td><td><code>abs(-5)</code> → 5</td></tr>
+        <tr><td><code>round(x, n)</code></td><td>ปัด</td><td><code>round(3.567, 1)</code> → 3.6</td></tr>
+        <tr><td><code>sorted(iterable)</code></td><td>เรียง (คืน list ใหม่)</td><td><code>sorted([3,1,2])</code> → [1,2,3]</td></tr>
+        <tr><td><code>reversed(seq)</code></td><td>กลับลำดับ</td><td><code>list(reversed([1,2,3]))</code> → [3,2,1]</td></tr>
+        <tr><td><code>enumerate(iterable)</code></td><td>(index, value) คู่</td><td>ดู section "for"</td></tr>
+        <tr><td><code>zip(a, b)</code></td><td>จับคู่ 2 lists</td><td>ดู section "for"</td></tr>
+        <tr><td><code>any(...) / all(...)</code></td><td>มี True ใดมั้ย / True ทุกตัวมั้ย</td><td><code>all([True, True, False])</code> → False</td></tr>
+        <tr><td><code>map(f, iter)</code></td><td>เรียก f กับทุก element</td><td><code>list(map(int, ["1","2"]))</code> → [1,2]</td></tr>
+        <tr><td><code>filter(f, iter)</code></td><td>เก็บเฉพาะที่ f → True</td><td><code>list(filter(lambda x: x&gt;0, [-1,2,-3]))</code> → [2]</td></tr>
+        <tr><td><code>help(x)</code></td><td>ดู doc</td><td><code>help(str.split)</code></td></tr>
+      </tbody>
+    </table>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2 id="gotchas">16. Gotchas ที่เจอบ่อย</h2>
+
+    <h3>1. Indentation ต้องสม่ำเสมอ</h3>
+    <div class="callout warn">
+      Python ใช้ <em>การย่อหน้า</em> แทน <code>{ }</code> · ทุก block ใน <code>if/for/def</code> ต้องเยื้องเท่ากัน (4 ช่องมาตรฐาน) ·
+      ห้ามผสม Tab + Space · VS Code แก้ให้ด้วย "Convert Indentation"
+    </div>
+
+    <h3>2. <code>input()</code> คืน string เสมอ</h3>
+    <div class="python-runner">x = input("ตัวเลข: ")    # ❌ ถ้าจะ + 5 จะ error
+# x + 5  →  TypeError: can only concatenate str (not "int") to str
+
+# ✅ ถูก:
+# x = int(input("ตัวเลข: "))
+print(type(x))             # str เสมอ</div>
+
+    <h3>3. <code>=</code> vs <code>==</code></h3>
+    <p><code>=</code> = assign · <code>==</code> = compare · ใน <code>if</code> ใช้ <code>==</code></p>
+
+    <h3>4. Mutable default argument — ระวัง</h3>
+    <div class="python-runner"># ❌ Buggy — default list ใช้ตัวเดียวกันทุกครั้ง
+def add_score(name, scores=[]):
+    scores.append(name)
+    return scores
+
+print(add_score("A"))    # ['A']
+print(add_score("B"))    # ['A', 'B'] ← !! ของเก่ายังอยู่
+
+# ✅ ถูก — ใช้ None แล้วสร้างใหม่ในฟังก์ชัน
+def add_score_ok(name, scores=None):
+    if scores is None:
+        scores = []
+    scores.append(name)
+    return scores
+
+print(add_score_ok("A"))
+print(add_score_ok("B"))</div>
+
+    <h3>5. <code>is</code> vs <code>==</code></h3>
+    <p><code>==</code> = ค่าเท่ากันมั้ย · <code>is</code> = object เดียวกันมั้ย · ใช้ <code>is None</code> เพื่อเช็ค None เสมอ (ไม่ใช่ <code>== None</code>)</p>
+
+    <h3>6. ลืม <code>return</code></h3>
+    <p>function ที่ไม่มี <code>return</code> → คืน <code>None</code> โดยอัตโนมัติ · ถ้าได้ <code>None</code> ที่ไม่คาดคิด — ตรวจ <code>return</code> ก่อน</p>
+
+    <h3>7. Copy list — <code>=</code> ไม่ใช่ copy</h3>
+    <div class="python-runner">a = [1, 2, 3]
+b = a              # ไม่ใช่ copy — ชี้ที่เดียวกัน
+b.append(4)
+print(a)           # [1, 2, 3, 4] ← a โดนแก้ด้วย
+
+# ✅ copy จริง
+a = [1, 2, 3]
+b = a.copy()       # หรือ b = list(a) หรือ b = a[:]
+b.append(4)
+print(a, b)        # [1, 2, 3] [1, 2, 3, 4]</div>
+
+    <h3>8. ลืมรอบ () ของ print ใน Python 3</h3>
+    <p>Python 2: <code>print "hi"</code> · Python 3: <code>print("hi")</code> · คอร์สนี้ใช้ Python 3 ทั้งหมด</p>
+
+    <hr style="border:none;border-top:1px solid var(--border);margin:36px 0">
+
+    <h2>🤖 Cheat-sheet + AI = ทรัพย์สมบัติ</h2>
+
+    <p>หน้านี้ดีกับการ <em>"ลืม syntax"</em> · ของลึก ๆ — ถาม AI · Prompt ที่ใช้ได้:</p>
+
+    <div class="callout info">
+      <strong>5 Prompts ที่ใช้ได้ทันที</strong>
+      <ul style="margin-top:6px">
+        <li><em>"อธิบาย <code>{code}</code> ทีละบรรทัดในแบบนักศึกษาปี 1"</em></li>
+        <li><em>"เปรียบเทียบ <code>list</code> กับ <code>tuple</code> · ตอนไหนใช้แต่ละแบบ"</em></li>
+        <li><em>"function นี้คืน None เพราะอะไร · มี <code>return</code> ที่ลืมรึเปล่า?"</em></li>
+        <li><em>"แปลง pseudocode นี้ → Python 3.11 ใส่ type hints + docstring"</em></li>
+        <li><em>"ทำ trace table ของ for loop นี้ — 1 แถว = 1 รอบ"</em></li>
+      </ul>
+    </div>
+
+    <div class="pager">
+      <a href="setup-colab.html"><div class="label">← ก่อนหน้า</div><div class="title">Google Colab</div></a>
+      <a href="w01-problem-finding.html" class="next"><div class="label">เริ่มเรียนจริง →</div><div class="title">W01 — หาปัญหา + Flowchart</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  Computer Programming Tutorial · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<script src="js/progress.js" defer></script>
+<script src="js/code-tools/python-runner.js" defer></script>
+</body>
+</html>

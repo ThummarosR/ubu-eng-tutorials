@@ -1,0 +1,417 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O06 — SCADA (CX-Supervisor) | PLC Automation Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="PLC Automation"></div>
+      <div><div class="title">PLC Automation</div><div class="subtitle">คู่มือฉบับภาษาไทย — 2 Tracks</div></div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; เลือก Track</a>
+      <h4>🟥 Mitsubishi Track</h4>
+      <a href="mit-01-intro.html"><span class="num">M01</span> รู้จัก FX5U</a>
+      <a href="mit-02-ladder.html"><span class="num">M02</span> Ladder Logic</a>
+      <a href="mit-03-sensors.html"><span class="num">M03</span> เซ็นเซอร์ &amp; I/O</a>
+      <a href="mit-04-simulation.html"><span class="num">M04</span> GX Simulator</a>
+      <a href="mit-05-hmi.html"><span class="num">M05</span> HMI Samkoon</a>
+      <a href="mit-06-pid.html"><span class="num">M06</span> PID &amp; Auto-Tuning</a>
+      <a href="mit-07-modbus.html"><span class="num">M07</span> Modbus + PM2230</a>
+      <h4>🟦 Omron Track</h4>
+      <a href="omron-01-intro.html"><span class="num">O01</span> รู้จัก CP1L/CPM2A</a>
+      <a href="omron-02-ladder.html"><span class="num">O02</span> CX-Programmer Ladder</a>
+      <a href="omron-03-fbd.html"><span class="num">O03</span> Function Block (FBD)</a>
+      <a href="omron-04-modbus.html"><span class="num">O04</span> Modbus + Inverter</a>
+      <a href="omron-05-e5cc.html"><span class="num">O05</span> E5CC Temp Control</a>
+      <a href="omron-06-scada.html" class="active"><span class="num">O06</span> SCADA (CX-Supervisor)</a>
+      <a href="omron-07-scada-workshop.html"><span class="num">O07</span> 🏭 SCADA Workshop</a>
+      <h4>แหล่งข้อมูล</h4>
+      <a href="videos.html"><span class="num">▶</span> วิดีโอเลคเชอร์</a>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ O06 · SCADA · CX-Supervisor</span>
+    <h1>SCADA ด้วย Omron CX-Supervisor</h1>
+    <p class="lede">
+      จาก HMI หน้าเดียวไปสู่ <strong>SCADA</strong> ที่ <em>มองทั้งโรงงาน</em> — บทนี้แนะนำ Concept SCADA,
+      เปรียบเทียบกับ HMI, และพาเริ่มต้นใช้ <strong>CX-Supervisor</strong> เพื่อทำ Visualization บน PC
+      ที่เชื่อมกับ CP1L (และอุปกรณ์อื่น) ผ่าน Modbus / FINS / OPC
+    </p>
+
+    <figure>
+      <img src="images/cx-supervisor-book-cover.jpg" alt="SCADA Software for Learning book cover">
+      <figcaption>ปกหนังสือ <strong>"SCADA Software for Learning — เริ่มต้นการเรียนรู้ SCADA Software"</strong> ของ Omron Thailand — ตำราเรียนภาษาไทยที่ใช้ใน Lab</figcaption>
+    </figure>
+
+    <figure>
+      <img src="images/scada-screenshots-gallery.jpg" alt="Gallery of SCADA screenshots">
+      <figcaption>ตัวอย่าง SCADA จริงในอุตสาหกรรม — Plant overview, Tank levels, 3D process view, Web-based dashboard, Trend charts — ทั้งหมดสร้างด้วย SCADA software</figcaption>
+    </figure>
+
+    <h2>SCADA vs HMI — ต่างกันยังไง</h2>
+
+    <table>
+      <thead><tr><th></th><th>HMI</th><th>SCADA</th></tr></thead>
+      <tbody>
+        <tr><td>Hardware</td><td>กล่องสำเร็จรูป + Touch Screen</td><td>Software รันบน Windows PC</td></tr>
+        <tr><td>หน้าจอ</td><td>1 เครื่อง, 1 ตู้</td><td>Multi-screen + Multi-station</td></tr>
+        <tr><td>จำนวน Tag</td><td>หลักร้อย</td><td>หลักหมื่น–แสน</td></tr>
+        <tr><td>การเชื่อมต่อ</td><td>1-2 PLC</td><td>หลาย PLC + Database + Web</td></tr>
+        <tr><td>Trend / History</td><td>ระยะสั้น (จำกัด SD card)</td><td>เก็บนาน, ต่อ SQL DB ได้</td></tr>
+        <tr><td>Alarm / Event</td><td>Popup</td><td>+ Email / SMS / Database log</td></tr>
+        <tr><td>Scripting</td><td>จำกัด (Macro)</td><td>VBScript / Python / Recipe</td></tr>
+        <tr><td>ตัวอย่างสินค้า</td><td>Samkoon SK-070FS, Weintek MT8071, Pro-face</td><td>CX-Supervisor, FactoryTalk, Wonderware, Ignition</td></tr>
+        <tr><td>ราคา</td><td>~5,000–30,000 บาท/ตัว</td><td>License ~50,000+ บาท (ต่อ runtime)</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <strong>เมื่อไหร่ต้องใช้ SCADA?</strong>
+      ใช้ HMI ถ้าควบคุมเครื่องจักร <em>เดี่ยว ๆ</em> · ใช้ SCADA เมื่อ:
+      <br>· มี PLC หลายตัวที่ต้องมองพร้อมกัน
+      <br>· ต้องการเก็บ Production Data ลง Database
+      <br>· มี Operator ดูจากห้อง Control Room แยกออกจากเครื่อง
+      <br>· ต้องการ KPI / Reporting / Email Alarms
+    </div>
+
+    <h2>CX-Supervisor — รุ่นและ License</h2>
+
+    <table>
+      <thead><tr><th>License</th><th>Tag limit</th><th>ราคาประมาณ</th><th>เหมาะกับ</th></tr></thead>
+      <tbody>
+        <tr><td>CX-Supervisor Lite</td><td>500 tags</td><td>~50,000 บาท</td><td>เครื่องจักรขนาดเล็ก, lab</td></tr>
+        <tr><td>CX-Supervisor Plus (Machine Edition)</td><td>2,000 tags</td><td>~100,000 บาท</td><td>เครื่องจักรขนาดกลาง</td></tr>
+        <tr><td>CX-Supervisor Pro</td><td>Unlimited</td><td>~250,000 บาท</td><td>SCADA ทั้งโรงงาน</td></tr>
+        <tr><td>CX-Supervisor Developer Trial</td><td>2 ชั่วโมง runtime</td><td>ฟรี</td><td><strong>เรียนรู้และทำ Lab</strong></td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>สำหรับ Lab — ใช้ Trial</strong>
+      ดาวน์โหลด CX-Supervisor Trial จาก Omron — ใช้งานได้ครบทุกฟีเจอร์ แค่ Runtime ตัดที่ 2 ชั่วโมงต่อ session
+      เพียงพอสำหรับการเรียนและ Demo
+    </div>
+
+    <h2>Editor Toolbar ของ CX-Supervisor</h2>
+
+    <figure>
+      <img src="images/cx-supervisor-editor-icons.png" alt="CX-Supervisor editor icons reference">
+      <figcaption>8 Editor หลักใน CX-Supervisor:
+        <br>📁 <strong>Work Space</strong> — แสดงรายการทุกอย่างใน Project
+        <br>🔔 <strong>Alarm Editor</strong> — เพิ่ม/แก้ Alarm
+        <br>🎬 <strong>Animation Editor</strong> — Add Script ให้ Page
+        <br>📍 <strong>Point Editor</strong> — เพิ่ม Tag (Point) ที่เชื่อมกับ PLC
+        <br>📄 <strong>Project Editor</strong> — ดูรายชื่อ Page ทั้งหมด
+        <br>🍲 <strong>Recipe Editor</strong> — กำหนดสูตรการผลิต
+        <br>📚 <strong>Graphic Library Editor</strong> — เลือก Symbol สำเร็จรูป
+        <br>▶️ <strong>Run The Project</strong> — เริ่มรัน SCADA
+      </figcaption>
+    </figure>
+
+    <h2>เริ่มสร้าง Project ใน CX-Supervisor</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>เปิด CX-Supervisor Developer</strong>
+        <code>Start → CX-Supervisor → CX-Supervisor Developer</code> — ตัว Developer ใช้สำหรับสร้าง
+        ส่วน Runtime คือตัวรันโปรเจคที่ทำเสร็จแล้ว
+      </li>
+      <li>
+        <strong>สร้าง Project ใหม่</strong>
+        <code>File → New Project</code> → ตั้งชื่อ → เลือกโฟลเดอร์เก็บ → กด OK
+      </li>
+      <li>
+        <strong>เพิ่ม PLC Connection</strong>
+        <code>Project → Add PLC</code> →
+        <ul>
+          <li>PLC Type: <strong>CP1L</strong></li>
+          <li>Network: <strong>FinsEthernet</strong> หรือ <strong>FinsGateway</strong> (สำหรับ USB/Serial)</li>
+          <li>IP Address: <code>192.168.250.1</code> (IP ของ PLC)</li>
+          <li>Node Number: <strong>1</strong></li>
+        </ul>
+      </li>
+      <li>
+        <strong>กด Test Connection</strong>
+        ต้องได้ "Connection OK" — ถ้าไม่ได้ ตรวจ IP / Firewall / สาย LAN ก่อน
+      </li>
+      <li>
+        <strong>สร้าง Points (Tags)</strong>
+        <code>Project → Points</code> → เพิ่ม Point ใหม่ →
+        <ul>
+          <li>Name: <code>Pump_Run</code></li>
+          <li>Type: <strong>Boolean</strong></li>
+          <li>I/O Source: PLC ที่เพิ่มไว้</li>
+          <li>Address: <code>100.00</code> (= Y0 ของ PLC)</li>
+        </ul>
+        ทำเหมือนกันสำหรับทุก Tag ที่ต้องใช้ (Temperature, Pressure, Speed, ฯลฯ)
+      </li>
+    </ol>
+
+    <h3>🏷️ ลองเชื่อม Tag → PLC Address</h3>
+
+    <p>ลองดูว่าตัวแปรในระบบจริงควรไปวางที่ Address ไหนของ CP1L · ลากแต่ละชิ้นไปหา address ที่ถูกต้อง
+       (ใส่ Boolean ใน CIO bit, Word ใน DM):</p>
+
+    <div class="scada-tag-mapper"></div>
+
+    <h2>การออกแบบหน้าจอ (Mimic)</h2>
+
+    <p>Mimic = หน้าจอ Process Visualization ของ SCADA — ใช้ Drag-Drop วาง object แล้ว link กับ Points:</p>
+
+    <figure>
+      <img src="images/scada-mimic-sugar-process.png" alt="SCADA mimic example — Sugar process plant">
+      <figcaption>ตัวอย่าง Mimic ที่สมบูรณ์ — กระบวนการผลิตน้ำเชื่อม: Steam Valve / Stew Motor / Syrup Valve / Sugar Hopper / Hot Water Valve / Cyclone · แสดง <strong>TEMP 647°C</strong> + <strong>LEVEL 1030 L</strong> real-time · ปุ่ม START SYSTEM / CLOSE valves · Alarm log ซ้ายล่าง (OVER_LEVEL → NORMAL)</figcaption>
+    </figure>
+
+    <figure>
+      <img src="images/cx-supervisor-percentage-fill-dialog.jpg" alt="CX-Supervisor Percentage Fill animation dialog">
+      <figcaption>หน้าตั้งค่า <strong>Percentage Fill</strong> animation — Active Expression Range (Min 0 / Max 100) → เปอร์เซ็นต์ของพื้นที่ object ที่จะถูก fill, Fill Direction Left to Right หรือ Right to Left — เหมาะกับ tank level / progress bar</figcaption>
+    </figure>
+
+    <ol class="steps">
+      <li>
+        <strong>สร้าง Page</strong>
+        <code>Project → Add Page → Main</code>
+      </li>
+      <li>
+        <strong>วาง Object พื้นฐาน</strong>
+        Toolbox มี:
+        <ul>
+          <li><strong>Rectangle, Line, Polygon</strong> — สำหรับวาด Process Diagram (ท่อ, ถัง, มอเตอร์)</li>
+          <li><strong>Button</strong> — Toggle Bit / Push command</li>
+          <li><strong>Numeric Display</strong> — แสดงค่าตัวเลข</li>
+          <li><strong>Text Display</strong> — แสดงข้อความสถานะ</li>
+          <li><strong>Bar Graph / Trend</strong> — Visualization ค่าตามเวลา</li>
+          <li><strong>Library Symbol</strong> — มอเตอร์, วาล์ว, ท่อ, ถัง — สำเร็จรูป</li>
+        </ul>
+      </li>
+      <li>
+        <strong>Link Object กับ Point</strong>
+        คลิกขวา → Properties → <strong>Animations</strong> tab → เลือก:
+        <ul>
+          <li><strong>Visible / Hidden</strong> — แสดงเมื่อ Bit ON/OFF</li>
+          <li><strong>Color Change</strong> — เปลี่ยนสีตามสถานะ</li>
+          <li><strong>Movement / Rotation</strong> — เคลื่อนที่ตามค่า (เช่น Pointer)</li>
+          <li><strong>Text/Value Update</strong> — เปลี่ยนข้อความหรือตัวเลขตาม Point</li>
+        </ul>
+      </li>
+    </ol>
+
+    <h2>การทำ Trend Chart</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>วาง Trend Object</strong>
+        Toolbox → Trend → ลากวางใน Page
+      </li>
+      <li>
+        <strong>เพิ่ม Pens (เส้นกราฟ)</strong>
+        คลิกขวาที่ Trend → Properties → Pens tab → Add:
+        <ul>
+          <li>Point: <code>Temperature_PV</code></li>
+          <li>Color: แดง</li>
+          <li>Min/Max: 0 – 100°C</li>
+        </ul>
+        เพิ่มได้หลายเส้น (เช่น PV, SV, MV พร้อมกัน)
+      </li>
+      <li>
+        <strong>ตั้ง Sampling</strong>
+        Properties → General tab → Sample interval = 1 วินาที, History buffer = 1 hour
+      </li>
+    </ol>
+
+    <figure>
+      <img src="images/cx-supervisor-axis-scaling.png" alt="CX-Supervisor Axis Scaling dialog">
+      <figcaption>หน้า <strong>Axis Scaling</strong> สำหรับ Trend Graph — Minimum/Maximum Scale Value (0–1000), Minor/Major Display Units (100/200), Scale Units (Y-Axis), Style: Display Ticks/Units/Grid</figcaption>
+    </figure>
+
+    <h2>Alarms</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>กำหนด Alarm Point</strong>
+        Project → Points → เลือก Point → Alarms tab → Add:
+        <ul>
+          <li>Type: <strong>High</strong> (เกิดเมื่อค่าเกิน), <strong>Low</strong>, <strong>Equal</strong></li>
+          <li>Limit: 80 (เช่น Temperature High Alarm)</li>
+          <li>Priority: 1-15</li>
+          <li>Message: "Temperature exceeded 80°C"</li>
+        </ul>
+      </li>
+      <li>
+        <strong>เพิ่ม Alarm Display</strong>
+        ใน Page → ลาก <strong>Alarm Summary</strong> object → จะ list alarms ที่กำลัง active
+      </li>
+      <li>
+        <strong>Acknowledge</strong>
+        Operator คลิกที่ Alarm → กด Acknowledge → Alarm ย้ายไป "Acknowledged" list (แต่ยังคง active จนเงื่อนไขกลับ normal)
+      </li>
+    </ol>
+
+    <h2>Scripting (VBScript)</h2>
+
+    <p>CX-Supervisor รองรับ <strong>VBScript</strong> สำหรับ Logic ที่ Mimic ทำไม่ได้:</p>
+
+    <pre><code>' ตรวจสอบทุก 1 วินาที ถ้า Temperature > 90 → ดับ Pump
+Sub Page1_OnTick()
+    If Temperature_PV.Value &gt; 90 Then
+        Pump_Run.Value = 0
+        Application.LogEvent "Auto-stop: Temp too high"
+    End If
+End Sub
+
+' เมื่อกดปุ่ม Start
+Sub btnStart_OnClick()
+    If Door_Closed.Value = 1 And Emergency_OK.Value = 1 Then
+        Pump_Run.Value = 1
+    Else
+        MsgBox "Safety condition not met!"
+    End If
+End Sub</code></pre>
+
+    <h2>Recipe (สูตรการผลิต)</h2>
+
+    <p>SCADA ให้ Operator <strong>เลือก Recipe</strong> แล้วโหลดทุกค่า Setpoint ลง PLC พร้อมกัน:</p>
+
+    <ol class="steps">
+      <li>
+        <strong>สร้าง Recipe Group</strong>
+        <code>Project → Add → Recipe</code> — ตั้งชื่อ "Production_Recipes"
+      </li>
+      <li>
+        <strong>กำหนด Fields</strong>
+        <ul>
+          <li><code>Temperature_SP</code> (Number)</li>
+          <li><code>Pressure_SP</code> (Number)</li>
+          <li><code>Speed_SP</code> (Number)</li>
+          <li><code>Duration</code> (Number)</li>
+        </ul>
+      </li>
+      <li>
+        <strong>เพิ่ม Recipes</strong>
+        เพิ่มแถว: "Product_A" (Temp=60, Pressure=2.5, Speed=1500), "Product_B" (Temp=80, ...) ฯลฯ
+      </li>
+      <li>
+        <strong>Load Recipe จากปุ่ม</strong>
+        Button → Script: <code>RecipeLoad "Production_Recipes", "Product_A"</code> — ค่าทั้งหมดจะไปอยู่ใน Points ที่ map ไว้ → ส่งเข้า PLC ทันที
+      </li>
+    </ol>
+
+    <h2>Architecture ตัวอย่างของระบบ Lab</h2>
+
+    <div class="flowdiagram">
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node" style="border-color:rgba(139,92,246,0.6);flex:1 1 260px">
+          <h4 style="color:var(--violet)">PC (Windows)</h4>
+          <p class="fd-sub">CX-Supervisor Runtime</p>
+          <ul>
+            <li>Mimic Pages</li>
+            <li>Trend / Alarm</li>
+            <li>Recipe Database</li>
+            <li>Operator Login</li>
+          </ul>
+        </div>
+        <div class="flowdiagram-arrow">↔</div>
+        <div class="flowdiagram-node master" style="flex:1 1 260px">
+          <h4>PLC + Field</h4>
+          <p class="fd-sub">CP1L-EM30DT-D · Ethernet</p>
+          <ul>
+            <li>Modbus RTU Master</li>
+            <li>→ Inverter + E5CC + …</li>
+          </ul>
+        </div>
+      </div>
+      <div style="text-align:center;margin:8px 0;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-muted)">FINS / Modbus TCP บน Ethernet LAN</div>
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node" style="border-color:rgba(45,212,191,0.4);flex:1 1 100%">
+          <h4 style="color:var(--cyan)">SQL Database (optional)</h4>
+          <p class="fd-sub">← เก็บ Trend log · Production records · Alarm history</p>
+        </div>
+      </div>
+    </div>
+
+    <h2>SCADA ทางเลือก — สำรวจตลาด 2026</h2>
+
+    <table>
+      <thead><tr><th>SCADA</th><th>ผู้ผลิต</th><th>เด่นที่</th></tr></thead>
+      <tbody>
+        <tr><td><strong>CX-Supervisor</strong></td><td>Omron</td><td>ใช้คู่ Omron PLC ได้สนิทที่สุด (Native FINS)</td></tr>
+        <tr><td>Sysmac Studio HMI</td><td>Omron</td><td>สำหรับ NJ/NX — ใช้ NA-series HMI</td></tr>
+        <tr><td>FactoryTalk View SE</td><td>Rockwell</td><td>คู่ Allen-Bradley PLC</td></tr>
+        <tr><td>Wonderware (AVEVA) InTouch</td><td>AVEVA</td><td>ตัวเก่าแก่ที่นิยม โรงงานใหญ่</td></tr>
+        <tr><td><strong>Inductive Automation Ignition</strong></td><td>Inductive Automation</td><td>License แบบ Server (จ่ายครั้งเดียว) · MQTT-friendly · Modern Web-based — <strong>กำลังร้อนแรงในไทย</strong></td></tr>
+        <tr><td>WinCC (Siemens)</td><td>Siemens</td><td>สำหรับ Siemens PLC</td></tr>
+        <tr><td>Node-RED / Grafana (Open Source)</td><td>Community</td><td>ฟรี — เหมาะกับ Hobbyist และต้นแบบ</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <strong>เลือก SCADA ยังไง?</strong>
+      ดูที่ <strong>PLC ที่ใช้</strong> ก่อน — ถ้าทุก PLC ของโรงงานเป็น Omron → CX-Supervisor ได้ Native integration
+      ถ้าผสมหลาย Brand → ใช้ SCADA ที่รองรับ OPC UA (Ignition, Wonderware) จะ flexible กว่า
+    </div>
+
+    <h2>สรุปบทนี้</h2>
+    <ul>
+      <li>SCADA = HMI ที่ขนาดใหญ่กว่า + รัน Windows + เก็บข้อมูล + Multi-station</li>
+      <li>Omron CX-Supervisor ยังเป็นทางเลือกที่ถูกที่สุดสำหรับงานที่มี Omron PLC อยู่แล้ว</li>
+      <li>3 องค์ประกอบหลัก: <strong>Points</strong> (Tags) + <strong>Pages</strong> (Mimics) + <strong>Scripts</strong> (Logic)</li>
+      <li>ฟีเจอร์เพิ่มเติม: Trend / Alarm / Recipe / Database / Email</li>
+      <li>ในตลาด 2026 — ถ้าจะลงทุนเรียน SCADA อีก 1 ตัว → ลอง <strong>Ignition</strong> (modern, MQTT, Web)</li>
+    </ul>
+
+    <h2>เอกสารอ้างอิงสำหรับบทนี้</h2>
+    <ul class="doc-list">
+      <li><a href="PLC%20project/12_SCADA_CX_Supervisor/docs/หนังสือ%20CX-SUPERVISOR.pdf">หนังสือ CX-SUPERVISOR (ภาษาไทย, 2009)</a> <span class="meta">PDF · เก่าแต่ Concept ถูก</span></li>
+      <li><a href="PLC%20project/12_SCADA_CX_Supervisor/docs/SCADA_Trainnig_2559_Padung.pdf">SCADA Training 2559 (อ. ผดุง)</a> <span class="meta">PDF · ภาษาไทย</span></li>
+      <li><a href="PLC%20project/12_SCADA_CX_Supervisor/docs/การประยุกต์ใช้โปรแกรม%20SCADA%20ในงานอุตสาหกรรม_2559_1.pdf">การประยุกต์ใช้ SCADA ในอุตสาหกรรม (เล่ม 1)</a> <span class="meta">PDF · ภาษาไทย</span></li>
+      <li><a href="PLC%20project/12_SCADA_CX_Supervisor/docs/การประยุกต์ใช้โปรแกรม%20SCADA%20ในงานอุตสาหกรรม_2559_2.pdf">การประยุกต์ใช้ SCADA ในอุตสาหกรรม (เล่ม 2)</a> <span class="meta">PDF · ภาษาไทย</span></li>
+      <li><a href="PLC%20project/12_SCADA_CX_Supervisor/docs/การประยุกต์ใช้โปรแกรม%20SCADA%20ในงานอุตสาหกรรม_2559_3.pdf">การประยุกต์ใช้ SCADA ในอุตสาหกรรม (เล่ม 3)</a> <span class="meta">PDF · ภาษาไทย</span></li>
+    </ul>
+
+    <h2>ถัดไป — ลงมือทำ SCADA จริง</h2>
+
+    <p>บทนี้ปูพื้นความเข้าใจเรื่อง <strong>SCADA Concept</strong> ครบแล้ว — ขั้นต่อไปคือ <em>Workshop</em>:
+       <a href="omron-07-scada-workshop.html">O07 — SCADA Workshop</a> ที่จะให้คุณ <strong>ลงมือสร้าง SCADA จริง</strong>
+       3 Step ติด: หลอดกะพริบ → ระบบเติมน้ำ → โรงงานช็อกโกแลต (Capstone) — มีทั้ง Browser Sim ให้กดเล่น และ
+       CX-Supervisor Lab Handout</p>
+
+    <div class="pager">
+      <a href="omron-05-e5cc.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">O05 — E5CC</div>
+      </a>
+      <a href="omron-07-scada-workshop.html" class="next">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">O07 — SCADA Workshop 🏭</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  PLC Automation Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){var lb=document.getElementById('lightbox');if(!lb)return;var img=lb.querySelector('img');
+document.querySelectorAll('.content img').forEach(function(im){im.style.cursor='zoom-in';im.addEventListener('click',function(){img.src=im.src;lb.classList.add('open');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.classList.remove('open');});})();
+</script>
+<script src="js/progress.js" defer></script>
+<script src="js/activities/scada-tag-mapper.js" defer></script>
+</body>
+</html>

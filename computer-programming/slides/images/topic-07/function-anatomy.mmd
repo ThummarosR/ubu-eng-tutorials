@@ -1,0 +1,16 @@
+---
+title: Anatomy of a Well-Designed Function
+---
+flowchart TB
+    F["📦 Function"]
+    F --> N["🏷️ Descriptive name<br/>calculate_grade()"]
+    F --> P["📥 Typed parameters<br/>score: int"]
+    F --> R["📤 Typed return<br/>-> str"]
+    F --> D["📖 Docstring<br/>purpose · args · returns · raises"]
+    F --> S["🎯 Single responsibility<br/>one well-defined task"]
+    F --> U["✨ Pure where possible<br/>no hidden side effects"]
+
+    classDef root fill:#3776ab,stroke:#1e4870,color:#ffffff,stroke-width:2px
+    classDef element fill:#e8f0f8,stroke:#3776ab,color:#0b1020
+    class F root
+    class N,P,R,D,S,U element

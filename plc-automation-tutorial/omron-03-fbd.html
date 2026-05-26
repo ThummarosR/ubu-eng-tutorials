@@ -1,0 +1,475 @@
+﻿<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>O03 — Function Block Diagram | PLC Automation Tutorial</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <div class="logo logo-img"><img src="images/icon-256.png" srcset="images/icon-256.png 1x, images/icon-512.png 2x" alt="PLC Automation"></div>
+      <div>
+        <div class="title">PLC Automation</div>
+        <div class="subtitle">คู่มือฉบับภาษาไทย — 2 Tracks</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; เลือก Track</a>
+
+      <h4>🟥 Mitsubishi Track</h4>
+      <a href="mit-01-intro.html"><span class="num">M01</span> รู้จัก FX5U</a>
+      <a href="mit-02-ladder.html"><span class="num">M02</span> Ladder Logic</a>
+      <a href="mit-03-sensors.html"><span class="num">M03</span> เซ็นเซอร์ &amp; I/O</a>
+      <a href="mit-04-simulation.html"><span class="num">M04</span> GX Simulator</a>
+      <a href="mit-05-hmi.html"><span class="num">M05</span> HMI Samkoon</a>
+      <a href="mit-06-pid.html"><span class="num">M06</span> PID &amp; Auto-Tuning</a>
+      <a href="mit-07-modbus.html"><span class="num">M07</span> Modbus + PM2230</a>
+
+      <h4>🟦 Omron Track</h4>
+      <a href="omron-01-intro.html"><span class="num">O01</span> รู้จัก CP1L/CPM2A</a>
+      <a href="omron-02-ladder.html"><span class="num">O02</span> CX-Programmer Ladder</a>
+      <a href="omron-03-fbd.html" class="active"><span class="num">O03</span> Function Block (FBD)</a>
+      <a href="omron-04-modbus.html"><span class="num">O04</span> Modbus + Inverter</a>
+      <a href="omron-05-e5cc.html"><span class="num">O05</span> E5CC Temp Control</a>
+      <a href="omron-06-scada.html"><span class="num">O06</span> SCADA (CX-Supervisor)</a>
+      <a href="omron-07-scada-workshop.html"><span class="num">O07</span> 🏭 SCADA Workshop</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a href="videos.html"><span class="num">▶</span> วิดีโอเลคเชอร์</a>
+      <a href="references.html"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ O03 · FBD · Omron CP1L-E</span>
+    <h1>Function Block Diagram (FBD)</h1>
+    <p class="lede">
+      ภาษา <strong>FBD</strong> มองโปรแกรม PLC เป็น "กล่องเชื่อมต่อกัน" คล้าย Datasheet ของวงจรดิจิทัล —
+      เหมาะกับงานที่มีการคำนวณซับซ้อน, PID, หรือ Filter
+      Lab นี้ใช้ <strong>Omron CP1L-E</strong> คู่กับ <strong>Temperature Controller E5EC-QR2ASM</strong>
+    </p>
+
+    <h2>FBD vs Ladder — ต่างกันยังไง</h2>
+
+    <table>
+      <thead>
+        <tr><th></th><th>Ladder (LD)</th><th>FBD</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>หน้าตา</td><td>วงจรไฟฟ้า (Contact-Coil)</td><td>กล่องต่อสายกัน (Block-Wire)</td></tr>
+        <tr><td>ถนัดงาน</td><td>Logic, Sequence, Interlock</td><td>คำนวณ, PID, Filter, Signal processing</td></tr>
+        <tr><td>คนใช้</td><td>วิศวกรไฟฟ้า</td><td>วิศวกรควบคุม, Process</td></tr>
+        <tr><td>การ Debug</td><td>ดู Animation สว่าง/ดับตาม Contact</td><td>ดูตัวเลขที่ไหลผ่าน Wire</td></tr>
+      </tbody>
+    </table>
+
+    <h3>หน้าตา FBD เปรียบเทียบ Ladder</h3>
+
+    <figure class="wirediagram">
+      <svg viewBox="0 0 720 280" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <style>
+            .fd-title  { fill: var(--text); font-family: 'Space Grotesk', sans-serif; font-size: 14px; font-weight: 700; }
+            .fd-sub    { fill: var(--text-muted); font-family: 'JetBrains Mono', monospace; font-size: 11.5px; }
+            .fd-wire   { stroke: var(--text-muted); stroke-width: 2.5; fill: none; }
+            .fd-brkt   { stroke: var(--text); stroke-width: 2.5; }
+            .fd-slash  { stroke: var(--text); stroke-width: 2; }
+            .fd-coil   { stroke: var(--accent-2); stroke-width: 2.5; fill: none; }
+            .fd-lbl    { fill: var(--accent-2); font-family: 'JetBrains Mono', monospace; font-size: 13px; font-weight: 700; }
+            .fd-box    { fill: var(--bg-soft); stroke: var(--violet); stroke-width: 2; }
+            .fd-boxtxt { fill: var(--violet); font-family: 'Space Grotesk', sans-serif; font-size: 13px; font-weight: 700; }
+          </style>
+        </defs>
+
+        <!-- LADDER half (top) -->
+        <text x="50" y="22" class="fd-title">Ladder</text>
+        <text x="120" y="22" class="fd-sub">— ติด Y0 เมื่อ X0 AND X1 AND NOT X2</text>
+        <!-- horizontal wire -->
+        <line class="fd-wire" x1="50" y1="80" x2="660" y2="80"/>
+        <!-- X0 NO -->
+        <line class="fd-brkt" x1="130" y1="65" x2="130" y2="95"/>
+        <line class="fd-brkt" x1="155" y1="65" x2="155" y2="95"/>
+        <text x="142" y="115" class="fd-lbl" text-anchor="middle">X0</text>
+        <!-- X1 NO -->
+        <line class="fd-brkt" x1="265" y1="65" x2="265" y2="95"/>
+        <line class="fd-brkt" x1="290" y1="65" x2="290" y2="95"/>
+        <text x="277" y="115" class="fd-lbl" text-anchor="middle">X1</text>
+        <!-- X2 NC -->
+        <line class="fd-brkt" x1="400" y1="65" x2="400" y2="95"/>
+        <line class="fd-brkt" x1="425" y1="65" x2="425" y2="95"/>
+        <line class="fd-slash" x1="395" y1="98" x2="430" y2="62"/>
+        <text x="412" y="115" class="fd-lbl" text-anchor="middle">X2</text>
+        <!-- Y0 coil -->
+        <circle cx="600" cy="80" r="13" class="fd-coil"/>
+        <text x="600" y="115" class="fd-lbl" text-anchor="middle">Y0</text>
+
+        <!-- FBD half (bottom) -->
+        <text x="50" y="170" class="fd-title">FBD</text>
+        <text x="105" y="170" class="fd-sub">— เขียน Logic เหมือนกันด้วยกล่อง AND</text>
+        <!-- X0 input -->
+        <text x="80" y="220" class="fd-lbl" text-anchor="end">X0</text>
+        <line class="fd-wire" x1="90" y1="215" x2="280" y2="215"/>
+        <!-- X1 input -->
+        <text x="80" y="245" class="fd-lbl" text-anchor="end">X1</text>
+        <line class="fd-wire" x1="90" y1="240" x2="280" y2="240"/>
+        <!-- X2 → NOT box -->
+        <text x="80" y="270" class="fd-lbl" text-anchor="end">X2</text>
+        <line class="fd-wire" x1="90" y1="265" x2="170" y2="265"/>
+        <rect class="fd-box" x="170" y="252" width="50" height="26" rx="4"/>
+        <text x="195" y="269" class="fd-boxtxt" text-anchor="middle">NOT</text>
+        <line class="fd-wire" x1="220" y1="265" x2="280" y2="265"/>
+        <!-- AND box -->
+        <rect class="fd-box" x="280" y="200" width="80" height="80" rx="6"/>
+        <text x="320" y="245" class="fd-boxtxt" text-anchor="middle">AND</text>
+        <!-- AND output → Y0 coil -->
+        <line class="fd-wire" x1="360" y1="240" x2="585" y2="240"/>
+        <circle cx="600" cy="240" r="13" class="fd-coil"/>
+        <text x="630" y="245" class="fd-lbl">Y0</text>
+      </svg>
+      <figcaption>Logic เดียวกัน — ต่าง syntax · <strong>Ladder</strong> = สาย + Contact + Coil  &nbsp;·&nbsp; <strong>FBD</strong> = กล่อง AND/NOT + เส้นเชื่อม</figcaption>
+    </figure>
+
+    <h2>ใบงานปฏิบัติการ — Omron CP1L-E + E5EC-QR2ASM</h2>
+
+    <p>Lab นี้ใช้ PLC <strong>Omron CP1L-E</strong> (ไม่ใช่ FX5U) เพราะ CX-Programmer ของ Omron มี FBD editor
+       ที่เหมาะกับการเริ่มเรียน — concept เหมือนกัน เปลี่ยนแค่ syntax</p>
+
+    <figure>
+      <img src="images/cp1l-em30dtd.jpg" alt="Omron CP1L-EM30DTD with labeled ports">
+      <figcaption>Omron CP1L-EM30DTD — มี Digital I/O, Ethernet port, Modbus RTU, Serial Communication ในตัวเดียวกัน</figcaption>
+    </figure>
+
+    <h3>อุปกรณ์ที่ใช้</h3>
+    <table>
+      <thead><tr><th>อุปกรณ์</th><th>หน้าที่</th></tr></thead>
+      <tbody>
+        <tr><td><code>Omron CP1L-E</code></td><td>PLC หลัก (Master Modbus)</td></tr>
+        <tr><td><code>Omron E5EC-QR2ASM</code></td><td>Temperature Controller (Modbus Slave)</td></tr>
+        <tr><td><code>CX-Programmer</code></td><td>IDE ของ Omron สำหรับเขียน Ladder/FBD/ST</td></tr>
+        <tr><td>RS-485 Cable</td><td>เชื่อม PLC ↔ Controller</td></tr>
+      </tbody>
+    </table>
+
+    <h2>เริ่มเขียน FBD ใน CX-Programmer</h2>
+
+    <figure>
+      <img src="images/cxprogrammer-fb-menu.png" alt="CX-Programmer Insert Function Block menu">
+      <figcaption>CX-Programmer — คลิกขวาที่ <code>Function Blocks</code> เพื่อ Insert FB (Ladder, Structured Text, หรือ From File)</figcaption>
+    </figure>
+
+    <ol class="steps">
+      <li>
+        <strong>สร้าง Project ใหม่</strong>
+        <code>File → New</code> → เลือก Device Type: <strong>CP1L-E</strong> → กด Settings → ตั้ง CPU Type
+        ให้ตรงกับตัวจริง (เช่น CP1L-EM30DR-D)
+      </li>
+      <li>
+        <strong>เพิ่ม FB Definition</strong>
+        คลิกขวาที่ <code>Function Blocks</code> ใน Project tree → <code>Insert Function Block → Ladder</code>
+        (หรือ <strong>Structured Text</strong> ก็ได้ — เลือกได้ภายหลังจะทำต่อด้วยภาษาไหน)
+      </li>
+      <li>
+        <strong>กำหนด Input/Output ของ FB</strong>
+        ตั้งชื่อตัวแปร เช่น
+        <ul>
+          <li>Input: <code>StartCmd : BOOL</code>, <code>SetPoint : REAL</code></li>
+          <li>Output: <code>HeaterOn : BOOL</code>, <code>ActualTemp : REAL</code></li>
+          <li>Internal: <code>Error : REAL</code>, <code>Integral : REAL</code></li>
+        </ul>
+      </li>
+      <li>
+        <strong>เขียน Logic ภายใน FB</strong>
+        เลือกจากแถบ Toolbox: <strong>ADD, SUB, MUL, DIV, GT, LT, MOV</strong> ฯลฯ
+        ลากเป็นกล่อง แล้วลากเส้นเชื่อม Input ของแต่ละกล่อง
+      </li>
+      <li>
+        <strong>เรียกใช้ FB ใน Main</strong>
+        เปิด <code>Section1</code> ใน Main → ลากชื่อ FB ที่เพิ่งสร้างมาวาง → connect ตัวแปรจริงเข้ากับ I/O ของ FB
+      </li>
+    </ol>
+
+    <h2>การสื่อสาร Modbus RTU กับ E5EC</h2>
+
+    <div class="fig-side">
+      <figure>
+        <img src="images/omron-e5ec-display.jpg" alt="Omron E5EC display showing PV/SV/MV">
+        <figcaption>Omron E5EC-QR2ASM — แสดง <strong>PV</strong> (Process Value) ขาว, <strong>SV</strong> (Set Value) เขียว, <strong>MV</strong> (Manipulated Value) ส้ม</figcaption>
+      </figure>
+      <figure>
+        <img src="images/e5ec-terminal-wiring.jpg" alt="Omron E5EC-QR2ASM terminal wiring">
+        <figcaption>ขั้วต่อด้านหลัง — 1/2 = AC 100-240V, 3-6 = OUT1/OUT2, 13/14 = RS-485 (A/B), 16-18 = EV1/EV2, 22-24 = Input mA/V/TC</figcaption>
+      </figure>
+    </div>
+
+    <p>E5EC-QR2ASM รองรับ Modbus RTU ผ่าน RS-485 ที่ Function Code <code>0x03</code> (Read Holding Registers)
+       — Register ที่เราสนใจส่วนใหญ่:</p>
+
+    <figure>
+      <img src="images/e5ec-register-map.png" alt="E5EC register address map">
+      <figcaption>Register map ฉบับเต็ม — รองรับทั้ง <strong>Four-byte mode</strong> (32-bit address) และ <strong>Two-byte mode</strong> (16-bit address); 2000h = PV, 2103h = Set Point, 2104h = Alarm 1</figcaption>
+    </figure>
+
+    <table>
+      <thead><tr><th>Address (Hex)</th><th>ค่า</th><th>หน่วย</th></tr></thead>
+      <tbody>
+        <tr><td><code>0x0000</code></td><td>Process Value (ค่าที่อ่านได้)</td><td>°C × 10</td></tr>
+        <tr><td><code>0x0106</code></td><td>Set Point</td><td>°C × 10</td></tr>
+        <tr><td><code>0x0107</code></td><td>Alarm Value 1</td><td>°C × 10</td></tr>
+        <tr><td><code>0x0408</code></td><td>Proportional Band (P)</td><td>%FS × 10</td></tr>
+        <tr><td><code>0x040A</code></td><td>Integral Time (I)</td><td>s × 10</td></tr>
+        <tr><td><code>0x040C</code></td><td>Derivative Time (D)</td><td>s × 10</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout info">
+      <strong>เลข × 10 หมายถึงอะไร?</strong>
+      Modbus เก็บค่าเป็น Integer 16-bit — เพื่อให้รองรับทศนิยม 1 ตำแหน่ง E5EC จะ <em>คูณ 10 ก่อนส่ง</em>
+      เพราะฉะนั้น <code>250</code> จาก register = <strong>25.0 °C</strong>
+    </div>
+
+    <h3>ตั้งค่า Modbus ที่ตัว E5EC</h3>
+
+    <figure>
+      <img src="images/e5ec-comm-settings-menu.jpg" alt="E5EC Communications Setting Level menu">
+      <figcaption>Communications Setting Level บนหน้า E5EC — เมนูเรียงตามลำดับ: <code>PSEL</code> (Protocol) → <code>U-No</code> (Unit) → <code>BPS</code> (Baud) → <code>LEN</code> (Length) → <code>SbtL</code> (Stop bits) → <code>PrtY</code> (Parity) → <code>SdWt</code> (Send wait)</figcaption>
+    </figure>
+
+    <ol class="steps">
+      <li>
+        <strong>เข้า Initial Setting Mode</strong>
+        กดปุ่ม <code>O</code> (Mode) ที่หน้า E5EC ค้าง ~3 วินาที — จะเข้าสู่ Mode ตั้งค่า
+      </li>
+      <li>
+        <strong>ตั้ง Communication Protocol</strong>
+        เลื่อนหา <code>CMWT</code> → ตั้งเป็น <strong>Modbus</strong>
+      </li>
+      <li>
+        <strong>ตั้ง Unit Address</strong>
+        <code>U-No</code> = <strong>1</strong> (Slave address)
+      </li>
+      <li>
+        <strong>ตั้ง Baud rate / Data bits / Parity</strong>
+        <code>BPS</code> = <strong>9600</strong> · <code>LEN</code> = <strong>8</strong> · <code>PRTY</code> = <strong>None</strong>
+        — ต้องตรงกับฝั่ง PLC
+      </li>
+      <li>
+        <strong>Reboot E5EC</strong>
+        ดับไฟ → เปิดใหม่ — ตอนนี้ E5EC พร้อมเป็น Modbus Slave แล้ว
+      </li>
+    </ol>
+
+    <h2>FBD สำหรับ Read Temperature</h2>
+
+    <p>โครงสร้าง FB ที่จะสร้าง:</p>
+
+    <div class="flowdiagram">
+      <div style="font-family:'Space Grotesk',sans-serif;font-weight:700;color:var(--violet);margin-bottom:10px;font-size:15px">📦 FB_ReadTemp — Function Block</div>
+      <div class="flowdiagram-row">
+        <div class="flowdiagram-node input" style="flex:1 1 160px">
+          <h4>Inputs</h4>
+          <ul>
+            <li><code>Trigger</code> BOOL</li>
+            <li><code>SlaveID</code> INT</li>
+            <li><code>Address</code> INT</li>
+            <li><code>Length</code> INT</li>
+          </ul>
+        </div>
+        <div class="flowdiagram-arrow">→</div>
+        <div class="flowdiagram-node cpu" style="flex:1 1 200px">
+          <h4>Modbus Master Read</h4>
+          <p class="fd-sub">FC = 03 (Read Holding)</p>
+          <ul>
+            <li>ส่ง Request ตอน Trigger</li>
+            <li>เก็บผลใน DataReg (INT)</li>
+          </ul>
+        </div>
+        <div class="flowdiagram-arrow">→</div>
+        <div class="flowdiagram-node cpu" style="flex:1 1 160px;border-color:rgba(45,212,191,0.5)">
+          <h4 style="color:var(--cyan)">DIV × 0.1</h4>
+          <p class="fd-sub">INT → REAL</p>
+          <ul>
+            <li>หาร 10 เพื่อแปลงเป็นองศา</li>
+          </ul>
+        </div>
+        <div class="flowdiagram-arrow">→</div>
+        <div class="flowdiagram-node output" style="flex:1 1 160px">
+          <h4>Outputs</h4>
+          <ul>
+            <li><code>Done</code> BOOL</li>
+            <li><code>Error</code> BOOL</li>
+            <li><code>Temperature</code> REAL</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <figure>
+      <img src="images/cxprogrammer-fbd-controller.png" alt="FBD controller in CX-Programmer">
+      <figcaption>ตัวอย่าง FBD จริงใน CX-Programmer — Function Block <code>FB_ST</code> รับ temp/humi 3 ช่อง คำนวณค่าเฉลี่ย และคุม FAN/PUMP/HEATER</figcaption>
+    </figure>
+
+    <p>Pseudo-code ของ FBD ด้านบนในภาษา Structured Text (ดูง่ายกว่าวาดเส้น):</p>
+
+    <figure>
+      <img src="images/cxprogrammer-st-editor.png" alt="Structured Text editor in CX-Programmer">
+      <figcaption>ในแท็บ Structured Text เห็นโค้ดสองบรรทัด: <code>temp_avg := (temp_1+temp_2+temp_3)/3.00;</code> — สั้นกว่าวาดด้วยบล็อกเยอะ</figcaption>
+    </figure>
+
+    <pre><code>FUNCTION_BLOCK FB_ReadTemp
+VAR_INPUT
+    Trigger    : BOOL;
+    SlaveID    : INT;
+    Address    : INT;
+END_VAR
+VAR_OUTPUT
+    Done       : BOOL;
+    Error      : BOOL;
+    Temperature : REAL;
+END_VAR
+VAR
+    RawValue   : INT;
+END_VAR
+
+ModbusMaster(
+    Trigger := Trigger,
+    Slave := SlaveID,
+    FuncCode := 3,
+    StartAddr := Address,
+    Length := 1,
+    Data => RawValue,
+    Done => Done,
+    Error => Error
+);
+
+IF Done THEN
+    Temperature := INT_TO_REAL(RawValue) * 0.1;
+END_IF;</code></pre>
+
+    <h2>Ladder จริงที่ใช้ในใบงานนี้</h2>
+
+    <p>นอกจาก FBD ที่อธิบายมา — ใบงานยังมี Ladder ที่จัดการ Status/Error ของ Modbus Master ในตัว CP1L-E:</p>
+
+    <figure>
+      <img src="images/lab10-runmodbus-ladder.png" alt="RUN_ModbusRTU ladder section">
+      <figcaption>Section <code>RUN_ModbusRTU</code> — P_1s (1.0 second clock) → W10.00 (RUN_Comman), A640.00 = Modbus RTU Master Serial2 execution bit, A640.01 = Normal Operation, A640.02 = Error → <code>MOV D32352 W2</code> เก็บ Error Code</figcaption>
+    </figure>
+
+    <figure>
+      <img src="images/lab10-readtemp-ladder.png" alt="READ_TEMP ladder section">
+      <figcaption>Section <code>READ_TEMP</code> — ใส่ Slave Address #01, Function Code #03, จำนวน Comm Data Bytes #04, Modbus Register #0000, Number of Registers #02 ลงใน D32300–D32304 ก่อน Trigger</figcaption>
+    </figure>
+
+    <figure>
+      <img src="images/omron-modbus-d-register-map.png" alt="Omron CP1L Modbus D register memory map">
+      <figcaption>การจัดวาง Modbus command ใน D32300–D32306 (Slave/FC/Bytes/Reg/Number) — ตัวอย่างค่าทางขวาคือ FC=03 อ่าน 1 register ที่ address 0x0118</figcaption>
+    </figure>
+
+    <figure>
+      <img src="images/omron-modbus-execution-bit.jpg" alt="Omron Modbus-RTU Master Execution Bits A640/A641">
+      <figcaption>Special bit <code>A640.00</code>/<code>A641.00</code> = Execution Bit ของ Modbus Master บน Port 2/Port 1 — ON เพื่อสั่งให้ส่ง command</figcaption>
+    </figure>
+
+    <h2>โหลดโปรแกรมเข้า PLC</h2>
+
+    <figure>
+      <img src="images/cxprogrammer-transfer-to-plc.jpg" alt="CX-Programmer Transfer to PLC dialog">
+      <figcaption>เมนู <code>Options → Transfer to PLC</code> → ยืนยัน "Are you sure you want to download these settings to the PLC?" → กด <strong>Yes</strong> — โปรแกรมจะถูก Download เข้า CP1L-E</figcaption>
+    </figure>
+
+    <h2>ทดสอบการอ่านค่า</h2>
+
+    <ol class="steps">
+      <li>
+        <strong>ต่อสาย RS-485</strong>
+        ที่ E5EC ใช้ขั้ว <code>A(+)</code> และ <code>B(−)</code> — ที่ Omron CP1L-E
+        ใช้พอร์ต RS-485 ของ Serial Option Board (CP1W-CIF11)
+        ต่อ A ↔ A, B ↔ B และ <strong>Ground ร่วมกัน</strong>
+      </li>
+      <li>
+        <strong>โหลดโปรแกรมเข้า PLC</strong>
+        <code>PLC → Transfer → To PLC</code> → เลือก Program + IO Table + Settings
+      </li>
+      <li>
+        <strong>Monitor ค่า</strong>
+        เปิด Watch Window → เพิ่ม <code>Temperature</code> และ <code>Done</code>
+        — ถ้าทุกอย่างต่อถูก ค่า Temperature จะอัปเดตทุก 1 วินาที (ตาม Trigger)
+      </li>
+      <li>
+        <strong>ทดสอบเปลี่ยน Set Point</strong>
+        เขียน FB อีกตัวคล้ายกันแต่ใช้ <strong>FC=06</strong> (Write Single Register) → register <code>0x0106</code>
+        ลองตั้ง 30.0 °C → ดูที่หน้า E5EC ว่าเปลี่ยนตามไหม
+      </li>
+    </ol>
+
+    <div class="callout warn">
+      <strong>Baud rate ต้องตรงกันทั้งสองฝั่ง</strong>
+      ถ้า PLC ตั้ง 19200 แต่ E5EC ตั้ง 9600 — จะเกิด Error 0x01 (Timeout)
+      ตอน debug ลองเปลี่ยน Baud ทีละค่าไล่ดู
+    </div>
+
+    <h2>วิดีโอประกอบใบงาน FBD + Temperature</h2>
+
+    <p>Lab นี้มีวิดีโอ Walkthrough 3 ตอน:</p>
+    <div class="video-row">
+      <div class="video-card">
+        <video controls preload="metadata" src="PLC%20project/03_Lab_10_FB_TempControl/videos/Lab10_EP1.mp4"></video>
+        <div class="vmeta">
+          <div class="label">FBD Lab · EP1</div>
+          <div class="title">FBD-from-Ladder Basics</div>
+        </div>
+      </div>
+      <div class="video-card">
+        <video controls preload="metadata" src="PLC%20project/03_Lab_10_FB_TempControl/videos/Lab10_EP2.mp4"></video>
+        <div class="vmeta">
+          <div class="label">FBD Lab · EP2</div>
+          <div class="title">FBD-from-Structured-Text</div>
+        </div>
+      </div>
+      <div class="video-card">
+        <video controls preload="metadata" src="PLC%20project/03_Lab_10_FB_TempControl/videos/Lab10_EP3.mp4"></video>
+        <div class="vmeta">
+          <div class="label">FBD Lab · EP3</div>
+          <div class="title">อ่าน E5EC ผ่าน Modbus RTU</div>
+        </div>
+      </div>
+    </div>
+
+    <h2>เอกสารใบงาน FBD + Temperature Controller</h2>
+    <ul class="doc-list">
+      <li><a href="PLC%20project/03_Lab_10_FB_TempControl/docs/Lab10_TH.pdf">ใบงาน FBD + Temperature Controller (ภาษาไทย)</a> <span class="meta">PDF</span></li>
+      <li><a href="PLC%20project/03_Lab_10_FB_TempControl/docs/Lab10_EN.pdf">FBD + Temperature Controller Lab (English)</a> <span class="meta">PDF</span></li>
+    </ul>
+
+    <div class="pager">
+      <a href="omron-02-ladder.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">O02 — CX-Programmer Ladder</div>
+      </a>
+      <a href="omron-04-modbus.html" class="next">
+        <div class="label">บทถัดไป →</div>
+        <div class="title">O04 — Modbus + Inverter</div>
+      </a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  PLC Automation Tutorial · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){var lb=document.getElementById('lightbox');if(!lb)return;var img=lb.querySelector('img');
+document.querySelectorAll('.content img').forEach(function(im){im.style.cursor='zoom-in';im.addEventListener('click',function(){img.src=im.src;lb.classList.add('open');});});
+document.addEventListener('keydown',function(e){if(e.key==='Escape')lb.classList.remove('open');});})();
+</script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>
