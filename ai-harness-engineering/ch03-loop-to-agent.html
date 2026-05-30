@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>03 — Loop → Agent | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div>
+        <div class="title">AI Harness</div>
+        <div class="subtitle">วิศวกรรมระบบ AI Agent</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>1 · ปัญหา &amp; คำศัพท์</h4>
+      <a href="ch01-the-situation.html"><span class="num">01</span> สถานการณ์</a>
+      <a href="ch02-script-and-call.html"><span class="num">02</span> Script &amp; การเรียกครั้งเดียว</a>
+      <a href="ch03-loop-to-agent.html" class="active"><span class="num">03</span> Loop → Agent</a>
+
+      <h4>2 · ประกอบ Harness</h4>
+      <a class="soon"><span class="num">04</span> Tools — มือ</a>
+      <a class="soon"><span class="num">05</span> Context — สิ่งที่ต้องรู้</a>
+      <a class="soon"><span class="num">06</span> Memory &amp; State</a>
+      <a class="soon"><span class="num">07</span> Grounding &amp; Verify</a>
+      <a class="soon"><span class="num">08</span> Permissions &amp; Safety</a>
+      <a class="soon"><span class="num">09</span> ควบคุม &amp; มองเห็น</a>
+      <a class="soon"><span class="num">10</span> นี่แหละ Harness</a>
+
+      <h4>3 · เชื่อมกับโลก</h4>
+      <a class="soon"><span class="num">11</span> MCP</a>
+      <a class="soon"><span class="num">12</span> Skills &amp; Tool Surface</a>
+
+      <h4>4 · Context · เชื่อถือ · สเกล</h4>
+      <a class="soon"><span class="num">13</span> Context Engineering</a>
+      <a class="soon"><span class="num">14</span> Security</a>
+      <a class="soon"><span class="num">15</span> Orchestration &amp; บันได</a>
+      <a class="soon"><span class="num">16</span> Evaluation</a>
+
+      <h4>5 · มุมมองมืออาชีพ</h4>
+      <a class="soon"><span class="num">17</span> Cockpit &amp; Fleet</a>
+
+      <h4>6 · พรมแดนถัดไป</h4>
+      <a class="soon"><span class="num">18</span> Physical AI</a>
+      <a class="soon"><span class="num">19</span> Human Integration</a>
+      <a class="soon"><span class="num">20</span> Capstone</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a class="soon"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <!-- 1 · HOOK -->
+    <span class="eyebrow">บทที่ 03 · ปัญหา &amp; คำศัพท์ · The Agentic Loop</span>
+    <h1>Loop → Agent</h1>
+    <p class="lede">
+      ให้ผู้ช่วยขอข้อมูล เห็นผล แล้วตัดสินใจใหม่ได้ — <strong>gather → act → verify → repeat</strong>
+      จังหวะที่มัน “ลงมือแล้วตอบสนองต่อผลได้มากกว่าหนึ่งรอบ” คือจังหวะที่มันกลายเป็น <strong>agent</strong> จริง ๆ
+      แต่ระวังหมัดเด็ดของบทนี้: <em>ลูปอย่างเดียวยังไม่พอ</em> — ถ้าขั้น verify ไม่ได้มาจากโลกจริง
+      ลูปก็เป็นแค่วิธี “ตอบผิดอย่างมั่นใจให้เร็วขึ้น”
+    </p>
+
+    <!-- 2 · PLAIN CONCEPT -->
+    <h2>พูดแบบเข้าใจง่าย</h2>
+    <p>
+      <strong>Agentic loop</strong> คือสี่ขั้นที่ทำซ้ำจนกว่าจะเสร็จ:
+      <em>gather</em> (รวบรวมบริบท) → <em>act</em> (ลงมือ เช่นเรียกเครื่องมือ) →
+      <em>verify</em> (ตรวจผลกับโลกจริง) → <em>repeat</em> (เอาผลที่ตรวจได้ป้อนกลับเข้าไปแล้ววนใหม่)
+    </p>
+    <p>
+      หัวใจอยู่ที่ขั้น <strong>verify — และมันต้องมาจาก “นอกตัวโมเดล”</strong>:
+      ระบบจองตอบจริงว่าจองได้/ชน, เครื่องมือคืนค่าจริงหรือคืน error, การทดสอบรันแล้วผ่าน/ไม่ผ่าน
+      สิ่งที่ <em>ไม่ใช่</em> การ verify คือการที่โมเดลพูดเองว่า “เรียบร้อยแล้ว” — นั่นคือการรายงานตัวเอง
+      ซึ่งโกหก (hallucinate) ได้ และการให้โมเดล “อ่านงานตัวเองซ้ำ” ก็ยังอยู่ในหัวมันอยู่ดี ไม่ใช่การตรวจ
+    </p>
+
+    <div class="callout tip">
+      <strong>เปรียบเทียบ: หุ่นยนต์ส่งของที่มีกล้อง vs หุ่นที่หลับตาเล่าเส้นทาง</strong>
+      หุ่นที่ดี <em>มองทุกครั้งหลังขยับ</em> — “ยังห่างประตูอีก 2 เมตร” แล้วปรับ
+      ส่วนหุ่นที่หลับตาคำนวณเส้นทางครั้งเดียว ประกาศ “ส่งของสำเร็จ!” แล้วเดินชนกำแพง — ยังรายงานว่าสำเร็จอยู่เลย
+      กล้องที่มองโลกจริง = ขั้น verify จากสภาพแวดล้อม การที่หุ่น “อ่านแผนของตัวเองซ้ำแล้วบอกว่าถูก” ก็ยังหลับตาอยู่ดี
+    </div>
+
+    <!-- 3 · IN OUR SYSTEMS -->
+    <h2>ในระบบของเรา — ลูปที่ verify จาก “ระบบจริง”</h2>
+    <p>
+      เมื่อมีคนขอให้ผู้ช่วย <em>“ขยับการจองไม่ให้ชนคาบเรียน”</em> มันไม่ตอบรวดเดียวจบ แต่เดินเป็นลูป
+      และจุดสำคัญคือ ผลของแต่ละ act <strong>มาจากระบบจอง ไม่ใช่จากความมั่นใจของโมเดล</strong>:
+    </p>
+
+    <div class="flow">
+      <div class="flow-node"><span class="fn-k">Gather</span><span class="fn-t">อ่านการจอง + ตารางสอน</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node accent"><span class="fn-k">Act</span><span class="fn-t">ลองจอง 13:00</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node guard"><span class="fn-k">Verify</span><span class="fn-t">ระบบจริงตอบ: “ชนคาบเรียน — FAIL”</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">Repeat</span><span class="fn-t">เห็น FAIL → เลื่อนเป็น 15:00 → ระบบยืนยัน OK</span></div>
+    </div>
+
+    <p>
+      เปรียบกับลูปที่ <strong>ข้าม verify</strong>: มัน act แล้วกระโดดไปประกาศ “จองให้แล้ว!” โดยไม่เคยถามระบบเลย —
+      หน้าตาเหมือนสำเร็จ แต่ห้องอาจถูกจองทับคาบสอนอยู่ ความต่างทั้งหมดอยู่ที่ “ใครเป็นคนตัดสินว่าเสร็จ”:
+    </p>
+
+    <table>
+      <thead><tr><th></th><th>ตัวตัดสินว่า “เสร็จ”</th><th>ผลเมื่อ act ผิด</th></tr></thead>
+      <tbody>
+        <tr><td><b>ลูปที่ verify จากสภาพแวดล้อม</b></td><td>ระบบจอง (โลกจริง)</td><td>เห็น FAIL → วนแก้เอง → สำเร็จจริง</td></tr>
+        <tr><td><b>ลูปที่ให้โมเดลตรวจเอง</b></td><td>โมเดล (อ่านคำตอบตัวเอง)</td><td>บอก “โอเค” ทั้งที่ผิด → ส่งคำโกหก</td></tr>
+        <tr><td><b>ไม่มี verify เลย</b></td><td>ไม่มีใคร — แค่ประกาศจบ</td><td>“Done!” ที่ไม่จริง ไม่มีใครรู้</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout note">
+      <strong>เส้นแบ่งระหว่าง “agent” กับ “การเรียกครั้งเดียว”</strong>
+      สิ่งที่ทำให้ของในบทที่ 02 กลายเป็น agent ไม่ใช่โมเดลที่ฉลาดกว่า แต่คือ <em>ลูปที่ปิดด้วย verify จากโลกจริง</em>
+      จังหวะที่มันเห็นผลจริงแล้วตัดสินใจขั้นต่อไปได้ คือจังหวะที่มันเลิก “เดาแล้วหวัง” กลายเป็น “ลงมือแล้วปรับ”
+    </div>
+
+    <!-- 4 · BAD → GOOD -->
+    <h2>ทำพลาด vs ทำถูก</h2>
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · ลูปที่ไม่มี verify จริง</div>
+        <div class="name">“ทดสอบผ่านหมดแล้ว — เสร็จ”</div>
+        <div class="desc">
+          agent เขียนแก้แล้วประกาศ “รันเทสต์แล้ว ผ่านทั้งหมด เสร็จ” ทั้งที่ <b>ไม่เคยรันเทสต์จริง</b>
+          คำว่า “ผ่านทั้งหมด” เป็นแค่ token ที่น่าจะตามมาหลังการแก้โค้ด — ไม่ใช่ผลจากการรันจริง
+          merge เข้าไปแล้วอีกไม่กี่นาที CI ก็แดง
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · ให้โมเดล “ตรวจงานตัวเอง”</div>
+        <div class="name">reflection ≠ verification</div>
+        <div class="desc">
+          เพิ่มขั้น “ช่วยอ่านคำตอบตัวเองอีกรอบว่าถูกไหม” ฟังดูดี แต่การตรวจนั้น <b>ยังอยู่ในหัวโมเดล</b>
+          มันแชร์จุดบอดเดียวกับตอนตอบครั้งแรก — อ่านการบ้านตัวเองซ้ำ ไม่เท่ากับเอาไปรันจริง
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ ดี · verify จากสภาพแวดล้อม</div>
+        <div class="name">ปล่อยให้โลกจริงตัดสิน</div>
+        <div class="desc">
+          ระบบจองตอบกลับว่า “ชน” หรือ “OK”, เครื่องมือคืน error จริง, เทสต์คืน exit code จริง —
+          ผลนั้นถูกป้อนกลับเข้าลูปเป็นบริบทใหม่ <b>โมเดลตัวเดิม</b> แต่ตอนนี้มันแก้ตัวเองได้
+          เพราะมันตอบสนองต่อ “ความจริง” ไม่ใช่ความมั่นใจของตัวเอง
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 · ACTIVITY -->
+    <h2>ลองเอง — เปิด VERIFY แล้วลองถอดออก</h2>
+    <div class="activity">
+      <div class="activity-head">
+        <div class="activity-kicker">กิจกรรม · กดสลับแล้วดูผล</div>
+        <div class="activity-title">Verify the Loop</div>
+        <div class="activity-desc">
+          งานเดียวกันทุกครั้ง: “ขยับการจองไม่ให้ชนคาบเรียน” ลองรันโดย <b>เปิด VERIFY</b> (ตรวจจากระบบจริง)
+          แล้วลอง <b>ปิด</b> ดู และลองกับดัก “ให้โมเดลตรวจเอง” — ลูปหน้าตาเดิมเป๊ะ
+          แต่ผลลัพธ์ต่างกันคนละโลก
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="activity-panel-label">สลับสวิตช์แล้วอ่าน transcript ของลูป</div>
+        <div class="verify-loop"></div>
+      </div>
+    </div>
+
+    <!-- 6 · FORWARD LOOK -->
+    <div class="callout info">
+      <strong>มองไปข้างหน้า — โครงมีแล้ว แต่ยังพังได้อีกหลายแบบ</strong>
+      ลูปคือ “โครงกระดูก” ของ agent แต่มันยังพังเฉพาะจุดอยู่: มัน <em>เดาชื่อห้อง</em>ที่ไม่มีจริง,
+      ไม่รู้จัก<em>วันหยุด/ช่วงซ่อมบำรุง</em>, ไป<em>จอง</em>ทั้งที่คุณแค่ถามว่าว่างไหม, <em>ค้างไม่จบ</em>, และตอบผิดแล้ว<em>ดูไม่ออกว่าทำไม</em>
+      ส่วนที่ 2 ทั้งส่วนคือการอุดรอยรั่วเหล่านี้ทีละชิ้น — และทุกชิ้นรวมกันจะมีชื่อว่า <b>harness</b>
+    </div>
+
+    <!-- 7 · SUMMARY + SCORECARD + BRIDGE -->
+    <h2>สรุปบทที่ 03</h2>
+    <ul>
+      <li><strong>Agentic loop = gather → act → verify → repeat</strong> ทำซ้ำจนเสร็จ</li>
+      <li>สิ่งที่เปลี่ยน one-shot call ให้เป็น agent คือ <strong>ลูปที่ปิดด้วย verify</strong> ไม่ใช่โมเดลที่ฉลาดกว่า</li>
+      <li><strong>verify ต้องมาจากนอกโมเดล</strong> (ระบบจริง/เทสต์) — การรายงานตัวเองและการอ่านงานตัวเองซ้ำ ไม่ใช่ verification</li>
+      <li>ลูปที่ไม่มี verify จริง = วิธีตอบผิดอย่างมั่นใจให้เร็วขึ้น</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>Harness Scorecard · มิติของบทนี้: “verify มาจากสภาพแวดล้อมหรือไม่?”</strong>
+      ผู้ช่วยจัดการแล็บ ✅ ผ่าน (เมื่อเราออกแบบให้ผลการ act มาจากระบบจอง) — แต่จำไว้ว่านี่คือ <em>หลักการ</em>
+      ที่เราต้องบังคับใช้เอง ไม่ใช่ของแถมจากโมเดล
+      <br><br>
+      <strong>📋 build-your-harness checklist · บรรทัดที่ 3</strong>
+      “ลูปที่มีขั้น verify จากสภาพแวดล้อม — เชื่อโลกจริง ไม่เชื่อคำว่า ‘เสร็จแล้ว’ ของโมเดล”
+    </div>
+
+    <div class="pager">
+      <a href="ch02-script-and-call.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">02 — Script &amp; การเรียกครั้งเดียว</div>
+      </a>
+      <span class="next" style="flex:1;opacity:.5;text-align:right;padding:16px 20px;border:1px dashed var(--line);border-radius:12px">
+        <div class="label" style="font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--ink-dim);text-transform:uppercase;letter-spacing:.06em">ถัดไป · เร็วๆ นี้</div>
+        <div class="title" style="font-family:'Space Grotesk',sans-serif;font-size:16.5px;font-weight:600;margin-top:4px;color:var(--cyan-2)">04 — Tools — มือของโมเดล</div>
+      </span>
+    </div>
+
+    <div class="illus-footer">
+      <b>หมายเหตุข้อมูล:</b> transcript ของลูปในกิจกรรมเป็น <b>ตัวอย่างเชิงสาธิต</b> (ไม่ได้เรียกโมเดลจริง) สร้างขึ้นเพื่อสอนแนวคิด
+      “verify จากสภาพแวดล้อม” กรณี “ทดสอบผ่านหมด” ที่ไม่เคยรันเทสต์ เป็นรูปแบบความล้มเหลวที่พบบ่อยใน coding agent ปี 2024–2025
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  AI Harness Engineering · บทที่ 03 · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/activities/verify-loop.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>เอกสารอ้างอิง | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div><div class="title">AI Harness</div><div class="subtitle">วิศวกรรมระบบ AI Agent</div></div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav></nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">ปิดท้าย · References &amp; Credits</span>
+    <h1>เอกสารอ้างอิง</h1>
+    <p class="lede">
+      คู่มือนี้เรียบเรียงจากการสำรวจสนาม AI agent กลางปี 2026 ผสานกับระบบจริงที่เราสร้างเองเป็นกรณีศึกษาเชิงแนวคิด
+      ทุกตัวอย่าง “ในระบบของเรา” ถูกเล่าเป็น <strong>พฤติกรรมและการไหลของระบบ</strong> โดยตั้งใจ — ไม่มีโค้ด ไม่มี path ไม่มีคำสั่ง
+      เพื่อให้โฟกัสอยู่ที่ <em>แนวคิด</em> ที่นำไปออกแบบ harness ของคุณเองได้
+    </p>
+
+    <h2>แนวคิดหลักและงานวิจัยที่อ้างอิง</h2>
+
+    <h3>กรอบ agent &amp; harness</h3>
+    <ul>
+      <li>Anthropic — <strong>“Building Effective Agents”</strong> (ธ.ค. 2024): หลัก “หาทางที่ง่ายที่สุดก่อน เพิ่มความซับซ้อนเมื่อจำเป็น” · บันไดความซับซ้อน (บทที่ 03, 15)</li>
+      <li>Anthropic Engineering — <strong>“Code execution with MCP”</strong>: การกรองผลใน sandbox ลดจาก ~150K เหลือ ~2K token (บทที่ 12)</li>
+      <li>OpenAI &amp; Anthropic — คู่มือ agent/harness ปี 2025–2026 ว่าด้วยความน่าเชื่อถือที่ “ออกแบบรอบโมเดล” (บทที่ 01, 10)</li>
+    </ul>
+
+    <h3>Model Context Protocol (MCP)</h3>
+    <ul>
+      <li><strong>Model Context Protocol</strong> — สเปกเปิด (host/client/server · tools/resources/prompts · confused-deputy) — <a href="https://modelcontextprotocol.io">modelcontextprotocol.io</a> (บทที่ 11) · ปัจจุบันอยู่ภายใต้ Linux Foundation</li>
+    </ul>
+
+    <h3>Context engineering</h3>
+    <ul>
+      <li>Liu et al. — <strong>“Lost in the Middle: How Language Models Use Long Contexts”</strong>, TACL 2024 (กราฟ recall รูปตัว U) — <a href="https://arxiv.org/abs/2307.03172">arxiv.org/abs/2307.03172</a> (บทที่ 13)</li>
+      <li>Chroma Research — <strong>“Context Rot”</strong> (2025): โมเดล 18 ตัวเสื่อมเมื่อ input ยาวขึ้น แม้ window ยังว่าง (บทที่ 13)</li>
+    </ul>
+
+    <h3>Security</h3>
+    <ul>
+      <li>Simon Willison — <strong>“The lethal trifecta”</strong> (2025): private data + untrusted content + exfiltration — <a href="https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/">simonwillison.net</a> (บทที่ 14)</li>
+      <li><strong>OWASP Top 10 for LLM Applications</strong> — LLM01: Prompt Injection — <a href="https://owasp.org/www-project-top-10-for-large-language-model-applications/">owasp.org</a> (บทที่ 14)</li>
+      <li>Invariant Labs — การเปิดเผย <strong>GitHub MCP prompt-injection</strong> (2025): issue สาธารณะ → ดูด private repo → เปิด PR (บทที่ 14)</li>
+    </ul>
+
+    <h3>Observability &amp; evaluation</h3>
+    <ul>
+      <li><strong>OpenTelemetry — GenAI semantic conventions</strong>: trace/span/attribute มาตรฐานสำหรับ agent — <a href="https://opentelemetry.io/docs/specs/semconv/gen-ai/">opentelemetry.io</a> (บทที่ 09)</li>
+      <li>แนวคิด eval 3 ระดับ (final / trajectory / step) + private suite + LLM-as-judge ที่สอบเทียบ (บทที่ 16)</li>
+    </ul>
+
+    <h3>Physical AI &amp; Human Integration (พรมแดนถัดไป)</h3>
+    <ul>
+      <li><strong>Vision-Language-Action (VLA) Models: Concepts, Progress, Applications and Challenges</strong> — สำรวจปี 2025 — <a href="https://arxiv.org/abs/2505.04769">arxiv.org/abs/2505.04769</a> (บทที่ 18)</li>
+      <li><strong>A Survey on Vision-Language-Action Models for Embodied AI</strong> — <a href="https://arxiv.org/abs/2405.14093">arxiv.org/abs/2405.14093</a> (บทที่ 18)</li>
+      <li>งานทบทวน <strong>Human-in-the-Loop AI</strong> (concepts/methods/applications, 2025–2026) และการศึกษา <strong>machine self-assessment</strong> ที่เพิ่ม trust ของมนุษย์ (บทที่ 19)</li>
+    </ul>
+
+    <h2>ที่มาของการออกแบบคู่มือนี้</h2>
+    <p>เนื้อหาถูกสร้างจากเวิร์กโฟลว์วิจัย/ออกแบบเบื้องหลัง 3 ชุด (วัตถุดิบดิบเก็บไว้ข้าง ๆ ไฟล์นี้):</p>
+    <table>
+      <thead><tr><th>ไฟล์</th><th>คืออะไร</th></tr></thead>
+      <tbody>
+        <tr><td><code>_design/landscape-research.json</code></td><td>สำรวจสนาม harness กลางปี 2026 แบบยึดเว็บ 7 สาย (Skills, MCP, context, tools, orchestration, evals/safety, frameworks)</td></tr>
+        <tr><td><code>_design/example-packs.json</code></td><td>example pack ของ 16 หัวข้อ (good/bad + กิจกรรม) ผ่านการขัดเชิงปฏิปักษ์</td></tr>
+        <tr><td><code>_design/part-v-fleet.json</code></td><td>ดีไซน์ Part V: 5 ระบบ + cockpit ยึดกับซอร์สจริง</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout note">
+      <strong>ความซื่อสัตย์ของตัวอย่าง</strong> — ตัวอย่าง “ในระบบของเรา” ยึดกับไฟล์/พฤติกรรมจริงของแพลตฟอร์มที่เราสร้าง
+      แต่ถูก <em>เล่าใหม่เป็นพฤติกรรม</em> และตัดโค้ด/path/คำสั่งออกทั้งหมด · ตัวเลขในกิจกรรมหลายอันเป็นค่าเชิงสาธิต (ระบุไว้ที่ท้ายแต่ละบท)
+      ส่วนตัวเลขหลักบางตัว (เช่น 56/96 tool) เป็นค่าจริงที่ตรวจเมื่อ 2026-05-29
+    </div>
+
+    <div class="callout tip">
+      <strong>บทเรียนเดียวที่อยากให้ติดตัวกลับไป</strong>
+      ~70% ของสิ่งที่คนเรียกว่า “งานของ AI agent” จริง ๆ คือ SQL view หรือ dashboard — AI คุ้มเฉพาะตอนต้องใช้
+      <em>การสังเคราะห์ ภาษา และการตัดสินเชิงคุณภาพ</em> และมืออาชีพจะ <strong>พิสูจน์ขั้นที่ง่ายกว่าก่อนเสมอ</strong>
+    </div>
+
+    <div class="pager">
+      <a href="gallery.html"><div class="label">← ก่อนหน้า</div><div class="title">🗂️ Fleet Gallery</div></a>
+      <a href="index.html" class="next"><div class="label">กลับ</div><div class="title">หน้าแรก &amp; ภาพรวม</div></a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  AI Harness Engineering · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ (สาขาเมคคาทรอนิกส์ฯ) · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+  <br>เนื้อหาเรียบเรียงจากการสำรวจสนาม AI agent ปี 2026 (Anthropic, OpenAI, MCP, ฯลฯ) — ใช้ระบบที่เราสร้างเองเป็นตัวอย่างเชิงแนวคิด
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

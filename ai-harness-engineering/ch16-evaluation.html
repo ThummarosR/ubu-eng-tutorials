@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>16 — Evaluation | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div><div class="title">AI Harness</div><div class="subtitle">วิศวกรรมระบบ AI Agent</div></div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav></nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ 16 · Context · เชื่อถือ · สเกล · Evaluation</span>
+    <h1>Evaluation — มันได้ผลจริงไหม</h1>
+    <p class="lede">
+      เราสร้างของที่ดูดีมาตลอด — แต่ <strong>มันถูกจริงไหม?</strong> การประเมิน agent เป็นวิชาแยกต่างหาก
+      มีสามระดับ (final / trajectory / step) ชุดทดสอบส่วนตัวจากงานจริงเอาชนะ benchmark สาธารณะ
+      ตัวอย่างนำ: <strong>ฟีดแบ็กงานนักศึกษา</strong> — ฟีดแบ็กนั้น “ดี” ไหม (เน้นกระบวนการ ไม่ใช่จับผิด AI)
+    </p>
+
+    <h2>พูดแบบเข้าใจง่าย</h2>
+    <p>การประเมิน agent คือการถาม <strong>สามคำถามที่ต่างกัน</strong> ต่อหนึ่ง run ไม่ใช่คำถามเดียว:</p>
+    <ul>
+      <li><strong>Final-task</strong> — ได้ผลตามเป้าหมายไหม?</li>
+      <li><strong>Trajectory</strong> — เส้นทางสมเหตุสมผลไหม (เรียก tool ถูก ลำดับถูก ตารางถูก ไม่ข้ามขั้นตรวจ)?</li>
+      <li><strong>Step</strong> — แต่ละการตัดสินใจถูกไหมเมื่อเทียบกับสิ่งที่รู้ตอนนั้น?</li>
+    </ul>
+    <p>
+      run หนึ่งผ่านระดับหนึ่งแต่ตกอีกระดับได้ — นั่นแหละเหตุผลที่ต้องมีครบสาม: <strong>คำตอบถูกที่ได้มาจากเส้นทางที่ผิด</strong>
+      คือ failure mode ที่การเทสต์ธรรมดาจับไม่ได้ · เพื่อวัดในสเกล ให้สร้าง <strong>ชุดทดสอบส่วนตัว ~50 เคสจากงานจริงของคุณ</strong>
+      (ดีกว่า leaderboard สาธารณะที่วัดงานของคนอื่น) · ถ้าใช้ <strong>LLM-as-judge</strong> ต้องสอบเทียบกับคำตัดสินของคนก่อน ตัดสินทีละมิติ และอนุญาตให้ตอบ “ไม่แน่ใจ” ได้
+    </p>
+
+    <div class="callout tip">
+      <strong>เปรียบเทียบ: ตรวจข้อสอบฟิสิกส์</strong>
+      ไม่ได้ดูแค่เลขในกรอบคำตอบ — อ่านวิธีทำ และตรวจพีชคณิตทีละบรรทัด ·
+      เลขในกรอบ = final-task · วิธีโดยรวมสมเหตุสมผล (ใช้อนุรักษ์พลังงานเมื่อโจทย์ต้องการ ไม่ใช่สูตรมั่ว 3 อัน) = trajectory · เช็คเครื่องหมายทีละบรรทัด = step ·
+      เคสที่ครูกลัวที่สุด: คำตอบถูกเพราะผิดสองที่หักล้างกัน (final ผ่าน · trajectory/step ตก) — นั่นคือ agent ที่ได้จำนวนถูกจากตารางผิด
+    </div>
+
+    <h2>ในระบบของเรา — มีเมล็ดพันธุ์แล้ว แต่ยังไม่มี agent eval</h2>
+    <div class="flow">
+      <div class="flow-node accent"><span class="fn-k">เมล็ดพันธุ์</span><span class="fn-t">regression fixture: input คงที่ → ผลคงที่ (พังเสียงดังเมื่อ drift)</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">แต่…</span><span class="fn-t">นั่นทดสอบ “ฟังก์ชันบริสุทธิ์” ไม่ใช่ทั้ง agent</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node guard"><span class="fn-k">ช่องว่าง</span><span class="fn-t">ไม่มีอะไรให้คะแนนว่า “agent ตอบงานจริงดีขึ้น/แย่ลง”</span></div>
+    </div>
+    <p>
+      ระบบเรามี <strong>fixture ทดสอบแบบ deterministic</strong> (เช่น parser ค่าฝุ่นต้องคืนค่าเดิมจาก HTML ที่แช่แข็งไว้) — นี่คือ
+      วินัยที่ดีและเป็น “เมล็ดพันธุ์” ของ eval แต่มัน <strong>ทดสอบฟังก์ชันบริสุทธิ์ ไม่ใช่ทั้ง agent</strong> ·
+      ทุกการเรียก tool ถูก log ไว้ (ได้ trajectory ฟรี) แต่ <strong>ไม่มีบรรทัดไหนบอก “เป้าหมายของ session” หรือ “ผ่าน/ไม่ผ่าน”</strong> —
+      เปลี่ยน prompt หรือสลับโมเดลทีก็เหมือน <em>บินด้วยตาเปล่า</em> สำหรับฟีดแบ็กงานนักศึกษา คำถามคือ “ฟีดแบ็กดีพอไหม” ซึ่งต้องวัดเชิงคุณภาพ
+    </p>
+
+    <h2>ทำพลาด vs ทำถูก</h2>
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · “เทสต์เขียว = agent ถูกทดสอบแล้ว”</div>
+        <div class="name">สับสนสองวิชา</div>
+        <div class="desc">
+          regression ของฟังก์ชันบริสุทธิ์ (input รู้ → output รู้) บอกได้แค่ parser ไม่ drift —
+          ไม่ได้บอกว่า agent <b>เลือก tool ถูก ค้นตารางถูก และได้คำตอบถูก</b> เมื่อเจอคำถามจริง
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · ไม่มี agent eval เลย</div>
+        <div class="name">จูน prompt แบบไสยศาสตร์</div>
+        <div class="desc">
+          เปลี่ยน system prompt/สลับโมเดลแล้วไม่มีอะไรบอกว่าคำตอบต่อคำถามจริงดีขึ้นหรือแย่ลง
+          “รู้สึกว่า prompt นี้ดีกว่า” = เดา ไม่ใช่วัด
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ ดี · ต่อยอด final-task eval บนเมล็ดพันธุ์</div>
+        <div class="name">~50 เคสจากงานจริง + 3 ระดับ</div>
+        <div class="desc">
+          แช่แข็ง “คำถามจริง → คำตอบที่คาดหวัง + เส้นทาง tool ที่คาดหวัง” สัก ~50 เคส ติด label เป้าหมาย+ผ่าน/ไม่ผ่าน
+          แล้วการเปลี่ยน prompt/โมเดลครั้งหน้าจะ <b>วัดได้ ไม่ใช่เดา</b> — trajectory มีให้ฟรีจาก log อยู่แล้ว
+        </div>
+      </div>
+    </div>
+
+    <h2>ลองเอง — ให้คะแนน agent 3 ระดับ</h2>
+    <div class="activity">
+      <div class="activity-head">
+        <div class="activity-kicker">กิจกรรม · เติม scorecard</div>
+        <div class="activity-title">Grade the Agent: Three Verdicts per Run</div>
+        <div class="activity-desc">
+          ดู 3 run แล้วตั้งคำตัดสิน Final / Trajectory / Step ต่อ run แล้วกด “เฉลย”
+          ระวัง Run B — คำตอบถูก แต่ได้มาจากเส้นทางที่ผิด (ถูกโดยบังเอิญ)
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="activity-panel-label">ตั้ง PASS/FAIL สามระดับต่อ run · แล้วเฉลย</div>
+        <div class="grade-the-agent"></div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>มองไปข้างหน้า — ครบ “เรื่องยาก” แล้ว ถอยมามองภาพรวม</strong>
+      เราปูพื้น สร้าง harness เชื่อมโลก และทำให้ดี/ปลอดภัย/พิสูจน์ได้แล้ว ส่วนที่ 5 คือมุมมองมืออาชีพ:
+      ผู้ช่วยตัวนี้เป็น 1 ในหลายระบบบน harness ร่วมกัน + <strong>cockpit</strong> ที่คุมทุก agent โดยไม่ใช้ AI เลย
+    </div>
+
+    <h2>สรุปบทที่ 16</h2>
+    <ul>
+      <li>ประเมิน agent = สามคำถาม: <strong>final · trajectory · step</strong> — ผ่านระดับหนึ่งตกอีกระดับได้</li>
+      <li>คำตอบถูกจาก <strong>เส้นทางผิด</strong> = failure ที่เทสต์ธรรมดาจับไม่ได้</li>
+      <li><strong>ชุดทดสอบส่วนตัว ~50 เคสจากงานจริง</strong> > benchmark สาธารณะ · LLM-as-judge ต้องสอบเทียบ + ตัดสินทีละมิติ</li>
+      <li>ระบบเรามี fixture (เมล็ดพันธุ์) แต่ <strong>ยังไม่มี agent eval</strong> — เปลี่ยน prompt/โมเดล = บินตาเปล่า</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>Harness Scorecard · มิติ: “มี agent eval ที่วัดงานจริงไหม?”</strong>
+      ระบบเรา: ⚠️ <b>อ่อน</b> — มี regression fixture แต่ยังไม่มี agent eval (จุดอ่อนคู่กับ observability ในบทที่ 9)
+      <br><br>
+      <strong>📋 build-your-harness checklist · บรรทัดที่ 15</strong>
+      “ชุด eval ส่วนตัว ~50 เคสจากงานจริง · ให้คะแนน 3 ระดับ · สอบเทียบ LLM-as-judge ก่อนใช้”
+    </div>
+
+    <div class="pager">
+      <a href="ch15-orchestration-ladder.html"><div class="label">← ก่อนหน้า</div><div class="title">15 — Orchestration &amp; บันได</div></a>
+      <a href="ch17-cockpit-fleet.html" class="next"><div class="label">ถัดไป</div><div class="title">17 — Cockpit &amp; Fleet</div></a>
+    </div>
+
+    <div class="illus-footer">
+      <b>หมายเหตุข้อมูล:</b> run ในกิจกรรมเป็น <b>ตัวอย่างเชิงสาธิต</b> เพื่อสอนการให้คะแนน 3 ระดับ — โดยเฉพาะ “ถูกโดยบังเอิญ” ของ Run B
+      ส่วน “มี regression fixture แต่ไม่มี agent eval” อ้างอิงสภาพจริงของระบบเรา · แนวคิดเน้นกระบวนการไม่ใช่จับผิด AI เป็นนโยบายของแอปฟีดแบ็กงานจริง
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">AI Harness Engineering · บทที่ 16 · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี</footer>
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/activities/grade-the-agent.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

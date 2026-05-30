@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>02 — Script &amp; การเรียกครั้งเดียว | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div>
+        <div class="title">AI Harness</div>
+        <div class="subtitle">วิศวกรรมระบบ AI Agent</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>1 · ปัญหา &amp; คำศัพท์</h4>
+      <a href="ch01-the-situation.html"><span class="num">01</span> สถานการณ์</a>
+      <a href="ch02-script-and-call.html" class="active"><span class="num">02</span> Script &amp; การเรียกครั้งเดียว</a>
+      <a href="ch03-loop-to-agent.html"><span class="num">03</span> Loop → Agent</a>
+
+      <h4>2 · ประกอบ Harness</h4>
+      <a class="soon"><span class="num">04</span> Tools — มือ</a>
+      <a class="soon"><span class="num">05</span> Context — สิ่งที่ต้องรู้</a>
+      <a class="soon"><span class="num">06</span> Memory &amp; State</a>
+      <a class="soon"><span class="num">07</span> Grounding &amp; Verify</a>
+      <a class="soon"><span class="num">08</span> Permissions &amp; Safety</a>
+      <a class="soon"><span class="num">09</span> ควบคุม &amp; มองเห็น</a>
+      <a class="soon"><span class="num">10</span> นี่แหละ Harness</a>
+
+      <h4>3 · เชื่อมกับโลก</h4>
+      <a class="soon"><span class="num">11</span> MCP</a>
+      <a class="soon"><span class="num">12</span> Skills &amp; Tool Surface</a>
+
+      <h4>4 · Context · เชื่อถือ · สเกล</h4>
+      <a class="soon"><span class="num">13</span> Context Engineering</a>
+      <a class="soon"><span class="num">14</span> Security</a>
+      <a class="soon"><span class="num">15</span> Orchestration &amp; บันได</a>
+      <a class="soon"><span class="num">16</span> Evaluation</a>
+
+      <h4>5 · มุมมองมืออาชีพ</h4>
+      <a class="soon"><span class="num">17</span> Cockpit &amp; Fleet</a>
+
+      <h4>6 · พรมแดนถัดไป</h4>
+      <a class="soon"><span class="num">18</span> Physical AI</a>
+      <a class="soon"><span class="num">19</span> Human Integration</a>
+      <a class="soon"><span class="num">20</span> Capstone</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a class="soon"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <!-- 1 · HOOK -->
+    <span class="eyebrow">บทที่ 02 · ปัญหา &amp; คำศัพท์ · Script vs One-Shot Call</span>
+    <h1>Script &amp; การเรียกครั้งเดียว</h1>
+    <p class="lede">
+      เราเริ่มจากของที่ง่ายที่สุดเท่าที่จะเป็นไปได้: <strong>script</strong> ที่ส่งรายงานแล็บตอนกลางคืนแบบอัตโนมัติ —
+      มั่นคงสุด ๆ แต่ทำได้งานเดียว พอมีคนอยากถามเป็นภาษาคนบ้าง เราเลยลองแปะ <strong>การเรียก LLM ครั้งเดียว (one-shot call)</strong> เข้าไป
+      มันยืดหยุ่นขึ้นจริง แต่กลายเป็น <em>“prompt-and-pray”</em> — เดา ลืม และค้นอะไรไม่ได้ บทนี้ทำให้เห็นเส้นแบ่งระหว่างสองสิ่งนี้ชัด ๆ
+    </p>
+
+    <!-- 2 · PLAIN CONCEPT -->
+    <h2>พูดแบบเข้าใจง่าย</h2>
+    <p>
+      <strong>Script</strong> คือ ลำดับขั้นที่ตายตัว ทำตามทุกครั้งเป๊ะ ๆ: ถึงเวลา → อ่านการจองของวันนี้ → จัดเป็นตาราง → ส่งอีเมล
+      มันคาดเดาได้ 100% ไม่เคยมั่ว และไม่ต้องใช้ AI เลย — แต่ทำได้ <em>เฉพาะ</em> งานที่เราเขียนไว้ ถามนอกสคริปต์ไม่ได้
+    </p>
+    <p>
+      <strong>การเรียก LLM ครั้งเดียว</strong> คือ ป้อนข้อความเข้า ได้ข้อความตอบกลับ จบในช็อตเดียว
+      มันเข้าใจภาษาที่ยืดหยุ่น แต่ตัวมันเอง <em>ไม่มีความจำข้ามครั้ง ไม่มี “มือ” ไปค้นข้อมูล และไม่มีรอบที่สองให้แก้ตัว</em>
+      ถ้าข้อมูลที่มันต้องใช้ไม่ได้อยู่ในข้อความที่เราป้อนให้ มันจะ <strong>แต่งคำตอบที่ดูสมเหตุสมผลขึ้นมาอย่างมั่นใจ</strong>
+    </p>
+
+    <div class="callout tip">
+      <strong>เปรียบเทียบ: ตู้กดน้ำ กับ อัจฉริยะที่ไม่ยอมเปิดดูอะไรเลย</strong>
+      script คือ <em>ตู้กดน้ำ</em> — กด B4 ได้ B4 ทุกครั้ง เชื่อถือได้แต่ทำได้แค่ที่ตั้งไว้
+      ส่วน one-shot call คือ <em>คนเก่งมากที่ตอบจากความจำล้วน ๆ</em> ไม่ยอมเปิดสมุดจอง ไม่ยอมบอกว่า “ไม่รู้”
+      ถามอะไรก็ตอบฉะฉานทันที — ฟังดูน่าเชื่อ จนกระทั่งคุณไปเช็คแล้วพบว่ามันเดา
+    </div>
+
+    <!-- 3 · IN OUR SYSTEMS -->
+    <h2>ในระบบของเรา — รายงานกลางคืน (script) vs ถามเป็นภาษาคน (one-shot)</h2>
+    <p>
+      รายงานแล็บตอนกลางคืนเหมาะกับ script เป๊ะ ๆ เพราะ <strong>ทุกขั้นรู้ล่วงหน้าหมด</strong> ไม่มีอะไรต้องตัดสินใจ:
+    </p>
+    <div class="flow">
+      <div class="flow-node"><span class="fn-k">ตั้งเวลา</span><span class="fn-t">ทุกคืน 22:00</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">อ่าน</span><span class="fn-t">การจองของวันนี้</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">จัดรูป</span><span class="fn-t">ทำเป็นตาราง</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">ส่ง</span><span class="fn-t">อีเมลถึงเจ้าหน้าที่</span></div>
+    </div>
+    <p>
+      แต่พอมีคนพิมพ์ถามอิสระว่า <em>“Lab 3 ว่างพฤหัสบ่ายไหม”</em> เราเลยแปะ one-shot call โดย
+      <strong>ก๊อปตารางการจองทั้งก้อนแปะลงไปในคำสั่ง</strong> แล้วให้มันตอบ ดูเหมือนได้ผล…จนกว่าโลกจริงจะขยับ:
+    </p>
+    <div class="flow">
+      <div class="flow-node"><span class="fn-k">คำถาม</span><span class="fn-t">“Lab 3 ว่างพฤหัส 13:00 ไหม?”</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">แปะข้อมูล</span><span class="fn-t">ก๊อปตารางจอง (ภาพ ณ ตอนนั้น) ลงในพรอมป์ต์</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node guard"><span class="fn-k">เดา</span><span class="fn-t">ตอบจาก “ภาพแช่แข็ง” — ไม่ได้ค้นของจริง</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">ตอบ</span><span class="fn-t">มั่นใจเสมอ ถูกหรือผิดก็ฟังดูเหมือนกัน</span></div>
+    </div>
+
+    <table>
+      <thead><tr><th></th><th>Script (รายงานกลางคืน)</th><th>One-shot call (ถามอิสระ)</th></tr></thead>
+      <tbody>
+        <tr><td><b>ยืดหยุ่น</b></td><td>ไม่ — ทำได้งานเดียว</td><td>ใช่ — รับคำถามภาษาคนได้</td></tr>
+        <tr><td><b>เชื่อถือได้</b></td><td>มาก — คาดเดาได้ ไม่เคยมั่ว</td><td>เปราะ — เดาเมื่อข้อมูลไม่อยู่ในพรอมป์ต์</td></tr>
+        <tr><td><b>ค้นข้อมูลจริง</b></td><td>ใช่ (อ่านตรงจากระบบ)</td><td>ไม่ — เห็นแค่ที่เราแปะให้</td></tr>
+        <tr><td><b>จำเรื่องก่อนหน้า</b></td><td>ไม่จำเป็น</td><td>ไม่ — “แล้วพรุ่งนี้ล่ะ?” ไร้ความหมาย</td></tr>
+      </tbody>
+    </table>
+
+    <!-- 4 · BAD → GOOD -->
+    <h2>ทำพลาด vs ทำถูก</h2>
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · เรียกครั้งเดียวแล้วเรียกมันว่า “agent”</div>
+        <div class="name">แปะข้อมูลทั้งก้อนแล้วหวังผล</div>
+        <div class="desc">
+          one-shot call ที่แปะตารางจองลงไปไม่ใช่ agent — มัน <b>ค้นอะไรไม่ได้และแก้ตัวเองไม่ได้</b>
+          ถ้าห้องที่ถามไม่อยู่ในก้อนที่แปะ มันจะตอบ “ว่าง” แบบมั่นใจ ทั้งที่ไม่มีข้อมูลด้วยซ้ำ
+          ดูดีในเดโม พังทันทีที่ข้อมูลจริงเปลี่ยน
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ ดี · ใช้ script กับงานที่รู้ขั้นตอนหมด</div>
+        <div class="name">รายงานกลางคืน = script ล้วน</div>
+        <div class="desc">
+          เมื่อ <b>ทุกขั้นรู้ล่วงหน้า</b> ให้เขียนเป็นโค้ด ไม่ใช่ยกให้โมเดล — มันเร็ว ฟรี ไม่มีวันมั่วตัวเลข
+          และถ้าพังก็พังแบบเห็นชัด (เช่นส่งอีเมลไม่ออก) ไม่ใช่ตอบผิดแบบเนียน ๆ
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--amber)">
+        <div class="num">🌱 จุดเริ่มของทางแก้</div>
+        <div class="name">เก็บความยืดหยุ่นไว้ แต่เติม “มือ” กับ “ลูป”</div>
+        <div class="desc">
+          ความสามารถด้านภาษาของ LLM มีค่า — แต่จะเชื่อถือได้ก็ต่อเมื่อมันไป <b>ค้นของจริงได้</b>
+          และมี <b>รอบที่สองให้ตรวจแล้วแก้</b> นั่นคือสิ่งที่บทถัดไปจะเติมเข้าไป
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 · ACTIVITY -->
+    <h2>ลองเอง — ใส่ “ความจริงที่เปลี่ยนไป” แล้วดูมันเดา</h2>
+    <div class="activity">
+      <div class="activity-head">
+        <div class="activity-kicker">กิจกรรม · กดสลับแล้วดูผล</div>
+        <div class="activity-title">Prompt-and-Pray</div>
+        <div class="activity-desc">
+          one-shot call ตอบ “Lab 3 ว่างพฤหัส 13:00 ไหม?” จาก <b>ภาพตารางจองที่เราแปะให้</b> เท่านั้น
+          ลองเปิด “fault” ทีละอัน แล้วดูว่าคำตอบที่ <b>มั่นใจเท่าเดิม</b> กลายเป็นผิดได้ยังไง —
+          ไม่ใช่เพราะโมเดลโง่ลง แต่เพราะมันค้นอะไรไม่ได้
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="activity-panel-label">เปิด/ปิด fault แล้วสังเกตคำตอบ</div>
+        <div class="prompt-and-pray"></div>
+      </div>
+    </div>
+
+    <!-- 6 · FORWARD LOOK -->
+    <div class="callout info">
+      <strong>มองไปข้างหน้า — ทางออกไม่ใช่ “โมเดลที่แพงกว่า”</strong>
+      สังเกตว่าทุก fault ที่คุณเปิด แก้ด้วยการเปลี่ยนเป็นโมเดลที่ฉลาดกว่าไม่ได้เลย —
+      มันขาด <em>มือไปค้น</em> ขาด <em>ลูปให้ทำซ้ำ</em> และขาด <em>ความจำ</em> บทที่ 03 เราจะใส่ “ลูป” เข้าไป
+      แล้วของชิ้นเดิมนี้จะเริ่มกลายเป็น agent จริง ๆ
+    </div>
+
+    <!-- 7 · SUMMARY + SCORECARD + BRIDGE -->
+    <h2>สรุปบทที่ 02</h2>
+    <ul>
+      <li><strong>Script</strong> = ขั้นตอนตายตัว เชื่อถือได้แต่ทำได้งานเดียว เหมาะกับงานที่ <em>รู้ทุกขั้นล่วงหน้า</em></li>
+      <li><strong>One-shot call</strong> = ยืดหยุ่นด้านภาษา แต่ค้นไม่ได้ จำไม่ได้ แก้ตัวไม่ได้ → “prompt-and-pray”</li>
+      <li>การเรียกครั้งเดียว <strong>ไม่ใช่ agent</strong> เพราะลงมือกับโลกจริงไม่ได้และตรวจงานตัวเองไม่ได้</li>
+      <li>ความผิดพลาดแบบ “มั่นใจแต่ผิด” คือโหมดที่อันตรายที่สุด เพราะหน้าตาเหมือนคำตอบที่ถูกเป๊ะ</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>Harness Scorecard · มิติของบทนี้: “ค้นของจริง หรือเดาเอา?”</strong>
+      one-shot call ❌ ตก — มันเดาจากภาพแช่แข็ง บทนี้สอนให้แยกงานที่ควรเป็น script (ไม่ใช้ AI)
+      ออกจากงานที่ต้องการความยืดหยุ่น (แต่ยังต้องเติมเครื่องมืออีกหลายชิ้นกว่าจะเชื่อได้)
+      <br><br>
+      <strong>📋 build-your-harness checklist · บรรทัดที่ 2</strong>
+      “แยกงานที่ขั้นตอนตายตัว (เขียนเป็น script — ไม่ใช้ LLM) ออกจากงานที่ต้องใช้ภาษายืดหยุ่น”
+    </div>
+
+    <div class="pager">
+      <a href="ch01-the-situation.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">01 — สถานการณ์</div>
+      </a>
+      <a href="ch03-loop-to-agent.html" class="next">
+        <div class="label">ถัดไป</div>
+        <div class="title">03 — Loop → Agent</div>
+      </a>
+    </div>
+
+    <div class="illus-footer">
+      <b>หมายเหตุข้อมูล:</b> สถานการณ์ในกิจกรรม (Lab 3, ตารางจอง, fault ต่าง ๆ) เป็น <b>ตัวอย่างเชิงสาธิต</b> ที่สร้างขึ้นเพื่อสอนแนวคิด
+      “prompt-and-pray” — ไม่ใช่เหตุการณ์จริงที่เกิดในระบบ เส้นแบ่ง script vs one-shot call อ้างอิงสถาปัตยกรรมจริงของระบบเรา
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  AI Harness Engineering · บทที่ 02 · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/activities/prompt-and-pray.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

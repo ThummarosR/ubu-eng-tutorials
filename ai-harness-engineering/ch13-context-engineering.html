@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>13 — Context Engineering | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div><div class="title">AI Harness</div><div class="subtitle">วิศวกรรมระบบ AI Agent</div></div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav></nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ 13 · Context · เชื่อถือ · สเกล · Context Engineering</span>
+    <h1>Context Engineering</h1>
+    <p class="lede">
+      บทที่ 05 สอนว่า “ป้อนกติกาที่ถูก” แต่พอข้อมูลโตขึ้น คำถามเปลี่ยนเป็น <strong>วางอะไร เท่าไร และเรียงยังไง</strong>
+      ก่อนโมเดลจะคิด ตัวอย่างนำ: <strong>การให้คำปรึกษานักศึกษา</strong> — ดึงประวัติ <em>ทีละคนเมื่อจำเป็น</em> ไม่ใช่ยกทั้ง roster มากองไว้
+    </p>
+
+    <h2>พูดแบบเข้าใจง่าย</h2>
+    <p>
+      <strong>Context engineering</strong> คือการตัดสินใจว่าจะวาง token อะไร น้อยแค่ไหน และเรียงลำดับยังไง — โมเดล
+      <em>ไม่ได้</em> ให้น้ำหนักทุก token เท่ากัน งานวิจัยสองชิ้นล้มสัญชาตญาณ “ยิ่งเยอะยิ่งดี”:
+    </p>
+    <ul>
+      <li><strong>Lost in the middle</strong> (Liu et al., TACL 2024): ข้อเท็จจริงที่อยู่ <em>ต้น</em> หรือ <em>ท้าย</em> ของ input ถูกเรียกคืนได้แม่น แต่ถ้าอยู่ <em>กลาง</em> ความแม่นแอ่นลงเป็นรูปตัว U</li>
+      <li><strong>Context rot</strong> (Chroma, 2025): ยิ่ง input ยาว ความแม่นยิ่งตก แม้ window จะยังว่างอยู่มาก และแม้งานจะง่าย</li>
+    </ul>
+    <p>
+      เป้าหมายจึงไม่ใช่ “window ที่เต็มที่สุด” แต่คือ <strong>ชุด token ที่เล็กที่สุดแต่สัญญาณแรงสุด วางในที่ที่โมเดลอ่านจริง</strong> —
+      ดึงข้อมูลเมื่อต้องใช้ (just-in-time), สรุปก่อน (aggregate ใน SQL / คืน top-k) และใช้แพทเทิร์น “จัดหมวดด้วย schema ก่อน แล้วค่อยเจาะ”
+    </p>
+
+    <div class="callout tip">
+      <strong>เปรียบเทียบ: กระเป๋าถือขึ้นเครื่อง vs ตู้คอนเทนเนอร์ขนของทั้งตู้เสื้อผ้า</strong>
+      กระเป๋าถือบังคับให้เลือกของไม่กี่ชิ้นที่ใช้จริง (context สัญญาณแรง) · ตู้คอนเทนเนอร์เอามาหมด แต่คุณเสียทั้งทริปขุดหากล่อง
+      และยังหาที่ชาร์จไม่เจอ (lost-in-the-middle) · ตู้ที่เต็มแค่ครึ่งก็ยังถ่วงคุณ (context rot) · พาสปอร์ตในกระเป๋าหน้า = วางข้อเท็จจริงสำคัญไว้ต้น/ท้าย
+    </div>
+
+    <h2>ในระบบของเรา — จัดหมวดด้วย schema ก่อน แล้วค่อยเจาะ</h2>
+    <div class="flow">
+      <div class="flow-node accent"><span class="fn-k">schema ก่อน</span><span class="fn-t">เรียก “สารบัญ” ราคาถูก: มีหมวด/แท็กอะไรบ้าง</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">จัดหมวด</span><span class="fn-t">คำถามนี้ตกหมวดไหน</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">เจาะ</span><span class="fn-t">ดึงเฉพาะไม่กี่รายการในหมวดนั้น</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">ตอบ</span><span class="fn-t">โมเดลอ่านไม่กี่บรรทัดสัญญาณแรง</span></div>
+    </div>
+    <p>
+      ปฏิทินการศึกษาของเรามีเหตุการณ์ร้อยกว่ารายการที่คำซ้ำ ๆ กัน — ผู้ช่วยจึงเรียก “สารบัญ” (schema) ที่ราคาถูกก่อน
+      จัดคำถามลงหมวด แล้วดึงเฉพาะไม่กี่รายการในหมวดนั้น ไม่เคยเห็นทั้งร้อยรายการ และเรื่องคู่มือ มันดึงเฉพาะ <strong>top-k ท่อนที่เกี่ยว</strong>
+      ไม่ใช่ทั้งเล่ม · สำหรับการให้คำปรึกษานักศึกษา หลักเดียวกัน: <strong>ดึงประวัติทีละคนเมื่อจำเป็น ไม่ยก roster ทั้งชั้นมากองไว้</strong>
+    </p>
+
+    <h2>ทำพลาด vs ทำถูก</h2>
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · ทิ้งแถวดิบทั้งฐานข้อมูล</div>
+        <div class="name">ให้โมเดลนับเอง</div>
+        <div class="desc">
+          ดึงข้อมูลนักศึกษาหลายพันแถวเข้า context แล้วให้โมเดลนับ/เฉลี่ย — token สัญญาณต่ำมหาศาล
+          ตัวเลขที่ต้องการไปจมอยู่กลางกอง (recall แอ่น) ทั้งที่ SQL สรุปให้เป็นตัวเลขเดียวได้
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · front-load ทุกอย่าง “เผื่อไว้”</div>
+        <div class="name">กำแพง 40K token</div>
+        <div class="desc">
+          แปะคู่มือทั้งเล่ม ทุก tool ทุกบทสนทนาเก่า ทุกครั้ง — ข้อเท็จจริงชิ้นเดียวที่ต้องใช้ไปอยู่กลางกำแพง
+          recall อ่อนสุด และ context rot ถ่วงอยู่แล้วแม้ window ว่าง 80%
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ ดี · schema-first + JIT + pre-aggregate</div>
+        <div class="name">เล็ก ตรง วางถูกที่</div>
+        <div class="desc">
+          จัดหมวดด้วยสารบัญราคาถูกก่อน เจาะเฉพาะที่เกี่ยว ดึงเมื่อต้องใช้ และสรุปด้วย SQL ให้เป็นคำตอบ
+          โมเดลอ่านไม่กี่บรรทัด recall อยู่บนส่วนสูงของกราฟ
+        </div>
+      </div>
+    </div>
+
+    <h2>ลองเอง — ทำนาย recall แล้วดูมันแอ่น</h2>
+    <div class="activity">
+      <div class="activity-head">
+        <div class="activity-kicker">กิจกรรม · สไลเดอร์ + กราฟ</div>
+        <div class="activity-title">Needle in the Haystack</div>
+        <div class="activity-desc">
+          เลื่อนตำแหน่งของ “เข็ม” (ข้อเท็จจริงสำคัญ) ในก้อน context แล้ว <b>ทายก่อน</b>ว่า recall เท่าไร
+          จากนั้นขยายขนาด haystack โดยตรึงเข็มไว้กลาง — ดู recall ตกทั้งที่ window แทบว่าง
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="activity-panel-label">เลื่อนตำแหน่ง · เลือกขนาด · ทาย · รัน</div>
+        <div class="needle-haystack"></div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>มองไปข้างหน้า — context เดียวกันนี้ก็รับ “ของอันตราย” ได้ด้วย</strong>
+      เราทำให้ context เล็กและฉลาดแล้ว แต่ทุกอย่างที่เข้ามาใน window — รวมถึง <em>ข้อความที่ผู้ใช้พิมพ์หรือเนื้อหาที่ดึงมา</em> —
+      ปนกันเป็นสายเดียว บทที่ 14 ว่าด้วย <strong>security</strong>: เมื่อ “เนื้อหาที่ไม่น่าเชื่อถือ” อยู่ใน context เดียวกับคำสั่ง
+    </div>
+
+    <h2>สรุปบทที่ 13</h2>
+    <ul>
+      <li>เป้าหมายคือ <strong>ชุด token เล็กสุดแต่สัญญาณแรงสุด</strong> ไม่ใช่ window ที่เต็มสุด</li>
+      <li><strong>Lost-in-the-middle</strong> (ตำแหน่ง) + <strong>context rot</strong> (ความยาว) ทำให้ “เยอะ” ทำร้ายความแม่น</li>
+      <li>ดึง <strong>just-in-time</strong> + สรุปก่อน (SQL/top-k) + <strong>schema-first</strong> (จัดหมวดก่อนเจาะ)</li>
+      <li>การให้คำปรึกษา: ดึงประวัติ <strong>ทีละคนเมื่อจำเป็น</strong> ไม่ยก roster ทั้งชั้น</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>Harness Scorecard · มิติ: “ใช้ชุด context ที่เล็กและตรงไหม?”</strong>
+      ผู้ช่วย/ระบบเรา: ✅ — schema-first + JIT + pre-aggregate เป็นพฤติกรรมจริง
+      <br><br>
+      <strong>📋 build-your-harness checklist · บรรทัดที่ 12</strong>
+      “ชุด context เล็กสุด-สัญญาณแรงสุด: schema-first · ดึง just-in-time · สรุปก่อน · วางของสำคัญไว้ต้น/ท้าย”
+    </div>
+
+    <div class="pager">
+      <a href="ch12-skills-tool-surface.html"><div class="label">← ก่อนหน้า</div><div class="title">12 — Skills &amp; Tool Surface</div></a>
+      <a href="ch14-security.html" class="next"><div class="label">ถัดไป</div><div class="title">14 — Security</div></a>
+    </div>
+
+    <div class="illus-footer">
+      <b>หมายเหตุข้อมูล:</b> กราฟในกิจกรรมมาจาก <b>สูตรของเล่นที่โปร่งใส</b> (แสดงสูตรบนจอ) ไม่ใช่ LLM จริง
+      อ้างอิงงานวิจัยจริง: Liu et al. “Lost in the Middle” (TACL 2024) และ Chroma “Context Rot” (2025) · พฤติกรรม schema-first/JIT เป็นของจริงในระบบเรา
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">AI Harness Engineering · บทที่ 13 · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี</footer>
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/activities/needle-haystack.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

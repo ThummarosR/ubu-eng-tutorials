@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>09 — ควบคุม &amp; มองเห็น | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div>
+        <div class="title">AI Harness</div>
+        <div class="subtitle">วิศวกรรมระบบ AI Agent</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav></nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ 09 · ประกอบ Harness · Operating &amp; Observability</span>
+    <h1>ควบคุมลูป &amp; มองเห็นสิ่งที่มันทำ</h1>
+    <p class="lede">
+      มีรอบหนึ่ง query <strong>ค้างไม่จบ</strong> และอีกครั้งมันตอบผิดแต่คุณ <strong>ดูไม่ออกว่าทำไม</strong>
+      สองปัญหานี้คือเรื่อง “การเดินเครื่อง” ของ agent: <strong>คุมลูป</strong> (จำกัดจำนวนรอบและเวลา ไม่ให้ค้างชั่วกัลป์)
+      และ <strong>มองเห็น (observability)</strong> — ไม่ใช่แค่ log เยอะ ๆ แต่เป็น <em>โครงสร้าง</em> ที่ไล่หาเหตุได้
+    </p>
+
+    <h2>พูดแบบเข้าใจง่าย</h2>
+    <p>สองสิ่งที่ต้องมีตอนเอา agent ไปเดินจริง:</p>
+    <ul>
+      <li><strong>คุมลูป (loop control)</strong> — จำกัดจำนวนรอบ (max turns) และมี <em>timeout</em> ครอบทั้งงาน
+        เพื่อให้ tool ที่ค้างหรือโมเดลที่วนไม่จบ ถูกตัดจบ ไม่กินทรัพยากรตลอดไป</li>
+      <li><strong>Observability</strong> — ไม่ใช่ “log ทุกอย่าง” แต่คือ <em>trace ต่อหนึ่งคำขอ</em> ที่แตกเป็น
+        <em>spans</em> ซ้อนกัน (เรียกโมเดล / เรียก tool / ดึงข้อมูล / subagent) แต่ละ span บันทึก <em>เจตนา (intent)</em>
+        ว่า “ทำไมถึงแตกกิ่งนี้” ทั้งหมดใช้มาตรฐานเดียว (OpenTelemetry GenAI) จึงเปิดอ่านในเครื่องมือไหนก็ได้</li>
+    </ul>
+    <p>
+      log แบนราบ (บรรทัดต่อบรรทัด) ตอบได้แค่ “อะไรรันไปบ้าง” แต่ตอบไม่ได้ว่า <em>บรรทัดไหนเป็นของคำขอไหน · ใครเรียกใคร · ทำไมถึงแตกกิ่งตรงนี้</em>
+    </p>
+
+    <div class="callout tip">
+      <strong>เปรียบเทียบ: statement ธนาคาร vs ใบเสร็จพับเป็นต้นไม้พร้อมเหตุผล</strong>
+      log แบนราบ = statement: รายการเรียงตามเวลา แต่ละบรรทัดถูกต้องในตัว แต่บอกไม่ได้ว่ากาแฟแก้วไหนของทริปไหน หรือซื้อทำไม
+      trace ที่มี span + intent = ใบเสร็จพับเป็นต้นไม้: ทั้งทริปคือพับนอก แต่ละร้านคือพับย่อย และทุกบรรทัดมีโน้ตว่า “ทำไม” —
+      พอมีรายการผิด คุณเปิดพับที่ถูกต้องแทนการไถ statement 4000 บรรทัด
+    </div>
+
+    <h2>ในระบบของเรา — ลูปมีเพดาน + trace ที่ยัง “แบน”</h2>
+    <div class="flow">
+      <div class="flow-node guard"><span class="fn-k">max turns</span><span class="fn-t">จำกัดจำนวนรอบของลูป</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node guard"><span class="fn-k">timeout</span><span class="fn-t">ครอบทั้งงาน — tool ค้างก็ถูกตัดจบ</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">บันทึก</span><span class="fn-t">ทุกการเรียก tool ถูก log ลงไฟล์ trace</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">…แต่แบน</span><span class="fn-t">ไม่มี trace_id / parent / intent</span></div>
+    </div>
+    <p>
+      ระบบจริงของเรา <strong>คุมลูปได้ดี</strong> — มีเพดานจำนวนรอบและ timeout ~90 วินาทีครอบทั้งงาน tool ค้างจึงไม่ค้างตลอดไป
+      ส่วน observability เรามี “จุดเริ่มต้นที่ซื่อสัตย์”: ทุกการเรียก tool ถูกบันทึกเป็นบรรทัด JSON หนึ่งบรรทัด (เวลา/เครื่องมือ/สถานะ/นาน/ผล/ error)
+      แต่มัน <strong>ยังแบน</strong> — ไม่มี trace_id ไว้จับกลุ่มต่อหนึ่งคำขอ ไม่มี parent ไว้ซ้อนชั้น ไม่มีช่อง intent
+      เอกสารของระบบเองเรียกมันว่า “telemetry baseline แบบเบา ๆ” พอ run มี 30 ขั้น การดีบักคือการไถจอแล้วเดาว่าบรรทัดไหนเป็นของ run ไหน
+    </p>
+    <div class="callout note">
+      <strong>นี่คือจุดอ่อนที่เราจะ “ค้นพบ” ไม่ใช่ปกปิด</strong> — observability เป็นมิติที่ระบบเรายัง <em>อ่อน</em>
+      (มี log แต่ยังไม่มีโครงสร้าง span) จำไว้ แล้วเราจะมาสรุปภาพรวมความแข็ง/อ่อนของทั้ง fleet ในบทที่ 17
+    </div>
+
+    <h2>ทำพลาด vs ทำถูก</h2>
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · ลูปไม่มีเพดาน</div>
+        <div class="name">tool ค้าง = ค้างตลอดกาล</div>
+        <div class="desc">
+          ไม่มี max turns ไม่มี timeout — tool ที่ค้างหรือโมเดลที่วนตัดสินใจไม่จบ จะกินเวลาและเงินไปเรื่อย ๆ
+          ผู้ใช้เห็นแค่สปินเนอร์หมุนไม่เลิก
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · “เรา log ทุกอย่างแล้ว” = มองเห็นแล้ว</div>
+        <div class="name">log แบนราบไล่เหตุไม่ได้</div>
+        <div class="desc">
+          แต่ละบรรทัดถูกต้องในตัว แต่บอกไม่ได้ว่าบรรทัดไหนเป็นของ run ที่พัง — ยิ่งมีงานเบื้องหลังทำงานพร้อมกัน
+          timestamp ห่างกันมิลลิวินาทีก็แยกไม่ออก การดีบักกลายเป็นการเดา
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ ดี · ลูปมีเพดาน + trace เป็น span tree</div>
+        <div class="name">โครงสร้างคือ observability</div>
+        <div class="desc">
+          max turns + timeout กันค้าง; และ trace ที่มี <b>trace_id + parent + intent</b> ทำให้ run 30 ขั้นกลายเป็นต้นไม้
+          ที่กิ่งพังเด้งแดงให้เห็นในคลิกเดียว — ข้อมูลชุดเดิม แต่จัดโครงสร้างให้ไล่เหตุได้
+        </div>
+      </div>
+    </div>
+
+    <h2>ลองเอง — ไล่หาเหตุจาก trace</h2>
+    <div class="activity">
+      <div class="activity-head">
+        <div class="activity-kicker">กิจกรรม · เทียบมุมมอง</div>
+        <div class="activity-title">Debug From The Trace: Flat Log vs Span Tree</div>
+        <div class="activity-desc">
+          งานจองที่ล้มเหลวอันเดียวกัน แสดง 2 แบบ ลองหา “สาเหตุจริง” ใน <b>log แบนราบ</b> ก่อน (จับเวลา + นับครั้งที่คลิกผิด)
+          แล้วกด “เปิด span tree” ดูว่าข้อมูลชุดเดิมเป๊ะ แต่โครงสร้างทำให้เจอเหตุในคลิกเดียว
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="activity-panel-label">คลิกหาบรรทัด “สาเหตุจริง” → แล้วเปิด span tree</div>
+        <div class="debug-the-trace"></div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>มองไปข้างหน้า — ครบ 7 ชิ้นแล้ว ถึงเวลาตั้งชื่อมัน</strong>
+      เราเพิ่มทีละชิ้นมาตั้งแต่บทที่ 04: tools · context · memory · grounding · permissions · loop-control · observability
+      ทั้งหมดรวมกันมีชื่อว่าอะไร? บทที่ 10 จะ <em>ตั้งชื่อทั้งกอง</em> และเปิด Harness Scorecard ใบแรก
+    </div>
+
+    <h2>สรุปบทที่ 09</h2>
+    <ul>
+      <li><strong>คุมลูป</strong> = max turns + timeout ครอบทั้งงาน → tool ค้างไม่ค้างตลอดไป</li>
+      <li><strong>observability ≠ log เยอะ</strong> แต่คือ trace ต่อคำขอ ที่มี span ซ้อน + intent</li>
+      <li>log แบนราบ <strong>ไล่เหตุไม่ได้</strong> เมื่อมีงานพร้อมกันหลายอย่าง — ขาด trace_id/parent/intent</li>
+      <li>observability เป็นมิติที่ระบบเรายัง <strong>อ่อน</strong> (ค้นพบ ไม่ใช่ปกปิด)</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>Harness Scorecard · มิติ: “คุมลูปได้ + ไล่เหตุจาก trace ได้ไหม?”</strong>
+      ผู้ช่วยจัดการแล็บ: คุมลูป ✅ · observability ⚠️ <em>อ่อน</em> (มี log แต่ยังแบน ไม่มี span/intent)
+      <br><br>
+      <strong>📋 build-your-harness checklist · บรรทัดที่ 9</strong>
+      “เพดานลูป (max turns + timeout) + trace ต่อคำขอที่มี trace_id · parent · intent”
+    </div>
+
+    <div class="pager">
+      <a href="ch08-permissions-safety.html"><div class="label">← ก่อนหน้า</div><div class="title">08 — Permissions &amp; Safety</div></a>
+      <a href="ch10-the-harness.html" class="next"><div class="label">ถัดไป</div><div class="title">10 — นี่แหละ Harness</div></a>
+    </div>
+
+    <div class="illus-footer">
+      <b>หมายเหตุข้อมูล:</b> บรรทัด log และ span tree ในกิจกรรมเป็น <b>ตัวอย่างเชิงสาธิต</b> ที่ปั้นขึ้นเพื่อสอน
+      แต่ลักษณะ “log แบนราบไม่มี trace_id/intent” และเพดาน timeout ~90 วินาที อ้างอิงสภาพจริงของระบบเรา
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  AI Harness Engineering · บทที่ 09 · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/activities/debug-the-trace.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

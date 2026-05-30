@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Harness Engineering — From Theory to Real-World Practice</title>
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div>
+        <div class="title">AI Harness</div>
+        <div class="subtitle">วิศวกรรมระบบ AI Agent</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html" class="active"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>0 · ปูพื้นทฤษฎี</h4>
+      <a href="th01-what-is-a-harness.html"><span class="num">0·1</span> Harness คืออะไร</a>
+      <a href="th02-anatomy-and-loop.html"><span class="num">0·2</span> กายวิภาค &amp; ลูป</a>
+      <a href="th03-the-field-2026.html"><span class="num">0·3</span> ภูมิทัศน์สนามปี 2026</a>
+
+      <h4>1 · ปัญหา &amp; คำศัพท์</h4>
+      <a href="ch01-the-situation.html"><span class="num">01</span> สถานการณ์</a>
+      <a href="ch02-script-and-call.html"><span class="num">02</span> Script &amp; การเรียกครั้งเดียว</a>
+      <a href="ch03-loop-to-agent.html"><span class="num">03</span> Loop → Agent</a>
+
+      <h4>2 · ประกอบ Harness</h4>
+      <a class="soon"><span class="num">04</span> Tools — มือ</a>
+      <a class="soon"><span class="num">05</span> Context — สิ่งที่ต้องรู้</a>
+      <a class="soon"><span class="num">06</span> Memory &amp; State</a>
+      <a class="soon"><span class="num">07</span> Grounding &amp; Verify</a>
+      <a class="soon"><span class="num">08</span> Permissions &amp; Safety</a>
+      <a class="soon"><span class="num">09</span> ควบคุม &amp; มองเห็น</a>
+      <a class="soon"><span class="num">10</span> นี่แหละ Harness</a>
+
+      <h4>3 · เชื่อมกับโลก</h4>
+      <a class="soon"><span class="num">11</span> MCP</a>
+      <a class="soon"><span class="num">12</span> Skills &amp; Tool Surface</a>
+
+      <h4>4 · Context · เชื่อถือ · สเกล</h4>
+      <a class="soon"><span class="num">13</span> Context Engineering</a>
+      <a class="soon"><span class="num">14</span> Security</a>
+      <a class="soon"><span class="num">15</span> Orchestration &amp; บันได</a>
+      <a class="soon"><span class="num">16</span> Evaluation</a>
+
+      <h4>5 · มุมมองมืออาชีพ</h4>
+      <a class="soon"><span class="num">17</span> Cockpit &amp; Fleet</a>
+
+      <h4>6 · พรมแดนถัดไป</h4>
+      <a class="soon"><span class="num">18</span> Physical AI</a>
+      <a class="soon"><span class="num">19</span> Human Integration</a>
+      <a class="soon"><span class="num">20</span> Capstone</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a class="soon"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <section class="hero">
+      <span class="eyebrow">Advanced · AI Systems · Engineers &amp; Graduate students</span>
+      <h1>AI Harness Engineering<br>วิศวกรรม AI Harness</h1>
+      <p class="lede">
+        Language Model คือ "เครื่องยนต์" — สิ่งที่ทำให้มันกลายเป็น <strong>AI Agent ที่เชื่อถือได้พอจะใช้งานจริง</strong>
+        คือ <em>harness</em> ที่ออกแบบรอบ ๆ มัน คู่มือนี้พาคุณ <strong>สร้างผู้ช่วยจัดการแล็บหนึ่งตัว</strong>
+        จาก script ธรรมดา จนกลายเป็น agent ระดับ production — แล้วต่อยอดด้วยอีก 4 ระบบจริง
+        เพื่อให้ได้ทั้ง <strong>แนวคิด</strong> และ <strong>ไอเดียที่เอาไปใช้ได้</strong>
+      </p>
+      <div class="hero-meta">
+        <span>🧭 <b>ปูพื้นทฤษฎี</b> 3 หน้า</span>
+        <span>📦 <b>20</b> บท · 6 ส่วน</span>
+        <span>🏭 <b>5</b> ระบบจริง</span>
+        <span>🧵 <b>spine + portfolio</b></span>
+        <span>🤖 <b>Physical AI</b> &amp; Human</span>
+      </div>
+    </section>
+
+    <figure class="hero-poster zoomable" data-src="harness_poster.jpg" style="cursor:zoom-in;max-width:470px;margin:0 auto 8px">
+      <img src="harness_poster.jpg" alt="AI Harness Engineering — โปสเตอร์สรุปภาพรวมทั้งคอร์ส">
+    </figure>
+    <p class="muted" style="text-align:center;margin-top:-2px;margin-bottom:32px;font-size:13px">📋 โปสเตอร์สรุปทั้งคอร์ส — คลิกเพื่อดูขนาดใหญ่</p>
+
+    <h2>วิธีเล่าของคู่มือนี้</h2>
+    <p>
+      เราจะไม่ยัดหัวข้อทีละก้อนแบบไม่ปะติดปะต่อ แต่จะ <strong>เล่าเป็นเรื่องเดียวที่ค่อย ๆ โต</strong>:
+      เริ่มจากสถานการณ์จริงของการดูแลแล็บ → เขียน script ง่าย ๆ → มันไม่พอ → เติมทีละชิ้นจนกลายเป็น harness ที่ครบ
+      <strong>ศัพท์ทุกคำจะโผล่มาตอนที่เรื่องราว "ต้องใช้" มันพอดี</strong> ไม่ใช่ท่องนิยามลอย ๆ
+    </p>
+    <div class="callout info">
+      <strong>หลักคิดของคอร์ส</strong> — <em>spine + portfolio</em>: ใช้ตัวอย่างเดียว (ผู้ช่วยจัดการแล็บ) เป็นแกนหลักในช่วงปูพื้น
+      เพื่อให้ความรู้ต่อเนื่องลื่นไหล แล้วในหัวข้อขั้นสูงค่อยหยิบ "ระบบจริงที่เหมาะกับเรื่องนั้นที่สุด" มาเป็นกรณีศึกษา —
+      ได้ทั้งแนวคิดและไอเดียจาก 5 ระบบ
+    </div>
+
+    <div class="callout note">
+      <strong>อยากเห็น "ภาพทฤษฎี" ก่อนลงมือไหม?</strong> — เราเพิ่ม <strong>ส่วนปูพื้นทฤษฎี (0·1–0·3)</strong> ไว้ข้างหน้า
+      สำหรับคนที่ชอบรู้ <em>นิยามและคำศัพท์</em>ของ "harness" จากบนฟ้าก่อน แล้วค่อยลงไปสร้างจริง · ถ้าคุณชอบเรียนจาก
+      <em>เรื่องเล่า</em>มากกว่า ข้ามไปเริ่มที่ <a href="ch01-the-situation.html">บทที่ 01</a> ได้เลย แล้วค่อยกลับมาอ่านส่วนนี้เป็นบทสรุป — สองทางไปถึงที่เดียวกัน
+    </div>
+
+    <h2>เนื้อหาทั้ง 6 ส่วน <span class="muted" style="font-size:14px">(+ ปูพื้นทฤษฎี)</span></h2>
+
+    <h3>🧭 ส่วนที่ 0 — ปูพื้นทฤษฎี <span class="muted" style="font-size:14px">· แผนที่ก่อนออกเดินทาง (อ่านก่อนหรือข้ามไปก่อนก็ได้)</span></h3>
+    <div class="lesson-grid">
+      <a class="lesson" href="th01-what-is-a-harness.html" style="border-color:var(--violet)"><span class="badge">ทฤษฎี 0·1</span><div class="title">Harness คืออะไร</div><div class="desc">โมเดล = เครื่องยนต์ · harness = ทุกอย่างที่ออกแบบรอบมัน · นิยามสนามปี 2026 · "ความน่าเชื่อถือออกแบบได้ ไม่ใช่ซื้อมา"</div></a>
+      <a class="lesson" href="th02-anatomy-and-loop.html" style="border-color:var(--violet)"><span class="badge">ทฤษฎี 0·2</span><div class="title">กายวิภาค &amp; ลูป</div><div class="desc">ลูป gather→act→verify→repeat เป็นหัวใจ · ชิ้นส่วนที่ตั้งชื่อได้ (= บท 04–10) · บันไดความซับซ้อน</div></a>
+      <a class="lesson" href="th03-the-field-2026.html" style="border-color:var(--violet)"><span class="badge">ทฤษฎี 0·3</span><div class="title">ภูมิทัศน์สนามปี 2026</div><div class="desc">แผนที่คำศัพท์: context engineering · MCP · Skills · tools · orchestration · eval · security — แต่ละคำคู่กับบทที่ลงลึก</div></a>
+    </div>
+
+    <h3>🔹 ส่วนที่ 1 — ปัญหา &amp; คำศัพท์ <span class="muted" style="font-size:14px">· แกนหลัก: ผู้ช่วยจัดการแล็บ</span></h3>
+    <div class="lesson-grid">
+      <a class="lesson" href="ch01-the-situation.html"><span class="badge">บทที่ 01</span><div class="title">สถานการณ์</div><div class="desc">รู้จักผู้ช่วยจัดการแล็บ — คำถามประจำวัน ข้อมูลที่มี เป้าหมาย: เครื่องมือที่ "ไว้ใจให้ใช้งานจริง" ได้ (ยังไม่มี AI)</div></a>
+      <a class="lesson" href="ch02-script-and-call.html"><span class="badge">บทที่ 02</span><div class="title">Script &amp; การเรียกครั้งเดียว</div><div class="desc">script ที่แข็งทื่อ → เติม LLM call → "prompt-and-pray" ที่เดา ลืม และค้นอะไรไม่ได้</div></a>
+      <a class="lesson" href="ch03-loop-to-agent.html"><span class="badge">บทที่ 03</span><div class="title">Loop → Agent</div><div class="desc">gather → act → verify → repeat · จุดที่มันกลายเป็น "agent" จริง ๆ</div></a>
+    </div>
+
+    <h3>🔹 ส่วนที่ 2 — ประกอบ Harness ทีละชิ้น <span class="muted" style="font-size:14px">· แต่ละชิ้นแก้ failure ที่เพิ่งเห็น</span></h3>
+    <div class="lesson-grid">
+      <a class="lesson" href="ch04-tools.html"><span class="badge">บทที่ 04</span><div class="title">Tools — มือ</div><div class="desc">มันต้อง "ดึง" ข้อมูลจริง ไม่ใช่เดา</div></a>
+      <a class="lesson" href="ch05-context.html"><span class="badge">บทที่ 05</span><div class="title">Context — สิ่งที่ต้องรู้</div><div class="desc">กติกาแล็บ คาบเรียน วันหยุด ช่วงซ่อมบำรุง</div></a>
+      <a class="lesson" href="ch06-memory-state.html"><span class="badge">บทที่ 06</span><div class="title">Memory &amp; State</div><div class="desc">"แล้วพรุ่งนี้ล่ะ?" ต้องจำเรื่องก่อนหน้าได้</div></a>
+      <a class="lesson" href="ch07-grounding-verification.html"><span class="badge">บทที่ 07</span><div class="title">Grounding &amp; Verify</div><div class="desc">มันสร้างห้องที่ไม่มีจริง · ตอบจากข้อมูลจริงเท่านั้น ตรวจจากสภาพแวดล้อม</div></a>
+      <a class="lesson" href="ch08-permissions-safety.html"><span class="badge">บทที่ 08</span><div class="title">Permissions &amp; Safety</div><div class="desc">ถามว่า "ว่างไหม" แต่มันไปจองให้ · อ่าน vs ทำ · gate สิ่งที่ย้อนไม่ได้</div></a>
+      <a class="lesson" href="ch09-operating-observability.html"><span class="badge">บทที่ 09</span><div class="title">ควบคุม &amp; มองเห็น</div><div class="desc">query ค้าง (เพดานเวลา/รอบ) · ตอบผิดแล้วดูไม่ออกว่าทำไม (trace)</div></a>
+      <a class="lesson" href="ch10-the-harness.html"><span class="badge">บทที่ 10</span><div class="title">นี่แหละ Harness</div><div class="desc">ตั้งชื่อทุกชิ้นรวมกัน = harness · เริ่ม Harness Scorecard</div></a>
+    </div>
+
+    <h3>🔸 ส่วนที่ 3 — เชื่อมกับโลกภายนอก</h3>
+    <div class="lesson-grid">
+      <a class="lesson" href="ch11-mcp.html"><span class="badge">บทที่ 11</span><div class="title">MCP — โปรโตคอลการเข้าถึง</div><div class="desc">host/client/server · tools / resources / prompts</div><div class="tags"><span class="tag cyan">ตัวอย่าง: OBE/หลักสูตร</span></div></a>
+      <a class="lesson" href="ch12-skills-tool-surface.html"><span class="badge">บทที่ 12</span><div class="title">Skills &amp; Tool Surface</div><div class="desc">แพ็กวิธีทำซ้ำ (progressive disclosure) · กัน tool ออกจาก context</div></a>
+    </div>
+
+    <h3>🔸 ส่วนที่ 4 — Context · ความน่าเชื่อถือ · สเกล</h3>
+    <div class="lesson-grid">
+      <a class="lesson" href="ch13-context-engineering.html"><span class="badge">บทที่ 13</span><div class="title">Context Engineering</div><div class="desc">งบ attention ที่จำกัด · lost-in-the-middle · ดึงเมื่อต้องใช้</div><div class="tags"><span class="tag cyan">ตัวอย่าง: ที่ปรึกษานักศึกษา</span></div></a>
+      <a class="lesson" href="ch14-security.html"><span class="badge">บทที่ 14</span><div class="title">Security</div><div class="desc">ข้อความจากผู้ใช้ = untrusted · lethal trifecta · container ไม่ใช่กำแพง</div></a>
+      <a class="lesson" href="ch15-orchestration-ladder.html"><span class="badge">บทที่ 15</span><div class="title">Orchestration &amp; บันไดความซับซ้อน</div><div class="desc">single call → workflow → agent → multi-agent · เมื่อไหร่ "ไม่ควร" ใช้ AI</div></a>
+      <a class="lesson" href="ch16-evaluation.html"><span class="badge">บทที่ 16</span><div class="title">Evaluation</div><div class="desc">มันถูกจริงไหม · 3 ระดับ · ชุดทดสอบจากงานจริง</div><div class="tags"><span class="tag cyan">ตัวอย่าง: assignment feedback</span></div></a>
+    </div>
+
+    <h3>🔸 ส่วนที่ 5 — มุมมองมืออาชีพ</h3>
+    <div class="lesson-grid">
+      <a class="lesson" href="ch17-cockpit-fleet.html" style="border-color:var(--cyan)"><span class="badge">บทที่ 17</span><div class="title">Cockpit &amp; Fleet</div><div class="desc">ผู้ช่วยจัดการแล็บเป็น 1 ในหลายระบบบน harness ร่วมกัน + แผงควบคุมที่ไม่ใช้ AI เลย · "ดี = เลือก tradeoff ถูก ไม่ใช่ทำครบทุกมิติ"</div><div class="tags"><span class="tag cyan">ตัวอย่าง: ทั้ง 5 ระบบ</span></div></a>
+    </div>
+
+    <h3>🔸 ส่วนที่ 6 — พรมแดนถัดไป</h3>
+    <div class="lesson-grid">
+      <a class="lesson" href="ch18-physical-ai.html"><span class="badge">บทที่ 18</span><div class="title">Physical AI</div><div class="desc">harness เดียวกันเมื่อ "มือ" คือหุ่นยนต์จริง · perceive→policy→act · safety envelope · teleop fallback</div></a>
+      <a class="lesson" href="ch19-human-integration.html"><span class="badge">บทที่ 19</span><div class="title">Human Integration</div><div class="desc">in-the-loop vs on-the-loop · shared autonomy · การปรับความเชื่อใจให้พอดี</div></a>
+      <a class="lesson" href="ch20-capstone.html"><span class="badge">บทที่ 20</span><div class="title">Capstone — ออกแบบ Harness ของคุณเอง</div><div class="desc">ใช้ checklist ทั้งคอร์ส ออกแบบ harness ให้สถานการณ์ที่คุณเลือก — ปกป้องได้ต่อหน้าวิศวกรอาวุโส</div></a>
+    </div>
+
+    <h3>🗂️ สรุปรวม — Fleet Gallery <span class="muted" style="font-size:14px">· payoff ท้ายคอร์ส: 5 ระบบเทียบกันทีละมิติ</span></h3>
+    <div class="lesson-grid">
+      <a class="lesson" href="gallery.html" style="border-color:var(--violet)"><span class="badge">สรุปรวม</span><div class="title">🗂️ Fleet Gallery</div><div class="desc">สเก็ตช์ harness ของทั้ง 5 ระบบ + Harness Scorecard 5 ระบบ × 6 มิติ วางเรียงกัน — เห็นด้วยตาว่า “ดี = เลือก tradeoff ถูก ไม่ใช่ max ทุกมิติ”</div><div class="tags"><span class="tag violet">ตัวอย่าง: ทั้ง 5 ระบบ</span></div></a>
+    </div>
+
+    <div class="callout tip">
+      <strong>บทเรียนที่ติดตัวกลับไปแน่ ๆ</strong>
+      ~70% ของสิ่งที่คนเรียกว่า "งานของ AI agent" จริง ๆ แล้วคือ SQL view หรือ dashboard —
+      AI คุ้มค่าเฉพาะตอนที่ต้องใช้ <em>การสังเคราะห์ ภาษา และการตัดสินใจ</em> และมืออาชีพจะ "พิสูจน์ขั้นที่ง่ายกว่าก่อนเสมอ"
+    </div>
+
+    <div class="callout note">
+      <strong>สถานะ</strong> ครบทั้ง <strong>20 บท</strong> (6 ส่วน) + <strong>ปูพื้นทฤษฎี 3 หน้า</strong> — ทุกหน้ามีกิจกรรมโต้ตอบของตัวเอง
+      คลิกการ์ดไหนก็เริ่มได้เลย · อยากเห็นภาพทฤษฎีก่อนเริ่มที่ <a href="th01-what-is-a-harness.html">0·1</a> · อยากลงมือเลยเริ่มที่ <a href="ch01-the-situation.html">บทที่ 01</a>
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  AI Harness Engineering · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ (สาขาเมคคาทรอนิกส์ฯ) · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+  <br>เนื้อหาเรียบเรียงจากการสำรวจสนาม AI agent ปี 2026 (Anthropic, OpenAI, MCP, ฯลฯ) — ใช้ระบบที่เราสร้างเองเป็นตัวอย่างเชิงแนวคิด
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script>
+(function(){
+  var lb = document.getElementById('lightbox'); if(!lb) return;
+  var img = lb.querySelector('img');
+  document.querySelectorAll('.gallery a, .zoomable').forEach(function(a){
+    a.addEventListener('click', function(e){ e.preventDefault(); img.src = a.getAttribute('href') || a.getAttribute('data-src'); lb.classList.add('open'); });
+  });
+  document.addEventListener('keydown', function(e){ if(e.key === 'Escape') lb.classList.remove('open'); });
+})();
+</script>
+<script src="js/nav.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

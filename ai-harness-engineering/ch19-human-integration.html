@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>19 — Human Integration | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div><div class="title">AI Harness</div><div class="subtitle">วิศวกรรมระบบ AI Agent</div></div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav></nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ 19 · พรมแดนถัดไป · Human Integration</span>
+    <h1>Human Integration — คนกับ agent อยู่ตรงไหนของกันและกัน</h1>
+    <p class="lede">
+      agent ที่ดีไม่ได้แปลว่า “เอาคนออก” แต่คือ <strong>วางคนไว้ในที่ที่ถูก</strong>
+      บทนี้: human-in-the-loop vs on-the-loop · shared autonomy · การส่งต่อการควบคุม (control handoff) ·
+      และ <strong>การปรับความเชื่อใจให้พอดี</strong> — ให้คนไม่ “เซ็นผ่านมั่ว” และไม่ “เพิกเฉย”
+    </p>
+
+    <h2>พูดแบบเข้าใจง่าย</h2>
+    <p>ความสัมพันธ์คน–agent มีหลายระดับ แต่ละระดับย้ายว่า “ใครลงมือ ใครตรวจ”:</p>
+    <ul>
+      <li><strong>Human-in-the-loop</strong> — คนอยู่ <em>ในขั้นตอน</em>: agent เสนอ คนอนุมัติ <em>ก่อน</em> ลงมือ (เหมาะกับงานเสี่ยงสูง/ย้อนไม่ได้)</li>
+      <li><strong>Human-on-the-loop</strong> — คน <em>เฝ้าดู</em> agent ที่ลงมือเอง แทรกเมื่อจำเป็น (เหมือนนักบินเฝ้า autopilot)</li>
+      <li><strong>Supervisory / shared autonomy</strong> — agent ทำงานประจำเอง คนเข้าเฉพาะ <em>เคสยาก/เสี่ยง</em> (dynamic autonomy)</li>
+      <li><strong>Full autonomy</strong> — agent ทำเอง คนดูสรุปภายหลัง (เหมาะเฉพาะงานเสี่ยงต่ำ/ย้อนได้)</li>
+    </ul>
+    <p>
+      หัวใจคือ <strong>trust calibration</strong> — ปรับความเชื่อใจให้ตรงกับความน่าเชื่อถือจริงของ agent
+      ทั้ง <em>over-trust</em> (เชื่อเกินจนเซ็นผ่านโดยไม่อ่าน) และ <em>under-trust</em> (ไม่เชื่อจนเพิกเฉย/กลายเป็นคอขวด) คือความล้มเหลวทั้งคู่
+      งานวิจัยปี 2025 ชี้ว่า <strong>การให้เครื่องประเมินความมั่นใจของตัวเอง (self-assessment)</strong> ช่วยปรับความเชื่อใจของคนได้ชัดเจน
+    </p>
+
+    <div class="callout tip">
+      <strong>เปรียบเทียบ: นักบิน + autopilot</strong>
+      autopilot บินเอง (on-the-loop) แต่นักบินต้องรู้ว่า <em>เมื่อไรควรเทกโอเวอร์</em> — ถ้าเชื่อเกิน (เผลอหลับ) ก็อันตราย
+      ถ้าไม่เชื่อเลย (คุมมือตลอด) ก็เหนื่อยฟรีและเสียประโยชน์ของระบบ · สิ่งที่ทำให้ปลอดภัยคือ <em>สัญญาณเตือนที่ดี</em>
+      บวกกับนักบินที่เชื่อใจระบบ “พอดีกับที่มันเชื่อถือได้จริง”
+    </div>
+
+    <h2>ในระบบของเรา — คนถูกวางไว้ตามความเสี่ยง</h2>
+    <div class="flow">
+      <div class="flow-node guard"><span class="fn-k">in-the-loop</span><span class="fn-t">ปล่อยเกรด/ส่ง TQF3 → คนยืนยันก่อน</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">on-the-loop</span><span class="fn-t">cockpit เฝ้าดู trace แทรกเมื่อจำเป็น</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node accent"><span class="fn-k">advisory</span><span class="fn-t">agent ร่างให้ คนเป็นผู้ลงมือในแอป</span></div>
+    </div>
+    <p>
+      gate ที่เราสร้างในบทที่ 08 คือ <strong>human-in-the-loop บนการเขียนที่ย้อนไม่ได้</strong> · cockpit (บทที่ 17) คือ
+      <strong>human-on-the-loop</strong> ที่เฝ้าดู trace · และออโต้เกรดของเราปล่อยเกรดผ่าน <strong>การยืนยันของคนทาง LINE</strong>
+      ทั้ง fleet ออกแบบให้ agent “ร่าง” มนุษย์ “ลงมือ” — autonomy ถูกจับคู่กับความเสี่ยงอย่างจงใจ
+    </p>
+
+    <h2>ทำพลาด vs ทำถูก</h2>
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · autonomy สูงบนงานเสี่ยงสูง + คนเซ็นผ่านมั่ว</div>
+        <div class="name">over-trust</div>
+        <div class="desc">
+          ให้ agent ปล่อยเกรดเองแล้วคน “กดอนุมัติ” โดยไม่อ่าน เพราะเชื่อใจเกิน — gate กลายเป็นพิธีกรรม
+          ความผิดพลาดหลุดเพราะไม่มีใครตรวจจริง
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · ขออนุมัติทุกอย่างจนคนล้า</div>
+        <div class="name">under-trust / alert fatigue</div>
+        <div class="desc">
+          ทำให้คนต้องอนุมัติแม้งานอ่านที่ไม่มีความเสี่ยง — สุดท้ายคนเริ่มกดผ่านรัว ๆ (กลายเป็น over-trust) หรือเลิกใช้ระบบ
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ ดี · จับคู่ autonomy กับความเสี่ยง + สัญญาณที่ดี</div>
+        <div class="name">trust calibration</div>
+        <div class="desc">
+          งานอ่าน → ปล่อยให้ทำเอง; งานย้อนไม่ได้ → in-the-loop; ให้ agent บอกความมั่นใจตัวเองและ “ยกมือ” เมื่อไม่แน่ใจ
+          คนจึงเชื่อใจ “พอดีกับที่มันเชื่อถือได้จริง”
+        </div>
+      </div>
+    </div>
+
+    <h2>ลองเอง — หมุนลูกบิด autonomy</h2>
+    <div class="activity">
+      <div class="activity-head">
+        <div class="activity-kicker">กิจกรรม · เลื่อนสไลเดอร์</div>
+        <div class="activity-title">Autonomy Dial</div>
+        <div class="activity-desc">
+          เลื่อนจาก in-the-loop → on-the-loop → supervisory → autonomous ดูว่าใครลงมือ ใครตรวจ เหมาะกับความเสี่ยงแบบไหน
+          และแต่ละระดับ <b>ไถลไปทาง over-trust หรือ under-trust</b>
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="activity-panel-label">เลื่อนระดับ autonomy แล้วอ่านความเสี่ยง</div>
+        <div class="autonomy-dial"></div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>มองไปข้างหน้า — คุณมีครบทุกชิ้นแล้ว</strong>
+      เราเดินจาก script ธรรมดา ผ่าน harness ครบเครื่อง เชื่อมโลก เรื่องยาก มุมมองมืออาชีพ จนถึงพรมแดนหุ่นยนต์และมนุษย์
+      บทสุดท้าย: <strong>ออกแบบ harness ของคุณเอง</strong> ด้วย checklist ที่สะสมมาทั้งคอร์ส
+    </div>
+
+    <h2>สรุปบทที่ 19</h2>
+    <ul>
+      <li>ระดับความสัมพันธ์: <strong>in-the-loop · on-the-loop · supervisory · autonomous</strong> — ย้ายว่า “ใครลงมือ ใครตรวจ”</li>
+      <li><strong>จับคู่ autonomy กับความเสี่ยง</strong> — งานย้อนไม่ได้อยู่ in-the-loop, งานอ่านปล่อยได้</li>
+      <li><strong>trust calibration</strong>: over-trust (เซ็นผ่านมั่ว) และ under-trust (เพิกเฉย/คอขวด) ล้มเหลวทั้งคู่</li>
+      <li>ให้ agent ประเมินความมั่นใจตัวเอง + ส่งสัญญาณ “เมื่อไรควรแทรก” ช่วยปรับความเชื่อใจให้พอดี</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>📋 build-your-harness checklist · บรรทัดที่ 18</strong>
+      “จับคู่ระดับ autonomy กับความเสี่ยงของงาน · ออกแบบ control handoff + สัญญาณให้คนรู้ว่าเมื่อไรควรแทรก · ปรับ trust ให้ไม่เกินไม่ขาด”
+    </div>
+
+    <div class="pager">
+      <a href="ch18-physical-ai.html"><div class="label">← ก่อนหน้า</div><div class="title">18 — Physical AI</div></a>
+      <a href="ch20-capstone.html" class="next"><div class="label">ถัดไป</div><div class="title">20 — Capstone</div></a>
+    </div>
+
+    <div class="illus-footer">
+      <b>หมายเหตุข้อมูล:</b> กรอบ in-the-loop / on-the-loop / shared autonomy / trust calibration อ้างอิงงานปี 2025 (ดู
+      <a href="references.html">เอกสารอ้างอิง</a>) · การจับคู่กับ gate/cockpit/LINE-push อ้างอิงพฤติกรรมจริงของระบบเรา
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">AI Harness Engineering · บทที่ 19 · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี</footer>
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/activities/autonomy-dial.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ทฤษฎี 0·1 — Harness คืออะไร | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div>
+        <div class="title">AI Harness</div>
+        <div class="subtitle">วิศวกรรมระบบ AI Agent</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav></nav>
+  </aside>
+
+  <main class="content">
+
+    <!-- 1 · HOOK -->
+    <span class="eyebrow">ปูพื้นทฤษฎี · 0·1 · What Is a Harness?</span>
+    <h1>Harness คืออะไร: โมเดลคือเครื่องยนต์ — harness คือทุกอย่างที่ทำให้มันใช้งานจริงได้</h1>
+    <p class="lede">
+      ก่อนจะลงมือสร้างผู้ช่วยจัดการแล็บในบทที่ 01 หน้านี้ตอบคำถามทฤษฎีที่อยู่ใจกลางทั้งคอร์ส —
+      ทำไมเอา language model ที่เก่งระดับโลกมาต่อเข้าระบบ แล้วยังได้ของที่ <em>ไม่มีใครกล้าเชื่อให้ใช้งานจริง</em>?
+      คำตอบคือคำว่า <strong>harness</strong> และนี่คือนิยามของมันแบบที่สนาม AI agent ปี 2026 เข้าใจตรงกัน
+    </p>
+
+    <div class="callout note">
+      <strong>หน้านี้คือ “แผนที่” ไม่ใช่ “เส้นทาง”</strong>
+      ปูพื้นทฤษฎี (0·1–0·3) คือมุมมองจากบนฟ้า — ให้เห็นภาพรวมและคำศัพท์ก่อน ส่วนบทที่ 01 เป็นต้นไปคือการ
+      <em>ลงมือสร้างทีละชิ้นจนค้นพบสิ่งเหล่านี้ด้วยตัวเอง</em> ถ้าคุณชอบเรียนจากเรื่องเล่ามากกว่า ข้ามไปบทที่ 01 ได้เลย
+      แล้วค่อยกลับมาอ่านหน้านี้เป็นบทสรุป — ทั้งสองทางไปถึงที่เดียวกัน
+    </div>
+
+    <!-- 2 · PLAIN CONCEPT + ANALOGY -->
+    <h2>พูดแบบเข้าใจง่าย</h2>
+    <p>
+      language model เพียว ๆ คือ <strong>เครื่องยนต์ (engine)</strong> ที่ทรงพลังมาก — มันเก่งเรื่องภาษา การให้เหตุผล
+      และการสังเคราะห์ แต่โดยลำพังมันมีข้อจำกัดที่ลบไม่ออก: มัน <em>ตาบอด</em> ต่อข้อมูลปัจจุบันของคุณ (รู้แค่สิ่งที่เคยฝึกมา),
+      ไม่มี <em>มือ</em> ที่จะไปดึงข้อมูลหรือลงมือทำ, <em>ลืม</em> ทุกอย่างเมื่อจบการสนทนา, และมัน
+      <em>มั่นใจเท่ากันทั้งตอนถูกและตอนแต่งเรื่อง</em>
+    </p>
+    <p>
+      <strong>Harness</strong> คือทุกอย่างที่เรา <em>ออกแบบและประกอบรอบ ๆ</em> เครื่องยนต์ตัวนี้ เพื่อให้มันทำงานจริง
+      ได้อย่างน่าเชื่อถือ — เครื่องมือให้มันเอื้อมถึงข้อมูล กติกาที่มันต้องรู้ ความจำที่อยู่ข้ามรอบ การตรวจสอบกับโลกจริง
+      และรั้วกันไม่ให้มันทำสิ่งที่ย้อนกลับไม่ได้ มันคือ <strong>ส่วนวิศวกรรมรอบโมเดล ไม่ใช่ตัวโมเดล</strong>
+    </p>
+
+    <div class="callout tip">
+      <strong>เปรียบเทียบ: เครื่องยนต์ที่แรงที่สุด ยังวิ่งบนถนนเองไม่ได้</strong>
+      เครื่องยนต์ F1 ให้กำลังมหาศาล แต่ถ้าไม่มีแชสซี เบรก พวงมาลัย ระบบกันสะเทือน และคนขับ มันก็แค่ก้อนโลหะที่คำราม
+      อยู่กับที่ — หรือพุ่งชนกำแพง <em>harness ก็คือแชสซีและระบบควบคุมของ AI agent</em>:
+      สิ่งที่เปลี่ยน “พลังดิบ” ให้กลายเป็น “พาหนะที่ขับไปถึงที่หมายได้จริงและปลอดภัย”
+    </div>
+
+    <!-- 3 · THE 2026 DEFINITION -->
+    <h2>นิยามที่สนามปี 2026 ใช้ร่วมกัน</h2>
+    <p>
+      เมื่อรวบคำพูดของทั้งวงการ (Anthropic, OpenAI, ชุมชน MCP ฯลฯ) ในกลางปี 2026 เข้าด้วยกัน นิยามที่ตรงที่สุดคือ:
+    </p>
+
+    <div class="callout info">
+      <strong>Harness = ชั้นการให้เหตุผลที่ประกบบนระบบที่ทำงานได้แน่นอนอยู่แล้ว</strong>
+      harness ไม่ได้มา <em>แทนที่</em> ระบบเดิมของคุณ (ฐานข้อมูล ตารางสอน ระบบจอง) — มันมา <em>ประกบอยู่ข้างบน</em>
+      โดยเติมของเข้าไปเพียงไม่กี่อย่าง: <strong>ลูป (loop)</strong> ที่ให้มันคิด-ทำ-ตรวจซ้ำได้,
+      <strong>context ที่คัดมาแล้ว</strong>, <strong>ความจำเบา ๆ (memory)</strong> และ <strong>การตรวจสอบ (verification)</strong>
+      ผลลัพธ์คือ agent ที่ <em>“ช่วยร่าง อ่านมาก ๆ มีคนคุมเป็นด่านสุดท้าย”</em> ไม่ใช่ระบบที่ลงมือทำเองตามใจ
+    </div>
+
+    <p>
+      สังเกตว่านี่คือนิยามที่ <strong>ถ่อมตัว</strong> โดยตั้งใจ — เครื่องยนต์ที่ฉลาดขึ้นไม่ได้ลบความจำเป็นของ harness
+      ตรงกันข้าม ยิ่งเราจะ <em>ไว้ใจ</em> มันมากเท่าไหร่ scaffolding รอบ ๆ ก็ยิ่งต้องแข็งแรงขึ้นเท่านั้น
+    </p>
+
+    <h3>หลักคิดเดียวที่ต้องจำให้ขึ้นใจ</h3>
+    <div class="callout note">
+      <strong>ความน่าเชื่อถือเป็นสิ่งที่ “ออกแบบ” ขึ้น ไม่ใช่สิ่งที่ “ซื้อ” มากับโมเดล</strong>
+      <em>(Reliability is engineered, not bought.)</em>
+      คุณไม่ได้ความน่าเชื่อถือมาจากการอัปเกรดไปใช้โมเดลที่แพงกว่า คุณได้มันมาจากการ <strong>ออกแบบ harness</strong> —
+      เลือกเครื่องมือ คัด context ตั้งรั้ว วางการตรวจสอบ และมองเห็นว่ามันทำอะไรไป นี่คือ “งานวิศวกรรม” ที่คอร์สนี้สอน
+    </div>
+
+    <!-- 4 · IN OUR SYSTEMS (behaviour/flow, light) -->
+    <h2>ในระบบของเรา — เครื่องยนต์เพียว ๆ ทำไมไม่พอ</h2>
+    <p>
+      ลองนึกถึงผู้ช่วยจัดการแล็บที่เราจะสร้าง ถ้ามีแค่เครื่องยนต์ (เรียกโมเดลตรง ๆ) กับคำถาม
+      “พฤหัสบ่ายมีห้องไหนว่าง?” มันจะ <em>เดา</em> คำตอบที่ฟังดูสมเหตุสมผลจากสิ่งที่เคยเห็นในการฝึก —
+      ไม่ใช่จากตารางจองจริงของวันนี้ เพราะมันเอื้อมไปดูไม่ได้ ทั้งไม่รู้ว่าวันนั้นเป็นวันหยุดหรือมีคาบเรียนชนอยู่:
+    </p>
+
+    <div class="flow">
+      <div class="flow-node"><span class="fn-k">เครื่องยนต์เพียว ๆ</span><span class="fn-t">“พฤหัสบ่ายมีห้องไหนว่าง?”</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" style="border-color:rgba(251,113,133,0.5)"><span class="fn-k" style="color:var(--red)">เดา</span><span class="fn-t">แต่งคำตอบที่ “ฟังดูใช่” โดยไม่ได้เปิดข้อมูลจริงเลย</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node" style="border-color:rgba(251,113,133,0.5)"><span class="fn-k" style="color:var(--red)">ผล</span><span class="fn-t">อาจถูกบังเอิญ แต่เชื่อไม่ได้ · ตรวจสอบไม่ได้</span></div>
+    </div>
+
+    <p>เติม harness เข้าไป เรื่องเดียวกันกลายเป็นแบบนี้ — ทุกขั้น “ยึดของจริง” แทนการเดา:</p>
+
+    <div class="flow">
+      <div class="flow-node"><span class="fn-k">เครื่องยนต์</span><span class="fn-t">เข้าใจคำถาม + วางแผน</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node accent"><span class="fn-k">+ Tools</span><span class="fn-t">ดึงตารางจอง/สอน/วันหยุด “ของจริง”</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node accent"><span class="fn-k">+ Verify</span><span class="fn-t">ตรวจกับสภาพแวดล้อม ไม่ใช่กับความมั่นใจของตัวเอง</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">ตอบ</span><span class="fn-t">รายชื่อห้องที่ว่าง “จริง” ที่อ้างอิงได้</span></div>
+    </div>
+
+    <!-- 5 · BAD → GOOD -->
+    <h2>เข้าใจผิด vs เข้าใจถูก</h2>
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ เข้าใจผิด · “ซื้อความฉลาด”</div>
+        <div class="name">“รอโมเดลรุ่นใหม่ที่เก่งกว่า แล้วปัญหาจะหายเอง”</div>
+        <div class="desc">
+          โมเดลที่เก่งขึ้นก็ยัง <b>ตาบอด ลืม และตรวจตัวเองไม่ได้</b> เหมือนเดิม เพราะนั่นไม่ใช่เรื่องของ “ความฉลาด”
+          แต่เป็นเรื่องของ <b>การเข้าถึงโลกจริง</b> — ซึ่งเป็นงานของ harness ไม่ใช่ของเครื่องยนต์
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ เข้าใจผิด · “แปะ API แล้วจบ”</div>
+        <div class="name">prompt-and-pray: เรียกโมเดลครั้งเดียวแล้วภาวนาว่าถูก</div>
+        <div class="desc">
+          ต่อ LLM เข้าระบบแล้วหวังคำตอบที่ดีในครั้งเดียว — มันเดา ลืมบริบท ค้นอะไรไม่ได้ และ
+          <b>ไม่มีจังหวะให้แก้ตัวเอง</b> เดโมสวยใน 5 นาที แต่พังเงียบ ๆ ในงานจริง
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ เข้าใจถูก · “ออกแบบ scaffolding”</div>
+        <div class="name">เครื่องยนต์เดิมก็พอ ถ้า harness รอบ ๆ ดีพอ</div>
+        <div class="desc">
+          มองความน่าเชื่อถือเป็น <b>ผลของการออกแบบ</b>: ให้มือ (tools) คัดสิ่งที่ต้องรู้ (context) ตั้งรั้ว (permissions)
+          วางการตรวจ (verify) และทำให้ทุกอย่าง <b>มองเห็นได้</b> — นี่คือสิ่งที่เปลี่ยน “พลังดิบ” เป็น “ของที่ deploy ได้”
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 · ACTIVITY -->
+    <h2>ลองเอง — อันไหน “เครื่องยนต์ทำเองได้” อันไหน “ต้องมี harness”</h2>
+    <div class="activity">
+      <div class="activity-head">
+        <div class="activity-kicker">กิจกรรม · คลิกจัดลงถัง</div>
+        <div class="activity-title">Engine vs. Harness</div>
+        <div class="activity-desc">
+          แต่ละการ์ดคือความสามารถหนึ่งที่เราอยากให้ผู้ช่วยจัดการแล็บทำได้ ลองแยกว่าอันไหน
+          <b>เครื่องยนต์ (ตัวโมเดล) ทำเองได้</b> และอันไหน <b>เครื่องยนต์ทำเองไม่ได้ — ต้องมี harness เติมให้</b>
+          แล้วกด “ตรวจคำตอบ” คุณจะเห็นว่าเส้นแบ่งนี้ <em>คือ</em> สารบัญของทั้งคอร์ส
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="activity-panel-label">คลิกการ์ดเพื่อเลือก แล้วคลิกถังที่ใช่</div>
+        <div class="engine-vs-harness"></div>
+      </div>
+    </div>
+
+    <!-- 7 · FORWARD LOOK -->
+    <div class="callout info">
+      <strong>มองไปข้างหน้า — harness ไม่ใช่ก้อนเดียว มันมี “ชิ้นส่วน” ที่ตั้งชื่อได้</strong>
+      ถ้า harness คือทุกอย่างรอบเครื่องยนต์ แล้วมันประกอบด้วยอะไรบ้าง และอะไรคือ “หัวใจ” ที่ทำให้มันเป็น agent
+      ไม่ใช่แค่การเรียกครั้งเดียว? หน้า <strong>0·2 — กายวิภาคของ Harness</strong> จะกางชิ้นส่วนทั้งหมดให้ดู
+      พร้อมลูปที่เต้นเป็นหัวใจของมัน
+    </div>
+
+    <!-- 8 · SUMMARY + BRIDGE -->
+    <h2>สรุปหน้า 0·1</h2>
+    <ul>
+      <li>โมเดล = <strong>เครื่องยนต์</strong> (เก่งภาษา/เหตุผล แต่ตาบอด ลืม ไม่มีมือ ตรวจตัวเองไม่ได้)</li>
+      <li>Harness = <strong>ทุกอย่างที่ออกแบบประกอบรอบเครื่องยนต์</strong> ให้มันใช้งานจริงได้อย่างน่าเชื่อถือ</li>
+      <li>นิยามปี 2026: harness คือ <strong>ชั้นการให้เหตุผลที่ประกบบนระบบเดิม</strong> โดยเติม loop + context + memory + verification</li>
+      <li>หลักคิดแกนกลาง: <strong>ความน่าเชื่อถือเป็นสิ่งที่ออกแบบ ไม่ใช่ซื้อ</strong> — โมเดลแพงกว่าไม่ได้แก้ปัญหานี้</li>
+    </ul>
+
+    <div class="pager">
+      <a href="index.html">
+        <div class="label">← กลับ</div>
+        <div class="title">หน้าแรก &amp; ภาพรวม</div>
+      </a>
+      <a href="th02-anatomy-and-loop.html" class="next">
+        <div class="label">ถัดไป</div>
+        <div class="title">0·2 — กายวิภาคของ Harness</div>
+      </a>
+    </div>
+
+    <div class="illus-footer">
+      <b>หมายเหตุ:</b> หน้านี้เป็น <b>ทฤษฎีปูพื้น</b> เรียบเรียงจากการสำรวจสนาม AI agent กลางปี 2026
+      ตัวอย่าง “ผู้ช่วยจัดการแล็บ” ใช้เพื่ออธิบายแนวคิด — เลขห้องและรายละเอียดเป็นค่าเชิงสาธิต ไม่ใช่ข้อมูลเดินระบบจริง
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  AI Harness Engineering · ปูพื้นทฤษฎี 0·1 · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/activities/engine-vs-harness.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

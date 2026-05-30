@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fleet Gallery — 5 ระบบเทียบกันทีละมิติ | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div><div class="title">AI Harness</div><div class="subtitle">วิศวกรรมระบบ AI Agent</div></div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav></nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">สรุปรวม · The Fleet at a Glance</span>
+    <h1>Fleet Gallery — 5 ระบบบน harness เดียวกัน เทียบกันทีละมิติ</h1>
+    <p class="lede">
+      ตลอดคอร์สเราสะสม <strong>Harness Scorecard</strong> ทีละมิติ และพบ <em>fleet</em> ของ 5 ระบบจริงทีละบท
+      แต่ยังไม่เคยเห็นมัน <strong>วางเรียงกันทั้งหมดในที่เดียว</strong> หน้านี้คือภาพรวมนั้น — สเก็ตช์ harness ของแต่ละระบบ
+      และ scorecard 5 ระบบ × 6 มิติ เพื่อให้เห็นบทเรียนมืออาชีพชัด ๆ ด้วยตา: <strong>“ดี” = เลือก tradeoff ถูก ไม่ใช่ max ทุกมิติ</strong>
+    </p>
+
+    <div class="callout note">
+      <strong>นี่คือ payoff ที่ประกอบจากของเดิม ไม่ใช่ของใหม่</strong>
+      ทุกค่าด้านล่างมาจากบทที่ผ่านมา (โดยเฉพาะ <a href="ch17-cockpit-fleet.html">บท 17</a> ที่ให้ภาพรวมแบบ <em>aggregate</em>) —
+      หน้านี้แค่ <em>กางออกเป็นรายระบบ</em> เพื่อให้เปรียบเทียบกันได้ · ตัวอย่าง capstone ที่ทำเสร็จของระบบ “ฟีดแบ็กงาน”
+      ดูได้ที่ <a href="ch20-capstone.html">บท 20</a>
+    </div>
+
+    <h2>fabric ที่ทั้ง fleet ใช้ร่วมกัน</h2>
+    <p>
+      ห้าระบบไม่ได้ต่างคนต่างสร้าง harness — มันแชร์ <strong>โครงร่วม</strong>ชุดเดียว ความเหมือนหลายช่องในตารางข้างล่างจึงเป็น
+      เพราะมิตินั้นเป็น <em>คุณสมบัติของ fabric ร่วม</em> ไม่ใช่ของแต่ละระบบ:
+    </p>
+    <div class="flow">
+      <div class="flow-node"><span class="fn-k">ประตูเดียว</span><span class="fn-t">MCP gateway + manifest คัดสรร (ลูกบิดพฤติกรรม)</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">เครื่องยนต์เดียว</span><span class="fn-t">orchestrator ตัวเดียว (เดสก์ท็อป + LINE)</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">แหล่งความจริงเดียว</span><span class="fn-t">Postgres ภายใน · agent ไม่เคยเขียนระบบที่เป็นแหล่งความจริง</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node accent"><span class="fn-k">cockpit เดียว</span><span class="fn-t">คนคัด/อนุมัติ/มองเห็น/กำกับ — ศูนย์ LLM</span></div>
+    </div>
+
+    <h2>สเก็ตช์ harness ของแต่ละระบบ</h2>
+    <p>หนึ่งการ์ดต่อหนึ่งระบบ — อ่านได้ใน 10 วินาที: อยู่ขั้นไหนของบันได · LLM คุ้มตรงไหน · อะไรอยู่ deterministic · คนกั้นตรงไหน</p>
+    <div class="card-grid">
+
+      <div class="card" style="border-left:3px solid var(--cyan)">
+        <div class="num">ระบบ 1 · แล็บ &amp; อาคาร</div>
+        <div class="name">ที่ปรึกษา ABET + หาห้องว่าง</div>
+        <div class="desc">
+          <b>บันได:</b> ส่วนใหญ่ขั้น 0 — หาช่วงห้องว่าง = เลขคณิตเซ็ต (tool ตายตัว); LLM 1 loop เฉพาะงานร่าง<br>
+          <b>LLM คุ้ม:</b> ร่างเรื่องเล่าหลักฐาน ABET ภาษาไทย + จัดอันดับช่องว่างก่อนตรวจเยี่ยม<br>
+          <b>deterministic:</b> หาห้องว่าง (ความจุ/ชนคาบ/วันหยุด) + การจองค้ำด้วยกติกา “ห้ามทับ” ของฐานข้อมูล<br>
+          <b>คนกั้น:</b> agent ร่าง + ยื่นลิงก์ให้คลิก · คนเป็นคนจอง/ยืนยัน
+        </div>
+      </div>
+
+      <div class="card" style="border-left:3px solid var(--cyan)">
+        <div class="num">ระบบ 2 · ที่ปรึกษานักศึกษา</div>
+        <div class="name">วิเคราะห์ความก้าวหน้าสู่จบ</div>
+        <div class="desc">
+          <b>บันได:</b> ขั้นต่ำ — รายการ tool แบน ~6 ตัว ไม่มี planner-head<br>
+          <b>LLM คุ้ม:</b> สังเคราะห์ข้ามจอ + เทรซ “ทำไม PLO5 ต่ำ” + ร้อยเป็นคำแนะนำภาษาไทย<br>
+          <b>deterministic:</b> GPAX/หน่วยกิต + การแยก GPA-vs-เครดิตที่ตัววางแผนคำนวณอยู่แล้ว (agent <em>อ่าน</em> ไม่คำนวณใหม่) · นับ cohort = SQL<br>
+          <b>คนกั้น:</b> อ่านอย่างเดียว ไม่มี write · กำแพง “รายคน ↔ ภาพรวม cohort” แข็ง (ไม่ไล่ชื่อรายคน)
+        </div>
+      </div>
+
+      <div class="card" style="border-left:3px solid var(--amber)">
+        <div class="num">ระบบ 3 · หลักสูตร / OBE</div>
+        <div class="name">จัดแนว CLO→PLO + ร่าง TQF3</div>
+        <div class="desc">
+          <b>บันได:</b> หนักสุด — ~70% ควรเป็น SQL views (ที่ยัง “ไม่ได้สร้าง”); LLM เฉพาะอ่าน Bloom + ร่าง<br>
+          <b>LLM คุ้ม:</b> อ่านระดับ Bloom ของ CLO/LLO ที่เป็น free-text + ร่างการจัดแนว + เสนอแก้ TQF3 ขั้นต่ำ<br>
+          <b>deterministic:</b> ตัวเลข attainment/alignment = SQL views<br>
+          <b>คนกั้น:</b> เป็น integration เดียวใน fleet ที่ “เขียนออก” จริง (ส่ง TQF3) → ทุก write คนต้องกด, one-shot one-OK<br>
+          <b>⚠️ ระวัง:</b> ชั้นคะแนนจริงยัง “ว่าง” — <em>ห้าม</em>ให้เล่า attainment จากข้อมูลที่ไม่มี (จะแต่งตัวเลข)
+        </div>
+      </div>
+
+      <div class="card" style="border-left:3px solid var(--cyan)">
+        <div class="num">ระบบ 4 · ฟีดแบ็กงาน</div>
+        <div class="name">อ่านงานแล็บ: ติดจริง vs แค่ช้า</div>
+        <div class="desc">
+          <b>บันได:</b> ขั้นต่ำ — เรียกครั้งเดียวตามสั่ง; มอนิเตอร์/คะแนน/CSV/รายการคำถาม = SQL ล้วน<br>
+          <b>LLM คุ้ม:</b> แยก “ติดจริง (งานสับสน) vs แค่ช้า (งานถูก)” จากเนื้องาน + ร่างคอมเมนต์เชิงกระบวนการ<br>
+          <b>deterministic:</b> สถานะการ์ดสี/สาย/คะแนน/CSV/รายการคำถามนิรนาม<br>
+          <b>คนกั้น:</b> อ่านอย่างเดียว · คอมเมนต์เขียนผ่านระบบเดิมหลังอาจารย์อนุมัติ · ไม่มีให้คะแนน/ติดธง · คำถามถอดชื่อ
+        </div>
+      </div>
+
+      <div class="card" style="border-left:3px solid var(--violet)">
+        <div class="num">ระบบ 5 · cockpit (แผงควบคุม)</div>
+        <div class="name">control plane ของทั้ง fleet</div>
+        <div class="desc">
+          <b>บันได:</b> <em>ศูนย์ LLM</em> — ทั้ง control plane เป็น deterministic<br>
+          <b>LLM คุ้ม:</b> <b>ไม่มีเลย</b> (และต้องไม่ใส่)<br>
+          <b>deterministic:</b> ทั้งหมด — คัด manifest · อนุมัติการเขียนที่ย้อนไม่ได้ · มองเห็น trace · กำกับ<br>
+          <b>คนกั้น:</b> cockpit <em>คือ</em> ด่านคนของทั้ง fleet — “เติมศูนย์ LLM แต่ load-bearing ที่สุด”
+        </div>
+      </div>
+
+    </div>
+
+    <h2>Harness Scorecard — 5 ระบบ × 6 มิติ</h2>
+    <p>
+      นี่คือ scorecard ที่คอร์สสะสมมา <strong>กางเต็มทั้ง fleet</strong> · อ่านสัญลักษณ์:
+      <b style="color:var(--green)">✅ แข็ง</b> ·
+      <b style="color:var(--amber)">◐ พอใช้/มีเงื่อนไข</b> ·
+      <b style="color:var(--red)">⚠️ อ่อน-ต้องระวัง</b> ·
+      <b class="muted">— ไม่เกี่ยว (n/a)</b>
+    </p>
+    <table>
+      <thead><tr>
+        <th>ระบบ</th>
+        <th>คัดสรร tool / permissions</th>
+        <th>grounding / verify</th>
+        <th>security (ลด trifecta)</th>
+        <th>เลือกขั้นบันได</th>
+        <th>observability</th>
+        <th>agent eval</th>
+      </tr></thead>
+      <tbody>
+        <tr>
+          <td><b>1 · แล็บ &amp; อาคาร</b></td>
+          <td>✅</td>
+          <td>✅ <span class="muted" style="font-size:12px">โค้ดคำนวณ + อ้างหลักฐาน</span></td>
+          <td><span style="color:var(--amber)">◐</span> <span class="muted" style="font-size:12px">notes จริง แต่ตัด exfil แล้ว</span></td>
+          <td>✅</td>
+          <td><span style="color:var(--red)">⚠️</span></td>
+          <td><span style="color:var(--red)">⚠️</span></td>
+        </tr>
+        <tr>
+          <td><b>2 · ที่ปรึกษานักศึกษา</b></td>
+          <td>✅</td>
+          <td>✅ <span class="muted" style="font-size:12px">ดึงสดทุกเทิร์น ไม่เดาเกรด</span></td>
+          <td>✅ <span class="muted" style="font-size:12px">ตัด 2 ขา</span></td>
+          <td>✅</td>
+          <td><span style="color:var(--red)">⚠️</span></td>
+          <td><span style="color:var(--red)">⚠️</span> <span class="muted" style="font-size:12px">ออกแบบไว้มากสุด ยังไม่ครบ</span></td>
+        </tr>
+        <tr>
+          <td><b>3 · หลักสูตร / OBE</b></td>
+          <td>✅</td>
+          <td><span style="color:var(--amber)">◐</span> <span class="muted" style="font-size:12px">วินัยดี แต่ชั้นคะแนนว่าง</span></td>
+          <td><span style="color:var(--red)">⚠️</span> <span class="muted" style="font-size:12px">มี write จริง + เอกสารแนบภายนอก ไม่น่าเชื่อถือ</span></td>
+          <td><span style="color:var(--amber)">◐</span> <span class="muted" style="font-size:12px">~70% ควรเป็น views ที่ยังไม่สร้าง</span></td>
+          <td><span style="color:var(--red)">⚠️</span></td>
+          <td><span style="color:var(--red)">⚠️</span></td>
+        </tr>
+        <tr>
+          <td><b>4 · ฟีดแบ็กงาน</b></td>
+          <td>✅</td>
+          <td>✅ <span class="muted" style="font-size:12px">อ้างเนื้องาน · ตอบ “ไม่มีรูปแบบ” ได้</span></td>
+          <td><span style="color:var(--amber)">◐</span> <span class="muted" style="font-size:12px">free-text จากนักศึกษา ไม่น่าเชื่อถือ · ตัด exfil · ถอดชื่อ</span></td>
+          <td>✅</td>
+          <td><span style="color:var(--red)">⚠️</span></td>
+          <td><span style="color:var(--amber)">◐</span> <span class="muted" style="font-size:12px">fixture (เมล็ดพันธุ์) + แผนใช้อัตรา approve/edit — ยังไม่ใช่ eval เต็ม</span></td>
+        </tr>
+        <tr>
+          <td><b>5 · cockpit</b></td>
+          <td>✅✅ <span class="muted" style="font-size:12px">เป็นชั้นคัดเอง</span></td>
+          <td class="muted">—</td>
+          <td>✅ <span class="muted" style="font-size:12px">เป็นด่านอนุมัติ</span></td>
+          <td>✅✅ <span class="muted" style="font-size:12px">ศูนย์ LLM = restraint สูงสุด</span></td>
+          <td><span style="color:var(--amber)">◐</span> <span class="muted" style="font-size:12px">มี trace แต่ log ยังแบน</span></td>
+          <td class="muted">—</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h2>อ่าน scorecard นี้ยังไง — บทเรียนมืออาชีพ</h2>
+    <p>
+      ลองกวาดตาตามแนวตั้งและแนวนอน คุณจะเห็น 3 อย่างที่ตัวเลขเดี่ยว ๆ บอกไม่ได้:
+    </p>
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ แข็งเหมือนกันทั้ง fleet</div>
+        <div class="name">คัดสรร · grounding · restraint</div>
+        <div class="desc">
+          คอลัมน์ “คัดสรร tool/permissions” และ “เลือกขั้นบันได” เขียวเกือบหมด เพราะมาจาก fabric ร่วม
+          (manifest คัดสรร + วินัย deny-by-default + อ่านเป็นหลัก) — นี่คือ <b>ลายเซ็นความแข็ง</b>ของระบบเรา
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ อ่อนเหมือนกันทั้ง fleet</div>
+        <div class="name">observability &amp; agent eval</div>
+        <div class="desc">
+          สองคอลัมน์ขวาสุดแดง/เหลืองเกือบทั้งแถว — log ยัง “แบน” (ไม่มี span/parent/intent) และ
+          <b>ยังไม่มี agent eval จริง</b> · นี่คือจุดอ่อนที่เรา <em>ค้นพบอย่างซื่อสัตย์</em> ไม่ใช่ปกปิด และคือ “งานถัดไป”
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--amber)">
+        <div class="num">◐ ที่ต่างกันจริง = ที่ต้องโฟกัส</div>
+        <div class="name">ระบบ 3 (OBE) คือตัวที่หนักสุด</div>
+        <div class="desc">
+          OBE เป็นระบบเดียวที่ <b>เขียนออกจริง</b> (เสี่ยง security สูงสุด), <b>ชั้นคะแนนยังว่าง</b> (grounding ติดล็อก)
+          และ <b>~70% ควรเป็น views ที่ยังไม่ได้สร้าง</b> (บันไดหนัก) — scorecard ชี้ชัดว่าควรลงแรงตรงไหนก่อน
+        </div>
+      </div>
+    </div>
+
+    <div class="callout tip">
+      <strong>หัวใจของหน้านี้</strong>
+      ระบบที่ออกแบบ “ดี” ที่สุดใน fleet คือ <strong>cockpit ที่ใส่ศูนย์ LLM</strong> — มันชนะเพราะ <em>เลือกไม่ใช้ AI</em>
+      ในที่ที่ AI ไม่คุ้ม ไม่ใช่เพราะทำครบทุกมิติ · “ดี” จึงแปลว่า <strong>เลือก tradeoff ให้เหมาะบริบท</strong>
+      (ผู้ดูแลคนเดียว · อ่านเป็นหลัก · ความเสี่ยงต่ำ-กลาง) ไม่ใช่ไล่ทำทุกช่องให้เขียว
+    </div>
+
+    <h2>สรุป Fleet Gallery</h2>
+    <ul>
+      <li>5 ระบบอยู่บน <strong>harness fabric ร่วม</strong> (ประตู MCP · orchestrator · Postgres แหล่งความจริง · cockpit) — agent ไม่เคยเขียนระบบที่เป็นแหล่งความจริง</li>
+      <li>fleet <strong>แข็งเรื่องคัดสรร/grounding/restraint</strong> และ <strong>อ่อนเรื่อง observability/agent-eval</strong> เหมือนกันเกือบทั้งแถว — จุดอ่อนที่ค้นพบอย่างซื่อสัตย์</li>
+      <li><strong>ระบบ 3 (OBE) หนักสุด</strong>: เขียนออกจริง + grounding ติดล็อกเพราะข้อมูลว่าง + บันไดหนัก — ลงแรงที่นี่ก่อน</li>
+      <li><strong>“ดี” = เลือก tradeoff ถูก ไม่ใช่ max ทุกมิติ</strong> — cockpit ศูนย์ LLM คือหลักฐานที่ดีที่สุด</li>
+    </ul>
+
+    <div class="pager">
+      <a href="ch20-capstone.html"><div class="label">← ก่อนหน้า</div><div class="title">20 — Capstone</div></a>
+      <a href="references.html" class="next"><div class="label">ปิดท้าย</div><div class="title">📚 เอกสารอ้างอิง</div></a>
+    </div>
+
+    <div class="illus-footer">
+      <b>หมายเหตุข้อมูล:</b> สเก็ตช์และ scorecard สรุปจากดีไซน์ Part V ที่ยึดกับซอร์สจริงของระบบเรา (ผ่านการตรวจเชิงปฏิปักษ์)
+      เล่าเป็น <b>พฤติกรรม/การไหล</b> ตามหลักของคอร์ส — ไม่มีโค้ด/พาธ · สัญลักษณ์ ✅/◐/⚠️ เป็นการประเมินเชิงออกแบบ ไม่ใช่ตัวเลขที่วัดเป๊ะ
+      · ตัวเลข “~70%” เป็นข้อสรุปเชิงออกแบบ
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  AI Harness Engineering · Fleet Gallery (สรุปรวม) · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ (สาขาเมคคาทรอนิกส์ฯ) · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

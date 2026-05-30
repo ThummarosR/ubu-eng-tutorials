@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>06 — Memory &amp; State | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div>
+        <div class="title">AI Harness</div>
+        <div class="subtitle">วิศวกรรมระบบ AI Agent</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav></nav>
+  </aside>
+
+  <main class="content">
+
+    <!-- 1 · HOOK -->
+    <span class="eyebrow">บทที่ 06 · ประกอบ Harness · Memory &amp; State</span>
+    <h1>Memory &amp; State</h1>
+    <p class="lede">
+      ถามต่อว่า <em>“…แล้วพรุ่งนี้ล่ะ?”</em> แล้วผู้ช่วยทำหน้างง — เพราะ LLM <strong>ไม่มีความจำ</strong>
+      มันอ่าน context window ก้อนเดียวต่อหนึ่งครั้ง จบแล้วลืม บทนี้แยกให้ชัดระหว่างสามสิ่งที่คนมักรวมเป็น “สมองที่จำได้”:
+      <strong>context window</strong> (เห็นรอบนี้), <strong>compaction</strong> (ย่อแล้วล้างเมื่อเต็ม),
+      และ <strong>external memory</strong> (จดไว้นอก window ให้อยู่ข้ามเซสชัน)
+    </p>
+
+    <!-- 2 · PLAIN CONCEPT -->
+    <h2>พูดแบบเข้าใจง่าย</h2>
+    <p>
+      LLM ไม่มี state ข้ามการเรียก — “ความจำ” เดียวของมันคือข้อความที่อัดอยู่ใน context window ของ <em>รอบนั้น</em>
+      window มีขนาดจำกัด พอ agent ทำงานยาว ๆ มันก็เต็ม
+    </p>
+    <ul>
+      <li><strong>Compaction</strong> = ท่ารับมือเมื่อ window เต็ม: ย่อบทสนทนาเก่าเป็นสรุปสั้น ๆ ทิ้งของเดิม แล้วเริ่ม window ใหม่ —
+        <em>สูญเสียข้อมูลโดยตั้งใจ</em> รายละเอียดที่สรุปไม่ติด = หายถาวร</li>
+      <li><strong>External memory</strong> = เขียนสิ่งที่ต้องคงอยู่ลง “นอก window” (ไฟล์ ฐานข้อมูล สมุดโน้ต) แล้วอ่านกลับเมื่อต้องใช้</li>
+      <li><strong>Context editing</strong> = ลบของก้อนใหญ่ที่ใช้เสร็จแล้วออกจาก window อย่างจงใจ (เช่นผังที่สกัดเลขไปแล้ว) เพื่อชะลอไม่ให้ window เต็มเร็ว</li>
+    </ul>
+    <p>
+      ทักษะของวิศวกรคือ <strong>ตัดสินทีละข้อ</strong>ว่าอันไหน “ชั่วคราว” (ปล่อยให้หายได้) อันไหน “ต้องคงอยู่” (จดลง external memory)
+      กับดักคลาสสิก: เก็บแค่ <em>ตัวชี้ (pointer)</em> ของเซสชันไว้ ไม่ใช่ <em>เนื้อหา</em> ของบทสนทนา
+    </p>
+
+    <div class="callout tip">
+      <strong>เปรียบเทียบ: ไวต์บอร์ดในที่ประชุม + Google Doc ของเลขาฯ</strong>
+      ไวต์บอร์ดใหญ่แต่มีขอบเขต พอเต็มก็ลบแล้วเขียนสรุป 5 บรรทัดไว้บนหัว — อะไรที่ไม่อยู่ใน 5 บรรทัดนั้น หายเกลี้ยง (compaction)
+      ส่วน Doc ที่เลขาฯ พิมพ์เก็บไว้ <em>อยู่รอดทุกการลบ</em> เพราะมันอยู่นอกบอร์ด (external memory)
+      และการลบเอกสารแจกที่จดเลขสำคัญไปแล้วออกจากบอร์ด = context editing
+      ระวัง: จดแค่ “เลขห้องประชุม” (pointer) ไม่เท่ากับก๊อปเนื้อหาการประชุมลง Doc
+    </div>
+
+    <!-- 3 · IN OUR SYSTEMS -->
+    <h2>ในระบบของเรา — แหล่งความจริงอยู่นอก context</h2>
+    <p>
+      ระบบของเราออกแบบให้ <strong>ฐานข้อมูล (Postgres) เป็นแหล่งความจริง</strong> ผู้ช่วยจึงไม่ต้อง “จำ”
+      ค่าการจองหรือข้อมูลนักศึกษาไว้ในบทสนทนา — มัน <em>ดึงใหม่จากระบบทุกครั้งที่ต้องใช้</em>
+      ดังนั้น compaction จะดุแค่ไหนก็ได้ ความจริงไม่หาย เพราะความจริงไม่เคยถูกเก็บไว้ในบทสนทนาตั้งแต่แรก
+    </p>
+    <div class="flow">
+      <div class="flow-node"><span class="fn-k">รอบยาว ๆ</span><span class="fn-t">window เริ่มเต็ม</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node guard"><span class="fn-k">Compaction</span><span class="fn-t">ย่อบทสนทนาเก่า ทิ้งรายละเอียดดิบ</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node accent"><span class="fn-k">ดึงใหม่</span><span class="fn-t">ค่าการจอง/ข้อมูลจริง ดึงสด ๆ จากฐานข้อมูล</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">ตอบถูก</span><span class="fn-t">ไม่ต้องพึ่งความจำในแชต</span></div>
+    </div>
+    <p>
+      อีกตัวอย่างที่จับต้องได้: ผู้ช่วยตัวที่ช่วยร่างคู่มือนี้ มี <strong>ความจำแบบไฟล์ของตัวเอง</strong> —
+      มันรู้บริบทของโปรเจกต์นี้ตั้งแต่ข้อความแรกของเซสชันใหม่ ทั้งที่ window ว่างเปล่า เพราะข้อเท็จจริงสำคัญถูก
+      <em>เขียนลงไฟล์ในเซสชันก่อน ๆ</em> จึงรอดข้ามขอบเขตเซสชันมาได้ — นี่คือ external memory ที่ทำถูก
+    </p>
+
+    <!-- 4 · BAD → GOOD -->
+    <h2>ทำพลาด vs ทำถูก</h2>
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · คิดว่า “มันจำบทสนทนาได้”</div>
+        <div class="name">เก็บแค่ pointer ไม่ใช่เนื้อหา</div>
+        <div class="desc">
+          อาจารย์บอกเกณฑ์ให้คะแนน แล้วเงียบไป 2 นาที พอกลับมาบอก “เอาเลย” — ระบบกลับเปิดเซสชันใหม่
+          เพราะมันเก็บไว้แค่ <b>ตัวชี้เซสชัน</b> ไม่ใช่เนื้อหา เกณฑ์นั้นหายเกลี้ยง → ผู้ช่วยถามใหม่หรือเดา
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · พึ่งความจำในแชตกับค่าที่สำคัญ</div>
+        <div class="name">หวังให้ค่ารอด compaction</div>
+        <div class="desc">
+          เก็บ “ห้องที่ว่าง/เกรด/ตัวเลขสำคัญ” ไว้กลางบทสนทนาแล้วหวังว่ามันจะอยู่ — พอ compaction มาถึง
+          ค่าที่สรุปไม่ติดก็หาย และไม่มีใครรู้ว่าหายไปตอนไหน
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ ดี · external memory + แหล่งความจริงนอก window</div>
+        <div class="name">จดของที่ต้องคงอยู่ · ดึงของจริงใหม่</div>
+        <div class="desc">
+          ข้อเท็จจริงที่ต้องคงอยู่ → เขียนลงไฟล์/ฐานข้อมูล; ค่าที่เป็นความจริง → ดึงสดจากแหล่งความจริงทุกครั้ง
+          เหตุผลชั่วคราวปล่อยให้ compaction ลบได้ <b>ไม่มีความจริงไหนถูกฝากไว้ในบทสนทนา</b>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 · ACTIVITY -->
+    <h2>ลองเอง — เอาตัวรอดจาก compaction</h2>
+    <div class="activity">
+      <div class="activity-head">
+        <div class="activity-kicker">กิจกรรม · จำลองแล้วทำนาย</div>
+        <div class="activity-title">Survive the Compaction</div>
+        <div class="activity-desc">
+          context window มีความจุ 100 หน่วย ใส่ข้อมูลเข้าไปจนเต็ม เลือก <b>📌 pin</b> (จดลง external memory)
+          หรือ <b>🧹 clear</b> (ลบของก้อนใหญ่) ตามใจ พอ window ล้น กด <b>COMPACT</b> — แล้วดูว่าอะไรรอด อะไรหาย
+          และตอบคำถามทดสอบได้ไหม
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="activity-panel-label">pin/clear แล้วกด COMPACT</div>
+        <div class="survive-compaction"></div>
+      </div>
+    </div>
+
+    <!-- 6 · FORWARD LOOK -->
+    <div class="callout info">
+      <strong>มองไปข้างหน้า — จำได้ ยังไม่พอ ต้อง “จริง” ด้วย</strong>
+      external memory ทำให้ข้อเท็จจริงอยู่รอด แต่ใครรับประกันว่ามัน <em>ถูกต้องตรงกับโลกจริง</em>?
+      บทที่ 07 ว่าด้วย <strong>grounding &amp; verification</strong> — ตอบจากข้อมูลจริง และตรวจจากสภาพแวดล้อมก่อนลงมือ
+    </div>
+
+    <!-- 7 · SUMMARY + SCORECARD + BRIDGE -->
+    <h2>สรุปบทที่ 06</h2>
+    <ul>
+      <li>LLM <strong>ไร้ state</strong> — ความจำเดียวคือ context window ของรอบนั้น ซึ่งมีขอบเขต</li>
+      <li><strong>Compaction</strong> ย่อ+ล้างเมื่อเต็ม (สูญเสียโดยตั้งใจ); <strong>context editing</strong> ลบของก้อนใหญ่อย่างจงใจ</li>
+      <li>สิ่งที่ต้องคงอยู่ต้องเขียนลง <strong>external memory</strong>; ความจริงควรดึงสดจาก <strong>แหล่งความจริง</strong></li>
+      <li>กับดัก: เก็บ <strong>pointer ≠ เก็บเนื้อหา</strong> — เซสชันหลุดเมื่อไร เนื้อหาก็หาย</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>Harness Scorecard · มิติ: “ของที่ต้องคงอยู่ ถูกจดไว้นอก window ไหม?”</strong>
+      ผู้ช่วยจัดการแล็บ ✅ บางส่วน — แหล่งความจริงอยู่ในฐานข้อมูล (ดึงใหม่ได้) แต่ state ของบทสนทนาเองไม่มีบ้านถาวร
+      (ออกแบบไว้แบบนั้น) อะไรที่ต้องอยู่ข้ามการหยุดยาวต้องเขียนลงที่ถาวร
+      <br><br>
+      <strong>📋 build-your-harness checklist · บรรทัดที่ 6</strong>
+      “ตัดสินทีละข้อ: ชั่วคราว (ปล่อยหายได้) vs ต้องคงอยู่ (เขียนลง external memory / แหล่งความจริง)”
+    </div>
+
+    <div class="pager">
+      <a href="ch05-context.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">05 — Context — สิ่งที่ต้องรู้</div>
+      </a>
+      <a href="ch07-grounding-verification.html" class="next">
+        <div class="label">ถัดไป</div>
+        <div class="title">07 — Grounding &amp; Verify</div>
+      </a>
+    </div>
+
+    <div class="illus-footer">
+      <b>หมายเหตุข้อมูล:</b> ตัวเลขความจุ/ต้นทุนในกิจกรรมเป็น <b>ตัวอย่างเชิงสาธิต</b> เพื่อให้เห็นภาพ compaction vs context-editing
+      ไม่ใช่ขนาด token จริง — แต่หลักการ “แหล่งความจริงอยู่นอก context” และ “ความจำแบบไฟล์ข้ามเซสชัน” อ้างอิงพฤติกรรมจริงของระบบเรา
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  AI Harness Engineering · บทที่ 06 · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/activities/survive-compaction.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>11 — MCP | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div>
+        <div class="title">AI Harness</div>
+        <div class="subtitle">วิศวกรรมระบบ AI Agent</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav></nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ 11 · เชื่อมกับโลก · MCP — The Access Protocol</span>
+    <h1>MCP — โปรโตคอลการเข้าถึง</h1>
+    <p class="lede">
+      ผู้ช่วยของเราพึ่งเครื่องมือมากขึ้นเรื่อย ๆ — ถึงเวลา <strong>ทำให้การเข้าถึงข้อมูล/การกระทำเป็นมาตรฐาน</strong>
+      นั่นคือสิ่งที่ <strong>MCP (Model Context Protocol)</strong> ทำ และจุดที่คนส่วนใหญ่พลาด: MCP ไม่ได้มีแค่ “tools”
+      แต่มีสามแบบ — <strong>tools · resources · prompts</strong> — แต่ละแบบบอกว่า <em>ใครเป็นคนคุม</em>
+    </p>
+
+    <h2>พูดแบบเข้าใจง่าย</h2>
+    <p>
+      MCP คือมาตรฐานเปิดสำหรับต่อแอป LLM เข้ากับความสามารถภายนอก มี <strong>3 บทบาท</strong>:
+      <em>HOST</em> (แอปที่ผู้ใช้รัน เช่น Claude Code), <em>CLIENT</em> (ตัวเชื่อมในโฮสต์ หนึ่งตัวต่อเซิร์ฟเวอร์),
+      และ <em>SERVER</em> (สิ่งที่เปิดเผยความสามารถ) และเซิร์ฟเวอร์เปิดเผยได้ <strong>3 แบบ — เส้นแบ่งคือ “ใครคุม”</strong>:
+    </p>
+    <ul>
+      <li><strong>Tools</strong> = โมเดลคุม — โมเดลตัดสินใจเรียก (เขียน event, อ่านสถานะห้อง) · <em>read-only ก็ยังเป็น tool</em> ถ้าโมเดลต้องเลือกเรียกเอง</li>
+      <li><strong>Resources</strong> = แอปคุม — context อ่านอย่างเดียวที่โฮสต์ “แนบ” ให้ (คู่มือ, ผังหลักสูตร)</li>
+      <li><strong>Prompts</strong> = ผู้ใช้คุม — เทมเพลตที่ผู้ใช้เลือกหยิบมาใช้ (“สรุปใบเกรดนี้”)</li>
+    </ul>
+    <p>กับดักความปลอดภัยชื่อดัง: <strong>confused deputy</strong> — เซิร์ฟเวอร์เอา token สิทธิ์สูงของตัวเองไปใช้แทนใครก็ตามที่เรียกมา และ <em>scope guard ไม่ใช่การพิสูจน์ตัวตน</em></p>
+
+    <div class="callout tip">
+      <strong>เปรียบเทียบ: เคาน์เตอร์ต้อนรับของโรงแรม</strong>
+      แขกไม่เดินเข้าครัวหรือห้องเซฟ — เขาไปที่เคาน์เตอร์ ซึ่งให้บริการ 3 แบบ
+      <em>สิ่งที่พนักงาน “ทำ” ให้เมื่อขอ</em> = tools (แม้แค่ “บอกอุณหภูมิสระ” ก็เป็น tool เพราะต้อง “ขอ”),
+      <em>แฟ้มอ้างอิงบนเคาน์เตอร์</em> (แผนที่ เมนู ทางหนีไฟ) = resources,
+      <em>แบบฟอร์มสำเร็จรูปในชั้นวาง</em> = prompts ที่แขกเลือกหยิบเอง
+      ส่วน confused deputy = พนักงานใช้ “กุญแจมาสเตอร์” เปิดห้องที่ใครชี้ให้ แทนการเช็คกุญแจของแขกคนนั้น
+    </div>
+
+    <h2>ในระบบของเรา — เซิร์ฟเวอร์ที่เป็น “tools-only”</h2>
+    <div class="flow">
+      <div class="flow-node"><span class="fn-k">Host</span><span class="fn-t">แอปที่ผู้ใช้รัน</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">discover</span><span class="fn-t">ถามเซิร์ฟเวอร์ว่ามีอะไรบ้าง (รีโหลดสด)</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node accent"><span class="fn-k">tools</span><span class="fn-t">คืน 56 tool · <b>0 resources · 0 prompts</b></span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">invoke</span><span class="fn-t">โมเดลเรียก tool ที่ต้องใช้</span></div>
+    </div>
+    <p>
+      เซิร์ฟเวอร์ MCP ของเรา <strong>อ่านแค็ตตาล็อกใหม่ทุกครั้งที่ถาม</strong> (แก้รายการแล้วเห็นผลทันทีโดยไม่ต้องรีสตาร์ต) —
+      เป็น discovery ที่ถูกต้องตามสเปก แต่มันเป็น <strong>tools-only</strong>: คู่มือนักศึกษาซึ่ง <em>ควรเป็น resource</em>
+      กลับเข้าถึงได้ทาง tool ค้นหาเท่านั้น และ <strong>ผัง OBE ของหลักสูตร (Classroom → LLO → CLO → PLO)</strong>
+      คือตัวอย่างที่เหมาะจะเป็น “resource ตัวแรก” ของเรา — กราฟอ้างอิงที่โฮสต์แนบให้อ่านได้ตรง ๆ แทนที่จะต้องให้โมเดลเรียก tool มาประกอบเอง
+    </p>
+
+    <h2>ทำพลาด vs ทำถูก</h2>
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · ยัด resource ให้เป็น tool</div>
+        <div class="name">คู่มือ = tool ค้นหา</div>
+        <div class="desc">
+          เอกสารอ้างอิง read-only ที่เหมาะเป็น resource กลับเข้าถึงได้ผ่าน tool ที่โมเดล “ต้องนึกจะเรียก” เท่านั้น —
+          มันลืมเรียก เรียกผิดจังหวะ หรือเปลืองเทิร์นได้ ทั้งที่แอปแนบให้ตั้งแต่ต้นได้
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · confused deputy</div>
+        <div class="name">scope guard ≠ การพิสูจน์ตัวตน</div>
+        <div class="desc">
+          เซิร์ฟเวอร์เอา token สิทธิ์สูงของตัวเองรันคำขอของใครก็ได้ที่ต่อเข้ามา — gate แบบ “ยืนยันก่อนทำ”
+          กันอุบัติเหตุ แต่ <b>ไม่ได้พิสูจน์ว่าใครเรียก</b> ต้องผูกสิทธิ์กับตัวตนของผู้เรียกเอง
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ ดี · discovery + รู้ว่าอะไรควรเป็น resource</div>
+        <div class="name">tools-only แต่รู้ตัว</div>
+        <div class="desc">
+          เซิร์ฟเวอร์ที่ list ความสามารถได้และรีโหลดแค็ตตาล็อกสด ๆ คือ discovery ที่ถูก —
+          และทักษะคือ <b>มองออกว่า “นี่ควรเป็น resource”</b> (ผัง OBE) เพื่อให้โฮสต์ปักข้อมูลให้ตั้งแต่ต้น
+        </div>
+      </div>
+    </div>
+
+    <h2>ลองเอง — จัดความสามารถเข้า tools / resources / prompts</h2>
+    <div class="activity">
+      <div class="activity-head">
+        <div class="activity-kicker">กิจกรรม · คลิกจัดลงถัง (3 ทาง)</div>
+        <div class="activity-title">Who's in Control?</div>
+        <div class="activity-desc">
+          จัดความสามารถ 8 อย่างลง 3 ถัง — เส้นแบ่งคือ <b>“ใครคุม”</b> ไม่ใช่ “อ่านหรือเขียน”
+          ระวังกับดัก: tool ที่ read-only ก็ยังเป็น tool! แล้วกด “เผยว่าเซิร์ฟเวอร์จริงทำอะไร”
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="activity-panel-label">คลิกเลือกการ์ด แล้วคลิกถัง → ตรวจ → เผย</div>
+        <div class="who-controls"></div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>มองไปข้างหน้า — มาตรฐานแล้ว แต่ต้อง “เบา” ด้วย</strong>
+      MCP ทำให้การเข้าถึงเป็นมาตรฐาน แต่ยิ่งมี tool เยอะ definitions และผลลัพธ์ก็ยิ่งท่วม context
+      บทที่ 12 ว่าด้วย <em>Skills</em> (แพ็กวิธีทำงานซ้ำ) และ <em>การคุมพื้นที่ context ให้พื้นผิว tool เบา</em>
+    </div>
+
+    <h2>สรุปบทที่ 11</h2>
+    <ul>
+      <li>MCP = มาตรฐานเปิด · 3 บทบาท (host/client/server) · 3 แบบความสามารถ</li>
+      <li>เส้นแบ่ง tools/resources/prompts คือ <strong>“ใครคุม”</strong> (โมเดล/แอป/ผู้ใช้) ไม่ใช่ read/write</li>
+      <li>เกือบทุกเซิร์ฟเวอร์จริงเป็น <strong>tools-only</strong> — ระบบเราก็เช่นกัน (56 tools · 0 resources · 0 prompts)</li>
+      <li>ทักษะคือมองออกว่า “อันนี้ควรเป็น resource” (ผัง OBE) + ระวัง confused deputy</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>Harness Scorecard · มิติ: “รูปแบบ MCP เหมาะกับงานไหม?”</strong>
+      ผู้ช่วย/ระบบเรา: ◑ — discovery ถูกต้องและรีโหลดสด แต่ยัง tools-only (resources/prompts ยังว่าง)
+      ผัง OBE คือ resource ตัวแรกที่ควรทำ
+      <br><br>
+      <strong>📋 build-your-harness checklist · บรรทัดที่ 10</strong>
+      “ทำการเข้าถึงให้เป็นมาตรฐาน (MCP) + เลือกชนิดให้ถูก: tools (โมเดลคุม) · resources (แอปแนบ) · prompts (ผู้ใช้เลือก)”
+    </div>
+
+    <div class="pager">
+      <a href="ch10-the-harness.html"><div class="label">← ก่อนหน้า</div><div class="title">10 — นี่แหละ Harness</div></a>
+      <a href="ch12-skills-tool-surface.html" class="next"><div class="label">ถัดไป</div><div class="title">12 — Skills &amp; Tool Surface</div></a>
+    </div>
+
+    <div class="illus-footer">
+      <b>หมายเหตุข้อมูล:</b> ตัวเลข <b>56 tools · 0 resources · 0 prompts</b> สะท้อนรูปจริงของเซิร์ฟเวอร์ MCP ของเรา (ตรวจ 2026-05-29)
+      การ์ดในกิจกรรมเป็นตัวอย่างเชิงแนวคิด เซิร์ฟเวอร์จริงยังไม่ได้ทำ resources/prompts (จึงติดสแตมป์ “ยังไม่ได้ทำ”)
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  AI Harness Engineering · บทที่ 11 · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/activities/who-controls.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

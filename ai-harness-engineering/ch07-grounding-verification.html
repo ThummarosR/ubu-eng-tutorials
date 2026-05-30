@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>07 — Grounding &amp; Verification | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div>
+        <div class="title">AI Harness</div>
+        <div class="subtitle">วิศวกรรมระบบ AI Agent</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav></nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ 07 · ประกอบ Harness · Grounding &amp; Verification</span>
+    <h1>Grounding &amp; Verification</h1>
+    <p class="lede">
+      ผู้ช่วยตอบว่าจองได้ที่ <em>“ห้อง Lab 9”</em> — ทั้งที่ห้องนั้นไม่มีอยู่จริง โมเดล <strong>ทำนายข้อความ
+      มันไม่ได้ “เห็น” โลกจริง</strong> บทนี้คือการลดช่องว่างระหว่างสิ่งที่โมเดล <em>คิดว่า</em> จริง กับสิ่งที่
+      <em>เป็น</em> จริง: ตอบจากข้อมูลจริง ตรวจจากสภาพแวดล้อม (ไม่ใช่จากคำพูดของตัวเอง) และกั้นการกระทำที่ย้อนไม่ได้ด้วยมนุษย์
+    </p>
+
+    <h2>พูดแบบเข้าใจง่าย</h2>
+    <p>
+      LLM ทำนายข้อความ มันไม่ได้สังเกตโลก ปล่อยไว้เฉย ๆ มันจะรายงานว่า “จองแล้ว” “พบ 3 ห้องว่าง” ได้สบายมาก
+      ไม่ว่าจะเกิดขึ้นจริงหรือไม่ หน้าที่ของ harness คือ <strong>หดช่องว่างระหว่าง “คิดว่าจริง” กับ “เป็นจริง”</strong> ด้วย 3 ทาง:
+    </p>
+    <ul>
+      <li><strong>Grounding</strong> — เครื่องมือคืน <em>สถานะจริง</em> (อ่านค่ากลับจากระบบ, สถานะ HTTP จริง) ให้รอบถัดไปคิดจากข้อเท็จจริง ไม่ใช่การเดา</li>
+      <li><strong>Schema-first</strong> — ยื่น “ค่าที่ใช้กรองได้จริง” ให้ก่อน โมเดลจะได้ <em>กรองด้วยห้อง/รุ่นที่ไม่มีจริงไม่ได้</em></li>
+      <li><strong>Human-in-the-loop gate</strong> — ก่อนการกระทำที่ย้อนไม่ได้ ต้อง echo-back สิ่งที่เข้าใจ แล้วรอ “ใช่” และเครื่องมือเองก็ปฏิเสธถ้าไม่มีธง confirmed=true</li>
+    </ul>
+    <p>สำคัญ: <strong>การ verify ต้องมาจากช่องทางที่เป็นอิสระจากโมเดล</strong> — ถามโมเดลซ้ำว่า “สำเร็จไหม” คือการวิ่งชนจุดบอดเดิม</p>
+
+    <div class="callout tip">
+      <strong>เปรียบเทียบ: ช่างสำรวจปักหมุดก่อนเทคอนกรีต</strong>
+      ช่างสำรวจไม่เชื่อพิกัดในแบบแปลนเฉย ๆ — เขาเดินไปที่มุมจริง ตั้งกล้อง แล้วยิงค่าจริงบนพื้นก่อนเท
+      แบบแปลน = คำพูดมั่นใจของโมเดล; การยิงค่าด้วยกล้อง = grounding ที่คืนสถานะจริง; ตารางพิกัดที่ใช้ได้ = schema-first
+      (ปักนอกกริดไม่ได้ เหมือนกรองด้วยห้องที่ไม่มีไม่ได้); และโฟร์แมนเซ็นอนุมัติก่อนเท <em>โดยมองพื้นจริง ไม่ใช่อ่านแบบซ้ำ</em> = gate ที่ตรวจจากช่องทางอิสระ
+    </div>
+
+    <h2>ในระบบของเรา — ตอบจากของจริง ปักหมุดก่อนกระทำ</h2>
+    <div class="flow">
+      <div class="flow-node"><span class="fn-k">คำถาม</span><span class="fn-t">“มีห้องว่างพฤหัสบ่ายไหม?”</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node accent"><span class="fn-k">Schema-first</span><span class="fn-t">ยื่นรายชื่อห้อง/ช่วงเวลาที่มีจริงก่อน → เดาห้องที่ไม่มีไม่ได้</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">Grounding</span><span class="fn-t">ดึงสถานะจริงกลับมา (ว่าง/ชน/ปิด)</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node guard"><span class="fn-k">Gate</span><span class="fn-t">ถ้าจะ “จอง” ต้อง echo-back + รอ “ใช่” ก่อนถึงจะยิงจริง</span></div>
+    </div>
+    <p>
+      ในระบบจริง เครื่องมือเขียนปฏิทินของเราจะ <strong>ปฏิเสธจนกว่าจะมี confirmed=true</strong> — รอบแรกมันคืนข้อความว่า
+      “ยังไม่ยืนยัน โปรด echo-back ให้ผู้ใช้ก่อน” ไม่มีอะไรถูกเขียนเลย และกลุ่มเครื่องมือข้อมูลก็เป็น schema-first
+      (เรียก “ดูรายการที่มีจริง” ก่อนเสมอ) ผู้ช่วยจึงตอบว่า “ไม่มีรุ่น 70 รุ่นล่าสุดคือ 68” แทนที่จะแต่งจำนวนขึ้นมา
+    </p>
+
+    <h2>ทำพลาด vs ทำถูก</h2>
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · เชื่อ “สำเร็จ!” มากกว่าคำตอบจริงของระบบ</div>
+        <div class="name">เขียนแล้วไม่อ่านค่ากลับ</div>
+        <div class="desc">
+          เครื่องมือส่งคำขอแล้วถือว่าสำเร็จทันทีโดยไม่ดูสถานะตอบกลับ — เคยเกิดจริงในระบบเรา: payload ผิดทำให้เซิร์ฟเวอร์คืน 500
+          แต่ผู้ช่วยรายงาน “ส่งเรียบร้อย” งานยังค้างเป็นฉบับร่าง รู้ตอนคนเปิดดูเอง
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · ใช้ self-report เป็นการ verify</div>
+        <div class="name">ถามโมเดลว่า “สำเร็จไหม”</div>
+        <div class="desc">
+          “บันทึกแล้ว 24 รายการ” ทั้งที่ไม่มีการนับจริง — โมเดลสรุปจากข้อความของตัวเอง ถ้าเขียนพลาดเงียบ ๆ มันก็ยังตอบ “สำเร็จ”
+          เพราะมันทำนาย <em>รูปร่างของข้อความสำเร็จ</em> ไม่ได้อ่านจำนวนแถวจริง
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ ดี · gate ฝั่งเซิร์ฟเวอร์ + schema-first</div>
+        <div class="name">ปักหมุดก่อนเท</div>
+        <div class="desc">
+          การกระทำที่ย้อนไม่ได้ถูกบังคับด้วย confirmed=true ในโค้ด (ไม่ใช่แค่ความสุภาพใน prompt) และการกรองทำได้เฉพาะค่าที่
+          ระบบบอกว่ามีจริง — โมเดลจึงเดาห้อง/รุ่นที่ไม่มีไม่ได้ และ verify มาจากการอ่านสถานะจริงกลับมาเสมอ
+        </div>
+      </div>
+    </div>
+
+    <h2>ลองเอง — เลือกแหล่ง verify ที่จับโกหกได้</h2>
+    <div class="activity">
+      <div class="activity-head">
+        <div class="activity-kicker">กิจกรรม · เกมตัดสินใจ</div>
+        <div class="activity-title">Trust but Verify: Catch the Lie</div>
+        <div class="activity-desc">
+          แต่ละรอบ ผู้ช่วยรายงานบางอย่างอย่างมั่นใจ — แต่มันโกหก เลือก <b>หนึ่ง</b> แหล่งตรวจสอบ
+          แล้วดูว่าแหล่งไหนจับได้จริง คุณจะรู้สึกเองว่ามีแค่แหล่งที่ “แตะโลกจริง” เท่านั้นที่ไว้ใจได้
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="activity-panel-label">เลือกแหล่งตรวจสอบในแต่ละรอบ</div>
+        <div class="catch-the-lie"></div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>มองไปข้างหน้า — ปักหมุดได้แล้ว แต่ใครให้สิทธิ์มันลงมือ?</strong>
+      grounding หยุดการ “แต่งเรื่อง” ได้ แต่ยังมีคำถามว่า <em>มันควรได้รับอนุญาตให้ทำอะไรบ้าง</em>
+      บทที่ 08 ว่าด้วย Permissions &amp; Safety — แยก “อ่าน” ออกจาก “ทำ” และกั้นสิ่งที่ย้อนไม่ได้
+    </div>
+
+    <h2>สรุปบทที่ 07</h2>
+    <ul>
+      <li>LLM <strong>ทำนายข้อความ ไม่ได้สังเกตโลก</strong> — “สำเร็จ!” คือการทำนาย ไม่ใช่หลักฐาน</li>
+      <li>หดช่องว่างด้วย <strong>grounding</strong> (คืนสถานะจริง), <strong>schema-first</strong> (ค่าที่ใช้ได้จริง), <strong>HITL gate</strong></li>
+      <li><strong>verify ต้องมาจากช่องทางอิสระ</strong> — self-report และ success toast โกหกได้</li>
+      <li>กั้น “การกระทำที่ย้อนไม่ได้” ด้วย confirmed=true ในโค้ด ไม่ใช่แค่คำขอร้องใน prompt</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>Harness Scorecard · มิติ: “ตอบจากของจริง + verify จากช่องทางอิสระไหม?”</strong>
+      ผู้ช่วยจัดการแล็บ ✅ — schema-first กันการเดา, gate ฝั่งเซิร์ฟเวอร์กันการเขียนพลาด
+      <br><br>
+      <strong>📋 build-your-harness checklist · บรรทัดที่ 7</strong>
+      “grounding + schema-first + verify จากช่องทางอิสระ + gate การกระทำที่ย้อนไม่ได้”
+    </div>
+
+    <div class="pager">
+      <a href="ch06-memory-state.html"><div class="label">← ก่อนหน้า</div><div class="title">06 — Memory &amp; State</div></a>
+      <a href="ch08-permissions-safety.html" class="next"><div class="label">ถัดไป</div><div class="title">08 — Permissions &amp; Safety</div></a>
+    </div>
+
+    <div class="illus-footer">
+      <b>หมายเหตุข้อมูล:</b> claim และผลการตรวจสอบในเกมเป็น <b>ตัวอย่างเชิงสาธิต</b> เพื่อสอนการแยกแหล่ง verify ที่ไว้ใจได้
+      กรณี payload ผิดที่คืน 500 และ gate confirmed=true อ้างอิงเหตุการณ์/แนวปฏิบัติจริงของระบบเรา
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  AI Harness Engineering · บทที่ 07 · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/activities/catch-the-lie.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

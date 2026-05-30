@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>01 — สถานการณ์ | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div>
+        <div class="title">AI Harness</div>
+        <div class="subtitle">วิศวกรรมระบบ AI Agent</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav>
+      <h4>เริ่มต้น</h4>
+      <a href="index.html"><span class="num">00</span> หน้าแรก &amp; ภาพรวม</a>
+
+      <h4>1 · ปัญหา &amp; คำศัพท์</h4>
+      <a href="ch01-the-situation.html" class="active"><span class="num">01</span> สถานการณ์</a>
+      <a href="ch02-script-and-call.html"><span class="num">02</span> Script &amp; การเรียกครั้งเดียว</a>
+      <a href="ch03-loop-to-agent.html"><span class="num">03</span> Loop → Agent</a>
+
+      <h4>2 · ประกอบ Harness</h4>
+      <a class="soon"><span class="num">04</span> Tools — มือ</a>
+      <a class="soon"><span class="num">05</span> Context — สิ่งที่ต้องรู้</a>
+      <a class="soon"><span class="num">06</span> Memory &amp; State</a>
+      <a class="soon"><span class="num">07</span> Grounding &amp; Verify</a>
+      <a class="soon"><span class="num">08</span> Permissions &amp; Safety</a>
+      <a class="soon"><span class="num">09</span> ควบคุม &amp; มองเห็น</a>
+      <a class="soon"><span class="num">10</span> นี่แหละ Harness</a>
+
+      <h4>3 · เชื่อมกับโลก</h4>
+      <a class="soon"><span class="num">11</span> MCP</a>
+      <a class="soon"><span class="num">12</span> Skills &amp; Tool Surface</a>
+
+      <h4>4 · Context · เชื่อถือ · สเกล</h4>
+      <a class="soon"><span class="num">13</span> Context Engineering</a>
+      <a class="soon"><span class="num">14</span> Security</a>
+      <a class="soon"><span class="num">15</span> Orchestration &amp; บันได</a>
+      <a class="soon"><span class="num">16</span> Evaluation</a>
+
+      <h4>5 · มุมมองมืออาชีพ</h4>
+      <a class="soon"><span class="num">17</span> Cockpit &amp; Fleet</a>
+
+      <h4>6 · พรมแดนถัดไป</h4>
+      <a class="soon"><span class="num">18</span> Physical AI</a>
+      <a class="soon"><span class="num">19</span> Human Integration</a>
+      <a class="soon"><span class="num">20</span> Capstone</a>
+
+      <h4>แหล่งข้อมูล</h4>
+      <a class="soon"><span class="num">📚</span> เอกสารอ้างอิง</a>
+    </nav>
+  </aside>
+
+  <main class="content">
+
+    <!-- 1 · HOOK -->
+    <span class="eyebrow">บทที่ 01 · ปัญหา &amp; คำศัพท์ · The Situation</span>
+    <h1>สถานการณ์: รู้จักงานก่อนสร้างเครื่องมือ</h1>
+    <p class="lede">
+      ตลอดคอร์สนี้เราจะสร้าง <strong>“ผู้ช่วยจัดการแล็บ” (Lab Operations Assistant)</strong> หนึ่งตัว
+      จาก script ธรรมดา ๆ ให้กลายเป็น agent ที่ <em>เชื่อถือได้พอจะนำไปใช้จริง</em> แต่ก่อนจะเขียนโค้ดสักบรรทัด
+      หรือเรียกโมเดลสักครั้ง บทนี้ทำสิ่งที่วิศวกรที่ดีทำเป็นอย่างแรกเสมอ — <strong>นิยาม “งาน” ให้ชัด</strong>:
+      คำถามอะไรที่เกิดซ้ำทุกวัน ข้อมูลอะไรที่เรามีอยู่แล้ว และคำตอบผิดหนึ่งครั้งราคาแพงแค่ไหน
+    </p>
+
+    <!-- 2 · PLAIN CONCEPT -->
+    <h2>พูดแบบเข้าใจง่าย</h2>
+    <p>
+      ลองนึกถึงห้องปฏิบัติการสอนของภาควิชา มีห้องหลายห้อง มีเครื่องมือที่ต้องยืม–คืน–สอบเทียบ
+      และมีตารางเรียนที่ใช้ห้องเหล่านั้นอยู่ทุกวัน เจ้าหน้าที่ต้องตอบคำถามชุดเดิม ๆ ซ้ำไม่จบ:
+      <em>พฤหัสบ่ายมีห้องไหนว่าง? เครื่องมือตัวนี้เลยกำหนดคืนหรือยัง? การจองนี้ชนคาบเรียนไหม?</em>
+    </p>
+    <p>
+      ทุกวันนี้คำถามเหล่านี้ตอบได้อยู่แล้ว — ด้วยคนที่เปิดระบบจองกับตารางสอนแล้วไล่ดูทีละบรรทัด
+      สังเกตให้ดี: คำตอบเหล่านี้เป็น <strong>ข้อเท็จจริงที่อยู่ในข้อมูลที่เรามีอยู่แล้ว</strong> ไม่ใช่ความเห็น
+      เป้าหมายของเราจึงไม่ใช่ “ใส่ AI ให้เท่” แต่คือ <strong>เครื่องมือที่เรากล้าเอาไปใช้จริง</strong> —
+      และก่อนจะไปถึงตรงนั้น ต้องรู้ก่อนว่างานคืออะไรกันแน่
+    </p>
+
+    <div class="callout tip">
+      <strong>เปรียบเทียบ: เขียนใบประกาศรับสมัครงานก่อนจ้างคน</strong>
+      ไม่มีใครจ้างพนักงานโดยยังไม่รู้ว่าจะให้ทำอะไร เกณฑ์วัดผลคืออะไร และงานพังแล้วเสียหายแค่ไหน
+      การสร้าง agent ก็เหมือนกัน — <em>ใบประกาศงาน</em> (คำถามที่เกิดซ้ำ + ข้อมูลที่มี + ต้นทุนของความผิดพลาด)
+      ต้องมาก่อน “ผู้สมัคร” (ตัวโมเดล) เสมอ ถ้าข้ามขั้นนี้ คุณจะได้ของที่ดูฉลาดแต่ไม่มีใครกล้าเชื่อ
+    </div>
+
+    <!-- 3 · IN OUR SYSTEMS -->
+    <h2>ในระบบของเรา — วันนี้คำตอบมาจากไหน (ยังไม่มี AI)</h2>
+    <p>
+      ลองดูว่าคำถามหนึ่งข้อถูกตอบยังไง <em>ตอนนี้</em> ก่อนที่เราจะแตะ AItools ใด ๆ — ทุกขั้นเป็นการ
+      “เปิดดูข้อมูลจริง” ล้วน ๆ ไม่มีการเดา:
+    </p>
+
+    <div class="flow">
+      <div class="flow-node"><span class="fn-k">คำถาม</span><span class="fn-t">“พฤหัสบ่ายมีห้องไหนว่าง?”</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">เปิดข้อมูล</span><span class="fn-t">ระบบจอง + ตารางสอน + ปฏิทินวันหยุด</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node accent"><span class="fn-k">คำนวณ</span><span class="fn-t">ไล่ทีละห้อง: มีจองไหม / ชนคาบไหม / เป็นวันหยุดไหม</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">ตอบ</span><span class="fn-t">รายชื่อห้องที่ว่างจริง</span></div>
+    </div>
+
+    <p>
+      ของมีค่าที่สุดที่เรามีอยู่แล้วคือ <strong>ข้อมูลที่เป็นแหล่งความจริง</strong> (source of truth) —
+      ไม่ใช่ตัวโมเดล นี่คือสิ่งที่ผู้ช่วยจะต้องพึ่งพา ไม่ใช่ความจำของมันเอง:
+    </p>
+
+    <table>
+      <thead><tr><th>ข้อมูลที่เรามีอยู่แล้ว</th><th>ใช้ตอบคำถามอะไร</th></tr></thead>
+      <tbody>
+        <tr><td><b>ทะเบียนการจอง</b> ห้อง/เครื่องมือ</td><td>ห้องไหนว่าง · การจองชนกันไหม</td></tr>
+        <tr><td><b>ทะเบียนเครื่องมือ</b> + วันสอบเทียบ/กำหนดคืน</td><td>เครื่องมือตัวไหนเลยกำหนด</td></tr>
+        <tr><td><b>ตารางสอน</b> + ช่วงคาบเรียน</td><td>การจองทับคาบเรียนหรือไม่</td></tr>
+        <tr><td><b>ปฏิทินวันหยุด</b> + ช่วงซ่อมบำรุง</td><td>วันไหนจองไม่ได้ตั้งแต่ต้น</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout note">
+      <strong>เกณฑ์ความน่าเชื่อถือ (trust bar) ต้องนิยามตั้งแต่ตอนนี้</strong>
+      “ถูก” สำหรับผู้ช่วยตัวนี้แปลว่าอะไร? — ตอบจากข้อมูลจริงเสมอ, ไม่แต่งห้องที่ไม่มีอยู่ขึ้นมา,
+      บอกได้เมื่อ “ไม่รู้”, และ <em>ไม่ไปลงมือทำสิ่งที่ย้อนกลับไม่ได้เอง</em> (เช่นแอบจองห้องให้)
+      ถ้าไม่นิยามคำว่า “ถูก” ก่อน เราจะวัดไม่ได้เลยว่า agent ที่สร้างมานั้นใช้ได้จริงหรือเปล่า
+    </div>
+
+    <!-- 4 · BAD → GOOD -->
+    <h2>ทำพลาด vs ทำถูก</h2>
+    <p>ดู “ไม่ดี” ก่อน เพื่อให้บทเรียนไปลงที่ “วิธีคิดที่ถูก”:</p>
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · กระโจนใส่แชตบอตทันที</div>
+        <div class="name">เอา AI มาแปะก่อนเข้าใจงาน</div>
+        <div class="desc">
+          “ต่อ LLM เข้าระบบจองแล้วให้ตอบทุกอย่างเลย” — เดโมสวยใน 5 นาที
+          แต่เชื่อไม่ได้ เพราะเรายังไม่เคยนิยามว่า <b>“ถูก” คืออะไร</b> และมันต้องอ้างอิงข้อมูลชุดไหน
+          พอข้อมูลจริงเปลี่ยน คำตอบก็เลื่อนลอยทันที
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · สร้างของที่อลังการสุด</div>
+        <div class="name">multi-agent ให้กับงานที่เป็นแค่การค้น</div>
+        <div class="desc">
+          “ห้องไหนว่าง” จริง ๆ คือการ <b>ค้นและคำนวณช่วงเวลา</b> — ตอบได้ด้วย query บรรทัดเดียว
+          การเอา agent หลายตัวมารุมงานแบบนี้คือจ่ายแพงขึ้น ช้าลง ดีบักยากขึ้น แลกกับความยืดหยุ่นที่ไม่ได้ใช้
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ ดี · เขียน “ใบประกาศงาน” ก่อน</div>
+        <div class="name">นิยามงานให้ชัด แล้วค่อยเลือกเครื่องมือ</div>
+        <div class="desc">
+          ลิสต์คำถามที่เกิดซ้ำ → ระบุข้อมูลที่มีอยู่ → ตีต้นทุนของคำตอบผิด → ตั้งเกณฑ์ความน่าเชื่อถือ
+          <b>แล้วค่อยตัดสินทีละคำถาม</b>ว่าต้องใช้ AI แค่ไหน (บ่อยครั้งคำตอบคือ “ไม่ต้องเลย”)
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 · ACTIVITY -->
+    <h2>ลองเอง — แยกแยะว่างานไหน “ต้องใช้ AI” จริง</h2>
+    <div class="activity">
+      <div class="activity-head">
+        <div class="activity-kicker">กิจกรรม · คลิกจัดลงถัง</div>
+        <div class="activity-title">Map the Job</div>
+        <div class="activity-desc">
+          นี่คือคำถามที่ผู้ช่วยจัดการแล็บเจอจริง ลองแยกว่าอันไหน <b>ตอบได้ด้วยการค้น/คำนวณ</b> (ไม่ต้องใช้ AI)
+          และอันไหน <b>ต้องตีความหรือใช้ภาษา</b> (AI อาจคุ้ม) — แล้วกด “ตรวจคำตอบ”
+          คุณจะเห็นแก่นของคอร์สนี้ตั้งแต่หน้าแรก
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="activity-panel-label">คลิกการ์ดเพื่อเลือก แล้วคลิกถังที่ใช่</div>
+        <div class="map-the-job"></div>
+      </div>
+    </div>
+
+    <!-- 6 · FORWARD LOOK -->
+    <div class="callout info">
+      <strong>มองไปข้างหน้า — ศัพท์จะโผล่มาตอนที่เรื่องราว “ต้องใช้” มันพอดี</strong>
+      เราจะไม่ท่องนิยามลอย ๆ บทถัดไปเราจะลงมือเขียนสิ่งที่ <em>ง่ายที่สุดก่อน</em> — script ที่ส่งรายงานแล็บตอนกลางคืน —
+      แล้วค้นพบเองว่ามันไม่พอตรงไหน ทุกครั้งที่มันพัง เราจะได้คำศัพท์ใหม่หนึ่งคำ และ harness จะค่อย ๆ ก่อตัวขึ้นทีละชิ้น
+    </div>
+
+    <!-- 7 · SUMMARY + SCORECARD + BRIDGE -->
+    <h2>สรุปบทที่ 01</h2>
+    <ul>
+      <li>ก่อนสร้าง agent ใด ๆ ให้ <strong>นิยามงานก่อน</strong>: คำถามที่เกิดซ้ำ · ข้อมูลที่มี · ต้นทุนของคำตอบผิด · เกณฑ์ความน่าเชื่อถือ</li>
+      <li>ของมีค่าคือ <strong>ข้อมูลที่เป็นแหล่งความจริง</strong> ที่เรามีอยู่แล้ว — ผู้ช่วยต้องอ้างอิงสิ่งนี้ ไม่ใช่ความจำของตัวเอง</li>
+      <li>คำถามจัดการแล็บส่วนใหญ่เป็น <strong>การค้น/คำนวณ</strong> — AI คุ้มเฉพาะตอนต้องใช้ภาษาหรือการสังเคราะห์</li>
+      <li>“ถูก” ต้องนิยามให้วัดได้ ไม่งั้นจะไม่มีทางรู้ว่า agent ที่สร้างมาใช้ได้จริงไหม</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>Harness Scorecard · มิติของบทนี้: “นิยามงานก่อนสร้างหรือเปล่า?”</strong>
+      ผู้ช่วยจัดการแล็บ ✅ ผ่าน — เราระบุคำถาม ข้อมูล ต้นทุนผิดพลาด และเกณฑ์ความน่าเชื่อถือครบ
+      จดมิตินี้ไว้ แล้วเราจะสะสมคะแนนทีละบทไปจนเห็นภาพรวมว่าผู้ช่วยตัวนี้ “แข็งตรงไหน อ่อนตรงไหน”
+      <br><br>
+      <strong>📋 build-your-harness checklist · บรรทัดที่ 1</strong>
+      “ใบประกาศงานที่ชัดเจน: คำถามที่เกิดซ้ำ + ข้อมูลที่เรามีอยู่แล้ว + ต้นทุนของคำตอบผิด”
+    </div>
+
+    <div class="pager">
+      <a href="th03-the-field-2026.html">
+        <div class="label">← กลับ · ปูพื้นทฤษฎี</div>
+        <div class="title">0·3 — ภูมิทัศน์สนามปี 2026</div>
+      </a>
+      <a href="ch02-script-and-call.html" class="next">
+        <div class="label">ถัดไป</div>
+        <div class="title">02 — Script &amp; การเรียกครั้งเดียว</div>
+      </a>
+    </div>
+
+    <div class="illus-footer">
+      <b>หมายเหตุข้อมูล:</b> ตัวอย่าง “ผู้ช่วยจัดการแล็บ” อ้างอิงจากระบบจัดการห้อง/เครื่องมือจริงที่เราใช้ในภาควิชา
+      แต่เลข ชื่อห้อง และเครื่องมือในการ์ดกิจกรรมเป็น <b>ตัวอย่างเชิงสาธิต</b> เพื่อการเรียนรู้แนวคิด ไม่ใช่ข้อมูลเดินระบบจริง
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  AI Harness Engineering · บทที่ 01 · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/activities/map-the-job.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

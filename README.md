@@ -10,6 +10,7 @@ README, dependencies, and release cycle. Everything here is licensed Apache 2.0.
 | [**ripes-tutorial**](./ripes-tutorial/) | RISC-V assembly + computer-architecture tutorial built around the [Ripes](https://github.com/mortbopet/Ripes) simulator. Used in *1306 220 Computer System and Architecture*. |
 | [**plc-automation-tutorial**](./plc-automation-tutorial/) | Step-by-step PLC ladder-logic tutorial for Mitsubishi FX5U and Omron CP1L: HMI, PID, Modbus. |
 | [**opcua-tutorial**](./opcua-tutorial/) | 10-chapter tutorial on IEC 62541 / Industrie 4.0 OPC UA, designed for Year 3–4 students after PLC + Modbus. |
+| [**ai-harness-engineering**](./ai-harness-engineering/) | Advanced, concept-only tutorial on **AI harness engineering** — turning a language model into a reliable, production-grade AI agent (tools, context, memory, grounding, permissions, observability, evaluation). For engineers and graduate students. |
 
 ## Related tools (separate repos)
 

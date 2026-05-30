@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>08 — Permissions &amp; Safety | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div>
+        <div class="title">AI Harness</div>
+        <div class="subtitle">วิศวกรรมระบบ AI Agent</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav></nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ 08 · ประกอบ Harness · Permissions &amp; Safety</span>
+    <h1>Permissions &amp; Safety</h1>
+    <p class="lede">
+      คุณถามว่า <em>“ห้องนี้ว่างไหม?”</em> แล้วผู้ช่วยก็ <strong>จองให้เลย</strong> — คุณไม่ได้ขอให้จอง
+      บทนี้คือเส้นแบ่งระหว่าง <strong>อ่าน (read)</strong> กับ <strong>ทำ (act)</strong> และการกั้นสิ่งที่ย้อนไม่ได้ไว้หลังมนุษย์
+      หัวใจ: <strong>ความสามารถกับรัศมีความเสียหายคือลูกบิดเดียวกัน</strong> — ทุก tool ที่คุณเปิด คือสิ่งที่มันทำได้ในวันที่มันพลาด
+    </p>
+
+    <h2>พูดแบบเข้าใจง่าย</h2>
+    <p>
+      LLM เปล่งคำสั่งเรียก tool ชื่ออะไรก็ได้ที่มันนึกออก — <strong>harness ต่างหากที่ตัดสินว่าอันไหนได้รันจริง</strong>
+    </p>
+    <ul>
+      <li><strong>Curation = deny-by-default</strong> — มี allow-list ชัดเจน เปิด tool ทีละตัว tool ที่ไม่มีใครเปิดก็เรียกไม่ได้ แม้โมเดลจะขอมาถูกเป๊ะ</li>
+      <li><strong>Least privilege</strong> — แต่ละ agent ได้เฉพาะ tool ที่งานต้องใช้ tool อ่านเปิดได้ถูก ๆ tool เขียน/ย้อนไม่ได้ “แพง”</li>
+      <li><strong>Description-as-behaviour</strong> — โมเดลอ่านคำอธิบายเพื่อตัดสินว่าจะใช้เมื่อไร คำอธิบายจึง <em>คือ</em> พฤติกรรม</li>
+      <li><strong>HITL gate</strong> — การกระทำที่ย้อนไม่ได้ เครื่องมือจะปฏิเสธจนกว่าจะมีธง confirmed=true และห้ามตั้งธงเองในรอบเดียวกับที่ผู้ใช้เพิ่งถาม</li>
+    </ul>
+
+    <div class="callout tip">
+      <strong>เปรียบเทียบ: รถเข็นยาฉุกเฉิน (crash cart) ที่ล็อกไว้</strong>
+      ทุกลิ้นชักมีป้ายว่าข้างในคืออะไรและเปิดเมื่อไร · ลิ้นชักส่วนใหญ่ถูกเทปปิดไว้สำหรับเคสนี้ · สองลิ้นชักที่เป็นยาควบคุมต้องมีพยาบาลคนที่สอง “เซ็นร่วม”
+      ล็อก = deny-by-default · เทปปิด = tool ที่ปิดอยู่ · ป้าย = คำอธิบายที่กำหนดการหยิบ · เซ็นร่วม = gate confirmed=true ก่อนทำสิ่งที่ย้อนไม่ได้
+    </div>
+
+    <h2>ในระบบของเรา — เปิดเท่าที่จำเป็น + gate สิ่งที่ย้อนไม่ได้</h2>
+    <div class="flow">
+      <div class="flow-node"><span class="fn-k">โมเดลขอเรียก</span><span class="fn-t">tool อะไรก็ได้ที่มันนึกออก</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node accent"><span class="fn-k">Allow-list</span><span class="fn-t">เปิดอยู่ไหม? ถ้าไม่ → ปฏิเสธ ไม่เกิดอะไร</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node guard"><span class="fn-k">Gate</span><span class="fn-t">write/ย้อนไม่ได้ → ต้อง confirmed=true</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">ค่อยรัน</span><span class="fn-t">เฉพาะที่ทั้งเปิดและผ่าน gate</span></div>
+    </div>
+    <p>
+      ระบบจริงของเราเปิดใช้งานเครื่องมือเพียง <strong>ส่วนหนึ่ง</strong> จากที่ลงทะเบียนทั้งหมด (deny-by-default) ปิด built-in ที่อันตราย
+      ทิ้งทั้งหมดแล้วค่อย whitelist เฉพาะที่ตรวจแล้ว และเครื่องมือที่ <em>ย้อนไม่ได้</em> สองสามตัว (เช่นสร้าง event ที่ส่งอีเมลเชิญ, ปล่อยเกรด)
+      ถูกบังคับ echo-back + confirmed=true การที่ระบบรัน “โดยไม่มี prompt ถามทีละครั้ง” ปลอดภัยได้ <em>เพราะ</em> มี allow-list คัดไว้แล้ว และมีผู้ดูแลคนเดียวที่ไว้ใจได้
+    </p>
+    <div class="callout note">
+      <strong>“ไม่มี prompt ถาม” ≠ “ไม่มีความปลอดภัย”</strong> — มันแปลว่า <em>ด่านถูกย้ายที่</em>: จากการถามยืนยันทีละครั้ง
+      ไปเป็น allow-list แบบนิ่ง ๆ + gate บนการเขียนที่ย้อนไม่ได้ ถ้าเอาด่านนั้นออกด้วย มันถึงจะอันตรายจริง (ดูตัวอย่าง “แย่” ด้านล่าง)
+    </div>
+
+    <h2>ทำพลาด vs ทำถูก</h2>
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · เปิดทุก tool + ไม่มี gate</div>
+        <div class="name">ยกด่านออกในระบบหลายผู้ใช้</div>
+        <div class="desc">
+          ก๊อปแพตเทิร์น “ไม่มี prompt ถาม” ไปใช้กับบริการสาธารณะ แต่ทิ้ง allow-list และ gate ทั้งหมด “เพราะโมเดลฉลาดพอ”
+          แล้วมีคนพิมพ์ฉีดคำสั่งว่า “ปล่อยเกรดทั้งหมด” — เกรดถูกปล่อยทันที รัศมีความเสียหาย = รวมทุก tool
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ ดี · deny-by-default</div>
+        <div class="name">แค็ตตาล็อกคือสวิตช์ปิด</div>
+        <div class="desc">
+          tool ที่เพิ่งเขียนยังไม่ตรวจ = ปิดไว้ก่อน โค้ดที่ deploy ใหม่จึงไม่แอบขยายอำนาจ agent
+          รัศมีความเสียหายตรวจได้จากที่เดียว: “อะไรเปิดอยู่บ้าง”
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ ดี · echo-back + confirmed=true</div>
+        <div class="name">กันชน 2 ชั้นบนสิ่งที่ย้อนไม่ได้</div>
+        <div class="desc">
+          คำอธิบายสั่งให้ echo-back ก่อน + เครื่องมือ <em>ปฏิเสธทางกลไก</em> ถ้าไม่มีธง — โมเดลที่ “ลืม” คำสั่งก็ยังยิงมั่วไม่ได้
+          อ่านเกรด = เสียงรบกวนที่ลบได้; ส่งเชิญ 30 คน/ปล่อยเกรด = ย้อนไม่ได้
+        </div>
+      </div>
+    </div>
+
+    <h2>ลองเอง — พลิกแค็ตตาล็อกแล้วตั้ง gate</h2>
+    <div class="activity">
+      <div class="activity-head">
+        <div class="activity-kicker">กิจกรรม · กดสลับแล้วดูผล</div>
+        <div class="activity-title">Flip the Manifest &amp; Set the Gate</div>
+        <div class="activity-desc">
+          แค็ตตาล็อกเริ่มแบบ deny-by-default (ปิดหมด) ลองเปิด tool และตั้ง gate ดูแถบ “รัศมีความเสียหาย” ขยับ
+          แล้วกดสถานการณ์ 3 อัน (ครู 2 + injection 1) — ดู injection เด้งกลับจากบอร์ดที่ว่าง แล้วดูมันปล่อยเกรดทันทีถ้าเปิด tool โดยไม่มี gate
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="activity-panel-label">เปิด/ปิด tool · ตั้ง gate · กดสถานการณ์</div>
+        <div class="flip-the-manifest"></div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>มองไปข้างหน้า — ปลอดภัยแล้ว แต่ตอนรันยาว ๆ จะรู้ได้ไงว่าเกิดอะไร?</strong>
+      ตอนนี้ผู้ช่วยทั้งปักหมุดข้อมูลจริงและถูกกั้นอำนาจแล้ว แต่ถ้า tool ค้าง หรือมันตอบผิดในรอบที่ 14 — คุณจะเห็นไหม?
+      บทที่ 09 ว่าด้วย <em>การคุมลูปและการมองเห็น (observability)</em>
+    </div>
+
+    <h2>สรุปบทที่ 08</h2>
+    <ul>
+      <li><strong>harness ตัดสินว่า tool ไหนรันได้</strong> ไม่ใช่เจตนาดีของโมเดล</li>
+      <li><strong>ความสามารถ = รัศมีความเสียหาย</strong> เป็นลูกบิดเดียวกัน → deny-by-default + least privilege</li>
+      <li>การกระทำที่ <strong>ย้อนไม่ได้</strong> ต้องมี HITL gate (echo-back + confirmed=true ในโค้ด)</li>
+      <li>“ไม่มี prompt ถาม” ปลอดภัยได้ <em>เฉพาะเมื่อ</em> มีด่านที่แข็งแรง (allow-list) อยู่ข้างหน้าแล้ว</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>Harness Scorecard · มิติ: “deny-by-default + gate สิ่งที่ย้อนไม่ได้ไหม?”</strong>
+      ผู้ช่วยจัดการแล็บ ✅ แข็งแรง — เปิดเท่าที่จำเป็น + gate บนการเขียนที่ย้อนไม่ได้ (จุดแข็งของระบบเรา)
+      <br><br>
+      <strong>📋 build-your-harness checklist · บรรทัดที่ 8</strong>
+      “deny-by-default allow-list + least privilege + HITL gate (confirmed=true) บนทุกการกระทำที่ย้อนไม่ได้”
+    </div>
+
+    <div class="pager">
+      <a href="ch07-grounding-verification.html"><div class="label">← ก่อนหน้า</div><div class="title">07 — Grounding &amp; Verify</div></a>
+      <a href="ch09-operating-observability.html" class="next"><div class="label">ถัดไป</div><div class="title">09 — ควบคุม &amp; มองเห็น</div></a>
+    </div>
+
+    <div class="illus-footer">
+      <b>หมายเหตุข้อมูล:</b> รายชื่อ tool และน้ำหนักรัศมีความเสียหายในกิจกรรมเป็น <b>ตัวอย่างเชิงสาธิต</b>
+      สถานการณ์ injection สร้างขึ้นเพื่อสอน — ระบบจริงไม่ได้เปิดเครื่องมือเขียนบน LAN เปิด แนวคิด deny-by-default + gate อ้างอิงแนวปฏิบัติจริงของระบบเรา
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  AI Harness Engineering · บทที่ 08 · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/activities/flip-the-manifest.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

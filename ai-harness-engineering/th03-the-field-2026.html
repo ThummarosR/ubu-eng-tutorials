@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ทฤษฎี 0·3 — ภูมิทัศน์สนามปี 2026 | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div>
+        <div class="title">AI Harness</div>
+        <div class="subtitle">วิศวกรรมระบบ AI Agent</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav></nav>
+  </aside>
+
+  <main class="content">
+
+    <!-- 1 · HOOK -->
+    <span class="eyebrow">ปูพื้นทฤษฎี · 0·3 · The 2026 Landscape</span>
+    <h1>ภูมิทัศน์สนามปี 2026: คำศัพท์ที่ทั้งวงการใช้ร่วมกัน</h1>
+    <p class="lede">
+      ชิ้นส่วนของ harness ที่คุณเห็นในหน้า 0·2 ล้วนมี “ชื่อสนาม” ของมัน หน้านี้คือ
+      <strong>แผนที่คำศัพท์</strong> — รวบศัพท์หลักทั้งหมดที่คอร์สนี้สร้างขึ้นจากการสำรวจสนามกลางปี 2026
+      วางคู่กับ <em>ความพังในโลกจริงที่มันแก้</em> และ <em>บทที่ลงลึก</em> เพื่อให้คุณเดินเข้าเรื่องเล่าโดยรู้ว่าจะเจออะไรบ้าง
+    </p>
+
+    <!-- 2 · WHY A SHARED VOCABULARY -->
+    <h2>ทำไมต้องมีคำศัพท์ร่วม</h2>
+    <p>
+      สนามนี้ใหม่มาก — แม้แต่วิศวกรเก่ง ๆ ก็ยังเป็นมือใหม่เรื่อง “harness” เมื่อกลางปี 2025 ถึงปี 2026 วงการเริ่ม
+      <strong>ตกลงคำศัพท์กันได้</strong>: คำว่า “prompt engineering” ขยายเป็น <em>“context engineering”</em>,
+      เกิดโปรโตคอลกลางอย่าง <em>MCP</em>, และมีรูปแบบการแพ็กความรู้อย่าง <em>Skills</em> คำเหล่านี้ไม่ใช่ศัพท์เท่ ๆ —
+      แต่ละคำคือ <strong>คำตอบของความพังเฉพาะอย่าง</strong> ที่คนเจอซ้ำ ๆ ตอนเอา agent ไปใช้จริง
+    </p>
+
+    <div class="callout note">
+      <strong>วิธีอ่านหน้านี้</strong>
+      อย่าพยายามท่องจำทุกคำตอนนี้ — เป้าหมายคือให้คุ้นหูไว้ก่อน แล้วเมื่อถึงบทของมัน คุณจะได้
+      <em>ลงมือทำจนเข้าใจจริง</em> มองตารางข้างล่างเป็น “สารบัญเชิงแนวคิด” ของทั้งคอร์ส
+    </div>
+
+    <!-- 3 · THE VOCABULARY MAP -->
+    <h2>คำศัพท์หลัก → ความพังที่มันแก้ → บทที่ลงลึก</h2>
+
+    <h3>กลุ่ม A · ลูปและการให้เหตุผล</h3>
+    <table>
+      <thead><tr><th>คำศัพท์</th><th>คือการแก้ปัญหาอะไร</th><th>บท</th></tr></thead>
+      <tbody>
+        <tr><td><b>Agentic loop</b><br>gather → act → verify → repeat</td><td>การเรียกครั้งเดียว “เดาแล้วจบ” แก้ตัวเองไม่ได้ — ลูปทำให้มันคิด-ทำ-ตรวจซ้ำได้</td><td>03</td></tr>
+        <tr><td><b>Complexity ladder</b><br>เรียกเดียว→workflow→agent→multi-agent</td><td>เลือกสถาปัตยกรรมเกินจำเป็น เปลืองและเปราะ — บันไดบอกว่าควรอยู่ขั้นไหน</td><td>03 · 15</td></tr>
+        <tr><td><b>Orchestration / Multi-agent</b></td><td>งานใหญ่เกินหนึ่ง context — แยกเป็น sub-agent แต่ต้องจ่ายค่าประสานงาน</td><td>15</td></tr>
+      </tbody>
+    </table>
+
+    <h3>กลุ่ม B · มือและการเข้าถึงโลก</h3>
+    <table>
+      <thead><tr><th>คำศัพท์</th><th>คือการแก้ปัญหาอะไร</th><th>บท</th></tr></thead>
+      <tbody>
+        <tr><td><b>Tools</b> — มือของโมเดล</td><td>โมเดลเอื้อมไปดึงข้อมูล/ลงมือทำไม่ได้ — tool คือมือ และชื่อ/คำอธิบายของมันคือคำสั่งที่โมเดลอ่าน</td><td>04</td></tr>
+        <tr><td><b>MCP</b> — Model Context Protocol</td><td>ต่อ agent เข้ากับระบบภายนอกแบบไร้มาตรฐาน วุ่นวาย — MCP คือโปรโตคอลกลาง (host/client/server · tools/resources/prompts)</td><td>11</td></tr>
+        <tr><td><b>Skills</b> — แพ็กวิธีทำ</td><td>ขั้นตอนที่ทำซ้ำต้องสอนใหม่ทุกครั้ง — Skill แพ็ก “วิธีทำ” แบบเปิดเผยทีละชั้น (progressive disclosure)</td><td>12</td></tr>
+        <tr><td><b>Lean tool surface</b></td><td>นิยาม tool ทุกตัวกินที่ใน context ทุกเทิร์น — โหลดเฉพาะที่ต้องใช้ (เช่น tool search)</td><td>12</td></tr>
+      </tbody>
+    </table>
+
+    <h3>กลุ่ม C · context ความจำ และความน่าเชื่อถือ</h3>
+    <table>
+      <thead><tr><th>คำศัพท์</th><th>คือการแก้ปัญหาอะไร</th><th>บท</th></tr></thead>
+      <tbody>
+        <tr><td><b>Context engineering</b><br>finite attention · lost-in-the-middle · context rot</td><td>“ยัดให้เยอะไว้ก่อน” ทำให้คุณภาพตก — คัด “ชุด token สัญญาณสูงที่เล็กที่สุด” แล้วดึงเมื่อต้องใช้</td><td>05 · 13</td></tr>
+        <tr><td><b>Memory &amp; State</b></td><td>ลืมทุกอย่างเมื่อจบรอบ/บีบอัด context — เขียนสิ่งสำคัญไว้นอก window ให้รอดข้ามรอบ</td><td>06</td></tr>
+        <tr><td><b>Grounding &amp; Verification</b></td><td>โมเดล “แต่งเรื่อง” ที่ฟังดูจริง — ตอบจากข้อมูลจริงเท่านั้น และตรวจจากสภาพแวดล้อม</td><td>07</td></tr>
+        <tr><td><b>Evaluation</b><br>final / trajectory / step</td><td>เปลี่ยน prompt/โมเดลแล้วไม่รู้ว่าดีขึ้นหรือแย่ลง — ชุดทดสอบจากงานจริงบอกได้</td><td>16</td></tr>
+      </tbody>
+    </table>
+
+    <h3>กลุ่ม D · ความปลอดภัยและการคุมเครื่อง</h3>
+    <table>
+      <thead><tr><th>คำศัพท์</th><th>คือการแก้ปัญหาอะไร</th><th>บท</th></tr></thead>
+      <tbody>
+        <tr><td><b>Permissions &amp; Safety</b></td><td>ถาม “ว่างไหม” แล้วมันไปจองให้ — แยก อ่าน vs ทำ และกั้นสิ่งที่ย้อนไม่ได้ด้วยคน</td><td>08</td></tr>
+        <tr><td><b>Observability</b> — trace</td><td>ตอบผิดแล้วดูไม่ออกว่าทำไม — บันทึกร่องรอยของสิ่งที่มันทำ (และเจตนา)</td><td>09</td></tr>
+        <tr><td><b>Security</b><br>lethal trifecta · prompt injection</td><td>ข้อความจากผู้ใช้ = ไม่น่าเชื่อถือ และอยู่ใน context เดียวกับโมเดล — ตัดขาขาหนึ่งของสามเหลี่ยมอันตราย</td><td>14</td></tr>
+      </tbody>
+    </table>
+
+    <!-- 4 · BAD → GOOD -->
+    <h2>ใช้คำศัพท์ให้เป็น vs ใช้ผิดที่</h2>
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · ไล่ตามศัพท์</div>
+        <div class="name">“ต้องมี MCP + multi-agent + RAG ให้ครบ”</div>
+        <div class="desc">
+          เอาคำศัพท์เป็นเป้า แล้วยัดทุกอย่างเข้าระบบเพราะ “มันเท่” — ได้สถาปัตยกรรมที่ <b>ซับซ้อนเกินงาน</b>
+          คำศัพท์ไม่ใช่ checklist ที่ต้องเก็บให้ครบ
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · สับสนของที่ต่างกัน</div>
+        <div class="name">เอา Skill ไปทำงานของ MCP (และกลับกัน)</div>
+        <div class="desc">
+          MCP ให้ <b>การเข้าถึง</b> (ส่งค้อนมาให้) · Skill ให้ <b>วิธีทำ</b> (สอนตอกตะปู) — ใช้สลับกันคือ
+          แก้ปัญหาผิดจุด ออกแบบไปก็ไม่ลงตัว
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ ดี · ศัพท์ตามความพัง</div>
+        <div class="name">เริ่มจาก “อะไรพัง” แล้วค่อยหยิบคำที่ตรง</div>
+        <div class="desc">
+          ดูว่างานจริงพังตรงไหน (เดา? ลืม? แต่งเรื่อง? ทำเกินสิทธิ์?) แล้วหยิบ <b>เฉพาะ</b> ชิ้นส่วนที่แก้ตรงนั้น —
+          นี่คือวิธีที่คอร์สนี้สอน และวิธีที่มืออาชีพออกแบบ harness จริง ๆ
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 · ACTIVITY -->
+    <h2>ลองเอง — ปัญหานี้ บทไหนแก้?</h2>
+    <div class="activity">
+      <div class="activity-head">
+        <div class="activity-kicker">กิจกรรม · จับคู่อาการกับคำศัพท์</div>
+        <div class="activity-title">Map the Pain to the Concept</div>
+        <div class="activity-desc">
+          แต่ละข้อคือ <b>อาการพังจริง</b> ที่เจอตอนเอา agent ไปใช้ ลองเลือกว่า <b>คำศัพท์/ชิ้นส่วนไหน</b> เกิดมาเพื่อแก้มัน
+          ระบบจะเฉลยพร้อมบอกบทที่ลงลึก — ทำจบแล้วคุณจะถือ “แผนที่” ของทั้งคอร์สไว้ในหัว
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="activity-panel-label">เลือกคำตอบของแต่ละอาการ แล้วดูเฉลย</div>
+        <div class="field-map"></div>
+      </div>
+    </div>
+
+    <!-- 6 · FORWARD LOOK -->
+    <div class="callout info">
+      <strong>มองไปข้างหน้า — จบทฤษฎี เริ่มลงมือ</strong>
+      คุณมีทั้ง <em>นิยาม</em> (0·1), <em>กายวิภาค</em> (0·2) และ <em>แผนที่คำศัพท์</em> (0·3) ครบแล้ว
+      จากนี้คอร์สจะ <strong>ไม่ท่องนิยามลอย ๆ</strong> อีก — บทที่ 01 พาไปรู้จักงานจริงของผู้ช่วยจัดการแล็บ
+      แล้วเราจะสร้าง harness ขึ้นมาทีละชิ้น จนทุกคำในหน้านี้ “มีความหมายเพราะคุณสร้างมันเอง”
+    </div>
+
+    <!-- 7 · SUMMARY -->
+    <h2>สรุปหน้า 0·3 (จบปูพื้นทฤษฎี)</h2>
+    <ul>
+      <li>คำศัพท์สนามปี 2026 แต่ละคำ = <strong>คำตอบของความพังเฉพาะอย่าง</strong> ไม่ใช่ศัพท์เท่ ๆ</li>
+      <li>กลุ่มใหญ่: <strong>ลูป/orchestration · tools/MCP/Skills · context/memory/grounding/eval · permissions/observability/security</strong></li>
+      <li>กฎการใช้: <strong>เริ่มจาก “อะไรพัง” แล้วค่อยหยิบคำที่ตรง</strong> — อย่าไล่เก็บศัพท์ให้ครบ</li>
+      <li>ปูพื้นจบแล้ว — บทที่ 01 เริ่มเรื่องเล่าที่ทำให้ทุกคำนี้จับต้องได้</li>
+    </ul>
+
+    <div class="pager">
+      <a href="th02-anatomy-and-loop.html">
+        <div class="label">← กลับ</div>
+        <div class="title">0·2 — กายวิภาคของ Harness</div>
+      </a>
+      <a href="ch01-the-situation.html" class="next">
+        <div class="label">เริ่มลงมือ · บทที่ 01</div>
+        <div class="title">01 — สถานการณ์</div>
+      </a>
+    </div>
+
+    <div class="illus-footer">
+      <b>หมายเหตุ:</b> หน้านี้เป็น <b>ทฤษฎีปูพื้น</b> · คำศัพท์เรียบเรียงจากการสำรวจสนาม AI agent กลางปี 2026
+      (Anthropic, OpenAI, MCP, งานวิจัย context — ดูหน้า “เอกสารอ้างอิง”) · เลขบทอ้างถึงโครงสร้างปัจจุบันของคอร์สนี้
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  AI Harness Engineering · ปูพื้นทฤษฎี 0·3 · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/activities/field-map.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

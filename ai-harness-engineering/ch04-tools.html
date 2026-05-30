@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>04 — Tools — มือของโมเดล | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div>
+        <div class="title">AI Harness</div>
+        <div class="subtitle">วิศวกรรมระบบ AI Agent</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav></nav>
+  </aside>
+
+  <main class="content">
+
+    <!-- 1 · HOOK -->
+    <span class="eyebrow">บทที่ 04 · ประกอบ Harness · Tools</span>
+    <h1>Tools — มือของโมเดล</h1>
+    <p class="lede">
+      ในบทที่แล้วเราพบว่าผู้ช่วย <em>เดา</em> ว่าห้องว่าง บทนี้คือการให้ “มือ” กับมัน — เครื่องมือที่ไป
+      <strong>ดึงการจองจริง</strong> แทนการเดา และจุดที่วิศวกรหลายคนพลาด: <strong>ชื่อและคำอธิบายของเครื่องมือ
+      ไม่ใช่เอกสารสำหรับมนุษย์ แต่เป็น “คำสั่ง” ที่โมเดลอ่านเพื่อตัดสินใจ</strong> ส่วนข้อความ error คือ
+      โอกาสเดียวที่มันจะแก้ตัวในรอบถัดไป
+    </p>
+
+    <!-- 2 · PLAIN CONCEPT -->
+    <h2>พูดแบบเข้าใจง่าย</h2>
+    <p>
+      <strong>Tool</strong> คือความสามารถหนึ่งอย่างที่เรายื่นให้โมเดล — เหมือนปุ่มที่มีป้ายกำกับหนึ่งปุ่ม
+      โมเดลไม่เคยเห็นโค้ดข้างในเลย มันเห็นแค่ <strong>สามสตริง</strong>: <em>ชื่อ (name)</em>,
+      <em>คำอธิบาย (description)</em>, และ <em>ผลลัพธ์/ข้อผิดพลาด (error)</em> หลังเรียก — และสามสตริงนี้
+      <strong>คือ prompt</strong>
+    </p>
+    <ul>
+      <li><strong>คำอธิบาย</strong> คือสิ่งที่โมเดลใช้ “เลือก” ว่าจะเรียกเครื่องมือไหน จึงต้องบอกทั้ง <em>ทำอะไร</em> และ <em>เมื่อไรควร/ไม่ควรใช้</em></li>
+      <li><strong>ข้อความ error</strong> คือโอกาสเดียวให้มันแก้เองรอบหน้า — “ใส่ confirmed=true แล้วเรียกใหม่” ดีกว่าโยน exception ดิบ ๆ</li>
+      <li>ทุกเครื่องมือที่เพิ่มยัง <strong>กินพื้นที่ context</strong> ด้วย คำถามจึงไม่ใช่ “เพิ่ม tool นี้ได้ไหม” แต่คือ “มันคมพอจะคุ้มพื้นที่ไหม”</li>
+    </ul>
+
+    <div class="callout tip">
+      <strong>เปรียบเทียบ: ถาดเครื่องมือผ่าตัด + พยาบาลส่งเครื่องมือ</strong>
+      ศัลยแพทย์ไม่คว้าถาดเอง — เขาบอก “ขอ clamp” แล้วพยาบาลยื่นเครื่องมือ <em>ที่ถูกต้องชิ้นเดียว</em>
+      ป้ายชื่อ + ความรู้ว่า “ชิ้นไหนใช้ตอนไหน” = name + description ที่ขับการเลือก ไม่ใช่ตัวโลหะ (โค้ดที่โมเดลไม่เห็น)
+      clamp สองอันที่ป้ายกำกวมคล้ายกัน ทำให้หยิบผิด — จึงต้อง <em>เอาออกจากถาด</em> ไม่ใช่หลอมทิ้ง
+      และถาดที่อัดเครื่องมือ 96 ชิ้นทำให้ทุกการหยิบช้าลง จึงวางเฉพาะที่ใช้จริง
+    </div>
+
+    <!-- 3 · IN OUR SYSTEMS -->
+    <h2>ในระบบของเรา — คำอธิบายคือสิ่งที่ขับการเลือกเครื่องมือ</h2>
+    <p>
+      เมื่อมีคนถามว่า “ห้องว่างไหม” ผู้ช่วยไม่ได้สุ่มเครื่องมือ — มัน <strong>อ่านคำอธิบายของแต่ละตัวแล้วเลือก</strong>:
+    </p>
+    <div class="flow">
+      <div class="flow-node"><span class="fn-k">คำถาม</span><span class="fn-t">“Lab 3 ว่างไหม?”</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">อ่านคำอธิบาย</span><span class="fn-t">เทียบ tool ที่มี: ตัวไหนบอกว่า “ใช้ตอนถามห้องว่าง”</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node accent"><span class="fn-k">เลือก + เรียก</span><span class="fn-t">เครื่องมือเช็คห้องว่าง → ดึงการจอง <b>จริง</b></span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">ตอบ</span><span class="fn-t">คำตอบผูกกับข้อมูลจริง</span></div>
+    </div>
+    <p>
+      ในระบบจริงของเรามีเครื่องมือหลายตัวที่โค้ดข้างในแทบเหมือนกัน — สิ่งที่แยกแยะมันคือ <strong>ภาษาในคำอธิบาย</strong>
+      เช่นใส่ประโยคสั่งว่า “เป็นค่าเริ่มต้นเมื่อผู้ใช้พูดแค่คำว่า ‘อาคาร’ โดยไม่ระบุชื่อ” หรือ “ใช้เฉพาะเมื่อถาม EN6 ตรง ๆ”
+      และเรายังทำ <strong>เครื่องมือแบบรวบยอด</strong> (สรุปข้อมูลนักศึกษาใน “หนึ่งครั้ง” แทนที่จะเรียกย่อย 3 รอบ) —
+      ความคุ้มถูกโฆษณาไว้ในคำอธิบายเอง โมเดลจึงเลือกมันก่อน
+    </p>
+
+    <table>
+      <thead><tr><th>สิ่งที่โมเดลเห็น</th><th>มันคือ prompt ที่ทำหน้าที่อะไร</th></tr></thead>
+      <tbody>
+        <tr><td><b>name</b></td><td>ป้ายสั้น ๆ ระบุเครื่องมือ (สำคัญน้อยกว่าคำอธิบาย)</td></tr>
+        <tr><td><b>description</b></td><td>ขับ “การเลือก” — บอกว่าทำอะไร + เมื่อไรควร/ไม่ควรใช้ (ประโยคสั่งเช่น “ค่าเริ่มต้นเมื่อ…”, “ใช้เฉพาะเมื่อ…”)</td></tr>
+        <tr><td><b>error</b></td><td>ขับ “การแก้ตัว” รอบหน้า — ต้อง actionable เช่น “เรียกใหม่พร้อม confirmed=true”</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout note">
+      <strong>56 จาก 96</strong> ในระบบของเราเปิดใช้งานเครื่องมือเพียงส่วนหนึ่งจากที่ลงทะเบียนไว้ทั้งหมด
+      (รายละเอียดของตัวเลขนี้อยู่ในบทที่ 12) — เพราะ “เครื่องมือน้อยแต่คม” ชนะ “เครื่องมือเยอะแต่กำกวม” เสมอ
+    </div>
+
+    <!-- 4 · BAD → GOOD -->
+    <h2>ทำพลาด vs ทำถูก</h2>
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · เครื่องมือกำกวมที่ซ้ำซ้อน</div>
+        <div class="name">สองตัวที่ “ทำคล้ายกัน”</div>
+        <div class="desc">
+          เครื่องมือคิวงานทั่วไปที่อธิบายแค่ “เพิ่มงานเข้าคิว” วางอยู่ข้าง ๆ เครื่องมือเฉพาะทาง —
+          ผลคือโมเดล <b>หยิบผิดตัวซ้ำ ๆ</b> สองตัวที่อธิบายคลุมเครือคล้ายกันไม่ได้เพิ่มความสามารถ
+          แต่ <b>แบ่งความสนใจของโมเดล</b> ทางแก้คือ <b>ปิด (ไม่ลบ)</b> ตัวซ้ำ + เขียนคำอธิบายให้คม ไม่ใช่เพิ่มโค้ด
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · error ที่แก้ตัวต่อไม่ได้</div>
+        <div class="name">โยน exception ดิบ</div>
+        <div class="desc">
+          เครื่องมือที่ต้องยืนยันก่อนทำ แต่พอขาดการยืนยันกลับคืนคำว่า <b>“confirmed”</b> เปล่า ๆ
+          โมเดลไม่รู้ว่าต้องทำอะไรต่อ → วนเรียกซ้ำที่เดิมจนเปลืองรอบ
+          error คือ prompt — ถ้ามันไม่บอกวิธีแก้ โมเดลก็แก้ไม่ได้
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ ดี · ประโยคสั่งในคำอธิบาย + เครื่องมือรวบยอด</div>
+        <div class="name">คำอธิบายทำงานแทนการแก้โค้ด</div>
+        <div class="desc">
+          ใส่ “ค่าเริ่มต้นเมื่อ…”, “ใช้เฉพาะเมื่อ…” ลงในคำอธิบาย โมเดลก็เลือกถูกโดยไม่ต้องเปลี่ยนโค้ดหรือชื่อ
+          และเครื่องมือ <b>รวบยอด</b> ที่ตรงกับเจตนาผู้ใช้ (“สรุปสถานการณ์ห้องนี้”) ช่วยลดรอบและ context
+          เพราะมันโฆษณาความคุ้มไว้ในคำอธิบายเอง
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 · ACTIVITY -->
+    <h2>ลองเอง — แก้คำอธิบาย แล้วดูโมเดลเปลี่ยนใจ</h2>
+    <div class="activity">
+      <div class="activity-head">
+        <div class="activity-kicker">กิจกรรม · พิมพ์แล้วดูแถบเลื่อนสด ๆ</div>
+        <div class="activity-title">Rewrite the Description</div>
+        <div class="activity-desc">
+          คำขอถูกตรึงไว้ด้านบน ด้านล่างมีเครื่องมือ 3 ตัวที่คำอธิบาย <b>กำกวมและคล้ายกัน</b> จนคะแนนเสมอ
+          ลองพิมพ์ <b>ประโยคสั่ง</b> ลงในใบเดียว (เช่น “ค่าเริ่มต้นเมื่อผู้ใช้ถามว่าห้องว่างไหม”)
+          แล้วดูแถบความมั่นใจขยับและ “ตัวที่โมเดลเลือก” เปลี่ยนทันที — โดยไม่แตะโค้ดเลย
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="activity-panel-label">แก้คำอธิบายในกล่องข้อความได้เลย</div>
+        <div class="rewrite-description"></div>
+      </div>
+    </div>
+
+    <!-- 6 · FORWARD LOOK -->
+    <div class="callout info">
+      <strong>มองไปข้างหน้า — มีมือแล้ว แต่ยังต้องรู้ “กติกา”</strong>
+      ตอนนี้ผู้ช่วยดึงข้อมูลจริงได้แล้ว แต่มันยังไม่รู้คาบเรียน วันหยุด หรือช่วงซ่อมบำรุง — ข้อมูลดิบอย่างเดียวไม่พอ
+      บทที่ 05 เราจะป้อน <em>บริบทและกติกาที่ถูกต้อง</em> (ไม่ใช่ทุกอย่าง) เข้าไป
+    </div>
+
+    <!-- 7 · SUMMARY + SCORECARD + BRIDGE -->
+    <h2>สรุปบทที่ 04</h2>
+    <ul>
+      <li>โมเดลเห็นเครื่องมือเป็น <strong>สามสตริง: name · description · error</strong> — ทั้งหมดคือ prompt</li>
+      <li><strong>คำอธิบายขับการเลือก</strong> — ประโยคสั่งคมกว่าและเร็วกว่าการเปลี่ยนชื่อหรือแก้โค้ด</li>
+      <li><strong>error ที่ดีต้องบอกวิธีแก้</strong> ไม่งั้นโมเดลวนซ้ำที่เดิม</li>
+      <li>เครื่องมือ <strong>น้อยแต่คม</strong> ชนะเครื่องมือเยอะแต่กำกวม — ตัวซ้ำให้ “ปิด ไม่ใช่ลบ”</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>Harness Scorecard · มิติ: “เครื่องมือถูกคัดสรรและคมไหม?”</strong>
+      ผู้ช่วยจัดการแล็บ ✅ — เครื่องมือถูกคัดเปิดเฉพาะที่จำเป็น และใช้คำอธิบายเป็นตัวกำหนดพฤติกรรม
+      <br><br>
+      <strong>📋 build-your-harness checklist · บรรทัดที่ 4</strong>
+      “เครื่องมือที่คัดมาแล้ว: คำอธิบายบอกชัดว่าเมื่อไรควร/ไม่ควรใช้ + error ที่บอกวิธีแก้ตัว”
+    </div>
+
+    <div class="pager">
+      <a href="ch03-loop-to-agent.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">03 — Loop → Agent</div>
+      </a>
+      <a href="ch05-context.html" class="next">
+        <div class="label">ถัดไป</div>
+        <div class="title">05 — Context — สิ่งที่ต้องรู้</div>
+      </a>
+    </div>
+
+    <div class="illus-footer">
+      <b>หมายเหตุข้อมูล:</b> เครื่องมือ 3 ตัวในกิจกรรมและตัวให้คะแนนเป็น <b>แบบจำลองของเล่น</b> (นับคำที่ตรงกัน) เพื่อสาธิตว่า
+      คำอธิบายขับการเลือกอย่างไร — ไม่ใช่กลไกการเลือก tool จริงของโมเดล ส่วน “ปิดไม่ลบ” และเครื่องมือรวบยอดอ้างอิงแนวปฏิบัติจริงของระบบเรา
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  AI Harness Engineering · บทที่ 04 · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/activities/rewrite-description.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

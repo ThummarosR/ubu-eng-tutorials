@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>15 — Orchestration &amp; บันไดความซับซ้อน | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div><div class="title">AI Harness</div><div class="subtitle">วิศวกรรมระบบ AI Agent</div></div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav></nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ 15 · Context · เชื่อถือ · สเกล · Orchestration</span>
+    <h1>Orchestration &amp; บันไดความซับซ้อน</h1>
+    <p class="lede">
+      บทเรียนที่ติดตัวกลับไปแน่ ๆ ของทั้งคอร์ส: <strong>เมื่อไหร่ที่ “ไม่ควรใช้ agent เลย”</strong>
+      single call → workflow → agent → multi-agent — ขึ้นบันไดทีละขั้น <em>เฉพาะเมื่อขั้นล่างพังให้เห็น ๆ</em>
+      ตัวอย่างนำ: ตัวหาห้องว่างที่จริง ๆ แล้วเป็นแค่ query ฐานข้อมูล ไม่ใช่ AI
+    </p>
+
+    <h2>พูดแบบเข้าใจง่าย</h2>
+    <p>บันไดมี 4 ขั้น — ยิ่งขึ้น ยิ่งทรงพลังแต่ยิ่งคาดเดายาก แพง และดีบักลำบาก:</p>
+    <ul>
+      <li><strong>1 · LLM call เดียว</strong> — prompt เข้า คำตอบออก ไม่มี tool ไม่มีลูป</li>
+      <li><strong>2 · workflow ตายตัว</strong> — โค้ด/cron ร้อยขั้นที่รู้ล่วงหน้า อาจเรียก LLM ที่ <em>หนึ่งขั้นที่รู้</em></li>
+      <li><strong>3 · agent เดี่ยว</strong> — LLM ในลูปที่เลือกเองว่าจะเรียก tool อะไรและหยุดเมื่อไร</li>
+      <li><strong>4 · multi-agent</strong> — หลาย agent ประสานกัน</li>
+    </ul>
+    <p>
+      <strong>คำถามชี้ขาด: “ระบุ control flow ล่วงหน้าได้ไหม”</strong> — ถ้าขั้นตอนและลำดับรู้ล่วงหน้า นั่นคือโค้ด (ขั้น 2)
+      แม้จะมีขั้นหนึ่งบังเอิญเรียกโมเดล · agent (ขั้น 3) คุ้มก็ต่อเมื่อเส้นทาง <em>เดาล่วงหน้าไม่ได้จริง ๆ</em> ·
+      multi-agent (ขั้น 4) คุ้มก็ต่อเมื่อ context หรือความเร็วของ agent เดียวเป็นคอขวด — และมัน <strong>กิน token ราว 15 เท่า</strong>
+      อิ่มตัวที่ราว ~4 ตัว และพังบ่อยเพราะการประสานงานระหว่าง agent
+    </p>
+    <p>
+      สำหรับ multi-agent: <strong>spawn prompt คือสัญญาทั้งหมด</strong>ระหว่างพ่อ→ลูก (subagent เริ่มด้วย context ว่างเปล่า เห็นแค่ข้อความที่ส่งให้) ·
+      แตกงานเมื่อ <em>อ่านหนัก + แยกชิ้นได้</em> แล้วค่อยรวบเป็นนักเขียนเดียว · อยู่ agent เดียวเมื่อ <em>เขียนหนัก + ต้องสอดคล้องกัน</em>
+    </p>
+
+    <div class="callout tip">
+      <strong>เปรียบเทียบ: เลือกพาหนะตามทริป</strong>
+      จักรยาน = LLM call เดียว (ฮอปสั้น ๆ) · รถบนเส้นทางประจำ = workflow (ทุกเลี้ยวรู้ล่วงหน้า ไม่ต้องมีนำทาง) ·
+      รถตู้มีคนขับ = agent เดี่ยว (บอกปลายทาง คนขับตัดสินใจแต่ละเลี้ยว — ใช้เมื่อเส้นทางไม่รู้ล่วงหน้า) ·
+      ขบวนรถตู้มี dispatcher = multi-agent (ทรงพลังแต่จ่ายหลายเงินเดือนและต้องแก้รถติดระหว่างคัน) ·
+      ไม่มีใครส่งขบวน 4 คันไปซื้อกาแฟแก้วเดียว และไม่มีใครสั่งจักรยานให้ “ข้ามประเทศ หาทางเอาเอง”
+    </div>
+
+    <h2>ในระบบของเรา — เลือกขั้นที่ต่ำสุดที่ทำงานได้</h2>
+    <table>
+      <thead><tr><th>งาน</th><th>ขั้นที่ใช้จริง</th><th>ทำไม</th></tr></thead>
+      <tbody>
+        <tr><td>ดึงค่าฝุ่น AQI ทุก 30 นาที</td><td><b>2 · workflow</b> (ไม่มี LLM)</td><td>ทุกขั้นรู้ล่วงหน้า — cron ก็พอ</td></tr>
+        <tr><td>ออโต้เกรดตามเวลา + แจ้งครู</td><td><b>2 + LLM กั้นหนึ่งขั้น</b></td><td>มีแค่ “ตรวจเรียงความ” ที่ไม่แน่นอน — กั้นไว้ขั้นเดียว</td></tr>
+        <tr><td>หาห้องว่างที่ลงตัว</td><td><b>code tool</b> (เลขคณิตช่วงเวลา)</td><td>เป็น set arithmetic ไม่ใช่การตัดสินใจ — ไม่ต้องมี LLM</td></tr>
+        <tr><td>กรอก+ส่ง TQF3 ผ่าน portal สด</td><td><b>3 · agent เดี่ยว</b></td><td>แต่ละขั้นขึ้นกับสิ่งที่ portal ตอบ — ระบุล่วงหน้าไม่ได้</td></tr>
+      </tbody>
+    </table>
+    <p>
+      หัวใจ: <strong>ของที่คนเรียกว่า “งานของ AI agent” ราว 70% จริง ๆ คือ SQL view / dashboard / tool ตายตัว</strong> —
+      AI คุ้มเฉพาะตอนต้อง <em>สังเคราะห์ · ใช้ภาษา · ตัดสินเชิงคุณภาพ</em> และมืออาชีพจะ “พิสูจน์ขั้นที่ง่ายกว่าก่อนเสมอ”
+      (การแตก subagent ~14 ตัวเพื่อสร้างเนื้อหาคู่มือนี้คือ fan-out ที่ถูกต้อง: อ่านหนัก แยกชิ้นได้ แล้วรวบเป็นเว็บเดียว)
+    </p>
+
+    <h2>ทำพลาด vs ทำถูก</h2>
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · over-engineer</div>
+        <div class="name">ฝูง agent ไปดึง AQI</div>
+        <div class="desc">
+          ทำ AQI ที่เป็น cron ง่าย ๆ ให้เป็น 4 agent ประสานกัน — ทุก tick จ่าย token หลายเท่า ช้าลง และ
+          “Validator” บางทีไปแก้ค่าจริงให้ “ดูสมเหตุสมผล” = สร้างข้อมูลผิดที่ขั้น 2 ไม่มีวันทำ
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · under-engineer (และแตกงานผิด)</div>
+        <div class="name">prompt เดียว “ทำ TQF3 ทั้งหมด”</div>
+        <div class="desc">
+          ขอ call เดียวให้ล็อกอิน portal กรอกทุกหมวดและส่ง — มันลงมือกับ portal สดไม่ได้ คืน “เสร็จแล้ว!” ที่มั่ว ·
+          และการแตกงาน “เขียนสอดคล้องกัน” ให้หลาย subagent = เข้าโซนพังเรื่องประสานงาน
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ ดี · เลือกขั้นให้ถูก</div>
+        <div class="name">ต่ำสุดที่ทำงานได้ + fan-out ถูกที่</div>
+        <div class="desc">
+          ระบุ control flow ได้ → เขียนเป็นโค้ด; เส้นทางไม่แน่นอนจริง → agent; อ่านหนัก/แยกชิ้นได้ → fan-out แล้วรวบเป็นนักเขียนเดียว
+          ขึ้นบันได <b>เฉพาะเมื่อขั้นล่างพังให้เห็น ๆ</b>
+        </div>
+      </div>
+    </div>
+
+    <h2>ลองเอง — วางงานบนบันไดให้ถูกขั้น</h2>
+    <div class="activity">
+      <div class="activity-head">
+        <div class="activity-kicker">กิจกรรม · คลิกจัดลงขั้น</div>
+        <div class="activity-title">Pick the Right Rung</div>
+        <div class="activity-desc">
+          วางงาน 5 อย่างลงบันได 4 ขั้น แล้วกดตรวจ — คุณจะรู้สึกทั้งสองด้านของความผิด:
+          over-engineer (AQI ขึ้นขั้น 4 แดง) และ under-engineer (TQF3 ลงขั้น 1 แดง) และมีงานที่ <b>ไม่ต้องใช้ LLM เลย</b>
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="activity-panel-label">คลิกเลือกการ์ด แล้วคลิกขั้น · ดูมิเตอร์ต้นทุน</div>
+        <div class="pick-the-rung"></div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>มองไปข้างหน้า — เลือกโครงถูกแล้ว แต่มัน “ได้ผลจริง” ไหม?</strong>
+      บทนี้ช่วยเลือกโครงสร้างที่เหมาะ แต่จะรู้ได้ยังไงว่า agent ที่สร้างมา <em>ตอบถูกจริง</em>?
+      บทที่ 16 ว่าด้วย <strong>การประเมินผล (evaluation)</strong>
+    </div>
+
+    <h2>สรุปบทที่ 15</h2>
+    <ul>
+      <li>บันได 4 ขั้น — ขึ้นทีละขั้น <strong>เฉพาะเมื่อขั้นล่างพังให้เห็น</strong></li>
+      <li>คำถามชี้ขาด: <strong>ระบุ control flow ล่วงหน้าได้ไหม</strong> → ถ้าได้ เขียนเป็นโค้ด</li>
+      <li>multi-agent กิน ~15× token อิ่มตัว ~4 ตัว · spawn prompt คือสัญญาทั้งหมด · fan-out เมื่ออ่านหนัก/แยกชิ้นได้</li>
+      <li>~70% ของ “งาน AI” จริง ๆ คือ SQL/dashboard/tool ตายตัว — <strong>พิสูจน์ขั้นที่ง่ายกว่าก่อนเสมอ</strong></li>
+    </ul>
+
+    <div class="callout note">
+      <strong>Harness Scorecard · มิติ: “เลือกขั้นที่ถูก ไม่ใช่ autonomy สูงสุด?”</strong>
+      ระบบเรา: ✅ <b>แข็ง</b> — เลือกขั้นต่ำสุดที่ทำงานได้อย่างมีวินัย (AQI=cron, slot-finder=code, TQF3=agent)
+      <br><br>
+      <strong>📋 build-your-harness checklist · บรรทัดที่ 14</strong>
+      “เลือกขั้นบันไดต่ำสุดที่ทำงานได้ · ขึ้นเฉพาะเมื่อขั้นล่างพัง · บางงานไม่ต้องใช้ LLM เลย”
+    </div>
+
+    <div class="pager">
+      <a href="ch14-security.html"><div class="label">← ก่อนหน้า</div><div class="title">14 — Security</div></a>
+      <a href="ch16-evaluation.html" class="next"><div class="label">ถัดไป</div><div class="title">16 — Evaluation</div></a>
+    </div>
+
+    <div class="illus-footer">
+      <b>หมายเหตุข้อมูล:</b> การจับคู่ “งาน → ขั้นบันได” อ้างอิงสถาปัตยกรรมจริงของระบบเรา (AQI puller, autograde scheduler, slot-finder, curriculum agent)
+      มิเตอร์ต้นทุนเป็นภาพเชิงสาธิต · ตัวเลข ~15× token / อิ่มตัว ~4 อ้างอิงงานวิจัย multi-agent ที่เผยแพร่
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">AI Harness Engineering · บทที่ 15 · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี</footer>
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/activities/pick-the-rung.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

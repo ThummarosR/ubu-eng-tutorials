@@ -1,0 +1,230 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>20 — Capstone | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div><div class="title">AI Harness</div><div class="subtitle">วิศวกรรมระบบ AI Agent</div></div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav></nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ 20 · พรมแดนถัดไป · Capstone</span>
+    <h1>Capstone — ออกแบบ Harness ของคุณเอง</h1>
+    <p class="lede">
+      ใช้ checklist ที่สะสมมาทั้งคอร์ส ออกแบบ harness ให้สถานการณ์ที่คุณเลือก — เลือกขั้นบันได เครื่องมือ การ์ดกั้น และ eval
+      <strong>ไม่ต้องเขียนโค้ด — เป็นดีไซน์ที่ปกป้องได้ต่อหน้าวิศวกรอาวุโส</strong> และก่อนอื่น มาเก็บบทเรียนสุดท้าย:
+      <strong>ลูปนั้นไม่ขึ้นกับ modality</strong> — เสียง ภาพ การสัมผัส เป็นแค่ของที่ “คลิป” ไว้ที่ขอบ
+    </p>
+
+    <h2>พูดแบบเข้าใจง่าย</h2>
+    <p>
+      harness คือลูปเล็ก ๆ: ยื่นข้อความ + รายการ tool ให้โมเดล → มันตอบหรือขอเรียก tool → รัน tool → ป้อนผลกลับ → วนจนตอบ
+      ลูปนี้ <strong>รู้จักแค่ข้อความกับการเรียก tool</strong> — มันไม่รู้ว่าข้อความมาจากคีย์บอร์ดหรือไมโครโฟน และไม่สนว่าคำตอบจะถูกพิมพ์ พูด หรือลิปซิงค์
+    </p>
+    <p>
+      ดังนั้น <strong>“multimodal” ไม่ใช่ลูปแบบใหม่</strong> แต่คือชิ้นส่วนที่คลิปไว้ที่ <em>ขอบ</em> ของลูป: STT ขาเข้า, TTS + avatar ขาออก,
+      และ RAG = <em>tool อีกตัว</em> ที่ลูปเรียกได้ · <strong>harness ขั้นต่ำที่ไว้ใจได้ = ลูป + tool + verify + trace + eval</strong>
+      ส่วน sense เป็นวงแหวนนอกที่ใส่เพิ่มทีหลังได้
+    </p>
+
+    <div class="callout tip">
+      <strong>เปรียบเทียบ: drivetrain ของรถ</strong>
+      เครื่องยนต์ + เกียร์ + พวงมาลัย = ลูป · กล้องถอยหลัง ไมค์สั่งงาน จอแดชบอร์ด = sense ที่บล็อกเข้ากับ <em>ขอบ</em>
+      คุณไม่เคยผ่าบล็อกเครื่องยนต์เพื่อใส่กล้องถอย — สเปก drivetrain ไม่เปลี่ยน sense คลิปที่ขอบ
+    </div>
+
+    <h2>ในระบบของเรา — sense 3 อย่างบนลูปเดียวที่ไม่เปลี่ยน</h2>
+    <div class="flow">
+      <div class="flow-node"><span class="fn-k">voice-in</span><span class="fn-t">เสียง → ข้อความ (เข้า query เดิม)</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node accent"><span class="fn-k">LOOP</span><span class="fn-t">ลูปเดิม: เรียก tool · verify · ตอบ</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">voice-out + avatar</span><span class="fn-t">ข้อความ → เสียง + ลิปซิงค์</span></div>
+    </div>
+    <p>
+      ในระบบจริง <strong>query เดียวกัน</strong> ให้บริการทั้งคำถามที่พิมพ์ พูด และที่มาทาง LINE — เสียง (STT บนเบราว์เซอร์ + TTS),
+      RAG, และ avatar ถูกแยกไว้ <em>นอก</em> ลูป เพื่อให้ลูปยังเป็น text-in/text-out, อยู่ในงบเวลา และนำกลับมาใช้ได้ทั้งบนเดสก์ท็อป LINE และการรันทดสอบเงียบ ๆ
+    </p>
+
+    <h2>ทำพลาด vs ทำถูก</h2>
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · เชื่อม sense เข้าไป “ใน” ลูป</div>
+        <div class="name">เอา TTS ไปไว้ในลูปที่จับเวลา</div>
+        <div class="desc">
+          ให้ลูปสังเคราะห์เสียงและรอเล่นจบ <em>ก่อน</em> คืนค่า — ลูปพึ่ง GPU, พังบนเซิร์ฟเวอร์ไร้ลำโพง,
+          และเวลาเล่นเสียงไปกินงบ timeout จนงานยาว ๆ หลุด — เท่ากับ “บัดกรี” modality ติดตายเข้ากับเครื่องยนต์
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · capstone ที่ไม่มี verify จริง + ไม่มี trace</div>
+        <div class="name">เชื่อ “เสร็จแล้ว” ของโมเดล</div>
+        <div class="desc">
+          ลูป + 2 tool ที่พิมพ์ SUCCESS เพราะโมเดลบอกว่าสร้างไฟล์/ส่งอีเมลแล้ว — ทั้งที่ไม่เคยเช็คว่าไฟล์มีจริง
+          ไม่มี trace ให้รู้ว่า tool ไหนรัน ไม่มี eval ให้รู้ว่าผลจริงไหม
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ ดี · sense ที่ขอบ + harness ขั้นต่ำ 5 ชิ้น</div>
+        <div class="name">ลูป + tool + verify + trace + eval</div>
+        <div class="desc">
+          STT/TTS/RAG คลิปที่ขอบ ลูปไม่เปลี่ยน; และของขั้นต่ำที่ทำให้ “เดโม” กลายเป็น “harness ที่ไว้ใจได้”
+          คือ verify จากสภาพแวดล้อม + trace ต่อการเรียก + eval หนึ่งตัวที่ยืนยันผลจริง
+        </div>
+      </div>
+    </div>
+
+    <h2>ลองเอง — คลิป sense เข้ากับลูป แล้วประกอบ harness ขั้นต่ำ</h2>
+    <div class="activity">
+      <div class="activity-head">
+        <div class="activity-kicker">กิจกรรม · คลิกเลือกชิป แล้วคลิกช่อง</div>
+        <div class="activity-title">Clip the Senses onto the Loop</div>
+        <div class="activity-desc">
+          คลิป harness parts (TOOL/VERIFY/TRACE/EVAL) และ sense (VOICE-IN/RAG/VOICE-OUT/AVATAR) เข้าช่องที่ใช่ —
+          ลองคลิป sense ใส่กล่อง LOOP ดู มัน <b>เข้าไม่ได้</b> เพราะลูปไม่ขึ้นกับ modality
+          พอ harness ขั้นต่ำครบ จะปลดล็อก <b>สเปก harness ของคุณ</b>
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="activity-panel-label">คลิกชิป → คลิกช่อง (sense จะ “เด้ง” ออกจาก LOOP)</div>
+        <div class="clip-the-senses"></div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>โจทย์ capstone ของคุณ</strong>
+      เลือกสถานการณ์จริงสักอัน (เช่น “ผู้ช่วยตอบคำถามคู่มือแล็บ” หรือ “ตัวช่วยร่างรายงานประเมิน”) แล้วเขียน <em>ดีไซน์</em> สั้น ๆ ตอบ:
+      (1) งานนี้อยู่ขั้นไหนของบันได — ต้องใช้ LLM จริงไหม? (2) tool อะไรบ้าง + คำอธิบายสั่งให้เลือกถูก? (3) บริบท/กติกาที่ต้องป้อน?
+      (4) การ์ดกั้นอะไรบนสิ่งที่ย้อนไม่ได้? (5) verify จากช่องทางไหน? (6) eval วัดยังไง? (7) คนอยู่ในลูปตรงไหน?
+      — ปกป้องดีไซน์นี้ได้ต่อหน้าวิศวกรอาวุโส โดยไม่ต้องมีโค้ดสักบรรทัด
+    </div>
+
+    <h2>ตัวอย่าง capstone ที่ตอบจนจบ — ใช้เป็นแม่แบบ</h2>
+    <p>
+      ก่อนคุณจะเขียนของตัวเอง นี่คือ <strong>7 คำถามข้างบนที่ตอบจนจบ</strong> ให้กับสถานการณ์จริงหนึ่งอันจาก fleet ของเรา —
+      <strong>“ผู้ช่วยอ่านงานในแล็บ” (แยก ‘ติดจริง’ ออกจาก ‘แค่ช้า’)</strong> จากระบบฟีดแบ็กงานในบทที่ 16
+      เป็นตัวอย่างที่ดีเพราะมันโชว์ชัดว่า <em>LLM ควรเข้าตรงไหน และ ‘ไม่ควร’ เข้าตรงไหน</em> ลอกโครงนี้ไปปรับกับโจทย์ของคุณได้เลย
+    </p>
+
+    <div class="callout info">
+      <strong>สถานการณ์:</strong> ระหว่างแล็บ 3 ชั่วโมง อาจารย์อยากรู้ — จากงานที่นักศึกษา “เพิ่งส่งตอนนี้” ที่เช็คพอยต์นี้
+      <em>ปัญหาเชิงแนวคิดร่วมคืออะไร ใครติดจริง (งานสับสน) กับใครแค่ช้า (งานถูกแต่ตามเวลาไม่ทัน)</em>
+      และช่วยร่างคอมเมนต์เชิงกระบวนการที่อาจารย์ตรวจก่อนส่ง — โดยมอนิเตอร์/คะแนน/CSV เดิม <strong>ยังทำงานเหมือนเดิมทุกอย่าง</strong>
+    </div>
+
+    <table>
+      <thead><tr><th style="width:31%">คำถาม capstone</th><th>คำตอบสำหรับ “ผู้ช่วยอ่านงานในแล็บ”</th></tr></thead>
+      <tbody>
+        <tr><td><b>1 · งานนี้อยู่ขั้นไหนของบันได — ต้องใช้ LLM จริงไหม?</b></td><td>
+          เกือบทั้งหมดอยู่ <b>ขั้น 0</b>: สถานะการ์ดสี (สาย/ตรงเวลา) · คะแนนรวม · CSV · และแม้แต่ <em>รายการคำถามนิรนาม</em>
+          ล้วนเป็นเลขคณิตของนาฬิกาและการนับ — ไม่แตะ LLM · LLM คุ้ม <b>จุดเดียว</b>: แยก “ติดจริง vs แค่ช้า” โดย
+          <b>อ่านเนื้องานที่ส่ง</b> — สิ่งที่ตัวนับเวลาทำไม่ได้เพราะมันไม่เคยอ่านเนื้องานเลย · เป็น agent แบบ
+          <b>เรียกครั้งเดียวตามสั่ง</b> ไม่ใช่ autonomous ไม่ตั้งเวลา</td></tr>
+        <tr><td><b>2 · tool อะไรบ้าง + คำอธิบายสั่งให้เลือกถูก?</b></td><td>
+          อ่านอย่างเดียว 3 ตัว: “เนื้องานทั้งเช็คพอยต์ + ชนิดไฟล์ (ภาพ/pdf/โค้ด) + สถานะที่คำนวณไว้แล้ว”,
+          “โจทย์/เกณฑ์ของเช็คพอยต์นั้น” (คำอธิบายสั่งให้ <em>ยึด ‘สิ่งที่ควรทำ’ จากเกณฑ์จริง ไม่ใช่เกณฑ์ที่แต่งเอง</em>),
+          และ “รายละเอียดงานหนึ่งชิ้น” (ดึงไฟล์เฉพาะตอนอาจารย์คลิกเปิด ไม่ดึงยกแผง) · มี tool ร่างคอมเมนต์ที่
+          <b>ไม่เขียนเอง</b> — แค่คืนร่างให้อาจารย์</td></tr>
+        <tr><td><b>3 · บริบท/กติกาที่ต้องป้อน?</b></td><td>
+          เล็กและจำกัดราย “เช็คพอยต์เดียว”: งาน ~15–30 ชิ้น + โจทย์ของเช็คพอยต์นั้นเป็นเกณฑ์ + ป้ายสถานะ ·
+          <b>ไม่ป้อน</b>: งานชิ้นอื่น สมุดคะแนนทั้งเล่ม ตัวตนของผู้ถามคำถาม (ถอดออกตั้งแต่ต้นทาง) หรือไฟล์เต็มถ้าไม่ได้เปิด ·
+          ใช้กรอบ plan→build→test→evaluate เป็น “เลนส์” ให้คอมเมนต์พูดภาษากระบวนการ</td></tr>
+        <tr><td><b>4 · การ์ดกั้นอะไรบนสิ่งที่ย้อนไม่ได้?</b></td><td>
+          อ่านเป็นหลักล้วน — เครื่องมือทุกตัว “อ่านอย่างเดียว” · การเปลี่ยนแปลงเดียวที่เกิดคือคอมเมนต์ที่
+          <b>อาจารย์กดอนุมัติ</b> แล้ว <em>ระบบเดิม</em> เป็นคนเขียน · agent <b>ไม่มีทาง</b>ให้คะแนน เปลี่ยนสถานะ หรือติดธงเลย
+          และช่องคำถามถูกถอดชื่อโดยโครงสร้าง (de-anonymize ไม่ได้)</td></tr>
+        <tr><td><b>5 · verify จากช่องทางไหน?</b></td><td>
+          ทุกข้อสรุปต้อง <b>อ้างเนื้องานจริง</b>ที่วางไว้ข้าง ๆ ให้อาจารย์ค้านได้ในแวบเดียว · อนุญาตให้ตอบ
+          “ไม่มีรูปแบบร่วมชัดเจน” แทนการแต่งขึ้น · และถ้าขัดกับตัวนับเวลา (“สายตามนาฬิกาแต่งานดูครบ — อาจส่งมีปัญหา”)
+          ให้ <b>รายงานเป็นสัญญาณ ไม่ใช่ไปแก้สถานะ</b> · มอนิเตอร์ deterministic ยังเป็น “ความจริงตั้งต้น”</td></tr>
+        <tr><td><b>6 · eval วัดยังไง?</b></td><td>
+          ชุด fixture ออฟไลน์: ตรึง “ตัวอย่างเนื้องาน → ผลสรุปที่คาดหวัง” รวมเคส <b>“ไม่มีรูปแบบร่วม”</b> ไว้ด้วย
+          เพื่อกันการถดถอยเมื่อเปลี่ยน prompt/โมเดล · สัญญาณคุณภาพสด = อัตราที่อาจารย์ <b>อนุมัติ/แก้/ทิ้ง</b>ร่างคอมเมนต์</td></tr>
+        <tr><td><b>7 · คนอยู่ในลูปตรงไหน?</b></td><td>
+          อาจารย์เป็นคน <b>กดเรียก</b> (ปุ่ม “อ่านเช็คพอยต์นี้” / “ร่างคอมเมนต์” — ไม่ออโต้ ไม่เด้งเองตอนมีงานส่ง),
+          อ่านทุกข้อที่มีหลักฐานอ้าง, แล้ว <b>แก้+อนุมัติ</b>ทุกคอมเมนต์ก่อนถึงนักศึกษา · agent “เสนอ” เท่านั้น
+          คนกับระบบเดิมเป็นคน “ตัดสิน” — เน้นกระบวนการ ไม่ใช่จับผิด</td></tr>
+      </tbody>
+    </table>
+
+    <div class="callout tip">
+      <strong>ทำไมตัวอย่างนี้ถึง “ปกป้องได้”</strong>
+      มันไม่ได้ตอบว่า “ใส่ AI ตรงไหนได้บ้าง” แต่ตอบว่า <em>“ตรงไหนที่ query ทำแทนไม่ได้จริง ๆ”</em>
+      (= แยกติด/ช้าจากเนื้องาน) แล้วล้อมจุดนั้นด้วย verify ที่อ้างหลักฐาน · การ์ดกั้นการเขียน · และคนกดอนุมัติทุกครั้ง —
+      นี่คือ <strong>รูปร่างของคำตอบที่วิศวกรอาวุโสจะเชื่อ</strong> และเป็นโครงเดียวกับที่คุณจะตอบให้โจทย์ของตัวเอง
+    </div>
+
+    <p class="muted" style="font-size:13.5px">
+      อยากเทียบกับระบบอื่นทั้ง fleet — ว่าแต่ละระบบ LLM คุ้มตรงไหน อ่อน/แข็งมิติไหน — ดูได้ที่
+      <a href="gallery.html">🗂️ Fleet Gallery</a> (สรุปรวม 5 ระบบเทียบกันทีละมิติ)
+    </p>
+
+    <h2>สรุปบทที่ 20 — และทั้งคอร์ส</h2>
+    <ul>
+      <li>ลูป agent <strong>ไม่ขึ้นกับ modality</strong> — sense คลิปที่ขอบ ไม่ใช่ในลูป</li>
+      <li><strong>harness ขั้นต่ำที่ไว้ใจได้ = ลูป + tool + verify + trace + eval</strong> sense เป็นของเสริม</li>
+      <li>ความน่าเชื่อถือเป็นสิ่งที่ <strong>ออกแบบ ไม่ใช่ซื้อ</strong> — โมเดลตัวเดิม harness ดี = ของที่ไว้ใจได้</li>
+      <li><strong>พิสูจน์ขั้น deterministic ก่อนเสมอ</strong> — LLM คุ้มเฉพาะการสังเคราะห์ ภาษา และการตัดสินเชิงคุณภาพ</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>🎓 build-your-harness checklist — ครบสมบูรณ์</strong>
+      18 บรรทัดที่เราสะสมมาตั้งแต่บทที่ 01 <em>คือ</em> สเปก harness ของคุณ — <strong>ฉบับเต็มอยู่ด้านล่างนี้</strong>
+      (คลิกหมายเลขเพื่อติ๊กไว้ขณะออกแบบของคุณเอง) · นี่คือสิ่งที่ติดตัวกลับไป — ไม่ใช่โค้ด แต่เป็น <strong>วิธีคิดแบบวิศวกร harness</strong>
+    </div>
+
+    <h2>📋 build-your-harness checklist — ฉบับเต็ม 18 บรรทัด</h2>
+    <p class="muted" style="margin-top:-6px">18 บรรทัดสะสมจากบท 01–19 (บท 10 เป็นบทสรุปแกนกลาง จึงไม่เพิ่มบรรทัดใหม่) · ไล่ตอบให้ครบ = สเปก harness ที่ปกป้องได้ · คลิกเลขเพื่อติ๊กว่าทำแล้ว</p>
+    <ol class="steps">
+      <li><strong>1 · ใบประกาศงาน <span class="pill">บท 01</span></strong> คำถามที่เกิดซ้ำ + ข้อมูลที่เรามีอยู่แล้ว + ต้นทุนของคำตอบผิด</li>
+      <li><strong>2 · แยกงาน script ออกจากงานภาษา <span class="pill">บท 02</span></strong> งานที่ขั้นตอนตายตัวเขียนเป็น script (ไม่ใช้ LLM) แยกจากงานที่ต้องใช้ภาษายืดหยุ่น</li>
+      <li><strong>3 · ลูปที่มี verify จากของจริง <span class="pill">บท 03</span></strong> เชื่อโลกจริง ไม่เชื่อคำว่า “เสร็จแล้ว” ของโมเดล</li>
+      <li><strong>4 · เครื่องมือที่คัดมาแล้ว <span class="pill">บท 04</span></strong> คำอธิบายบอกชัดว่าเมื่อไรควร/ไม่ควรใช้ + error ที่บอกวิธีแก้ตัว</li>
+      <li><strong>5 · บริบทที่ถูกต้อง <span class="pill">บท 05</span></strong> ตัวตน + กติกา/ค่าคงที่ที่เกี่ยวข้อง — เล็กแต่ตรงประเด็น</li>
+      <li><strong>6 · memory: ชั่วคราว vs ต้องคงอยู่ <span class="pill">บท 06</span></strong> ตัดสินทีละข้อ — ของที่ต้องคงอยู่เขียนลง external memory / แหล่งความจริง</li>
+      <li><strong>7 · grounding + gate <span class="pill">บท 07</span></strong> grounding + schema-first + verify จากช่องทางอิสระ + gate การกระทำที่ย้อนไม่ได้</li>
+      <li><strong>8 · permissions + HITL gate <span class="pill">บท 08</span></strong> deny-by-default allow-list + least privilege + คนกดยืนยันบนทุกการกระทำที่ย้อนไม่ได้</li>
+      <li><strong>9 · เพดานลูป + trace <span class="pill">บท 09</span></strong> max turns + timeout + trace ต่อคำขอที่มี trace_id · parent · intent</li>
+      <li><strong>10 · ทำการเข้าถึงให้เป็นมาตรฐาน (MCP) <span class="pill">บท 11</span></strong> เลือกชนิดให้ถูก: tools (โมเดลคุม) · resources (แอปแนบ) · prompts (ผู้ใช้เลือก)</li>
+      <li><strong>11 · แพ็กขั้นตอนซ้ำเป็น Skill <span class="pill">บท 12</span></strong> progressive disclosure + กัน definitions/ผลลัพธ์ออกจาก context</li>
+      <li><strong>12 · context เล็กสุด-สัญญาณแรงสุด <span class="pill">บท 13</span></strong> schema-first · ดึง just-in-time · สรุปก่อน · วางของสำคัญไว้ต้น/ท้าย</li>
+      <li><strong>13 · เนื้อหาภายนอก = ไม่น่าเชื่อถือ <span class="pill">บท 14</span></strong> ตัดขา trifecta อย่างน้อยหนึ่งขาให้เหลือศูนย์ · อย่าเพิ่ม exfil ให้ agent ที่ปรึกษา</li>
+      <li><strong>14 · เลือกขั้นบันไดต่ำสุดที่ทำงานได้ <span class="pill">บท 15</span></strong> ขึ้นเฉพาะเมื่อขั้นล่างพัง · บางงานไม่ต้องใช้ LLM เลย</li>
+      <li><strong>15 · ชุด eval ส่วนตัว <span class="pill">บท 16</span></strong> ~50 เคสจากงานจริง · ให้คะแนน 3 ระดับ · สอบเทียบ LLM-as-judge ก่อนใช้</li>
+      <li><strong>16 · วาง harness เป็นชั้น advisory บน fleet <span class="pill">บท 17</span></strong> cockpit ศูนย์ LLM เป็นคนคัด/อนุมัติ/มองเห็น/กำกับ · เลือก tradeoff ให้เหมาะบริบท</li>
+      <li><strong>17 · เมื่อ act เป็นกายภาพ <span class="pill">บท 18</span></strong> safety envelope จากเซนเซอร์จริง · teleop fallback · verify จากเซนเซอร์ ไม่ใช่ความมั่นใจของ policy</li>
+      <li><strong>18 · จับคู่ autonomy กับความเสี่ยง <span class="pill">บท 19</span></strong> control handoff + สัญญาณให้คนรู้ว่าเมื่อไรควรแทรก · ปรับ trust ให้ไม่เกินไม่ขาด</li>
+    </ol>
+
+    <div class="pager">
+      <a href="ch19-human-integration.html"><div class="label">← ก่อนหน้า</div><div class="title">19 — Human Integration</div></a>
+      <a href="gallery.html" class="next"><div class="label">สรุปรวม</div><div class="title">🗂️ Fleet Gallery</div></a>
+    </div>
+
+    <div class="illus-footer">
+      <b>หมายเหตุข้อมูล:</b> สเปกในกิจกรรมคือ checklist เชิงดีไซน์ (ไม่ใช่โค้ดที่รันได้) ตามหลักของคอร์ส
+      การแยก STT/TTS/RAG/avatar ออกนอกลูป และ “query เดียวเสิร์ฟพิมพ์/พูด/LINE” อ้างอิงพฤติกรรมจริงของระบบเรา
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">AI Harness Engineering · บทที่ 20 · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี</footer>
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/activities/clip-the-senses.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

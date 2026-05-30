@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>18 — Physical AI | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div><div class="title">AI Harness</div><div class="subtitle">วิศวกรรมระบบ AI Agent</div></div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav></nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ 18 · พรมแดนถัดไป · Physical AI</span>
+    <h1>Physical AI — เมื่อ “มือ” คือหุ่นยนต์จริง</h1>
+    <p class="lede">
+      harness ชุดเดิมยังใช้ได้เมื่อ “มือ” ของ agent เป็นหุ่นยนต์จริง — แต่ลูป <em>perceive → policy → act</em>
+      ตอนนี้ลงมือในโลกกายภาพที่ <strong>ย้อนกลับไม่ได้</strong> บทนี้: vision-language-action (VLA) models,
+      <strong>safety envelope</strong>, และ teleoperation fallback — และทำไม <em>Permissions</em> กับ <em>Verify</em> ยิ่งคอขาดบาดตาย
+    </p>
+
+    <h2>พูดแบบเข้าใจง่าย</h2>
+    <p>
+      ลูปยังเหมือนเดิม (gather → act → verify → repeat) เปลี่ยนแค่ <strong>act = การเคลื่อนไหวจริง</strong>
+      ปี 2025–2026 หัวใจของหุ่นยนต์อัจฉริยะคือ <strong>VLA models</strong> ที่รวม <em>การมองเห็น + ภาษา + การกระทำ</em>
+      ไว้ในโมเดลเดียว (perceive → reason → act) เรียนรู้ policy ที่ปรับตัวกับสถานการณ์ใหม่ได้
+    </p>
+    <p>ของใหม่ที่ harness ต้องเพิ่มเมื่อมือเป็นของจริง:</p>
+    <ul>
+      <li><strong>Safety envelope</strong> — ขีดจำกัด <em>แข็ง</em> ที่ตรวจ <em>ก่อน</em> act และตรวจจาก <strong>เซนเซอร์จริง</strong> ไม่ใช่ความมั่นใจของ policy (เช่น “ห้ามขยับถ้ามีคนในระยะ X”)</li>
+      <li><strong>Teleoperation fallback</strong> — เมื่อไม่มั่นใจหรือ envelope สะดุด → <em>หยุดแล้วยกให้มนุษย์คุม</em></li>
+      <li><strong>Verify = เซนเซอร์จริง</strong> — ไม่ใช่คำว่า “เสร็จแล้ว” ของ policy · <strong>Permissions = ขีดจำกัดทางกายภาพ</strong></li>
+    </ul>
+    <p>เหตุผลที่ทุกอย่างเข้มขึ้น: <strong>ในโลกกายภาพ ไม่มีปุ่ม undo</strong> — ความผิดพลาดของ policy กลายเป็นการชนจริง</p>
+
+    <div class="callout tip">
+      <strong>เปรียบเทียบ: นักบินกับ envelope ของเครื่องบิน</strong>
+      เครื่องบินสมัยใหม่มี “flight envelope protection” — ต่อให้นักบิน (หรือ autopilot) สั่งท่าที่เกินขีดจำกัดโครงสร้าง ระบบก็ปฏิเสธ
+      VLA = นักบินอัตโนมัติที่เก่งขึ้น · safety envelope = การป้องกัน envelope ที่ตรวจจากเซนเซอร์จริง · teleop = นักบินมนุษย์ที่พร้อมเทกโอเวอร์
+      สิ่งที่เปลี่ยนคือ ถ้าพลาด มันไม่ใช่ข้อความผิดบนจอ แต่คือเครื่องตกจริง
+    </div>
+
+    <h2>ในระบบของเรา — ผู้ช่วยจัดการแล็บกลายเป็นหุ่นตรวจม้านั่งแล็บ</h2>
+    <div class="flow">
+      <div class="flow-node"><span class="fn-k">perceive</span><span class="fn-t">กล้องเห็นเครื่องมือ/คนในเขต</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node accent"><span class="fn-k">policy (VLA)</span><span class="fn-t">วางแผนการเคลื่อนไหว</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node guard"><span class="fn-k">envelope</span><span class="fn-t">เช็คขีดจำกัดจากเซนเซอร์ก่อนลงมือ</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">act / teleop</span><span class="fn-t">ลงมือ หรือยกให้คนถ้าสะดุด</span></div>
+    </div>
+    <p>
+      ลูปนี้คือลูปเดียวกับที่เราสร้างมาตั้งแต่บทที่ 03 ทุกบทเรียนยังใช้: grounding (เซนเซอร์จริง), permissions (envelope),
+      verify (ตรวจผลจริง ไม่ใช่คำพูดของ policy), การคุมลูป, observability — เพียงแต่ <strong>เดิมพันสูงขึ้นมาก</strong>
+      เพราะความผิดพลาดเกิดในวัตถุจริง
+    </p>
+
+    <h2>ทำพลาด vs ทำถูก</h2>
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · เชื่อความมั่นใจของ policy</div>
+        <div class="name">ไม่มี safety envelope</div>
+        <div class="desc">
+          ให้ VLA สั่งแขนกลตามแผนของมันเองโดยไม่มีขีดจำกัดแข็ง — policy ที่ “มั่นใจแต่ผิด” กลายเป็นการชนคนจริง
+          (เหมือนบทที่ 03/07: self-report ไม่ใช่ verify — แต่คราวนี้ราคาคือร่างกาย)
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · “ทดสอบใน sim ผ่านแล้วก็พอ”</div>
+        <div class="name">sim ≠ โลกจริง</div>
+        <div class="desc">
+          sim เป็นเครื่องมือที่ดี แต่ไม่ใช่ขอบเขตความปลอดภัย — เซนเซอร์จริง แสง ฝุ่น คนที่เดินเข้ามากะทันหัน
+          ไม่เคยอยู่ใน sim ครบ envelope ต้องตรวจจาก <b>เซนเซอร์ตอนรันจริง</b>
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ ดี · envelope + teleop + verify จากเซนเซอร์</div>
+        <div class="name">กันชนหลายชั้นในโลกจริง</div>
+        <div class="desc">
+          ขีดจำกัดแข็งตรวจก่อน act, ยกให้คนเมื่อไม่มั่นใจ, และยืนยันผลจากเซนเซอร์จริง — Permissions/Verify
+          ที่เราสร้างมาทั้งคอร์ส กลายเป็นเรื่องคอขาดบาดตายเมื่อ undo หายไป
+        </div>
+      </div>
+    </div>
+
+    <h2>ลองเอง — safety envelope</h2>
+    <div class="activity">
+      <div class="activity-head">
+        <div class="activity-kicker">กิจกรรม · กดสลับแล้วดูผล</div>
+        <div class="activity-title">Safety Envelope</div>
+        <div class="activity-desc">
+          หุ่นกำลังจะหยิบเครื่องมือ แล้วมีคนเดินเข้าเขตกะทันหัน ลองเปิด/ปิด <b>safety envelope</b> และ <b>teleop fallback</b>
+          แล้วดูว่าผลในโลกจริงต่างกันแค่ไหน
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="activity-panel-label">สลับสวิตช์แล้วดู pipeline perceive→policy→act</div>
+        <div class="safety-envelope"></div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>มองไปข้างหน้า — เมื่อ agent ลงมือในโลก คนต้องอยู่ตรงไหน?</strong>
+      ยิ่ง agent ทำเองได้มาก ความสัมพันธ์กับมนุษย์ยิ่งสำคัญ บทที่ 19 ว่าด้วย <strong>Human Integration</strong>:
+      in-the-loop vs on-the-loop · shared autonomy · การปรับความเชื่อใจให้พอดี
+    </div>
+
+    <h2>สรุปบทที่ 18</h2>
+    <ul>
+      <li>ลูปเดิม (perceive→policy→act) แต่ <strong>act = การเคลื่อนไหวจริงที่ย้อนไม่ได้</strong></li>
+      <li><strong>VLA models</strong> รวมการมองเห็น+ภาษา+การกระทำไว้ในโมเดลเดียว</li>
+      <li>เพิ่ม <strong>safety envelope</strong> (ขีดจำกัดแข็งจากเซนเซอร์จริง) + <strong>teleop fallback</strong></li>
+      <li><strong>Permissions &amp; Verify ยิ่งคอขาดบาดตาย</strong> เมื่อความผิดพลาดเกิดในโลกกายภาพ</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>Harness Scorecard · มิติ (มองไปข้างหน้า): “มี safety envelope + teleop + verify จากเซนเซอร์ไหม?”</strong>
+      <br><br>
+      <strong>📋 build-your-harness checklist · บรรทัดที่ 17</strong>
+      “เมื่อ act เป็นกายภาพ: safety envelope จากเซนเซอร์จริง · teleop fallback · verify จากเซนเซอร์ ไม่ใช่ความมั่นใจของ policy”
+    </div>
+
+    <div class="pager">
+      <a href="ch17-cockpit-fleet.html"><div class="label">← ก่อนหน้า</div><div class="title">17 — Cockpit &amp; Fleet</div></a>
+      <a href="ch19-human-integration.html" class="next"><div class="label">ถัดไป</div><div class="title">19 — Human Integration</div></a>
+    </div>
+
+    <div class="illus-footer">
+      <b>หมายเหตุข้อมูล:</b> เนื้อหา VLA / safety envelope / teleop อ้างอิงสถานะของสาขา embodied AI ปี 2025–2026 (ดู
+      <a href="references.html">เอกสารอ้างอิง</a>) · สถานการณ์ “หุ่นตรวจม้านั่งแล็บ” เป็น <b>ตัวอย่างเชิงสาธิต</b> ที่ต่อยอดจากผู้ช่วยจัดการแล็บ ไม่ใช่ระบบที่ติดตั้งจริง
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">AI Harness Engineering · บทที่ 18 · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี</footer>
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/activities/safety-envelope.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>12 — Skills &amp; Tool Surface | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div>
+        <div class="title">AI Harness</div>
+        <div class="subtitle">วิศวกรรมระบบ AI Agent</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav></nav>
+  </aside>
+
+  <main class="content">
+
+    <span class="eyebrow">บทที่ 12 · เชื่อมกับโลก · Skills &amp; a Lean Tool Surface</span>
+    <h1>Skills &amp; พื้นผิว Tool ที่เบา</h1>
+    <p class="lede">
+      ผู้ช่วยเริ่มทำงานซ้ำ ๆ ที่มีขั้นตอนยุ่บยั่บ (เช่น “บรีฟงานแล็บประจำเช้า”) และต้องรับมือ tool จำนวนมากขึ้น
+      บทนี้สองเรื่องคู่กัน: <strong>Skills</strong> — แพ็ก “วิธีทำ” เป็นก้อนพกพาได้ และ
+      <strong>การคุมพื้นผิว tool</strong> — กัน definitions และผลลัพธ์ออกจาก context เมื่อจำนวน tool โตขึ้น
+    </p>
+
+    <h2>พูดแบบเข้าใจง่าย</h2>
+    <p>
+      <strong>Skill</strong> คือโฟลเดอร์ที่มีไฟล์ SKILL.md — มีแค่ <em>name + description</em> กับเนื้อหาขั้นตอน และสคริปต์แนบ
+      โหลดแบบ <strong>progressive disclosure</strong> 3 ขั้น: ตอนว่างมีแค่ชื่อ+คำอธิบาย (ไม่กี่ร้อย token) →
+      โหลด body เมื่อ <em>งานตรงกับมัน</em> → สคริปต์แนบถูก <em>“รัน”</em> ไม่ใช่อ่านเข้า context
+    </p>
+    <p>
+      ภาพที่แยก Skill ออกจาก MCP tool: <strong>MCP ยื่น “ค้อน” (สิทธิ์เข้าถึงการกระทำ) ส่วน Skill สอน “วิธีตอกตะปู”</strong> (ลำดับขั้นที่ถูกต้อง)
+      และเพราะมันเป็นโฟลเดอร์ในตัว มันจึง <em>พกพาได้</em> — ก๊อปไปโปรเจกต์อื่นได้เลย
+    </p>
+    <p>
+      ส่วน <strong>พื้นผิว tool ที่เบา</strong>: ทุก tool ที่เปิดไว้จะส่ง <em>คำนิยามเต็ม</em> (ชื่อ+คำอธิบาย+schema) เข้า context
+      <strong>ทุกเทิร์น</strong> ก่อนอ่านคำถามด้วยซ้ำ — ราว ~1K token ต่อตัว และ <em>ผลลัพธ์</em> ที่เทอะทะก็ค้างในบทสนทนาแล้วถูกส่งซ้ำไปเรื่อย ๆ
+      ทางแก้ไม่ใช่ “ตัดฟีเจอร์” แต่คือ (1) <strong>ส่งแค่ชื่อ ดึง schema ตอนต้องใช้</strong> และ (2) <strong>ให้โค้ดกรองผลใน sandbox ก่อน</strong>
+      (มีเคสจริงลดจาก ~150K เหลือ ~2K token)
+    </p>
+
+    <div class="callout note">
+      <strong>ตัวเลขหลักของระบบเรา: เปิดใช้งาน 56 จาก 96 tool</strong> (ตรวจจากแค็ตตาล็อกจริง 2026-05-29)
+      ทุกเทิร์น คำนิยามของ 56 ตัวถูกส่งเข้า context ก่อนเริ่มงาน — นี่คือ “ภาษีต่อรอบ” ที่จ่ายไม่ว่าจะใช้ tool หรือไม่
+      <em>(เอกสารสถาปัตยกรรมรุ่นก่อนอ้างเลข “41/85” ซึ่งเป็นการนับคนละระดับ — เลขมาตรฐานที่ยึดคือ 56/96)</em>
+    </div>
+
+    <div class="callout tip">
+      <strong>เปรียบเทียบ: การ์ดขั้นตอนฉุกเฉินในกระเป๋าเบาะ vs สลักไว้บนแว่นทุกคน</strong>
+      การ์ดในกระเป๋าเบาะ = Skill: เห็นชื่อบนสันการ์ดได้ตลอด (idle) ดึงออกมาอ่านเฉพาะตอนฉุกเฉินจริง (โหลด body)
+      และหน้ากากออกซิเจนที่มันบอกให้ดึงคืออุปกรณ์ที่ใช้ ไม่ใช่ข้อความให้อ่านซ้ำ (สคริปต์ถูกรัน) · ส่งต่อให้คนเครื่องอื่นได้ (พกพา)
+      ส่วนการสลักขั้นตอนบนแว่นทุกคน = ฝังไว้ใน system prompt: ทุกคนอ่านทุกวินาทีไม่ว่าจะฉุกเฉินหรือไม่ และเอาออกไม่ได้
+    </div>
+
+    <h2>ในระบบของเรา — Skill แยก “วิธีทำ” ออกจาก “สิทธิ์เข้าถึง”</h2>
+    <div class="flow">
+      <div class="flow-node"><span class="fn-k">idle</span><span class="fn-t">มีแค่ name+description (~370 tok)</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node accent"><span class="fn-k">trigger</span><span class="fn-t">งานตรงคำ → โหลด body (ขั้นตอนเต็ม)</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node"><span class="fn-k">tools</span><span class="fn-t">การเขียนจริงไปผ่าน tool แยก (ค้อน)</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node guard"><span class="fn-k">script</span><span class="fn-t">สคริปต์แนบถูก “รัน” ไม่อ่านเข้า context</span></div>
+    </div>
+    <p>
+      ระบบเรามี Skill จัดการหลักสูตร (TQF3) ที่เก็บ <strong>ขั้นตอนยุ่บยั่บ</strong> ไว้ (เช่น “หมวด 2 ต้องเซฟสองรอบ ไม่งั้น PDF ว่าง”) —
+      ตอนว่างจ่ายแค่ไม่กี่ร้อย token พอผู้ใช้พิมพ์ตรงคำถึงโหลดเนื้อเต็ม ส่วนการเขียนจริงไปผ่าน tool แยกต่างหาก
+      ตรงข้ามกับการ <em>ฝังขั้นตอนซ้ำ ๆ ไว้ใน system prompt</em> ซึ่งจ่าย token เต็มทุกเทิร์นแม้ผู้ใช้แค่ทักทาย และ <em>พกไปที่อื่นไม่ได้</em>
+    </p>
+    <p>
+      เรื่องพื้นผิว tool: <strong>สภาพแวดล้อมที่คุณกำลังอ่านคู่มือนี้อยู่</strong> ใช้ deferred discovery — มี tool จำนวนมากที่ส่งมาแค่ “ชื่อ”
+      แล้วดึง schema เต็มตอนจะใช้จริง ส่วนระบบของเรายัง <strong>ส่งคำนิยามครบ 56 ตัวทุกเทิร์น</strong> (always-on) — เป็นมิติที่ยังปรับให้เบาได้
+    </p>
+
+    <h2>ทำพลาด vs ทำถูก</h2>
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · ฝังขั้นตอนซ้ำใน system prompt</div>
+        <div class="name">จ่ายภาษีทุกเทิร์น + พกไม่ได้</div>
+        <div class="desc">
+          เอา “วิธีทำ” ที่ใช้ซ้ำ ๆ ไปยัดใน system prompt — มันถูกส่งเข้า context ทุกเทิร์นแม้ไม่เกี่ยว
+          และก๊อปไปใช้ที่อื่นไม่ได้ ทั้งที่ถ้าเป็น Skill จะจ่ายเกือบศูนย์จนกว่างานจะ trigger
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · ท่อง tool ทั้งหมด + ผลดิบท่วม context</div>
+        <div class="name">ภาษีคงที่ + ผลสะสม</div>
+        <div class="desc">
+          definitions ของ tool ทุกตัวถูกส่งทุกเทิร์น (ภาษีคงที่) และผลลัพธ์เทอะทะก้อนเดียว (เช่น dump ปฏิทินทั้งเดือน)
+          ค้างในบทสนทนาแล้วถูกส่งซ้ำตลอด (ภาษีสะสม)
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ ดี · Skill + deferred discovery + กรองใน sandbox</div>
+        <div class="name">ความสามารถเท่าเดิม ต้นทุนหด</div>
+        <div class="desc">
+          Skill โหลด body เฉพาะตอน trigger; ส่ง “ชื่อ tool” แล้วดึง schema ตอนใช้; ให้โค้ดกรองผลใน sandbox
+          เหลือแต่คำตอบเข้ามา (150K→2K) — <b>ไม่ได้ลบ tool สักตัว</b> แค่ไม่ให้มัน “อยู่” ใน window
+        </div>
+      </div>
+    </div>
+
+    <h2>ลองเอง — มิเตอร์ภาษี context</h2>
+    <div class="activity">
+      <div class="activity-head">
+        <div class="activity-kicker">กิจกรรม · เลื่อนสไลเดอร์ + สลับโหมด</div>
+        <div class="activity-title">Context Tax Meter</div>
+        <div class="activity-desc">
+          เลื่อนจำนวน tool ที่เปิด แล้วดู “ภาษีต่อรอบ” พุ่ง จากนั้นสลับ “ส่งเฉพาะชื่อ” และ “กรองใน sandbox”
+          แล้วกด “รันงาน” — ดูต้นทุนหดทั้งที่ <b>จำนวน tool ยังเท่าเดิม</b> และเลื่อนสเตจ Skill ดู progressive disclosure
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="activity-panel-label">ปรับสไลเดอร์ · สลับโหมด · รันงาน · เลื่อนสเตจ Skill</div>
+        <div class="token-meter"></div>
+      </div>
+    </div>
+
+    <div class="callout info">
+      <strong>มองไปข้างหน้า — เข้าสู่ “เรื่องยาก”</strong>
+      เรามาตรฐานการเข้าถึงและทำพื้นผิวให้เบาแล้ว ส่วนที่ 4 คือหัวข้อที่ทำให้ของ “ดี ปลอดภัย และพิสูจน์ได้ว่าถูก”:
+      <em>context engineering · security · บันไดความซับซ้อน · การประเมินผล</em>
+    </div>
+
+    <h2>สรุปบทที่ 12</h2>
+    <ul>
+      <li><strong>Skill = วิธีทำที่พกพาได้</strong> โหลดแบบ progressive disclosure (ชื่อ→body→รันสคริปต์) · MCP = สิทธิ์เข้าถึง, Skill = ขั้นตอน</li>
+      <li>ทุก tool ที่เปิด = <strong>ภาษีต่อรอบ</strong> (~1K/ตัว ทุกเทิร์น) · ผลดิบเทอะทะ = ภาษีสะสม</li>
+      <li>แก้ด้วย <strong>deferred discovery</strong> (ส่งชื่อ ดึง schema ตอนใช้) + <strong>กรองใน sandbox</strong> (150K→2K) ไม่ใช่ตัดฟีเจอร์</li>
+      <li>เลขมาตรฐานของระบบเรา: <strong>56/96</strong> เปิดใช้งาน · ยัง always-on (ปรับให้เบาได้)</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>Harness Scorecard · มิติ: “พื้นผิว tool เบา + แพ็กขั้นตอนเป็น Skill ไหม?”</strong>
+      ระบบเรา: Skill ✅ (เช่น TQF3) · พื้นผิว tool ⚠️ — ยังส่งครบ 56 ตัวทุกเทิร์น (always-on) ปรับให้เบาได้
+      <br><br>
+      <strong>📋 build-your-harness checklist · บรรทัดที่ 11</strong>
+      “แพ็กขั้นตอนซ้ำ ๆ เป็น Skill (progressive disclosure) + กัน definitions/ผลลัพธ์ออกจาก context”
+    </div>
+
+    <div class="pager">
+      <a href="ch11-mcp.html"><div class="label">← ก่อนหน้า</div><div class="title">11 — MCP</div></a>
+      <a href="ch13-context-engineering.html" class="next"><div class="label">ถัดไป</div><div class="title">13 — Context Engineering</div></a>
+    </div>
+
+    <div class="illus-footer">
+      <b>หมายเหตุข้อมูล:</b> ตัวเลข 56/96, ~370/~11,600 token (Skill), และ 150K→2K เป็นค่าจริง/อ้างอิงเคสจริงตามที่ระบุ
+      ส่วนค่าในมิเตอร์ (เช่น ~350 tok/tool) เป็น <b>ค่าโดยประมาณเชิงสาธิต</b> เพื่อให้เห็นรูปของ “ภาษีต่อรอบ” ไม่ใช่การวัด token เป๊ะ
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  AI Harness Engineering · บทที่ 12 · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/activities/token-meter.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>

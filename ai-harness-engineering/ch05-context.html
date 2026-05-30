@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>05 — Context — สิ่งที่ต้องรู้ | AI Harness Engineering</title>
+<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="css/activities.css">
+</head>
+<body>
+<div class="layout">
+  <aside class="sidebar">
+    <a href="index.html" class="brand" style="text-decoration:none;color:inherit">
+      <img class="logo" src="logo.png" alt="AI Harness logo">
+      <div>
+        <div class="title">AI Harness</div>
+        <div class="subtitle">วิศวกรรมระบบ AI Agent</div>
+      </div>
+    </a>
+    <a class="back-to-hub" href="/tutorials" title="กลับไปหน้ารวมบทเรียน">← Back to all Tutorials</a>
+    <nav></nav>
+  </aside>
+
+  <main class="content">
+
+    <!-- 1 · HOOK -->
+    <span class="eyebrow">บทที่ 05 · ประกอบ Harness · Context</span>
+    <h1>Context — สิ่งที่มันต้องรู้</h1>
+    <p class="lede">
+      ผู้ช่วยมี “มือ” ไปดึงการจองแล้ว แต่มันยังตอบผิด — เพราะมันไม่รู้ว่าช่วงนั้น <em>มีคาบเรียน</em>,
+      ไม่รู้ว่าเป็น <em>วันหยุด</em>, ไม่รู้ว่ามี <em>ช่วงซ่อมบำรุง</em> ข้อมูลดิบไม่พอ มันต้องรู้ “กติกา” ที่โลกใบนี้เดินอยู่
+      บทนี้ว่าด้วยการ <strong>ป้อนกติกาที่ถูกต้อง — ไม่ใช่ทุกอย่าง</strong>
+    </p>
+
+    <!-- 2 · PLAIN CONCEPT -->
+    <h2>พูดแบบเข้าใจง่าย</h2>
+    <p>
+      <strong>Context</strong> คือทุกอย่างที่เราวางไว้ตรงหน้าโมเดล <em>ก่อน</em> มันจะตอบ มีสองสิ่งหลักที่ต้องป้อน:
+      <strong>ตัวตน</strong> (ใครถาม ตอบภาษาไหน บทบาทอะไร) และ <strong>กติกา/ค่าคงที่</strong>
+      ที่ระบบเดินอยู่ (คาบเรียน วันหยุด ช่วงซ่อมบำรุง ความจุห้อง)
+    </p>
+    <p>
+      หัวใจคือคำว่า <strong>“ที่ถูกต้อง”</strong> ไม่ใช่ “เยอะ ๆ” — การยัดทุกอย่างเข้าไป “เผื่อไว้”
+      ไม่ได้ช่วย และมักทำให้ข้อมูลชิ้นที่สำคัญจมหายไปในกองข้อมูล (เรื่องนี้เจาะลึกในบทที่ 13)
+      สิ่งที่ต้องการคือ <em>ชุดข้อมูลเล็กแต่ตรงประเด็น</em>
+    </p>
+
+    <div class="callout tip">
+      <strong>เปรียบเทียบ: ครูสอนแทนที่เก่งวิชา แต่ไม่รู้กติกาของโรงเรียนนี้</strong>
+      ครูสอนแทนคนใหม่เชี่ยวชาญเนื้อหามาก แต่ถ้าไม่มีใครบอก <em>ตารางคาบ วันหยุด และห้องไหนปิดซ่อม</em>
+      เขาก็จะจัดคาบผิดห้องอย่างมั่นใจ — ไม่ใช่เพราะโง่ แต่เพราะไม่มีใครยื่น “ปฏิทินและกติกาของโรงเรียน” ให้
+      การป้อน context คือการยื่นกติกาเหล่านั้น และยื่น <em>เฉพาะที่จำเป็น</em> ไม่ใช่กองเอกสารทั้งตู้
+    </div>
+
+    <!-- 3 · IN OUR SYSTEMS -->
+    <h2>ในระบบของเรา — กติกาที่ทำให้คำตอบ “ห้องว่างไหม” ถูกต้อง</h2>
+    <p>
+      คำถาม “Lab 3 ว่างพฤหัส 13:00 ไหม” ดูเหมือนตอบได้จากตารางจองอย่างเดียว แต่จริง ๆ มีกติกาหลายชั้นซ้อนอยู่:
+    </p>
+    <div class="flow">
+      <div class="flow-node"><span class="fn-k">ตารางจอง</span><span class="fn-t">ช่วงนั้นไม่มีใครจอง → ดูเหมือนว่าง</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node guard"><span class="fn-k">+ คาบเรียน</span><span class="fn-t">13:00–15:00 มีคาบสอนใช้ห้อง</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node guard"><span class="fn-k">+ วันหยุด / ซ่อมบำรุง</span><span class="fn-t">วันหยุดพิเศษ หรือช่วงปิดปรับปรุง</span></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-node accent"><span class="fn-k">คำตอบที่ถูก</span><span class="fn-t">“ไม่ว่าง” พร้อมเหตุผลครบ</span></div>
+    </div>
+    <p>
+      ในระบบจริง เรายังป้อน <strong>ตัวตนและกติกาเชิงพฤติกรรม</strong> ด้วย เช่น “ตอบเป็นภาษาเดียวกับผู้ถาม”,
+      “อย่าเดารหัส/ชื่อห้องเอง ให้ค้นจากระบบก่อน” — กติกาเหล่านี้ใช้กับทุกคำตอบ จึงควรอยู่เป็น context ประจำ
+      ส่วนข้อมูลหนัก ๆ (เช่นผังทั้งเทอม) ค่อยดึงตอนต้องใช้ ไม่ใช่ยัดไว้ตั้งแต่ต้น
+    </p>
+
+    <table>
+      <thead><tr><th>ประเภท context</th><th>ตัวอย่าง</th><th>ควรอยู่แบบไหน</th></tr></thead>
+      <tbody>
+        <tr><td><b>ตัวตน/พฤติกรรม</b></td><td>ภาษาที่ใช้ตอบ · “อย่าเดารหัส”</td><td>ประจำ (ใช้ทุกคำตอบ)</td></tr>
+        <tr><td><b>กติกา/ค่าคงที่</b></td><td>คาบเรียน · วันหยุด · ช่วงซ่อมบำรุง · ความจุห้อง</td><td>ป้อนเมื่อเกี่ยวข้อง</td></tr>
+        <tr><td><b>ข้อมูลหนัก</b></td><td>ผังตารางทั้งเทอม · คู่มือทั้งเล่ม</td><td>ดึงตอนต้องใช้ (บทที่ 13)</td></tr>
+      </tbody>
+    </table>
+
+    <!-- 4 · BAD → GOOD -->
+    <h2>ทำพลาด vs ทำถูก</h2>
+    <div class="card-grid">
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · ป้อนแค่คำถาม</div>
+        <div class="name">ไม่มีกติกาเลย</div>
+        <div class="desc">
+          ให้แค่คำถามกับตารางจอง โมเดลก็ตอบ “ว่าง” อย่างมั่นใจ เพราะมองไม่เห็นคาบเรียนหรือช่วงซ่อมบำรุง
+          ข้อมูลดิบโดยไม่มีกติกา = คำตอบที่ดูสมเหตุสมผลแต่ผิด
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--red)">
+        <div class="num">⚠️ แย่ · ยัดทุกอย่าง “เผื่อไว้”</div>
+        <div class="name">กองเอกสารทั้งตู้</div>
+        <div class="desc">
+          แปะคู่มือทั้งเล่ม ทุกกฎ ทุกบทสนทนาเก่า เข้าไปทุกครั้ง — กติกาชิ้นที่สำคัญ (คาบ 13:00) จมหายในกองข้อมูล
+          เปลือง และความแม่นยำตก (เจาะลึกบทที่ 13) “เยอะ” ไม่เท่ากับ “ดี”
+        </div>
+      </div>
+      <div class="card" style="border-left:3px solid var(--green)">
+        <div class="num">✅ ดี · ป้อนกติกาที่ถูกต้อง</div>
+        <div class="name">เล็กแต่ตรงประเด็น</div>
+        <div class="desc">
+          ป้อนตัวตน + กติกาที่เกี่ยวข้องกับคำถามนั้น (คาบเรียน วันหยุด ซ่อมบำรุง) แล้วคำตอบพลิกเป็น “ไม่ว่าง”
+          พร้อมเหตุผลครบ — ข้อมูลหนักค่อยดึงเมื่อต้องใช้
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 · ACTIVITY -->
+    <h2>ลองเอง — เปิดกติกาทีละข้อ แล้วดูคำตอบพลิก</h2>
+    <div class="activity">
+      <div class="activity-head">
+        <div class="activity-kicker">กิจกรรม · กดสลับแล้วดูผล</div>
+        <div class="activity-title">Feed the Right Context</div>
+        <div class="activity-desc">
+          ตารางจองบอกว่า “ไม่มีใครจอง 13:00” ผู้ช่วยจึงอยากตอบ “ว่าง” ลองป้อน “กติกา” ที่ควบคุมห้องจริง ๆ ทีละข้อ
+          แล้วดูคำตอบที่ <b>มั่นใจแต่ผิด</b> กลายเป็น <b>ถูกต้อง</b>
+        </div>
+      </div>
+      <div class="activity-panel">
+        <div class="activity-panel-label">เปิด/ปิดกติกาแล้วสังเกตคำตอบ</div>
+        <div class="context-toggle"></div>
+      </div>
+    </div>
+
+    <!-- 6 · FORWARD LOOK -->
+    <div class="callout info">
+      <strong>มองไปข้างหน้า — “เล็กแต่ตรง” มีศาสตร์ของมัน</strong>
+      บทนี้สอนหลักง่าย ๆ ว่า “ป้อนกติกาที่ถูก ไม่ใช่ทุกอย่าง” — แต่พอข้อมูลโตขึ้น คำถามจะกลายเป็น
+      <em>วางข้อมูลตรงไหน เรียงยังไง ดึงเมื่อไหร่</em> นั่นคือ <strong>Context Engineering</strong> เต็มรูปแบบในบทที่ 13
+    </div>
+
+    <!-- 7 · SUMMARY + SCORECARD + BRIDGE -->
+    <h2>สรุปบทที่ 05</h2>
+    <ul>
+      <li><strong>Context = สิ่งที่วางตรงหน้าโมเดลก่อนตอบ</strong> — ตัวตน + กติกา/ค่าคงที่</li>
+      <li>ข้อมูลดิบไม่พอ — โมเดลต้องรู้ <strong>กติกาที่โลกใบนี้เดินอยู่</strong> (คาบ วันหยุด ซ่อมบำรุง)</li>
+      <li>ป้อน <strong>“ที่ถูกต้อง” ไม่ใช่ “เยอะ”</strong> — ข้อมูลที่ไม่เกี่ยวทำให้ของสำคัญจมหาย</li>
+      <li>กติกาเชิงพฤติกรรมที่ใช้ทุกครั้ง (เช่นภาษา) อยู่เป็น context ประจำ; ข้อมูลหนักดึงเมื่อต้องใช้</li>
+    </ul>
+
+    <div class="callout note">
+      <strong>Harness Scorecard · มิติ: “ได้รับกติกาที่จำเป็นครบไหม?”</strong>
+      ผู้ช่วยจัดการแล็บ ✅ เมื่อเราป้อนคาบเรียน/วันหยุด/ซ่อมบำรุง — แต่ต้องระวังไม่ป้อนเกินจนกลบของสำคัญ
+      <br><br>
+      <strong>📋 build-your-harness checklist · บรรทัดที่ 5</strong>
+      “บริบทที่ถูกต้อง: ตัวตน + กติกา/ค่าคงที่ที่เกี่ยวข้อง — เล็กแต่ตรงประเด็น”
+    </div>
+
+    <div class="pager">
+      <a href="ch04-tools.html">
+        <div class="label">← ก่อนหน้า</div>
+        <div class="title">04 — Tools — มือของโมเดล</div>
+      </a>
+      <a href="ch06-memory-state.html" class="next">
+        <div class="label">ถัดไป</div>
+        <div class="title">06 — Memory &amp; State</div>
+      </a>
+    </div>
+
+    <div class="illus-footer">
+      <b>หมายเหตุข้อมูล:</b> สถานการณ์ห้อง/คาบ/วันหยุดในกิจกรรมเป็น <b>ตัวอย่างเชิงสาธิต</b> เพื่อสอนแนวคิด “ป้อนกติกาที่ถูกต้อง”
+      หลักการ schema-first และการดึงข้อมูลเมื่อต้องใช้อ้างอิงพฤติกรรมจริงของระบบเรา (เจาะลึกในบทที่ 13)
+    </div>
+
+  </main>
+</div>
+
+<footer class="site-footer">
+  AI Harness Engineering · บทที่ 05 · ภาควิชาวิศวกรรมไฟฟ้าและอิเล็กทรอนิกส์ · คณะวิศวกรรมศาสตร์ มหาวิทยาลัยอุบลราชธานี
+</footer>
+
+<div class="lightbox" id="lightbox" onclick="this.classList.remove('open')"><img alt=""></div>
+<script src="js/nav.js" defer></script>
+<script src="js/activities/context-toggle.js" defer></script>
+<script src="js/progress.js" defer></script>
+</body>
+</html>
